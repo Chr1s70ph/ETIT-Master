@@ -1,4 +1,4 @@
-exports.run = (message) => {
+exports.run = (client, message) => {
     message.delete();
     message.reply("🛠 Dir wurde Hilfe geschickt!");
     message.author.send("```asciidoc\n = Die Hauptfunktion des Bots ist es, an Vorlesungen und in Zukunft auch an Tutorien zu erinnern =\n----------" +

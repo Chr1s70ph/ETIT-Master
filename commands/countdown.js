@@ -1,4 +1,4 @@
-exports.run = (message) => {
+exports.run = (client, message) => {
     message.channel.send("Liftoff in:");            
     message.channel.send("🚀10🚀");
     setTimeout(() => { message.channel.send("🚀5🚀"); }, 5000);

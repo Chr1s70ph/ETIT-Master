@@ -3,7 +3,7 @@ var private = require('../private.js');
 var config = require("../startupScripts/loadConfig.js")
 const ownerID = private.ownerID;
 
-exports.run = (message) => {
+exports.run = (client, message) => {
     if (message.author == ownerID) {
         fs.readFile('./startupScripts/loadConfig.js', 'utf8' , (err, data) => {
             if (err) {

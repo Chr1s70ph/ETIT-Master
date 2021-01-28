@@ -1,10 +1,10 @@
 exports.postAndRun = postAndRun;
 let help = require("../slashCommands/slashHelp.js")
 let ping = require("../slashCommands/slashPing.js")
-let info = require("../slashCommands/slashInfo.js")
+let info = require("../slashCommands/slashInfo.js");
 
-async function postAndRun(client, message) {
-    await help.help(client, message);
+async function postAndRun(client) {
+    await help.help(client);
     await ping.Ping(client);
     await info.info(client);
 }

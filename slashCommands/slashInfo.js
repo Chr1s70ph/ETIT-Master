@@ -19,7 +19,7 @@ async function info(client) {
                     required: true,
                     choices: [
                         {                    
-                            name: "Höhere Mathemathik",
+                            name: "Höhere Mathematik",
                             value: "hm"
                         },
                         {

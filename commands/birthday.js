@@ -1,7 +1,7 @@
 const fs = require("fs");
 var list = ("./birthdayList.txt");
 
-exports.run = (message) => {
+exports.run = (client, message) => {
     var content = message.content;
     var command = content.substring(content.indexOf(" ") + 1);
     command = String(command);
