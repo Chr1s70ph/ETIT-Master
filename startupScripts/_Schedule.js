@@ -209,11 +209,11 @@ function TreffenSchedule(client) {
 		.setFooter('Viel Spaß und Erfolg wünscht euch euer ETIT-Master', Avatar);
 
 	var TreffenMon = schedule.scheduleJob('0 55 18 * * 1', function () {
-			client.thannels.cache.get('767754885763563520').send('<@&774275407251898398>', treffenEmbed.setTimestamp())
+			client.channels.cache.get('767754885763563520').send('<@&774275407251898398>', treffenEmbed.setTimestamp())
 			.then(msg => msg.delete({ timeout: 5400000 }))
     });
 	var TreffenThu = schedule.scheduleJob('0 55 18 * * 4', function () {
-			client.thannels.cache.get('767754885763563520').send('<@&774275407251898398>', treffenEmbed.setTimestamp())
+			client.channels.cache.get('767754885763563520').send('<@&774275407251898398>', treffenEmbed.setTimestamp())
 			.then(msg => msg.delete({ timeout: 5400000 }))
     });
 }
