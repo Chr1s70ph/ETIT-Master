@@ -2,6 +2,7 @@ var private = require('../private.js');
 const discord = require('../node_modules/discord.js');
 const serverId = private.serverId;
 const botUserID = private.botUserID;
+const links = private.info;
 
 exports.info = info;
 
@@ -60,7 +61,7 @@ async function info(client) {
             } else if (args[0].value === 'dt') {
                 client.channels.cache.get(interaction.channel_id).send(dTInfo.setTimestamp());
             }if (args[0].value === 'len') {
-                client.channels.cache.get(interaction.channel_id).send(lENEmbed.setTimestamp());
+                client.channels.cache.get(interaction.channel_id).send(lENInfo.setTimestamp());
             }
         }
     });
@@ -74,7 +75,9 @@ async function info(client) {
         .setAuthor('Hm1 Informationen', Avatar)
         .setThumbnail('https://www.pngarts.com/files/7/Zoom-Logo-PNG-Download-Image.png')
         .addFields(
-            { name: 'NEU:', value: ' Festgelegter Link zum Inverted Classroom!'},
+            { name: 'Die Vorlesung findet auf Zoom statt', value: 'Hier ist der [Link](' + links.hmZoom + ')'},
+            { name: 'Die Fragestunde findet ebenfalls auf Zoom statt', value: 'Hier ist der [Link](' + links.hmuZoom + ')' },
+            { name: 'Ilias', value: 'Hier ist der Link zum [Ilias](' + links.hmIlias + ')'},
             { name: '\u200B', value: '\u200B' },
             { name: 'Dozent', value: 'Ioannis Anapolitanos', inline: true },
             { name: 'Assistent', value: 'Semjon Wugalter', inline: true },
@@ -86,6 +89,9 @@ async function info(client) {
         .setAuthor('Experimental-Physik Informationen', Avatar)
         .setThumbnail('https://i.pinimg.com/originals/de/1c/91/de1c91788be0d791135736995109272a.png')
         .addFields(
+            { name: 'Die Vorlesung findet auf Youtube statt', value: 'Hier ist der [Link](' + links.pyYouTube + ') zur Youtube Playlist'},
+            { name: 'Ilias', value: 'Hier ist der Link zum [Ilias](' + links.phyIlias + ')'},
+            { name: '\u200B', value: '\u200B' },
             { name: 'Dozent', value: 'Thomas Schimmel', inline: true },
             { name: 'Assistent', value: 'Schwerkraftaus Schubi', inline: true },
         )
@@ -95,17 +101,23 @@ async function info(client) {
 		.setTitle('Info Seite der Digitaltechnik')
 		.setAuthor('Digitaltechnik Informationen', Avatar)
 		.setThumbnail('https://www.pngarts.com/files/7/Zoom-Logo-PNG-Download-Image.png')
-		.addFields(
+        .addFields(
+            { name: 'Die Vorlesung findet auf Zoom statt', value: 'Hier ist der [Link](' + links.dtZoom + ')' },
+            { name: 'Ilias', value: 'Hier ist der Link zum [Ilias](' + links.dtIlias + ')'},
+            { name: '\u200B', value: '\u200B' },
 			{ name: 'Dozent', value: 'Jürgen Becker', inline: true },
 			{ name: 'Assistent', value: 'Fabian Kempf', inline: true },
     )
     
-    const lENEmbed = new discord.MessageEmbed()
+    const lENInfo = new discord.MessageEmbed()
 		.setColor('#0099ff')
 		.setTitle('Info Seite der Linearen Elektrischen Netze')
 		.setAuthor('LEN Informationen', Avatar)
 		.setThumbnail('https://www.pngarts.com/files/7/Zoom-Logo-PNG-Download-Image.png')
-		.addFields(
+        .addFields(
+            { name: 'Die Vorlesung findet auf Zoom statt', value: 'Hier ist der [Link](' + links.lenZoom + ')' },            
+            { name: 'Ilias', value: 'Hier ist der Link zum [Ilias](' + links.lenIlias + ')'},
+            { name: '\u200B', value: '\u200B' },
 			{ name: 'Dozent', value: 'Olaf Dössel', inline: true },
 			{ name: 'Assistent', value: 'Alp Cehri', inline: true },
 			{ name: 'Übungsleiter', value: 'Jochen Brenneisen', inline: true }
