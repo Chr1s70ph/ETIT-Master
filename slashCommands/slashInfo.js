@@ -2,7 +2,7 @@ var private = require('../private.js');
 const discord = require('../node_modules/discord.js');
 const serverId = private.serverId;
 const botUserID = private.botUserID;
-const links = private.info;
+const links = private.links;
 
 exports.info = info;
 
