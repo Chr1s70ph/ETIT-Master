@@ -12,7 +12,7 @@ function WeekPlanReminder(client) {
     ExPhySchedule(client);
     DtSchedule(client);
 	LenSchedule(client);
-	MatlabSchedule(client);
+	//MatlabSchedule(client);
 	TreffenSchedule(client);
 }
 
