@@ -89,7 +89,7 @@ async function info(client) {
         .setAuthor('Experimental-Physik Informationen', Avatar)
         .setThumbnail('https://i.pinimg.com/originals/de/1c/91/de1c91788be0d791135736995109272a.png')
         .addFields(
-            { name: 'Die Vorlesung findet auf Youtube statt', value: 'Hier ist der [Link](' + links.pyYouTube + ') zur Youtube Playlist'},
+            { name: 'Die Vorlesung findet auf Youtube statt', value: 'Hier ist der [Link](' + links.phyIlias + ') zur Youtube Playlist'},
             { name: 'Ilias', value: 'Hier ist der Link zum [Ilias](' + links.phyIlias + ')'},
             { name: '\u200B', value: '\u200B' },
             { name: 'Dozent', value: 'Thomas Schimmel', inline: true },
