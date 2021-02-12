@@ -5,7 +5,7 @@ exports.Ping = Ping;
 
 async function Ping(client) {
 
-    await client.api.applications(client.user.id).guilds(serverId).commands.post({
+    await client.api.applications(client.user.id).commands.post({
         data: {
             name: "ping",
             description: "Prüft, ob der Bot ordnungsgemäß antwortet"

@@ -5,7 +5,7 @@ exports.help = help;
 
 async function help(client) {
 
-    await client.api.applications(client.user.id).guilds(serverId).commands.post({
+    await client.api.applications(client.user.id).commands.post({
         data: {
             name: "help",
             description: "Hilfe ist hier"
