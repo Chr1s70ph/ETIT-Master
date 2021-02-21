@@ -3,6 +3,7 @@ const discord = require('../node_modules/discord.js');
 const serverId = private.serverId;
 const botUserID = private.botUserID;
 const links = private.links;
+var switchEmbed;
 
 exports.info = info;
 
@@ -41,31 +42,38 @@ async function info(client) {
         }
     });   
 
+
     client.ws.on('INTERACTION_CREATE', async (interaction) => {
         const command = interaction.data.name.toLowerCase();
         const args = interaction.data.options;
-        
         if (command === 'info') {
+            switch (args[0].value) {
+                case "hm":
+                    switchEmbed = matheInfo.setTimestamp();
+                    break;
+                case "ex-phy":
+                    switchEmbed = exPhyInfo.setTimestamp();
+                    break;
+                case "dt":
+                    switchEmbed = dTInfo.setTimestamp();
+                    break;
+                case "len":
+                    switchEmbed = lENInfo.setTimestamp();
+                    break;
+            }
             await client.api.interactions(interaction.id, interaction.token).callback.post({
                 data: {
                     type: 5,
                     data: {
-                        content: '<@' + interaction.member.user.id + '>\n'
+                        content: '<@' + interaction.member.user.id + '>\n',
+                        embeds: [
+                            switchEmbed
+                        ]
                     }
                 }
             });
-            if (args[0].value === 'hm') {
-                client.channels.cache.get(interaction.channel_id).send(matheInfo.setTimestamp());
-            } else if (args[0].value === 'ex-phy') {
-                client.channels.cache.get(interaction.channel_id).send(exPhyInfo.setTimestamp());
-            } else if (args[0].value === 'dt') {
-                client.channels.cache.get(interaction.channel_id).send(dTInfo.setTimestamp());
-            }if (args[0].value === 'len') {
-                client.channels.cache.get(interaction.channel_id).send(lENInfo.setTimestamp());
-            }
         }
     });
-
 
     var Avatar = client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL(); //get Avatar URL of Bot
     
