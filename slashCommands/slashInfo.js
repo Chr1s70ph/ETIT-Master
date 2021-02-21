@@ -29,12 +29,12 @@ async function info(client) {
                             value: "ex-phy"
                         },
                         {
-                            name: "Digitaltechnik",
-                            value: "dt"
-                        },
-                        {
                             name: "Lineare Elektrische Netze",
                             value: "len"
+                        },
+                        {
+                            name: "Digitaltechnik",
+                            value: "dt"
                         }
                     ]
                 }
@@ -54,11 +54,11 @@ async function info(client) {
                 case "ex-phy":
                     switchEmbed = exPhyInfo.setTimestamp();
                     break;
-                case "dt":
-                    switchEmbed = dTInfo.setTimestamp();
-                    break;
                 case "len":
                     switchEmbed = lENInfo.setTimestamp();
+                    break;
+                case "dt":
+                    switchEmbed = dTInfo.setTimestamp();
                     break;
             }
             await client.api.interactions(interaction.id, interaction.token).callback.post({
@@ -81,11 +81,11 @@ async function info(client) {
         .setColor('#0099ff')
         .setTitle('Info Seite der HM1')
         .setAuthor('Hm1 Informationen', Avatar)
-        .setThumbnail('https://www.pngarts.com/files/7/Zoom-Logo-PNG-Download-Image.png')
+        .setThumbnail('https://images.emojiterra.com/twitter/v13.0/512px/1f4c8.png')
         .addFields(
-            { name: 'Die Vorlesung findet auf Zoom statt', value: 'Hier ist der [Link](' + links.hmZoom + ')'},
-            { name: 'Die Fragestunde findet ebenfalls auf Zoom statt', value: 'Hier ist der [Link](' + links.hmuZoom + ')' },
-            { name: 'Ilias', value: 'Hier ist der Link zum [Ilias](' + links.hmIlias + ')'},
+            { name: 'Die Fragestunde findet ebenfalls auf Zoom statt', value: 'Hier ist der [Link](' + links.hmuZoom + ') <:zoom:776402157334822964>' },
+            { name: 'Ilias', value: 'Hier ist der Link zur [Ilias](' + links.hmIlias + ') von der HM1 <:ilias:776366543093235712>'},
+            { name: 'Altklausuren', value: '[Hier](' + links.hmOneDriveAK + ') sind ein paar Altklausuren auf Ondrive <:od:776371361185792030> \n[Hier](' + links.hmIliasAK + ') sind Links zu Altklausuren von Ioannis im Ilias <:ilias:776366543093235712>'},
             { name: '\u200B', value: '\u200B' },
             { name: 'Dozent', value: 'Ioannis Anapolitanos', inline: true },
             { name: 'Assistent', value: 'Semjon Wugalter', inline: true },
@@ -95,39 +95,43 @@ async function info(client) {
         .setColor('#0099ff')
         .setTitle('Info Seite der Experimental-Physik')
         .setAuthor('Experimental-Physik Informationen', Avatar)
-        .setThumbnail('https://i.pinimg.com/originals/de/1c/91/de1c91788be0d791135736995109272a.png')
+        .setThumbnail('https://cdn-0.emojis.wiki/emoji-pics/microsoft/collision-microsoft.png')
         .addFields(
-            { name: 'Die Vorlesung findet auf Youtube statt', value: 'Hier ist der [Link](' + links.phyYouTube + ') zur Youtube Playlist'},
-            { name: 'Ilias', value: 'Hier ist der Link zum [Ilias](' + links.phyIlias + ')'},
+            { name: 'Die Vorlesung findet auf Youtube statt', value: 'Hier ist der [Link](' + links.phyYouTube + ') zur Youtube Playlist <:youtube:776400533203714048>'},
+            { name: 'Ilias', value: 'Hier ist der Link zum [Ilias](' + links.phyIlias + ') von Physik <:ilias:776366543093235712>' },
+            { name: 'Altklausuren', value: '[Hier](' + links.phyOneDriveAK + ') sind ein paar Altklausuren auf Ondrive <:od:776371361185792030> \n[Hier](' + links.phyIliasAK + ') sind die Altklausuren im Ilias <:ilias:776366543093235712>'},
             { name: '\u200B', value: '\u200B' },
             { name: 'Dozent', value: 'Thomas Schimmel', inline: true },
             { name: 'Assistent', value: 'Schwerkraftaus Schubi', inline: true },
         )
     
+    const lENInfo = new discord.MessageEmbed()
+        .setColor('#0099ff')
+        .setTitle('Info Seite der Linearen Elektrischen Netze')
+        .setAuthor('LEN Informationen', Avatar)
+        .setThumbnail('https://images.emojiterra.com/twitter/v13.0/512px/1f50c.png')
+        .addFields(
+            { name: 'Die Vorlesung findet auf Zoom statt', value: 'Hier ist der [Link](' + links.lenZoom + ') <:zoom:776402157334822964>' },            
+            { name: 'Ilias', value: 'Hier ist der Link zum [Ilias](' + links.lenIlias + ') von LEN <:ilias:776366543093235712>' },
+            { name: 'Altklausuren', value: '[Hier](' + links.lenOneDriveAK + ') sind ein paar Altklausuren auf Ondrive <:od:776371361185792030> \n[Hier](' + links.lenIliasAK + ') sind die Altklausuren im Ilias <:ilias:776366543093235712>'},
+            { name: '\u200B', value: '\u200B' },
+            { name: 'Dozent', value: 'Olaf Dössel', inline: true },
+            { name: 'Assistent', value: 'Alp Cehri', inline: true },
+            { name: 'Übungsleiter', value: 'Jochen Brenneisen', inline: true }
+    )
+    
     const dTInfo = new discord.MessageEmbed()
 		.setColor('#0099ff')
 		.setTitle('Info Seite der Digitaltechnik')
 		.setAuthor('Digitaltechnik Informationen', Avatar)
-		.setThumbnail('https://www.pngarts.com/files/7/Zoom-Logo-PNG-Download-Image.png')
+		.setThumbnail('https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/microsoft/209/floppy-disk_1f4be.png')
         .addFields(
-            { name: 'Die Vorlesung findet auf Zoom statt', value: 'Hier ist der [Link](' + links.dtZoom + ')' },
-            { name: 'Ilias', value: 'Hier ist der Link zum [Ilias](' + links.dtIlias + ')'},
+            { name: 'Die Vorlesung findet auf Zoom statt', value: 'Hier ist der [Link](' + links.dtZoom + ') <:zoom:776402157334822964>' },
+            { name: 'Ilias', value: 'Hier ist der Link zum [Ilias](' + links.dtIlias + ') von Digitaltechnik <:ilias:776366543093235712>' },
+            { name: 'Altklausuren', value: '[Hier](' + links.dtOneDriveAK + ') sind ein paar Altklausuren auf Ondrive <:od:776371361185792030> \n[Hier](' + links.dtIliasAK + ') sind die Altklausuren im Ilias <:ilias:776366543093235712>'},
             { name: '\u200B', value: '\u200B' },
 			{ name: 'Dozent', value: 'Jürgen Becker', inline: true },
 			{ name: 'Assistent', value: 'Fabian Kempf', inline: true },
     )
     
-    const lENInfo = new discord.MessageEmbed()
-		.setColor('#0099ff')
-		.setTitle('Info Seite der Linearen Elektrischen Netze')
-		.setAuthor('LEN Informationen', Avatar)
-		.setThumbnail('https://www.pngarts.com/files/7/Zoom-Logo-PNG-Download-Image.png')
-        .addFields(
-            { name: 'Die Vorlesung findet auf Zoom statt', value: 'Hier ist der [Link](' + links.lenZoom + ')' },            
-            { name: 'Ilias', value: 'Hier ist der Link zum [Ilias](' + links.lenIlias + ')'},
-            { name: '\u200B', value: '\u200B' },
-			{ name: 'Dozent', value: 'Olaf Dössel', inline: true },
-			{ name: 'Assistent', value: 'Alp Cehri', inline: true },
-			{ name: 'Übungsleiter', value: 'Jochen Brenneisen', inline: true }
-		)
 }
