@@ -3,15 +3,15 @@ const discord = require('../node_modules/discord.js');
 const serverId = private.serverId;
 const botUserID = private.botUserID;
 const fs = require("fs");
-var list = ("./birthdayList.txt");
+
 
 exports.birthdayEntry = birthdayEntry;
 
-var dateIsValid = false;
 
 
 
-async function birthdayEntry(client, dateIsValid) {
+async function birthdayEntry(client, listData) {
+
     await client.api.applications(client.user.id).guilds(serverId).commands.post({
         data: {
             name: "Geburtstag",
@@ -91,48 +91,54 @@ async function birthdayEntry(client, dateIsValid) {
     });
 
 
+    var text = fs.readFileSync("./birthdayList.json").toString('utf-8');
+    let birthdayData = JSON.parse(text);
+    // let birthdayData = { };
+
+
     client.ws.on('INTERACTION_CREATE', async (interaction) => {
         const command = interaction.data.name.toLowerCase();
         const args = interaction.data.options;
+        var dateIsValid = false;
         if (command === 'geburtstag') {
             
-
             var Avatar = client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL(); //get Avatar URL of Bot
-                
-            const responseEmbed = new discord.MessageEmbed()
-                .setColor('#0099ff')
-                .setTitle('Geburtstagseintrag')
-                .setAuthor('ETIT-Master', Avatar)
-                .setThumbnail('https://lynnvalleycare.com/wp-content/uploads/2018/03/First-Birthday-Cake-PNG-Photos1.png')
-                .addFields(
-                    { name: 'Geburtstag gesetzt auf:', value: args[0].value + '.' + args[1].value + '.' + args[2].value}
-            )
             
-            isValid = ckeckDate(args, dateIsValid);
+            const responseEmbed = new discord.MessageEmbed()
+            .setColor('#0099ff')
+            .setTitle('Geburtstagseintrag')
+            .setAuthor('ETIT-Master', Avatar)
+            .setThumbnail('https://lynnvalleycare.com/wp-content/uploads/2018/03/First-Birthday-Cake-PNG-Photos1.png')
+            .addFields(
+                { name: 'Geburtstag gesetzt auf:', value: args[0].value + '.' + args[1].value + '.' + args[2].value}
+                )
+                
+            date = args[1].value + '-' + args[0].value + '-' + args[2].value;
+            userID = interaction.member.user.id;
+            isValid = ckeckDate(dateIsValid, date);
+            addBirthday(date, userID, birthdayData);
             if (isValid == true) {                    
-                await client.api.interactions(interaction.id, interaction.token).callback.post({
-                    data: {
-                        type: 5,
-                        data: {
-                            content: '<@' + interaction.member.user.id + '>\n',            
-                            embeds: [
-                                responseEmbed
-                            ]
-                        }
-                    }
-                })                           
+                // await client.api.interactions(interaction.id, interaction.token).callback.post({
+                //     data: {
+                //         type: 5,
+                //         data: {
+                //             content: '<@' + interaction.member.user.id + '>\n',            
+                //             embeds: [
+                //                 responseEmbed
+                //             ]
+                //         }
+                //     }
+                // })                           
             }
         }
     })
 }
 
-
-
-function ckeckDate(args, dateIsValid) {
-    foo = args[1].value + '-' + args[0].value + '-' + args[2].value;
-    var test = new Date(foo);
-    console.log(test);
-    if (test != "Invalid Date") {
+function ckeckDate(dateIsValid, date) {
+    
+    var date = new Date(date);
+    console.log(date);
+    if (date != "Invalid Date") {
         dateIsValid = true;  
         console.log(dateIsValid);
         return dateIsValid;
@@ -142,14 +148,38 @@ function ckeckDate(args, dateIsValid) {
     }
 }
 
+function addBirthday(date, userID, birthdayData) {
 
-// var content = message.content;
-// var command = content.substring(content.indexOf(" ") + 1);
-// command = String(command);
+    birthdayData[userID] = {
+        NutzerId: userID,
+        date: new Date(date)
+    };
+    let text = JSON.stringify(birthdayData);
+    fs.writeFile('./birthdayList.json', text, function (err){
+        if (err) throw err;
+    });
 
-// var date = command.split('.');
-// foo = date[1] + "-" + date[0] + "-" + date[2];
-// var test = new Date(foo);
-// console.log(date);
+    for (var entry in birthdayData) {
+        // console.log(entry.NutzerId + " " + entry.date)
+        console.log(birthdayData[entry])
+    }
+}
 
-// message.channel.send(String(test));
+
+
+// let id = ""
+
+// let dict = {};
+
+// dict[id] = { date: new Date() }
+
+// for (var entry in dict) {
+//     if (entry["date"] == DateToday);
+
+//     delete dict[id];
+// }
+
+
+// @12PM::
+// str = JSON.stringify(dict);
+// dict = JSON.parse(str);
