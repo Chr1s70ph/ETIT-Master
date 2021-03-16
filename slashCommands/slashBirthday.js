@@ -3,10 +3,11 @@ const discord = require('../node_modules/discord.js');
 const serverId = private.serverId;
 const botUserID = private.botUserID;
 const fs = require("fs");
+const { BitField } = require('discord.js');
+var schedule = require('node-schedule');
 
 
 exports.birthdayEntry = birthdayEntry;
-
 
 
 
@@ -97,6 +98,34 @@ async function birthdayEntry(client, listData) {
 
 
     client.ws.on('INTERACTION_CREATE', async (interaction) => {
+        
+        //creates current date and converts it to DateString
+        var today = new Date();
+        today = today.toDateString()
+
+        //reads the JSON file and assings it to value
+        var json = fs.readFileSync('./birthdayList.json', 'utf8' , (err, data) => {
+            if (err) {
+                message.channel.send(err) 
+                return;
+            }
+        });
+    
+
+
+        var jsonDates = JSON.parse(json);
+        for (var entry in jsonDates) {
+            dateToCheck = jsonDates[entry].date;
+            if (checkForToday(dateToCheck) == true) {
+                client.channels.cache.get('770276625040146463').send("<@" + jsonDates[entry].NutzerId + "> hat heute geburtstag :D");
+            }
+        }
+
+
+
+
+
+
         const command = interaction.data.name.toLowerCase();
         const args = interaction.data.options;
         var dateIsValid = false;
@@ -104,82 +133,80 @@ async function birthdayEntry(client, listData) {
             
             var Avatar = client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL(); //get Avatar URL of Bot
             
+            
+            date = args[0].value + ' ' + args[1].value + ',' + args[2].value;
+            // date = args[1].value + ' ' + args[0].value + ',' + args[2].value + 'T00:00:00';
+            userID = interaction.member.user.id;
+            isValid = ckeckDate(dateIsValid, args, client);
+
+            //dynamic embed with date
             const responseEmbed = new discord.MessageEmbed()
             .setColor('#0099ff')
             .setTitle('Geburtstagseintrag')
             .setAuthor('ETIT-Master', Avatar)
             .setThumbnail('https://lynnvalleycare.com/wp-content/uploads/2018/03/First-Birthday-Cake-PNG-Photos1.png')
             .addFields(
-                { name: 'Geburtstag gesetzt auf:', value: args[0].value + '.' + args[1].value + '.' + args[2].value}
-                )
-                
-            date = args[1].value + '-' + args[0].value + '-' + args[2].value;
-            userID = interaction.member.user.id;
-            isValid = ckeckDate(dateIsValid, date);
-            addBirthday(date, userID, birthdayData);
+                { name: 'Geburtstag gesetzt auf:', value: '```json\n' + date + '```'}                
+            )
+            //When date is valid, send embed
+            //else send message it is not valid
             if (isValid == true) {                    
-                // await client.api.interactions(interaction.id, interaction.token).callback.post({
-                //     data: {
-                //         type: 5,
-                //         data: {
-                //             content: '<@' + interaction.member.user.id + '>\n',            
-                //             embeds: [
-                //                 responseEmbed
-                //             ]
-                //         }
-                //     }
-                // })                           
+                await client.api.interactions(interaction.id, interaction.token).callback.post({
+                    data: {
+                        type: 5,
+                        data: {
+                            content: '<@' + interaction.member.user.id + '>\n',            
+                            embeds: [
+                                responseEmbed
+                            ]
+                        }
+                    }
+                })                           
+            } else {
+                await client.api.interactions(interaction.id, interaction.token).callback.post({
+                    data: {
+                        type: 5,
+                        data: {
+                            content: "<@" + interaction.member.user.id + "Kein zulässiges Datum"
+                        }
+                    }
+                }) 
             }
+            addBirthday(args, userID, birthdayData, client);            
         }
     })
 }
 
-function ckeckDate(dateIsValid, date) {
-    
-    var date = new Date(date);
-    console.log(date);
-    if (date != "Invalid Date") {
-        dateIsValid = true;  
-        console.log(dateIsValid);
-        return dateIsValid;
-    } else {
-        dateIsValid = false;
-        return dateIsValid;
-    }
+//checks if date is valid
+function ckeckDate(dateIsValid, args, client) {
+    var checkCheck = new Date(args[2].value ,args[1].value -1 ,args[0].value);
+    console.log(checkCheck);
+    return checkCheck != "Invalid Date";
 }
 
-function addBirthday(date, userID, birthdayData) {
 
+//converts date to JSON and writes to birdtayList.json
+function addBirthday(args, userID, birthdayData, client) {
     birthdayData[userID] = {
         NutzerId: userID,
-        date: new Date(date)
+        date: (new Date(args[2].value, args[1].value - 1, args[0].value)).toDateString()
     };
-    let text = JSON.stringify(birthdayData);
-    fs.writeFile('./birthdayList.json', text, function (err){
+    
+    fs.writeFile('./birthdayList.json', JSON.stringify(birthdayData), function (err){
         if (err) throw err;
     });
 
     for (var entry in birthdayData) {
-        // console.log(entry.NutzerId + " " + entry.date)
         console.log(birthdayData[entry])
+        //logs all entrys in the list
+        client.channels.cache.get('770276625040146463').send('```json\n' + require('util').inspect(birthdayData[entry]) + '```');        
     }
 }
 
-
-
-// let id = ""
-
-// let dict = {};
-
-// dict[id] = { date: new Date() }
-
-// for (var entry in dict) {
-//     if (entry["date"] == DateToday);
-
-//     delete dict[id];
-// }
-
-
-// @12PM::
-// str = JSON.stringify(dict);
-// dict = JSON.parse(str);
+//This function returns true, for any date from the list, that matches the current day
+function checkForToday(dateToCheck) {
+    var today = new Date();
+    today = today.toDateString().slice(8);
+    dateToCheck = dateToCheck.slice(8);
+    return(today === dateToCheck)
+}
