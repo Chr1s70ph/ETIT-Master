@@ -112,7 +112,7 @@ async function birthdayEntry(client, listData) {
         });
     
 
-
+        //Checks for birthdays, still needs to be automated and count the years
         var jsonDates = JSON.parse(json);
         for (var entry in jsonDates) {
             dateToCheck = jsonDates[entry].date;
@@ -130,12 +130,7 @@ async function birthdayEntry(client, listData) {
         const args = interaction.data.options;
         var dateIsValid = false;
         if (command === 'geburtstag') {
-            
-            var Avatar = client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL(); //get Avatar URL of Bot
-            
-            
-            date = args[0].value + ' ' + args[1].value + ',' + args[2].value;
-            // date = args[1].value + ' ' + args[0].value + ',' + args[2].value + 'T00:00:00';
+            //get userID of user who issued command
             userID = interaction.member.user.id;
             isValid = ckeckDate(dateIsValid, args, client);
 
@@ -143,19 +138,19 @@ async function birthdayEntry(client, listData) {
             const responseEmbed = new discord.MessageEmbed()
             .setColor('#0099ff')
             .setTitle('Geburtstagseintrag')
-            .setAuthor('ETIT-Master', Avatar)
+            .setAuthor('ETIT-Master', client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL())
             .setThumbnail('https://lynnvalleycare.com/wp-content/uploads/2018/03/First-Birthday-Cake-PNG-Photos1.png')
             .addFields(
-                { name: 'Geburtstag gesetzt auf:', value: '```json\n' + date + '```'}                
+                { name: 'Geburtstag gesetzt auf:', value: '```json\n' + (new Date(args[2].value ,args[1].value -1 ,args[0].value)).toDateString() + '```'}                
             )
             //When date is valid, send embed
             //else send message it is not valid
-            if (isValid == true) {                    
+            if (isValid == true) {
                 await client.api.interactions(interaction.id, interaction.token).callback.post({
                     data: {
                         type: 5,
                         data: {
-                            content: '<@' + interaction.member.user.id + '>\n',            
+                            content: '<@' + userID + '>\n',            
                             embeds: [
                                 responseEmbed
                             ]
@@ -167,7 +162,7 @@ async function birthdayEntry(client, listData) {
                     data: {
                         type: 5,
                         data: {
-                            content: "<@" + interaction.member.user.id + "Kein zulässiges Datum"
+                            content: "<@" + userID + "> Kein zulässiges Datum"
                         }
                     }
                 }) 
@@ -185,8 +180,8 @@ function ckeckDate(dateIsValid, args, client) {
 }
 
 
-//converts date to JSON and writes to birdtayList.json
 function addBirthday(args, userID, birthdayData, client) {
+    //converts date to JSON and writes to birdtayList.json
     birthdayData[userID] = {
         NutzerId: userID,
         date: (new Date(args[2].value, args[1].value - 1, args[0].value)).toDateString()
@@ -196,11 +191,14 @@ function addBirthday(args, userID, birthdayData, client) {
         if (err) throw err;
     });
 
-    for (var entry in birthdayData) {
-        console.log(birthdayData[entry])
-        //logs all entrys in the list
-        client.channels.cache.get('770276625040146463').send('```json\n' + require('util').inspect(birthdayData[entry]) + '```');        
-    }
+    //create and sends debug embed with all entrys from birthdayList.json
+    // creates debug embed with
+    const foo = new discord.MessageEmbed()
+        .setColor('#654321')
+        .setAuthor('ETIT-Master',  client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL())
+        .addFields({ name: '[DEBUG] Liste der Geburtstäge:', value: '```json\n' + require('util').inspect(birthdayData) + '```'} )
+
+    client.channels.cache.get('821657681999429652').send(foo);            
 }
 
 //This function returns true, for any date from the list, that matches the current day
