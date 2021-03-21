@@ -3,7 +3,7 @@ var schedule = require('node-schedule');
 var reminder = require("./startupScripts/_Schedule.js");
 var config = require("./startupScripts/loadConfig.js")
 var loginMessage = require("./loginMessage.js")
-var birthday = require("./startupScripts/birthdayList.js");
+var birthday = require("./startupScripts/birthdayPing.js");
 var slashCommands = require("./startupScripts/slashCommands.js")
 const discord = require('./node_modules/discord.js');
 const client = new discord.Client();
@@ -21,7 +21,7 @@ client.on("ready", () => {
     loginMessage.display(client);
     console.log("Online!");
     
-    //birthday.CheckforBirthday(client);
+    birthday.CheckforBirthday(client);
 });
 
 client.login(token);
