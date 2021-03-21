@@ -10,7 +10,7 @@ exports.info = info;
 async function info(client) {
     await client.api.applications(client.user.id).guilds(serverId).commands.post({
         data: {
-            name: "info",
+            name: "Info",
             description: "Gibt infos",    
             type: 2,
             options: [
