@@ -44,7 +44,7 @@ async function birthdayEntry(client, listData) {
                             value: "03"
                         },
                         {
-                            name: "Aprill",
+                            name: "April",
                             value: "04"
                         },
                         {
@@ -98,54 +98,29 @@ async function birthdayEntry(client, listData) {
 
 
     client.ws.on('INTERACTION_CREATE', async (interaction) => {
-        
-        //creates current date and converts it to DateString
-        var today = new Date();
-        today = today.toDateString()
-
-        //reads the JSON file and assings it to value
-        var json = fs.readFileSync('./birthdayList.json', 'utf8' , (err, data) => {
-            if (err) {
-                message.channel.send(err) 
-                return;
-            }
-        });
-    
-
-        //Checks for birthdays, still needs to be automated and count the years
-        var jsonDates = JSON.parse(json);
-        for (var entry in jsonDates) {
-            dateToCheck = jsonDates[entry].date;
-            if (checkForToday(dateToCheck) == true) {
-                client.channels.cache.get('770276625040146463').send("<@" + jsonDates[entry].NutzerId + "> hat heute geburtstag :D");
-            }
-        }
-
-
-
-
-
-
         const command = interaction.data.name.toLowerCase();
         const args = interaction.data.options;
         var dateIsValid = false;
         if (command === 'geburtstag') {
             //get userID of user who issued command
             userID = interaction.member.user.id;
-            isValid = ckeckDate(dateIsValid, args, client);
 
-            //dynamic embed with date
-            const responseEmbed = new discord.MessageEmbed()
-            .setColor('#0099ff')
-            .setTitle('Geburtstagseintrag')
-            .setAuthor('ETIT-Master', client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL())
-            .setThumbnail('https://lynnvalleycare.com/wp-content/uploads/2018/03/First-Birthday-Cake-PNG-Photos1.png')
-            .addFields(
-                { name: 'Geburtstag gesetzt auf:', value: '```json\n' + (new Date(args[2].value ,args[1].value -1 ,args[0].value)).toDateString() + '```'}                
-            )
+            
             //When date is valid, send embed
             //else send message it is not valid
+            isValid = dateCheck(dateIsValid, args, client);
             if (isValid == true) {
+                //dynamic embed with date
+                const responseEmbed = new discord.MessageEmbed()
+                .setColor('#0099ff')
+                .setTitle('Geburtstagseintrag')
+                .setAuthor('ETIT-Master', client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL())
+                .setThumbnail('https://lynnvalleycare.com/wp-content/uploads/2018/03/First-Birthday-Cake-PNG-Photos1.png')
+                .addFields(
+                    { name: 'Geburtstag gesetzt auf:', value: '```json\n' + require('util').inspect(args[0].value) + require('util').inspect(args[1].value) + require('util').inspect(args[2].value) + '```'}                
+                )
+
+                addBirthday(args, userID, birthdayData, client);
                 await client.api.interactions(interaction.id, interaction.token).callback.post({
                     data: {
                         type: 5,
@@ -156,7 +131,7 @@ async function birthdayEntry(client, listData) {
                             ]
                         }
                     }
-                })                           
+                })
             } else {
                 await client.api.interactions(interaction.id, interaction.token).callback.post({
                     data: {
@@ -167,18 +142,9 @@ async function birthdayEntry(client, listData) {
                     }
                 }) 
             }
-            addBirthday(args, userID, birthdayData, client);            
         }
     })
 }
-
-//checks if date is valid
-function ckeckDate(dateIsValid, args, client) {
-    var checkCheck = new Date(args[2].value ,args[1].value -1 ,args[0].value);
-    console.log(checkCheck);
-    return checkCheck != "Invalid Date";
-}
-
 
 function addBirthday(args, userID, birthdayData, client) {
     //converts date to JSON and writes to birdtayList.json
@@ -192,7 +158,6 @@ function addBirthday(args, userID, birthdayData, client) {
     });
 
     //create and sends debug embed with all entrys from birthdayList.json
-    // creates debug embed with
     const foo = new discord.MessageEmbed()
         .setColor('#654321')
         .setAuthor('ETIT-Master',  client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL())
@@ -201,10 +166,118 @@ function addBirthday(args, userID, birthdayData, client) {
     client.channels.cache.get('821657681999429652').send(foo);            
 }
 
-//This function returns true, for any date from the list, that matches the current day
-function checkForToday(dateToCheck) {
+
+
+//checks if date is valid
+function checkDate(dateIsValid, args) {
+    var checkCheck = new Date(args[2].value ,args[1].value -1 ,args[0].value);
+    return checkCheck != "Invalid Date";
+}
+
+function ageDifference(args) {
     var today = new Date();
-    today = today.toDateString().slice(8);
-    dateToCheck = dateToCheck.slice(8);
-    return(today === dateToCheck)
+    var enteredDay = new Date(args[2].value, args[1].value - 1, args[0].value);
+    if (today.getFullYear() - args[2].value <= 50 && enteredDay < today) {
+        return true;
+    } else return false;
+}
+
+//check for leap year
+function leapYear(args)
+{
+    return ((args[2].value % 4 == 0) && (args[2].value % 100 != 0)) || (args[2].value % 400 == 0);
+}
+
+//check if date is valid based on a leap year
+function validDay(args) {
+    switch (args[1].value) {
+        case '01':
+            if(args[0].value <= 31){
+                return true;
+            }else {
+                return false;
+            }
+        case '02':
+            if (leapYear(args) == true) {                
+                if(args[0].value <= 29){
+                    return true;
+                }else {
+                    return false;
+                }
+            } else {
+                if(args[0].value <= 28){
+                    return true;
+                }else {
+                    return false;
+                }
+            }
+        case '03':
+            if(args[0].value <= 31){
+                return true;
+            }else {
+                return false;
+            }
+        case '04':
+            if(args[0].value <= 30){
+                return true;
+            }else {
+                return false;
+            }
+        case '05':
+            if(args[0].value <= 31){
+                return true;
+            }else {
+                return false;
+            }
+        case '06':
+            if(args[0].value <= 30){
+                return true;
+            }else {
+                return false;
+            }
+        case '07':
+            if(args[0].value <= 31){
+                return true;
+            }else {
+                return false;
+            }
+        case '08':
+            if(args[0].value <= 31){
+                return true;
+            }else {
+                return false;
+            }
+        case '09':
+            if(args[0].value <= 30){
+                return true;
+            }else {
+                return false;
+            }
+        case '10':
+            if(args[0].value <= 31){
+                return true;
+            }else {
+                return false;
+            }
+        case '11':
+            if(args[0].value <= 30){
+                return true;
+            }else {
+                return false;
+            }
+        case '12':
+            if(args[0].value <= 31){
+                return true;
+            }else {
+                return false;
+            }
+        
+    }
+}
+
+//executes all date checks
+function dateCheck(dateIsValid, args, client) {
+    if (checkDate(dateIsValid, args, client) == true && ageDifference(args, client) == true && validDay(args) == true) {
+        return true;
+    } else return false;
 }
