@@ -30,6 +30,7 @@ function checkForToday(dateToCheck) {
     return(today === dateToCheck)
 }
 
+//checks how long the birthday is in the past
 function age(dateToCheck) {
     var today = new Date();
     currentYear = today.toDateString().slice(11);

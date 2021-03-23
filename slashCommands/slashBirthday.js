@@ -3,8 +3,6 @@ const discord = require('../node_modules/discord.js');
 const serverId = private.serverId;
 const botUserID = private.botUserID;
 const fs = require("fs");
-const { BitField } = require('discord.js');
-var schedule = require('node-schedule');
 
 
 exports.birthdayEntry = birthdayEntry;
@@ -119,7 +117,6 @@ async function birthdayEntry(client, listData) {
                 .addFields(
                     { name: 'Geburtstag gesetzt auf:', value: '```json\n' + require('util').inspect(args[0].value) + require('util').inspect(args[1].value) + require('util').inspect(args[2].value) + '```'}                
                 )
-
                 addBirthday(args, userID, birthdayData, client);
                 await client.api.interactions(interaction.id, interaction.token).callback.post({
                     data: {
@@ -174,10 +171,20 @@ function checkDate(dateIsValid, args) {
     return checkCheck != "Invalid Date";
 }
 
-function ageDifference(args) {
+//makes sure, entered year is not too far in the past
+function maxYearDifference(args) {
     var today = new Date();
     var enteredDay = new Date(args[2].value, args[1].value - 1, args[0].value);
-    if (today.getFullYear() - args[2].value <= 50 && enteredDay < today) {
+    if (today.getFullYear() - args[2].value <= 50) {
+        return true;
+    } else return false;
+}
+
+//makes sure, entered date is not too close to the current year
+function minYearDifference(args) {
+    var today = new Date();
+    var enteredDay = new Date(args[2].value, args[1].value - 1, args[0].value);
+    if (today.getFullYear() - args[2].value >= 15 && enteredDay < today) {
         return true;
     } else return false;
 }
@@ -190,94 +197,98 @@ function leapYear(args)
 
 //check if date is valid based on a leap year
 function validDay(args) {
-    switch (args[1].value) {
-        case '01':
-            if(args[0].value <= 31){
-                return true;
-            }else {
-                return false;
-            }
-        case '02':
-            if (leapYear(args) == true) {                
-                if(args[0].value <= 29){
+    if (args[0].value <= 0) {
+        return false;
+    }
+    else {
+        switch (args[1].value) {
+            case '01':
+                if(args[0].value <= 31){
                     return true;
                 }else {
                     return false;
                 }
-            } else {
-                if(args[0].value <= 28){
+            case '02':
+                if (leapYear(args) == true) {                
+                    if(args[0].value <= 29){
+                        return true;
+                    }else {
+                        return false;
+                    }
+                } else {
+                    if(args[0].value <= 28){
+                        return true;
+                    }else {
+                        return false;
+                    }
+                }
+            case '03':
+                if(args[0].value <= 31){
                     return true;
                 }else {
                     return false;
                 }
-            }
-        case '03':
-            if(args[0].value <= 31){
-                return true;
-            }else {
-                return false;
-            }
-        case '04':
-            if(args[0].value <= 30){
-                return true;
-            }else {
-                return false;
-            }
-        case '05':
-            if(args[0].value <= 31){
-                return true;
-            }else {
-                return false;
-            }
-        case '06':
-            if(args[0].value <= 30){
-                return true;
-            }else {
-                return false;
-            }
-        case '07':
-            if(args[0].value <= 31){
-                return true;
-            }else {
-                return false;
-            }
-        case '08':
-            if(args[0].value <= 31){
-                return true;
-            }else {
-                return false;
-            }
-        case '09':
-            if(args[0].value <= 30){
-                return true;
-            }else {
-                return false;
-            }
-        case '10':
-            if(args[0].value <= 31){
-                return true;
-            }else {
-                return false;
-            }
-        case '11':
-            if(args[0].value <= 30){
-                return true;
-            }else {
-                return false;
-            }
-        case '12':
-            if(args[0].value <= 31){
-                return true;
-            }else {
-                return false;
-            }
-        
+            case '04':
+                if(args[0].value <= 30){
+                    return true;
+                }else {
+                    return false;
+                }
+            case '05':
+                if(args[0].value <= 31){
+                    return true;
+                }else {
+                    return false;
+                }
+            case '06':
+                if(args[0].value <= 30){
+                    return true;
+                }else {
+                    return false;
+                }
+            case '07':
+                if(args[0].value <= 31){
+                    return true;
+                }else {
+                    return false;
+                }
+            case '08':
+                if(args[0].value <= 31){
+                    return true;
+                }else {
+                    return false;
+                }
+            case '09':
+                if(args[0].value <= 30){
+                    return true;
+                }else {
+                    return false;
+                }
+            case '10':
+                if(args[0].value <= 31){
+                    return true;
+                }else {
+                    return false;
+                }
+            case '11':
+                if(args[0].value <= 30){
+                    return true;
+                }else {
+                    return false;
+                }
+            case '12':
+                if(args[0].value <= 31){
+                    return true;
+                }else {
+                    return false;
+                }
+        }        
     }
 }
 
 //executes all date checks
 function dateCheck(dateIsValid, args, client) {
-    if (checkDate(dateIsValid, args, client) == true && ageDifference(args, client) == true && validDay(args) == true) {
+    if (checkDate(dateIsValid, args, client) == true && maxYearDifference(args) == true && minYearDifference(args) == true && validDay(args) == true) {
         return true;
     } else return false;
 }
