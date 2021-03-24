@@ -11,7 +11,7 @@ function CheckforBirthday(client) {
     });
 
 
-    //Checks for birthdays, still needs to be automated and count the years
+    //Checks for birthdays,and count the years
     var jsonDates = JSON.parse(json);
     for (var entry in jsonDates) {
         dateToCheck = jsonDates[entry].date;
