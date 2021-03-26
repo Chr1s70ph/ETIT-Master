@@ -8,7 +8,6 @@
       ETIT-Master-Js
     </p>
   </h1>
-  <br/>
 </p>
 
 
