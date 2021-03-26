@@ -53,7 +53,6 @@ function britdayDeleted(client, message) {
             .setColor('	#008000')
             .setTitle('Geburtstag Gelöscht!')
             .setAuthor('ETIT-Master', Avatar)
-            .setThumbnail('https://lh3.googleusercontent.com/proxy/hzXfSt_q19y7q_X9BdQ0Oi9xobWjbRBY9p6pzW4ytyDjyNLmH63TIgzIKZ5fxME10o_NMUJ0H0LFkfQ8ZU3y4_7HHpdxgd1qf8OQBFYi2lX0zGUwWJ0Lnwz8K4x347EzH90I')
             .addFields(
                 { name: 'Dein Eintrag wurde erfolgreich gelöscht', value: 'Du kannst deinen Geburtstag ernuet mir `/geburstag` hinzufügen!' },
                 
@@ -69,7 +68,6 @@ function userIdNotInJSON(client, message) {
             .setColor('#FF0000')
             .setTitle('UserID Nicht Gefunden!')
             .setAuthor('ETIT-Master', Avatar)
-            .setThumbnail('https://image.flaticon.com/icons/png/512/284/284270.png')
             .addFields(
                 { name: 'Dein Eintrag konnte nicht gelöscht werden', value: 'Um deinen Geburtstag zu löschen, musst du ihn erst mit `/geburstag` hinzufügen!' },
                 
