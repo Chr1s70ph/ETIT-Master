@@ -1,4 +1,17 @@
-![](./images/logo.png)
+<p align="center">
+  <br/>
+  <img src="(./images/logo.png)" width="150px">
+  <br/>
+  <br/>
+  <h1 align="center">
+    <p  align="center">
+      ETIT-Master-Js
+    </p>
+  </h1>
+  <br/>
+</p>
+
+
 # ETIT-Master-JS
 This is a personal Discord-bot written in JS.
 
