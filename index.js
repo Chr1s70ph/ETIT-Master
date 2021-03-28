@@ -1,7 +1,6 @@
 var private = require('./private.js');
 var schedule = require('node-schedule');
 var reminder = require("./startupScripts/_Schedule.js");
-var config = require("./startupScripts/loadConfig.js")
 var loginMessage = require("./loginMessage.js")
 var birthday = require("./startupScripts/birthdayPing.js");
 var slashCommands = require("./startupScripts/slashCommands.js")
@@ -58,17 +57,4 @@ function Presence() {
     schedule.scheduleJob('15 * * * * *', function () {
         client.user.setPresence(config.presence);
     });
-}
-
-function foo() {
-    fs.readFile('./startupScripts/loadConfig.js', 'utf8' , (err, data) => {
-        if (err) {
-            console.error(err)
-            return
-        }
-        console.log(config.Wartungsarbeiten);
-        if (config.Wartungsarbeiten === true) {
-            console.log('abc');
-        } else console.log('cdf');
-    })
 }
