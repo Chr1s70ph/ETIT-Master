@@ -100,11 +100,13 @@ async function birthdayEntry(client, listData) {
         const command = interaction.data.name.toLowerCase();
         const args = interaction.data.options;
         var dateIsValid = false;
-        userID = interaction.member.user.id;
+        var userID = interaction.member.user.id;
         
         if (command === 'geburtstag') {
-            isValid = dateCheck(dateIsValid, args, client);
-            if (isValid == true) {
+            if (dateCheck(dateIsValid, args, client) == true) {
+
+
+
                 const responseEmbed = new discord.MessageEmbed()
                     .setColor('#0099ff')
                     .setTitle('Geburtstagseintrag')
