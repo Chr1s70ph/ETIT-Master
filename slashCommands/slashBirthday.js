@@ -197,93 +197,40 @@ function leapYear(args)
 
 //check if date is valid based on a leap year
 function validDay(args) {
-    if (args[0].value <= 0) {
-        return false;
+
+    var day = args[0].value
+    var month = args[1].value
+    // the max value a day can have
+    var maxDay = 31
+
+    const february = 2
+
+    // list of months with 30 days
+    const months_30 = [4, 6, 9, 11]
+
+    var isLeapYear = leapYear(args)
+
+    // check if day is positive
+    if (day <= 0) {
+        return false
     }
-    else {
-        switch (args[1].value) {
-            case '01':
-                if(args[0].value <= 31){
-                    return true;
-                }else {
-                    return false;
-                }
-            case '02':
-                if (leapYear(args) == true) {                
-                    if(args[0].value <= 29){
-                        return true;
-                    }else {
-                        return false;
-                    }
-                } else {
-                    if(args[0].value <= 28){
-                        return true;
-                    }else {
-                        return false;
-                    }
-                }
-            case '03':
-                if(args[0].value <= 31){
-                    return true;
-                }else {
-                    return false;
-                }
-            case '04':
-                if(args[0].value <= 30){
-                    return true;
-                }else {
-                    return false;
-                }
-            case '05':
-                if(args[0].value <= 31){
-                    return true;
-                }else {
-                    return false;
-                }
-            case '06':
-                if(args[0].value <= 30){
-                    return true;
-                }else {
-                    return false;
-                }
-            case '07':
-                if(args[0].value <= 31){
-                    return true;
-                }else {
-                    return false;
-                }
-            case '08':
-                if(args[0].value <= 31){
-                    return true;
-                }else {
-                    return false;
-                }
-            case '09':
-                if(args[0].value <= 30){
-                    return true;
-                }else {
-                    return false;
-                }
-            case '10':
-                if(args[0].value <= 31){
-                    return true;
-                }else {
-                    return false;
-                }
-            case '11':
-                if(args[0].value <= 30){
-                    return true;
-                }else {
-                    return false;
-                }
-            case '12':
-                if(args[0].value <= 31){
-                    return true;
-                }else {
-                    return false;
-                }
-        }        
+
+    //check for special case february
+    if (month == february) {
+
+        maxDay = 28
+
+        if (isLeapYear) {
+            //leapyears have 29 days in february
+            maxDay = 29
+        }
     }
+
+    if (month in months_30) {
+        maxDay = 30
+    }
+
+    return day <= maxDay
 }
 
 //executes all date checks
