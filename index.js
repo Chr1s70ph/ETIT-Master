@@ -1,14 +1,16 @@
 var private = require('./private.js');
 var schedule = require('node-schedule');
 var reminder = require("./startupScripts/_Schedule.js");
-var config = require("./startupScripts/loadConfig.js")
 var loginMessage = require("./loginMessage.js")
 var birthday = require("./startupScripts/birthdayPing.js");
 var slashCommands = require("./startupScripts/slashCommands.js")
+
+const config = require("./config.json")
 const discord = require('./node_modules/discord.js');
 const client = new discord.Client();
 const fs = require("fs");
 const token = private.token;
+const presence_refresh_timer = "15 * * * * *"
 
 client.commands = new discord.Collection();
 client.aliases = new discord.Collection();
@@ -51,34 +53,9 @@ fs.readdir('./events/', (err, files) => {
 });
 
 function Presence() {
-    client.user.setPresence({
-        status: "online",  // You can show online, idle... Do not disturb is dnd
-        activity: {
-            name: ".help",  // The message shown
-            type: "LISTENING" // PLAYING, WATCHING, LISTENING, STREAMING,
-        }
-    });     
+    client.user.setPresence(config.presence);     
 
-    var Timer = schedule.scheduleJob('15 * * * * *', function () {
-        client.user.setPresence({
-            status: "online",  // You can show online, idle... Do not disturb is dnd
-            activity: {
-                name: ".help",  // The message shown
-                type: "LISTENING" // PLAYING, WATCHING, LISTENING, STREAMING,
-            }
-        });  
+    schedule.scheduleJob(presence_refresh_timer, function () {
+        client.user.setPresence(config.presence);
     });
-}
-
-function foo() {
-    fs.readFile('./startupScripts/loadConfig.js', 'utf8' , (err, data) => {
-        if (err) {
-            console.error(err)
-            return
-        }
-        console.log(config.Wartungsarbeiten);
-        if (config.Wartungsarbeiten === true) {
-            console.log('abc');
-        } else console.log('cdf');
-    })
 }
