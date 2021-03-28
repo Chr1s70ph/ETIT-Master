@@ -10,6 +10,7 @@ const discord = require('./node_modules/discord.js');
 const client = new discord.Client();
 const fs = require("fs");
 const token = private.token;
+const presence_refresh_timer = "15 * * * * *"
 
 client.commands = new discord.Collection();
 client.aliases = new discord.Collection();
@@ -54,7 +55,7 @@ fs.readdir('./events/', (err, files) => {
 function Presence() {
     client.user.setPresence(config.presence);     
 
-    schedule.scheduleJob('15 * * * * *', function () {
+    schedule.scheduleJob(presence_refresh_timer, function () {
         client.user.setPresence(config.presence);
     });
 }
