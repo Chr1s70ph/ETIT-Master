@@ -55,7 +55,7 @@ fs.readdir('./events/', (err, files) => {
 function Presence() {
     client.user.setPresence(config.presence);     
 
-    var Timer = schedule.scheduleJob('15 * * * * *', function () {
+    schedule.scheduleJob('15 * * * * *', function () {
         client.user.setPresence(config.presence);
     });
 }
