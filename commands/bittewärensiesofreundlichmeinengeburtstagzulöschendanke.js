@@ -50,11 +50,12 @@ function britdayDeleted(client, message) {
     var Avatar = client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL(); //get Avatar URL of Bot
     
     const britdayDeleted_Embed = new discord.MessageEmbed()
-            .setColor('	#008000')
-            .setTitle('Geburtstag Gelöscht!')
-            .setAuthor('ETIT-Master', Avatar)
-            .addFields(
-                { name: 'Dein Eintrag wurde erfolgreich gelöscht', value: 'Du kannst deinen Geburtstag ernuet mir `/geburstag` hinzufügen!' },
+        .setColor('	#008000')
+        .setTitle('Geburtstag Gelöscht!')
+        .setAuthor('ETIT-Master', Avatar)
+        .setThumbnail('https://cdn.discordapp.com/attachments/821657681999429652/825154162944638996/Mulleimer.png')
+        .addFields(
+            { name: 'Dein Eintrag wurde erfolgreich gelöscht', value: 'Du kannst deinen Geburtstag ernuet mir `/geburstag` hinzufügen!' },
                 
     )
     
@@ -65,12 +66,11 @@ function userIdNotInJSON(client, message) {
     var Avatar = client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL(); //get Avatar URL of Bot
     
     const userIdNotInJSON_Embed = new discord.MessageEmbed()
-            .setColor('#FF0000')
-            .setTitle('UserID Nicht Gefunden!')
-            .setAuthor('ETIT-Master', Avatar)
-            .addFields(
-                { name: 'Dein Eintrag konnte nicht gelöscht werden', value: 'Um deinen Geburtstag zu löschen, musst du ihn erst mit `/geburstag` hinzufügen!' },
-                
+        .setColor('#FF0000')
+        .setTitle('UserID Nicht Gefunden!')
+        .setAuthor('ETIT-Master', Avatar)
+        .addFields(
+            { name: 'Dein Eintrag konnte nicht gelöscht werden', value: 'Um deinen Geburtstag zu löschen, musst du ihn erst mit `/geburstag` hinzufügen!' },        
     )
     
     message.channel.send(userIdNotInJSON_Embed);
