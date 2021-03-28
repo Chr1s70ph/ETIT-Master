@@ -5,6 +5,8 @@ var config = require("./startupScripts/loadConfig.js")
 var loginMessage = require("./loginMessage.js")
 var birthday = require("./startupScripts/birthdayPing.js");
 var slashCommands = require("./startupScripts/slashCommands.js")
+
+const config = require("./config.json")
 const discord = require('./node_modules/discord.js');
 const client = new discord.Client();
 const fs = require("fs");
@@ -51,22 +53,10 @@ fs.readdir('./events/', (err, files) => {
 });
 
 function Presence() {
-    client.user.setPresence({
-        status: "online",  // You can show online, idle... Do not disturb is dnd
-        activity: {
-            name: ".help",  // The message shown
-            type: "LISTENING" // PLAYING, WATCHING, LISTENING, STREAMING,
-        }
-    });     
+    client.user.setPresence(config.presence);     
 
     var Timer = schedule.scheduleJob('15 * * * * *', function () {
-        client.user.setPresence({
-            status: "online",  // You can show online, idle... Do not disturb is dnd
-            activity: {
-                name: ".help",  // The message shown
-                type: "LISTENING" // PLAYING, WATCHING, LISTENING, STREAMING,
-            }
-        });  
+        client.user.setPresence(config.presence);
     });
 }
 
