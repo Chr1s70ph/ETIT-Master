@@ -1,5 +1,6 @@
 var private = require('../private.js');
 const discord = require('../node_modules/discord.js');
+const util = require('util');
 const serverId = private.serverId;
 const botUserID = private.botUserID;
 const fs = require("fs");
@@ -99,48 +100,47 @@ async function birthdayEntry(client, listData) {
         const command = interaction.data.name.toLowerCase();
         const args = interaction.data.options;
         var dateIsValid = false;
+        userID = interaction.member.user.id;
+        
         if (command === 'geburtstag') {
-            //get userID of user who issued command
-            userID = interaction.member.user.id;
-
-            
-            //When date is valid, send embed
-            //else send message it is not valid
             isValid = dateCheck(dateIsValid, args, client);
             if (isValid == true) {
-                //dynamic embed with date
                 const responseEmbed = new discord.MessageEmbed()
-                .setColor('#0099ff')
-                .setTitle('Geburtstagseintrag')
-                .setAuthor('ETIT-Master', client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL())
-                .setThumbnail('https://lynnvalleycare.com/wp-content/uploads/2018/03/First-Birthday-Cake-PNG-Photos1.png')
-                .addFields(
-                    { name: 'Geburtstag gesetzt auf:', value: '```json\n' + require('util').inspect(args[0].value) + require('util').inspect(args[1].value) + require('util').inspect(args[2].value) + '```'}                
-                )
-                addBirthday(args, userID, birthdayData, client);
+                    .setColor('#0099ff')
+                    .setTitle('Geburtstagseintrag')
+                    .setAuthor('ETIT-Master', client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL())
+                    .setThumbnail('https://raw.githubusercontent.com/Chr1s70ph/ETIT-Master-JS/master/images/Cake.png')
+                    .addFields(
+                        { name: 'Geburtstag gesetzt auf:', value: '```json\n' + util.inspect(args[0].value) + util.inspect(args[1].value) + util.inspect(args[2].value) + '```' }
+                    )
+
+
+
                 await client.api.interactions(interaction.id, interaction.token).callback.post({
                     data: {
-                        type: 5,
+                        type: 4,
                         data: {
-                            content: '<@' + userID + '>\n',            
+                            content: '<@' + userID + '>\n',   
                             embeds: [
                                 responseEmbed
                             ]
                         }
                     }
-                })
-            } else {
+                });
+                addBirthday(args, userID, birthdayData, client);
+            }
+            else {
                 await client.api.interactions(interaction.id, interaction.token).callback.post({
                     data: {
-                        type: 5,
+                        type: 4,
                         data: {
                             content: "<@" + userID + "> Kein zulässiges Datum"
                         }
                     }
-                }) 
+                })
             }
         }
-    })
+    });
 }
 
 function addBirthday(args, userID, birthdayData, client) {
