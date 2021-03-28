@@ -17,6 +17,6 @@
     "fs": "^0.0.1-security",
     "getos": "^3.2.1",
     "node-schedule": "^2.0.0",
-    "slash-create": "^2.1.2"
+    "slash-create": "^3.0.0"
   }
 }
