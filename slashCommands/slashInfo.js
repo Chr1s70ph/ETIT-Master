@@ -63,7 +63,7 @@ async function info(client) {
             }
             await client.api.interactions(interaction.id, interaction.token).callback.post({
                 data: {
-                    type: 5,
+                    type: 4,
                     data: {
                         content: '<@' + interaction.member.user.id + '>\n',
                         embeds: [
