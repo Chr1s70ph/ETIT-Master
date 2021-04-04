@@ -6,17 +6,28 @@ const serverId = private.serverId;
 
 
 
-exports.run = (client, message) => {
+exports.run = (client, message, args) => {
     var userID = message.author.id;
-    
-    
-    
-    if (hasUserEntry(userID, client) == true) {
-        britdayDeleted(client, message);
-        deleteUserBirthday(userID);        
-    } else {
-        userIdNotInJSON(client, message);
+
+    if (args.length == 0) {
+
+        birthdayInfo(client, message);
+        
+    } else if (args == "löschen") {
+        
+        if (hasUserEntry(userID, client) == true) {
+
+            britdayDeleted(client, message);
+
+            deleteUserBirthday(userID);
+            
+        } else {
+
+            userIdNotInJSON(client, message);
+
+        }
     }
+    
 }
 
 function hasUserEntry(userID, client) {
@@ -44,6 +55,24 @@ function deleteUserBirthday(userID, client) {
     });
 }
 
+
+function birthdayInfo(client, message) {
+    var Avatar = client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL(); //get Avatar URL of Bot
+    
+    const infoEmbed = new discord.MessageEmbed()
+        .setColor('	#008000')
+        .setTitle('Geburtstags Erinnerung')
+        .setAuthor('ETIT-Master', Avatar)
+        .setThumbnail('https://upload.wikimedia.org/wikipedia/commons/d/dd/Gray_book.png')
+        .addFields(
+            { name: 'Benutzung', value: '\u200B' },
+            { name: 'Verwende `/geburtstag` um deinen Geburtstag hinzu zu fügen', value: '\u200B' },
+            { name: 'Löschen', value: 'Um deinen geburtstag zu löschen, nutze `!geburtstag löschen`' },
+            
+    )
+    
+    message.channel.send(infoEmbed);    
+}
 
 
 function britdayDeleted(client, message) {
