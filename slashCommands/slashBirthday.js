@@ -10,7 +10,7 @@ exports.birthdayEntry = birthdayEntry;
 
 
 
-async function birthdayEntry(client, listData) {
+async function birthdayEntry(client, listData, message) {
 
     await client.api.applications(client.user.id).guilds(serverId).commands.post({
         data: {
@@ -104,32 +104,18 @@ async function birthdayEntry(client, listData) {
         
         if (command === 'geburtstag') {
             if (dateCheck(dateIsValid, args, client) == true) {
-
-
-
-                const responseEmbed = new discord.MessageEmbed()
-                    .setColor('#0099ff')
-                    .setTitle('Geburtstagseintrag')
-                    .setAuthor('ETIT-Master', client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL())
-                    .setThumbnail('https://raw.githubusercontent.com/Chr1s70ph/ETIT-Master-JS/master/images/Cake.png')
-                    .addFields(
-                        { name: 'Geburtstag gesetzt auf:', value: '```json\n' + util.inspect(args[0].value) + util.inspect(args[1].value) + util.inspect(args[2].value) + '```' }
-                    )
-
-
-
                 await client.api.interactions(interaction.id, interaction.token).callback.post({
                     data: {
                         type: 4,
                         data: {
-                            content: '<@' + userID + '>\n',   
+                            content: '<@' + userID + '>\n',
                             embeds: [
-                                responseEmbed
+                                BirthdayAddedEmbed(args, client, message)
                             ]
                         }
                     }
                 });
-                addBirthday(args, userID, birthdayData, client);
+                addBirthday(args, userID, birthdayData, client, message);
             }
             else {
                 await client.api.interactions(interaction.id, interaction.token).callback.post({
@@ -145,24 +131,39 @@ async function birthdayEntry(client, listData) {
     });
 }
 
-function addBirthday(args, userID, birthdayData, client) {
+function addBirthday(args, userID, birthdayData, client, message) {
     //converts date to JSON and writes to birdtayList.json
     birthdayData[userID] = {
         NutzerId: userID,
         date: (new Date(args[2].value, args[1].value - 1, args[0].value)).toDateString()
     };
+
+
+    var tempJSON = JSON.stringify(birthdayData);
+
+    if (tempJSON.length !== 0) {
+        fs.writeFile('./birthdayList.json', tempJSON, function (err) {
+            if (err) throw err;
+        });
+    } else return;
+}
+
+
+function BirthdayAddedEmbed(args, client, message) {
     
-    fs.writeFile('./birthdayList.json', JSON.stringify(birthdayData), function (err){
-        if (err) throw err;
-    });
+    var options = { day: 'numeric', month: 'long', year: 'numeric'}
+    var birthDate = new Date(args[2].value, args[1].value - 1, args[0].value).toLocaleDateString('de-DE', options);
 
-    //create and sends debug embed with all entrys from birthdayList.json
-    const foo = new discord.MessageEmbed()
+    const birthdayAdded = new discord.MessageEmbed()
         .setColor('#654321')
-        .setAuthor('ETIT-Master',  client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL())
-        .addFields({ name: '[DEBUG] Liste der Geburtstäge:', value: '```json\n' + require('util').inspect(birthdayData) + '```'} )
-
-    client.channels.cache.get('821657681999429652').send(foo);            
+        .setAuthor('ETIT-Master', client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL())
+        .setThumbnail('https://raw.githubusercontent.com/Chr1s70ph/ETIT-Master-JS/master/images/kuchen1.png')
+        .setTitle('Geburtstag hinzugefügt 🍰')
+        .addFields(
+            { name: 'Dein Geburtstag wurde gesetzt auf den: ', value: util.inspect(birthDate) }
+        )
+    
+    return (birthdayAdded);
 }
 
 
