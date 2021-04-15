@@ -1,6 +1,7 @@
 var private = require('./private.js');
 var schedule = require('node-schedule');
 var reminder = require("./startupScripts/_Schedule.js");
+var reader = require("./startupScripts/iCalReader.js");
 var loginMessage = require("./loginMessage.js")
 var birthday = require("./startupScripts/birthdayPing.js");
 var slashCommands = require("./startupScripts/slashCommands.js")
@@ -19,6 +20,7 @@ client.events = new discord.Collection();
 client.on("ready", () => {
     Presence();
     reminder.WeekPlanReminder(client);
+    reader.iCalReader(client);
     slashCommands.postAndRun(client);
     loginMessage.display(client);
     console.log("Online!");
