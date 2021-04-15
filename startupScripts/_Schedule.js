@@ -9,22 +9,46 @@ exports.WeekPlanReminder = WeekPlanReminder;
 
 function WeekPlanReminder(client) {
 	HmSchedule(client);
-    ExPhySchedule(client);
-    DtSchedule(client);
-	LenSchedule(client);
-	//MatlabSchedule(client);
-	TreffenSchedule(client);
+    eSSchedule(client);
+    eMFSchedule(client);
+	kaiSchedule(client);
+	ITSchedule(client);
+	// foo(client);
 }
+
+
+
+
+// function foo(client) {
+// 	const message = new discord.MessageEmbed()
+// 	.setColor('#21b93a')
+// 	.setTitle('Debugger gesucht')
+// 	.setAuthor('Das Entwickler-Team', 'https://cdn3.iconfinder.com/data/icons/logos-and-brands-adobe/512/84_Dev-512.png')
+// 	// .setDescription('Der HM1 Inverted Classroom fängt in 5 Minuten an')
+// 	.setThumbnail('https://www.puppet-debugger.com/public/images/puppet-debugger.png')
+// 	.addFields(
+// 		{ name: 'Wir suchen dich!', value: '∙ Menschen mit Interesse am Programmieren' },
+// 		{ name: 'Was wir bieten:', value: '∙ Erfahrung in C++ und anderen Sprachen\n∙ Schnelle Antworten und große Unterstützung\n∙ 100% flexible Arbeitszeiten\n∙ Zugriff auf exklusive Kanäle\n∙ Private Hilfe bei Fragen rund um das Thema Programmieren' },
+// 		{ name: 'Warum wir genau **dich** brauchen:', value: '∙ Wir brauchen stets Hilfe beim Bugs finden, um einen möglichst reibungsfreien Ablauf des Servers zu ermöglichen!' },
+// 		{ name: 'Besondere Leistungen', value: '∙ Die brandneue und heiß begehrte Rolle <@&818795998302175232>' },
+// 		{ name: 'Für besonders aktive Debugger:', value: '∙ Eine Belohnung in Form von Keksen\n(die Menge variiert je nach dem, wie sehr geholfen wird)' },
+// 		{ name: 'Was du mitbringen musst:', value: '∙ Eine Leidenschaft am Programmieren\n∙ Nur so viel Zeit wie ihr wollt' },
+// 		{ name: '\u200B', value: '\u200B' },
+// 	)
+// 	.setFooter('\u200B', 'https://cdn3.iconfinder.com/data/icons/logos-and-brands-adobe/512/84_Dev-512.png');
+
+// 	client.channels.cache.get('757981349402378334').send(message.setTimestamp())	
+// }
 
 function HmSchedule(client) {
 	var Avatar = client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL(); //get Avatar URL of Bot
 
 	const hmEmbed = new discord.MessageEmbed()
 	.setColor('#0099ff')
-	.setTitle('HM1 Inverted Classroom')
+	.setTitle('HM2 Vorlesung')
 	.setURL(links.hmZoom)
-	.setAuthor('Hm1 Reminder', Avatar)
-	.setDescription('Der HM1 Inverted Classroom fängt in 5 Minuten an')
+	.setAuthor('Hm2 Reminder', Avatar)
+	.setDescription('Die HM2 Vorlesung fängt in 5 Minuten an')
 	.setThumbnail('https://www.pngarts.com/files/7/Zoom-Logo-PNG-Download-Image.png')
 	.addFields(
 		{ name: 'Die Vorlesung findet wie gewohnt über Zoom statt.', value: 'Außer es gibt einen Sonderfall' },
@@ -35,185 +59,142 @@ function HmSchedule(client) {
 		.setFooter('Viel Spaß und Erfolg wünscht euch euer ETIT-Master', Avatar);
 
 	var HMMon = schedule.scheduleJob('0 55 9 * * 1', function () {
-			client.channels.cache.get('773676846411808789').send('<@&770181853558341652>', hmEmbed.setTimestamp())	
+			client.channels.cache.get('829369570514829352').send('<@&770181853558341652>', hmEmbed.setTimestamp())	
 			.then(msg => msg.delete({ timeout: 5400000 }))
 	});
 
-	const hmuEmbed = new discord.MessageEmbed()
-	.setColor('#0099ff')
-	.setTitle('HM1 Fragestunde')
-	.setURL(links.hmuZoom)
-	.setAuthor('Hm1 Reminder', Avatar)
-	.setDescription('Der HM1 Inverted Classroom fängt in 5 Minuten an')
-	.setThumbnail('https://www.pngarts.com/files/7/Zoom-Logo-PNG-Download-Image.png')
-	.addFields(
-		{ name: 'Die Vorlesung findet wie gewohnt über Zoom statt.', value: 'Außer es gibt einen Sonderfall' },
-		{ name: '\u200B', value: '\u200B' },
-		{ name: 'Dozent', value: 'Ioannis Anapolitanos', inline: true },
-		{ name: 'Assistent', value: 'Semjon Wugalter', inline: true },
-	)
-		.setFooter('Viel Spaß und Erfolg wünscht euch euer ETIT-Master', Avatar);
+	// const hmuEmbed = new discord.MessageEmbed()
+	// .setColor('#0099ff')
+	// .setTitle('HM1 Fragestunde')
+	// .setURL(links.hmuZoom)
+	// .setAuthor('Hm1 Reminder', Avatar)
+	// .setDescription('Der HM1 Inverted Classroom fängt in 5 Minuten an')
+	// .setThumbnail('https://www.pngarts.com/files/7/Zoom-Logo-PNG-Download-Image.png')
+	// .addFields(
+	// 	{ name: 'Die Vorlesung findet wie gewohnt über Zoom statt.', value: 'Außer es gibt einen Sonderfall' },
+	// 	{ name: '\u200B', value: '\u200B' },
+	// 	{ name: 'Dozent', value: 'Ioannis Anapolitanos', inline: true },
+	// 	{ name: 'Assistent', value: 'Semjon Wugalter', inline: true },
+	// )
+	// 	.setFooter('Viel Spaß und Erfolg wünscht euch euer ETIT-Master', Avatar);
 
-	var HMThu = schedule.scheduleJob('0 55 15 * * 4', function () {
-			client.channels.cache.get('773676846411808789').send('<@&770181853558341652>', hmuEmbed.setTimestamp())
-				.then(msg => msg.delete({ timeout: 5400000 }))
-    });
+	// var HMThu = schedule.scheduleJob('0 55 15 * * 4', function () {
+	// 		client.channels.cache.get('773676846411808789').send('<@&770181853558341652>', hmuEmbed.setTimestamp())
+	// 			.then(msg => msg.delete({ timeout: 5400000 }))
+    // });
 }
 
-function ExPhySchedule(client) {
+function eSSchedule(client) {
 	var Avatar = client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL(); //get Avatar URL of Bot
 
-	const exPhyEmbed = new discord.MessageEmbed()
+	const esEmbed = new discord.MessageEmbed()
 		.setColor('#0099ff')
-		.setTitle('Ex-Phy Vorlesung')
-		.setURL(links.phyYouTube)
-		.setAuthor('Ex-phy Reminder', Avatar)
-		.setDescription('Die Ex-Phy Vorlesung fängt in 5 Minuten an')
-		.setThumbnail('https://i.pinimg.com/originals/de/1c/91/de1c91788be0d791135736995109272a.png')
+		.setTitle('ES Vorlesung')
+		.setURL(links.esZOOM)
+		.setAuthor('ES Reminder', Avatar)
+		.setDescription('Die ES Vorlesung fängt in 5 Minuten an')
+		.setThumbnail('https://www.pngarts.com/files/7/Zoom-Logo-PNG-Download-Image.png')
 		.addFields(
-			{ name: 'Die Vorlesung findet wie gewohnt auf Youtube statt.', value: 'Ist die Vorlesung nicht in der Playlist, dann geht bitte auf [Ilias](' + links.phyIlias + ')'},
+			{ name: 'Die Vorlesung findet wie gewohnt über Zoom statt.', value: 'Außer es gibt einen Sonderfall' },
+			{ name: 'Falls der obige Link nicht funktioniert, ist vielleicht Übung', value: 'Probier es mal hiermit: [Link](' + links.esZOOMEx + ') zur Übung' },
 			{ name: '\u200B', value: '\u200B' },
-			{ name: 'Dozent', value: 'Thomas Schimmel', inline: true },
-			{ name: 'Assistent', value: 'Schwerkraftaus Schubi', inline: true },
+			{ name: 'Dozent', value: 'Ahmet Cagri Ulusoy', inline: true },
+			{ name: 'Übungsleiter', value: 'M.Sc. Selina Eckel', inline: true },
+			{ name: 'Übungsleiter', value: 'M.Sc. Daniel Gil', inline: true },
+			{ name: 'Übungsleiter', value: 'M.Sc. Matthias Möck', inline: true },
 		)
 		.setFooter('Viel Spaß und Erfolg wünscht euch euer ETIT-Master', Avatar);
 
-	var ExPhyWed = schedule.scheduleJob('0 55 11 * * 3', function () {
-			client.channels.cache.get('773677291188256778').send('<@&770181853558341652>', exPhyEmbed.setTimestamp())
+	var EsMon = schedule.scheduleJob('0 55 11 * * 1', function () {
+			client.channels.cache.get('829369864941994024').send('<@&770181853558341652>', esEmbed.setTimestamp())
 			.then(msg => msg.delete({ timeout: 5400000 }))
     });
-	var ExPhyFri = schedule.scheduleJob('0 55 11 * * 5', function () {
-			client.channels.cache.get('773677291188256778').send('<@&770181853558341652>', exPhyEmbed.setTimestamp())
+	var EsThu = schedule.scheduleJob('0 55 11 * * 4', function () {
+			client.channels.cache.get('829369864941994024').send('<@&770181853558341652>', esEmbed.setTimestamp())
 			.then(msg => msg.delete({ timeout: 5400000 }))
     });
 }
 
-function DtSchedule(client) {
+function eMFSchedule(client) {
 	var Avatar = client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL(); //get Avatar URL of Bot
 
-	const dtEmbed = new discord.MessageEmbed()
+	const emfEmbed = new discord.MessageEmbed()
 		.setColor('#0099ff')
-		.setTitle('DT Vorlesung')
-		.setURL(links.dtZoom)
-		.setAuthor('DT Reminder', Avatar)
-		.setDescription('Die DT Vorlesung fängt in 5 Minuten an')
+		.setTitle('EMF Vorlesung')
+		.setURL(links.emfZoom)
+		.setAuthor('EMF Reminder', Avatar)
+		.setDescription('Die EMF Vorlesung fängt in 5 Minuten an')
 		.setThumbnail('https://www.pngarts.com/files/7/Zoom-Logo-PNG-Download-Image.png')
 		.addFields(
 			{ name: 'Die Vorlesung findet wie gewohnt auf Zoom statt.', value: 'Außer es gibt einen Sonderfall' },
 			{ name: '\u200B', value: '\u200B' },
-			{ name: 'Dozent', value: 'Jürgen Becker', inline: true },
-			{ name: 'Assistent', value: 'Fabian Kempf', inline: true },
+			{ name: 'Dozent', value: 'Prof. Dr.-Ing. Martin Doppelbauer', inline: true }
 		)
 		.setFooter('Viel Spaß und Erfolg wünscht euch euer ETIT-Master', Avatar);
 
-	var DTWed = schedule.scheduleJob('0 55 13 * * 3', function () {	
-			client.channels.cache.get('773677632315326504').send('<@&770181853558341652>', dtEmbed.setTimestamp())
+	var emfTue = schedule.scheduleJob('0 55 15 * * 2', function () {	
+			client.channels.cache.get('829370390245408878').send('<@&770181853558341652>', emfEmbed.setTimestamp())
 			.then(msg => msg.delete({ timeout: 5400000 }))
     });
-	var DTFri = schedule.scheduleJob('0 55 7 * * 5', function () {	
-			client.channels.cache.get('773677632315326504').send('<@&770181853558341652>', dtEmbed.setTimestamp())
+	var emfFri = schedule.scheduleJob('0 55 11 * * 5', function () {	
+			client.channels.cache.get('829370390245408878').send('<@&770181853558341652>', emfEmbed.setTimestamp())
 			.then(msg => msg.delete({ timeout: 5400000 }))
     });
 }
 
-function LenSchedule(client) {
+function kaiSchedule(client) {
 	var Avatar = client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL(); //get Avatar URL of Bot
 
-	const lenEmbed = new discord.MessageEmbed()
+	const kaiEmbed = new discord.MessageEmbed()
 		.setColor('#0099ff')
-		.setTitle('LEN Vorlesung')
-		.setURL(links.lenZoom)
-		.setAuthor('LEN Reminder', Avatar)
-		.setDescription('Die LEN Vorlesung fängt in 5 Minuten an')
+		.setTitle('KAI Vorlesung')
+		.setURL(links.kaiZoom)
+		.setAuthor('KAI Reminder', Avatar)
+		.setDescription('Die KAI Vorlesung/Übung fängt in 5 Minuten an')
 		.setThumbnail('https://www.pngarts.com/files/7/Zoom-Logo-PNG-Download-Image.png')
 		.addFields(
-			{ name: 'Die Vorlesung findet wie gewohnt auf Zoom statt.', value: 'Außer es gibt einen Sonderfall' },
+			{ name: 'Die Vorlesung/Übung findet wie gewohnt auf Zoom statt.', value: 'Außer es gibt einen Sonderfall' },
 			{ name: '\u200B', value: '\u200B' },
-			{ name: 'Dozent', value: 'Olaf Dössel', inline: true },
-			{ name: 'Assistent', value: 'Alp Cehri', inline: true },
-			{ name: 'Übungsleiter', value: 'Jochen Brenneisen', inline: true }
+			{ name: 'Dozent', value: 'Kluwe', inline: true },
 		)
 		.setFooter('Viel Spaß und Erfolg wünscht euch euer ETIT-Master', Avatar);
 
-	var LENTue = schedule.scheduleJob('0 55 9 * * 2', function () {
-			client.channels.cache.get('773677559447158845').send('<@&770181853558341652>', lenEmbed.setTimestamp())
+	var KAIThu = schedule.scheduleJob('0 55 9 * * 4', function () {	
+			client.channels.cache.get('829370640372203520').send('<@&770181853558341652>', kaiEmbed.setTimestamp())
 			.then(msg => msg.delete({ timeout: 5400000 }))
-    });
-	var LENThu = schedule.scheduleJob('0 55 9 * * 4', function () {	
-			client.channels.cache.get('773677559447158845').send('<@&770181853558341652>', lenEmbed.setTimestamp())
-			.then(msg => msg.delete({ timeout: 5400000 }))
-	});	
+	});
 	
-	const lenuEmbed = new discord.MessageEmbed()
-		.setColor('#0099ff')
-		.setTitle('LEN Übung')
-		.setURL(links.lenuZoom)
-		.setAuthor('LEN Reminder', Avatar)
-		.setDescription('Die LEN Übung fängt in 5 Minuten an')
-		.setThumbnail('https://www.pngarts.com/files/7/Zoom-Logo-PNG-Download-Image.png')
-		.addFields(
-			{ name: 'Die Übung findet wie gewohnt auf Zoom statt.', value: 'Außer es gibt einen Sonderfall' },
-			{ name: '\u200B', value: '\u200B' },
-			{ name: 'Dozent', value: 'Olaf Dössel', inline: true },
-			{ name: 'Assistent', value: 'Alp Cehri', inline: true },
-			{ name: 'Übungsleiter', value: 'Jochen Brenneisen', inline: true }
-		)
-		.setFooter('Viel Spaß und Erfolg wünscht euch euer ETIT-Master', Avatar);
-
-
-	var LENThu = schedule.scheduleJob('0 55 11 * * 4', function () {
-			client.channels.cache.get('773677559447158845').send('<@&770181853558341652>', lenuEmbed.setTimestamp())
-			.then(msg => msg.delete({ timeout: 5400000 }))
-    });
+	// var KAIThu = schedule.scheduleJob('0 55 15 * * 4', function () {	
+	// 		client.channels.cache.get('829370640372203520').send('<@&770181853558341652>', kaiEmbed.setTimestamp())
+	// 		.then(msg => msg.delete({ timeout: 5400000 }))
+	// });	
 }
 
-function MatlabSchedule(client) {
+function ITSchedule(client) {
 	var Avatar = client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL(); //get Avatar URL of Bot
 
-	const matlabEmbed = new discord.MessageEmbed()
+	const itEmbed = new discord.MessageEmbed()
 		.setColor('#0099ff')
-		.setTitle('Matlab Zoom Konferenz')
-		.setURL(links.mlZoom)
-		.setAuthor('Matlab Zoom Konferenz', Avatar)
+		.setTitle('IT Zoom Konferenz')
+		.setURL(links.itZoom)
+		.setAuthor('IT Zoom Konferenz', Avatar)
 		.setThumbnail('https://www.pngarts.com/files/7/Zoom-Logo-PNG-Download-Image.png')
 		.setDescription('Die Zoom Konferenz fängt in 5 Minuten an')
 		.addFields(
 			{ name: 'Die Konferenz findet wie gewohnt auf Zoom statt.', value: 'Außer es gibt einen Sonderfall' },
+			{ name: 'Falls der obige Link nicht funktioniert, ist vielleicht Übung', value: 'Probier es mal hiermit: [Link](' + links.itZoomEx + ') zur Übung' },
 			{ name: '\u200B', value: '\u200B' },
-			{ name: 'Dozent', value: 'Michael Marz', inline: true },
-			{ name: 'Dozent', value: 'Anna Steinig', inline: true }
+			{ name: 'Dozent', value: 'Sax', inline: true }
 		)
 		.setFooter('Viel Spaß und Erfolg wünscht euch euer ETIT-Master', Avatar);
 
-	var MatlabMon = schedule.scheduleJob('0 55 11 * * 1', function () {
-			client.channels.cache.get('774009071102984242').send('<@&774008738905718785>', matlabEmbed.setTimestamp())
+	var itThu = schedule.scheduleJob('0 55 13 * * 4', function () {
+			client.channels.cache.get('829370694827245589').send('<@&774008738905718785>', itEmbed.setTimestamp())
 			.then(msg => msg.delete({ timeout: 5400000 }))
     });
-	var MatlabThu = schedule.scheduleJob('0 55 9 * * 3', function () {
-			client.channels.cache.get('774009071102984242').send('<@&774008738905718785>', matlabEmbed.setTimestamp())
+	var itFri = schedule.scheduleJob('0 55 7 * * 5', function () {
+			client.channels.cache.get('829370694827245589').send('<@&774008738905718785>', itEmbed.setTimestamp())
 			.then(msg => msg.delete({ timeout: 5400000 }))
     });
 }
 
-function TreffenSchedule(client) {
-	var Avatar = client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL(); //get Avatar URL of Bot
-
-	const treffenEmbed = new discord.MessageEmbed()
-		.setColor('#0099ff')
-		.setTitle('Digitales Treffen')
-		.setAuthor('Digitales Treffen', Avatar)
-		.setDescription('Das digitale Treffen fängt in 5 Minuten an')
-		.addFields(
-			{ name: 'Das Treffen findet wie gewohnt statt.', value: 'Ihr könnt aber natürlich jederzeit nach joinen' },
-		)
-		.setFooter('Viel Spaß und Erfolg wünscht euch euer ETIT-Master', Avatar);
-
-	var TreffenMon = schedule.scheduleJob('0 55 18 * * 1', function () {
-			client.channels.cache.get('767754885763563520').send('<@&774275407251898398>', treffenEmbed.setTimestamp())
-			.then(msg => msg.delete({ timeout: 5400000 }))
-    });
-	var TreffenThu = schedule.scheduleJob('0 55 18 * * 4', function () {
-			client.channels.cache.get('767754885763563520').send('<@&774275407251898398>', treffenEmbed.setTimestamp())
-			.then(msg => msg.delete({ timeout: 5400000 }))
-    });
-}
