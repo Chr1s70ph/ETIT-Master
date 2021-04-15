@@ -93,39 +93,24 @@ function extractLinks(description) {
 
 
 function dynamicEmbed(client, subject, professor, link, time) {
+    embed = new discord.MessageEmbed()
+            .setColor('#0099ff')
+            .setTitle(subject + ' Vorlesung')
+            .setAuthor(subject + ' Reminder', client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL())
+            .setDescription('Die ' + subject + ' fängt in 5 Minuten an')
+            .setThumbnail('https://www.pngarts.com/files/7/Zoom-Logo-PNG-Download-Image.png')
+            .addFields(
+                { name: 'Die '+ subject + ' findet wie gewohnt auf Zoom statt.', value: 'Außer es gibt einen Sonderfall' },
+                { name: '\u200B', value: '\u200B' },
+                { name: 'Dozent', value: professor, inline: true },
+                { name: 'Zeit', value: time, inline: true },
+            )
+        .setFooter('Viel Spaß und Erfolg wünscht euch euer ETIT-Master', client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL());
+        
     if (link.length != 0) {
-        
-        embed = new discord.MessageEmbed()
-                .setColor('#0099ff')
-                .setTitle(subject + ' Vorlesung')
-                .setURL(link)
-                .setAuthor(subject + ' Reminder', client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL())
-                .setDescription('Die ' + subject + ' fängt in 5 Minuten an')
-                .setThumbnail('https://www.pngarts.com/files/7/Zoom-Logo-PNG-Download-Image.png')
-                .addFields(
-                    { name: 'Die '+ subject + ' findet wie gewohnt auf Zoom statt.', value: 'Außer es gibt einen Sonderfall' },
-                    { name: '\u200B', value: '\u200B' },
-                    { name: 'Dozent', value: professor, inline: true },
-                    { name: 'Zeit', value: time, inline: true },
-                )
-            .setFooter('Viel Spaß und Erfolg wünscht euch euer ETIT-Master', client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL());
-    }
-    else {
-        
-        embed = new discord.MessageEmbed()
-                .setColor('#0099ff')
-                .setTitle(subject + ' Vorlesung')
-                .setAuthor(subject + ' Reminder', client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL())
-                .setDescription('Die ' + subject + ' fängt in 5 Minuten an')
-                .setThumbnail('https://www.pngarts.com/files/7/Zoom-Logo-PNG-Download-Image.png')
-                .addFields(
-                    { name: 'Die '+ subject + ' findet wie gewohnt auf Zoom statt.', value: 'Außer es gibt einen Sonderfall' },
-                    { name: '\u200B', value: '\u200B' },
-                    { name: 'Dozent', value: professor, inline: true },
-                    { name: 'Zeit', value: time, inline: true },
-                )
-            .setFooter('Viel Spaß und Erfolg wünscht euch euer ETIT-Master', client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL());
-        
+
+        embed.setURL(link);
+
     }
         
     client.channels.cache.get('770276625040146463').send(embed);
