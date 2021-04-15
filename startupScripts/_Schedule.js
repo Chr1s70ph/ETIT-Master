@@ -189,11 +189,11 @@ function ITSchedule(client) {
 		.setFooter('Viel Spaß und Erfolg wünscht euch euer ETIT-Master', Avatar);
 
 	var itThu = schedule.scheduleJob('0 55 13 * * 4', function () {
-			client.channels.cache.get('829370694827245589').send('<@&774008738905718785>', itEmbed.setTimestamp())
+			client.channels.cache.get('829370694827245589').send('<@&770181853558341652>', itEmbed.setTimestamp())
 			.then(msg => msg.delete({ timeout: 5400000 }))
     });
 	var itFri = schedule.scheduleJob('0 55 7 * * 5', function () {
-			client.channels.cache.get('829370694827245589').send('<@&774008738905718785>', itEmbed.setTimestamp())
+			client.channels.cache.get('829370694827245589').send('<@&770181853558341652>', itEmbed.setTimestamp())
 			.then(msg => msg.delete({ timeout: 5400000 }))
     });
 }
