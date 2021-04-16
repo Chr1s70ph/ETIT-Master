@@ -1,9 +1,11 @@
-const private = require('../private.js');
 const ical = require('node-ical');
 const discord = require('../node_modules/discord.js');
-const util = require('util');
-const serverId = private.serverId;
-const botUserID = private.botUserID;
+const config = require("../config.json");
+const schedule = require('node-schedule');
+var subjects = config.ids.channelIDs.subject;
+var serverID = config.ids.serverID;
+var botUserID = config.ids.userID.botUserID;
+var debugChannel = config.ids.channelIDs.dev.botTestLobby;
 var embed = '';
 
 
@@ -14,13 +16,11 @@ function iCalReader(client) {
     // do stuff in an async function
     ;(async () => {
         // you can also use the async lib to download and parse iCal from the web
-        const webEvents = await ical.async.fromURL(private.iCal);
-        // console.log(webEvents);
-        // client.channels.cache.get('770276625040146463').send(util.inspect(webEvents), {split: true});
+        const webEvents = await ical.async.fromURL(config.ical);
+        
         filterToadaysEvents(client, webEvents)
     })()
         .catch(console.error.bind());
-
 }
 
 function filterToadaysEvents(client, webEvents) {
@@ -48,11 +48,17 @@ function filterToadaysEvents(client, webEvents) {
 
                     var link = '';
                     //extract the link from an html hyperlink
-                    link = extractLinks(description);
+                    link = extractZoomLinks(description);
 
                     var time = dates;
 
-                    dynamicEmbed(client, subject, professor, link, time);
+                    var cronDate = dateToCron(time);
+
+                    embed = dynamicEmbed(client, subject, professor, link)
+
+                    createCron(cronDate, findChannel(client, subject), embed, client);
+
+                    // client.channels.cache.get('770276625040146463').send(util.inspect(schedule.scheduledJobs), {split: true})
                 }
             }
             catch (e) {
@@ -66,6 +72,12 @@ function filterToadaysEvents(client, webEvents) {
 
 //Checks if entered Date is equal to current date
 //Trimmed down to "WEEKDAY MONTH DAY YEAR" to compare the exact day, and not time
+/**
+ * checks for today
+ * 
+ * @param {string} dateToCheck 
+ * @returns {boolean} true if, if eneted day is today 
+ */
 function checkForToday(dateToCheck){
     var today = new Date().toString().slice(0, -49);
     dateToCheck = dateToCheck.toString().slice(0, -49);
@@ -76,7 +88,7 @@ function checkForToday(dateToCheck){
 
 //This function extracts the zoom Links from HTML tag
 //if the HTML tag contains "#success" it cuts the string before that string, to make the link automatically open zoom 
-function extractLinks(description) {
+function extractZoomLinks(description) {
     if (description.length != 0) {
         if (description.includes('#success')) {
 
@@ -91,27 +103,110 @@ function extractLinks(description) {
 }
 
 
+function dateToCron(date) {
+    //generate all needed variables for the CRON-Format
+    //SECONDS MINUTES HOURS DAY_OF_MONTH MONTH DAY_OF_WEEK
+    var seconds = '0';
+    var minutes = '55';
+    var hour = date.getHours() -1; //Subtract one, to give the alert not at the exact start of the event, but coupled with minutes = '55' 5 minutes earlier
+    var dayOfMonth = '*'; //set to * so the Cron is for the current week
+    var month = '*'; //set to * so the Cron is for the current week
+    var day = date.getDay();  //Extracts the weekday of the date string
 
-function dynamicEmbed(client, subject, professor, link, time) {
+    var cronString = seconds + ' ' + minutes + ' ' + hour + ' ' + dayOfMonth + ' ' + month + ' ' + day;
+
+    return cronString;
+}
+
+/**
+ * Builds dynamic embed
+ * 
+ * Only returns an embed with link, when link is set
+ * 
+ * @param {var} client needed for the client Avatar
+ * @param {string} subject used to set the Title and contents of the embed
+ * @param {string} professor sets the professor
+ * @param {string} link link to the lecture
+ * @returns {object} Embed that was built using the given parameters
+ */
+function dynamicEmbed(client, subject, professor, link) {
+    var Avatar = client.guilds.resolve(serverID).members.resolve(botUserID).user.avatarURL();
+
     embed = new discord.MessageEmbed()
             .setColor('#0099ff')
             .setTitle(subject + ' Vorlesung')
-            .setAuthor(subject + ' Reminder', client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL())
+            .setAuthor(subject + ' Reminder', Avatar)
             .setDescription('Die ' + subject + ' fängt in 5 Minuten an')
             .setThumbnail('https://www.pngarts.com/files/7/Zoom-Logo-PNG-Download-Image.png')
             .addFields(
                 { name: 'Die '+ subject + ' findet wie gewohnt auf Zoom statt.', value: 'Außer es gibt einen Sonderfall' },
-                { name: '\u200B', value: '\u200B' },
-                { name: 'Dozent', value: professor, inline: true },
-                { name: 'Zeit', value: time, inline: true },
+                { name: 'Dozent', value: professor, inline: false }
             )
-        .setFooter('Viel Spaß und Erfolg wünscht euch euer ETIT-Master', client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL());
+        .setFooter('Viel Spaß und Erfolg wünscht euch euer ETIT-Master', client.guilds.resolve(serverID).members.resolve(botUserID).user.avatarURL());
         
     if (link.length != 0) {
 
         embed.setURL(link);
 
     }
+    return embed;
+}
+
+/**
+ * returns channelID
+ * 
+ * analyzes the contents of the "subject" and sets "channel" based on its contents
+ * sends in case of an error, said error to the debug channel
+ * 
+ * @param {var} client necessary to return error messages to debug channel
+ * @param {String} subject subject exported from iCal
+ * @return {string}     returns the channelID based on subject
+ * 
+ * @throws Error in debug channel
+ */
+function findChannel(client, subject) {
+    var channel = "";
+    if (subject.includes("Höhere Mathematik")) {
+
+        channel = subjects.HM;
+        return channel;
         
-    client.channels.cache.get('770276625040146463').send(embed);
+    } else if (subject.includes("Elektronische Schaltungen")) {
+        
+        channel = subjects.ES;
+        return channel;
+
+    } else if (subject.includes("Elektromagnetische Felder")) {
+        
+        channel = subjects.EMF;
+        return channel;
+
+    } else if (subject.includes("KAI")) {
+        
+        channel = subjects.KAI;
+        return channel;
+
+    } else if (subject.includes("Informationstechnik")) {
+
+        channel = subjects.IT;
+        return channel;
+    } else {
+
+        client.channels.cache.get(debugChannel).send("There was a problem, finding the subject and its channel");
+        client.channels.cache.get(debugChannel).send(subject);
+
+    }
+
+}
+
+
+//creates a dynamic Cron schedule
+//needs a valid cronDate in the right format(eg https://crontab.guru/)
+//needs a valid channelID to send the message to
+//needs a message (here an embed, but generally it does not matter)
+function createCron(cronDate, channel ,embed, client) {
+    var job = schedule.scheduleJob(cronDate, function () {
+        client.channels.cache.get(channel).send('<@&' + config.ids.roleIDs.ETIT + '>', embed.setTimestamp())
+        .then(msg => msg.delete({ timeout: 5400000 }))
+    });
 }
