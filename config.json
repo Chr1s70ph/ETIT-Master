@@ -1,9 +1,0 @@
-{
-    "presence": {
-        "status": "online",
-        "activity": {
-            "name": ".help",
-            "type": "LISTENING"
-        }
-    }
-}
