@@ -1,9 +1,9 @@
-var private = require('../private.js');
+const config = require('../privateData/config.json');
 const discord = require('../node_modules/discord.js');
+const birthdayList = ('./privateData/birthdayList.json')
 const util = require('util');
-const serverId = private.serverId;
-const botUserID = private.botUserID;
 const fs = require("fs");
+const serverID = config.ids.serverID;
 
 
 exports.birthdayEntry = birthdayEntry;
@@ -12,7 +12,7 @@ exports.birthdayEntry = birthdayEntry;
 
 async function birthdayEntry(client, listData, message) {
 
-    await client.api.applications(client.user.id).guilds(serverId).commands.post({
+    await client.api.applications(client.user.id).guilds(serverID).commands.post({
         data: {
             name: "Geburtstag",
             description: "Trage deinen Geburtstag ein, und erhalte Glückwünsche vom Bot!",
@@ -91,7 +91,7 @@ async function birthdayEntry(client, listData, message) {
     });
 
 
-    var text = fs.readFileSync("./birthdayList.json").toString('utf-8');
+    var text = fs.readFileSync(birthdayList).toString('utf-8');
     let birthdayData = JSON.parse(text);
     // let birthdayData = { };
 
@@ -142,7 +142,7 @@ function addBirthday(args, userID, birthdayData, client, message) {
     var tempJSON = JSON.stringify(birthdayData);
 
     if (tempJSON.length !== 0) {
-        fs.writeFile('./birthdayList.json', tempJSON, function (err) {
+        fs.writeFile(birthdayList, tempJSON, function (err) {
             if (err) throw err;
         });
     } else return;
@@ -156,7 +156,7 @@ function BirthdayAddedEmbed(args, client, message) {
 
     const birthdayAdded = new discord.MessageEmbed()
         .setColor('#654321')
-        .setAuthor('ETIT-Master', client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL())
+        .setAuthor('ETIT-Master', client.guilds.resolve(serverID).members.resolve(config.ids.userID.botUserID).user.avatarURL())
         .setThumbnail('https://raw.githubusercontent.com/Chr1s70ph/ETIT-Master-JS/master/images/kuchen1.png')
         .setTitle('Geburtstag hinzugefügt 🍰')
         .addFields(

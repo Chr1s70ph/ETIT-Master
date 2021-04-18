@@ -1,7 +1,8 @@
-var private = require('../private.js');
-const ownerId = private.ownerID;
+const config = require('../privateData/config.json');
+
+
 exports.run = (client, message) => {
-    if (message.author == ownerId) {
+    if (message.author == config.ids.userID.ownerID) {
         var content = message.content;
 
         var command = content.substring(content.indexOf(" ") + 1);
@@ -18,6 +19,6 @@ exports.run = (client, message) => {
         } catch (error) {
             console.error(error);
         }
-        message.channel.return('You do not have the permissions to perform that command.');
+        message.reply('You do not have the permissions to perform that command.');
     }
 }

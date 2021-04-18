@@ -1,16 +1,14 @@
-var private = require('./private.js');
-var schedule = require('node-schedule');
-var reminder = require("./startupScripts/_Schedule.js");
-var reader = require("./startupScripts/iCalReader.js");
-var loginMessage = require("./loginMessage.js")
-var birthday = require("./startupScripts/birthdayPing.js");
-var slashCommands = require("./startupScripts/slashCommands.js")
+const schedule = require('node-schedule');
+const reminder = require("./startupScripts/_Schedule.js");
+const reader = require("./startupScripts/iCalReader.js");
+const loginMessage = require("./startupScripts/loginMessage.js")
+const birthday = require("./startupScripts/birthdayPing.js");
+const slashCommands = require("./startupScripts/slashCommands.js")
 
-const config = require("./config.json")
+const config = require("./privateData/config.json")
 const discord = require('./node_modules/discord.js');
 const client = new discord.Client();
 const fs = require("fs");
-const token = private.token;
 const presence_refresh_timer = "15 * * * * *"
 
 client.commands = new discord.Collection();
@@ -19,7 +17,7 @@ client.events = new discord.Collection();
 
 client.on("ready", () => {
     Presence();
-    reminder.WeekPlanReminder(client);
+    // reminder.WeekPlanReminder(client);
     reader.iCalReader(client);
     slashCommands.postAndRun(client);
     loginMessage.display(client);
@@ -28,7 +26,7 @@ client.on("ready", () => {
     birthday.CheckforBirthday(client);
 });
 
-client.login(token);
+client.login(config.botToken);
 
 
 //Commands "handler"

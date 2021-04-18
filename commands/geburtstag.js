@@ -1,25 +1,27 @@
 const fs = require("fs");
 const discord = require('../node_modules/discord.js');
-var private = require('../private.js');
-const botUserID = private.botUserID;
-const serverId = private.serverId;
+const config = require('../privateData/config.json');
+const botUserID = config.ids.userID.botUserID;
+const serverID = config.ids.serverID;
 
 
 
 exports.run = (client, message, args) => {
+    var Avatar = client.guilds.resolve(serverID).members.resolve(botUserID).user.avatarURL(); //get Avatar URL of Bot    
     var userID = message.author.id;
-
+    
     if (args.length == 0) {
-
-        birthdayInfo(client, message);
+        
+        birthdayInfo(client, message, Avatar);
         
     } else if (args == "löschen") {
+        var birthdayData = JSON.parse(fs.readFileSync("./privateData/birthdayList.json").toString('utf-8'))
         
-        if (hasUserEntry(userID, client) == true) {
+        if (hasUserEntry(userID, birthdayData, client) == true) {
 
-            britdayDeleted(client, message);
+            britdayDeleted(client, message, Avatar);
 
-            deleteUserBirthday(userID);
+            deleteUserBirthday(userID, birthdayData, client);
             
         } else {
 
@@ -29,10 +31,7 @@ exports.run = (client, message, args) => {
     }
     
 }
-
-function hasUserEntry(userID, client) {
-    var json = fs.readFileSync("./birthdayList.json").toString('utf-8');
-    let birthdayData = JSON.parse(json);
+function hasUserEntry(userID, birthdayData, client) {
 
     for (var entry in birthdayData) {
         if (birthdayData[entry].NutzerId == userID) {
@@ -42,10 +41,7 @@ function hasUserEntry(userID, client) {
     return false;
 }
 
-function deleteUserBirthday(userID, client) {
-    var json = fs.readFileSync("./birthdayList.json").toString('utf-8');
-    let birthdayData = JSON.parse(json);
-    
+function deleteUserBirthday(userID, birthdayData, client) {    
     delete birthdayData[userID];
     fs.writeFile('./birthdayList.json', JSON.stringify(birthdayData), function (err){
         if (err) {
@@ -56,8 +52,8 @@ function deleteUserBirthday(userID, client) {
 }
 
 
-function birthdayInfo(client, message) {
-    var Avatar = client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL(); //get Avatar URL of Bot
+function birthdayInfo(client, message, Avatar) {
+    
     
     const infoEmbed = new discord.MessageEmbed()
         .setColor('	#008000')
@@ -67,7 +63,7 @@ function birthdayInfo(client, message) {
         .addFields(
             { name: 'Benutzung', value: '\u200B' },
             { name: 'Verwende `/geburtstag` um deinen Geburtstag hinzu zu fügen', value: '\u200B' },
-            { name: 'Löschen', value: 'Um deinen geburtstag zu löschen, nutze `!geburtstag löschen`' },
+            { name: 'Löschen', value: `Um deinen geburtstag zu löschen, nutze \`${config.prefix}geburtstag löschen\`` }
             
     )
     
@@ -75,8 +71,7 @@ function birthdayInfo(client, message) {
 }
 
 
-function britdayDeleted(client, message) {
-    var Avatar = client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL(); //get Avatar URL of Bot
+function britdayDeleted(client, message, Avatar) {
     
     const britdayDeleted_Embed = new discord.MessageEmbed()
         .setColor('	#008000')
@@ -92,7 +87,7 @@ function britdayDeleted(client, message) {
 }
 
 function userIdNotInJSON(client, message) {
-    var Avatar = client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL(); //get Avatar URL of Bot
+    var Avatar = client.guilds.resolve(serverID).members.resolve(botUserID).user.avatarURL(); //get Avatar URL of Bot
     
     const userIdNotInJSON_Embed = new discord.MessageEmbed()
         .setColor('#FF0000')

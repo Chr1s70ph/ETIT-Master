@@ -3,7 +3,7 @@ var fs = require("fs");
 
 function CheckforBirthday(client) {
     //reads the JSON file and assings it to value
-    var json = fs.readFileSync('./birthdayList.json', 'utf8' , (err, data) => {
+    var json = fs.readFileSync('./privateData/birthdayList.json', 'utf8' , (err, data) => {
         if (err) {
             message.channel.send(err) 
             return;

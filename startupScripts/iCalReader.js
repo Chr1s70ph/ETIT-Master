@@ -1,6 +1,6 @@
 const ical = require('node-ical');
 const discord = require('../node_modules/discord.js');
-const config = require("../config.json");
+const config = require("../privateData/config.json");
 const schedule = require('node-schedule');
 var subjects = config.ids.channelIDs.subject;
 var serverID = config.ids.serverID;
@@ -18,7 +18,6 @@ function iCalReader(client) {
         // you can also use the async lib to download and parse iCal from the web
         const webEvents = await ical.async.fromURL(config.ical);
         
-        filterToadaysEvents(client, webEvents)
     })()
         .catch(console.error.bind());
 }
@@ -70,13 +69,11 @@ function filterToadaysEvents(client, webEvents) {
 
 }
 
-//Checks if entered Date is equal to current date
-//Trimmed down to "WEEKDAY MONTH DAY YEAR" to compare the exact day, and not time
 /**
  * checks for today
  * 
  * @param {string} dateToCheck 
- * @returns {boolean} true if, if eneted day is today 
+ * @returns {boolean} true if eneted day is today 
  */
 function checkForToday(dateToCheck){
     var today = new Date().toString().slice(0, -49);
