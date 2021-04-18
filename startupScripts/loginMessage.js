@@ -1,9 +1,7 @@
 var discord = require('discord.js');
 exports.display = display;
 var fs = require('fs');
-var private = require('./private.js');
-const serverId = private.serverId;
-const botUserID = private.botUserID;
+const config = require('../privateData/config.json');
 var commandCount = fs.readdir('./commands', (err, files) => {
 	commandCount = files.length;
 });
@@ -12,7 +10,7 @@ var slashCount = fs.readdir('./slashCommands', (err, files) => {
 });
 
 function display(client) {
-	var Avatar = client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL(); //get Avatar URL of Bot
+	var Avatar = client.guilds.resolve(config.ids.serverID).members.resolve(config.ids.userID.botUserID).user.avatarURL(); //get Avatar URL of Bot
 	const loginMessage = new discord.MessageEmbed() //Login Embed
 		.setColor('#ffa500')
 		.setAuthor(client.user.tag, 'https://www.iconsdb.com/icons/preview/orange/code-xxl.png')
@@ -28,7 +26,7 @@ function display(client) {
 			{ name: 'Scheduler:', value: 'geladen', inline: true }
 			)
 		.setTimestamp()
-		.setFooter('[ID] '+ botUserID +' \nstarted', 'https://image.flaticon.com/icons/png/512/888/888879.png');
+		.setFooter(`[ID] ${config.ids.userID.botUserID} \nstarted`, 'https://image.flaticon.com/icons/png/512/888/888879.png');
 	
 	client.channels.cache.get('770276625040146463').send(loginMessage); //sends login embed to channel
 }
