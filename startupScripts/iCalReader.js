@@ -2,6 +2,7 @@ const ical = require('node-ical');
 const discord = require('../node_modules/discord.js');
 const config = require("../privateData/config.json");
 const schedule = require('node-schedule');
+const util = require('util');
 var subjects = config.ids.channelIDs.subject;
 var serverID = config.ids.serverID;
 var botUserID = config.ids.userID.botUserID;
@@ -15,14 +16,20 @@ exports.run = async (client) => {
     ;(async () => {
         // you can also use the async lib to download and parse iCal from the web
         const webEvents = await ical.async.fromURL(config.ical);
-        
+        filterToadaysEvents(client, webEvents);
     })()
         .catch(console.error.bind());
+    
 }
 
+/**
+ * 
+ * @param {*} client 
+ * @param {*} webEvents 
+ */
 function filterToadaysEvents(client, webEvents) {
     list = '';
-    for (var entry in webEvents) {
+    for (entry in webEvents) {
         if (webEvents[entry].summary == undefined || webEvents[entry].start == undefined) {
             continue;
         } else {
@@ -55,7 +62,7 @@ function filterToadaysEvents(client, webEvents) {
 
                     createCron(cronDate, findChannel(client, subject), embed, client);
 
-                    // client.channels.cache.get('770276625040146463').send(util.inspect(schedule.scheduledJobs), {split: true})
+                    client.channels.cache.get('770276625040146463').send(subject + time + link, { split: true });
                 }
             }
             catch (e) {
@@ -83,21 +90,27 @@ function checkForToday(dateToCheck){
 
 //This function extracts the zoom Links from HTML tag
 //if the HTML tag contains "#success" it cuts the string before that string, to make the link automatically open zoom 
+/**
+ * 
+ * @param {*} description 
+ * @returns 
+ */
 function extractZoomLinks(description) {
-    if (description.length != 0) {
-        if (description.includes('#success')) {
-
-            return link = description.split('<a href=')[1].split('#success')[0];
-
-        } else {
-
-            return link = description.split('<a href=')[1].split('>')[0];
-
-        }
+    if (description.length == 0) {
+        return 
     }
+    let splitString = '>'
+    if (description.includes('#success')) {
+        splitString = '#success'
+    }
+    return description.split('<a href=')[1].split(splitString)[0];   
 }
 
-
+/**
+ * 
+ * @param {*} date 
+ * @returns 
+ */
 function dateToCron(date) {
     //generate all needed variables for the CRON-Format
     //SECONDS MINUTES HOURS DAY_OF_MONTH MONTH DAY_OF_WEEK
@@ -165,19 +178,19 @@ function findChannel(client, subject) {
 
         channel = subjects.HM;
         return channel;
-        
+
     } else if (subject.includes("Elektronische Schaltungen")) {
-        
+
         channel = subjects.ES;
         return channel;
 
     } else if (subject.includes("Elektromagnetische Felder")) {
-        
+
         channel = subjects.EMF;
         return channel;
 
     } else if (subject.includes("KAI")) {
-        
+
         channel = subjects.KAI;
         return channel;
 
@@ -199,6 +212,13 @@ function findChannel(client, subject) {
 //needs a valid cronDate in the right format(eg https://crontab.guru/)
 //needs a valid channelID to send the message to
 //needs a message (here an embed, but generally it does not matter)
+/**
+ * 
+ * @param {*} cronDate 
+ * @param {*} channel 
+ * @param {*} embed 
+ * @param {*} client 
+ */
 function createCron(cronDate, channel ,embed, client) {
     var job = schedule.scheduleJob(cronDate, function () {
         client.channels.cache.get(channel).send('<@&' + config.ids.roleIDs.ETIT + '>', embed.setTimestamp())
