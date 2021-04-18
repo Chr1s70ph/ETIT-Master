@@ -1,6 +1,3 @@
-var private = require('../private.js');
-const serverId = private.serverId;
-
 exports.help = help;
 
 async function help(client) {
