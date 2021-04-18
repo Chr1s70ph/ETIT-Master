@@ -1,5 +1,7 @@
-const prefix = ".";
+const config = require('../privateData/config.json')
+var prefix = config.prefix;
 
+	
 exports.run = async (client, message) => {
 	if (message.author.bot) return;
 	if (message.content.startsWith(prefix)) {
