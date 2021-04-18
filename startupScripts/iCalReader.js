@@ -9,10 +9,8 @@ var debugChannel = config.ids.channelIDs.dev.botTestLobby;
 var embed = '';
 
 
-exports.iCalReader = iCalReader;
 
-
-function iCalReader(client) {
+exports.run = async (client) => {
     // do stuff in an async function
     ;(async () => {
         // you can also use the async lib to download and parse iCal from the web

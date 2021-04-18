@@ -1,7 +1,6 @@
-exports.CheckforBirthday = CheckforBirthday;
 var fs = require("fs");
 
-function CheckforBirthday(client) {
+exports.run = async (client) => {
     //reads the JSON file and assings it to value
     var json = fs.readFileSync('./privateData/birthdayList.json', 'utf8' , (err, data) => {
         if (err) {

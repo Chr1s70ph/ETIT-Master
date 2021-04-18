@@ -1,5 +1,4 @@
 var discord = require('discord.js');
-exports.display = display;
 var fs = require('fs');
 const config = require('../privateData/config.json');
 var commandCount = fs.readdir('./commands', (err, files) => {
@@ -9,12 +8,11 @@ var slashCount = fs.readdir('./slashCommands', (err, files) => {
 	slashCount = files.length;
 });
 
-function display(client) {
-	var Avatar = client.guilds.resolve(config.ids.serverID).members.resolve(config.ids.userID.botUserID).user.avatarURL(); //get Avatar URL of Bot
+exports.run = async (client) => {
 	const loginMessage = new discord.MessageEmbed() //Login Embed
 		.setColor('#ffa500')
 		.setAuthor(client.user.tag, 'https://www.iconsdb.com/icons/preview/orange/code-xxl.png')
-		.setThumbnail(Avatar)
+		.setThumbnail(client.guilds.resolve(config.ids.serverID).members.resolve(config.ids.userID.botUserID).user.avatarURL())
 		.setTitle('[🌐] Bot erfolgreich gestartet')
 		.addFields(
 			{ name: 'OS:', value: 'Ubuntu 20.04.1 LTS', inline: true },

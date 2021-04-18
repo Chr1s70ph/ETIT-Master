@@ -17,14 +17,15 @@ client.events = new discord.Collection();
 
 client.on("ready", () => {
     Presence();
-    // reminder.WeekPlanReminder(client);
-    reader.iCalReader(client);
-    slashCommands.postAndRun(client);
-    loginMessage.display(client);
-    console.log("Online!");
-    
-    birthday.CheckforBirthday(client);
+    foo(client);
 });
+
+
+async function foo(client) {
+    await loadScripts(client);        
+    console.log("Online!");
+}
+
 
 client.login(config.botToken);
 
@@ -51,6 +52,25 @@ fs.readdir('./events/', (err, files) => {
         client.on(eventName, (...args) => eventFunc.run(client, ...args));
     });
 });
+
+/**
+ * 
+ * @param {object} client necessary to start scripts relying on client
+ */
+async function loadScripts(client) {
+    let files;
+    try {        
+        files = await fs.promises.readdir('./startupScripts/')
+    } catch(e) {
+        console.log(e);
+    }
+    files.forEach(file => {
+        let script = require(`./startupScripts/${file}`);
+        console.log("Successfully loaded startupScript " + file)
+        script.run(client);
+    });
+}
+
 
 function Presence() {
     client.user.setPresence(config.presence);     
