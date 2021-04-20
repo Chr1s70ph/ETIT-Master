@@ -57,43 +57,21 @@ async function info(client) {
         const command = interaction.data.name.toLowerCase();
         const args = interaction.data.options;
         if (command === 'info') {
-            console.log(interaction.data.options);
             var iliasLink = "";
             var zoomLink = "";
             var ilias = links.ilias;
             var zoom = links.zoom;
 
+
             if (findCommonElement(interaction.member.roles, acceptedRoles)) {
-                
-                switch (args[0].value) {
-                    case hm2:
-                        iliasLink = ilias.hm2;
-                        zoomLink = zoom.hm2;
-                        break;
-                    case es:
-                        iliasLink = ilias.es;
-                        zoomLink = zoom.es;
-                        break;
-                    case emf:
-                        iliasLink = ilias.emf;
-                        zoomLink = zoom.emf;
-                        break;
-                    case kai:
-                        iliasLink = ilias.kai;
-                        zoomLink = zoom.kai;
-                        break;
-                    case it:
-                        iliasLink = ilias.it;
-                        zoomLink = zoom.it;
-                        break;
-                }
-
-
-
+                var course = args[0].value;
+                iliasLink = ilias[course];
+                zoomLink = zoom[course];
             }
+
             await client.api.interactions(interaction.id, interaction.token).callback.post({
                 data: {
-                    type: 4,
+                    type: 4, //https://discord.com/developers/docs/interactions/slash-commands#interaction-response-interactionresponsetype
                     data: {
                         content: '<@' + interaction.member.user.id + '>\n',
                         embeds: [
@@ -109,26 +87,7 @@ async function info(client) {
 }
 
 function findCommonElement(array1, array2) {
-    
-    // Loop for array1
-    for(let i = 0; i < array1.length; i++) {
-        
-        // Loop for array2
-        for(let j = 0; j < array2.length; j++) {
-            
-            // Compare the element of each and
-            // every element from both of the
-            // arrays
-            if(array1[i] === array2[j]) {
-            
-                // Return if common element found
-                return true;
-            }
-        }
-    }
-    
-    // Return if no common element exist
-    return false; 
+    return array1.some(element => array2.includes(element)) 
 }
 
 const role = config.ids.roleIDs;
@@ -139,29 +98,32 @@ const acceptedRoles = [
 ]
 
 function switchEmbed(roles, subjectName, iliasLink, zoomLink, client) {
-    var Avatar = client.guilds.resolve(config.ids.serverID).members.resolve(config.ids.userID.botUserID).user.avatarURL(); //get Avatar URL of Bot
+    var avatar = client.guilds.resolve(config.ids.serverID).members.resolve(config.ids.userID.botUserID).user.avatarURL(); //get Avatar URL of Bot
     
     const embed = new discord.MessageEmbed()
         .setColor('#0099ff')
-        .setAuthor(subjectName, Avatar)
+        .setAuthor(subjectName, avatar)
         .setThumbnail('https://images.emojiterra.com/twitter/v13.0/512px/1f4c8.png')
         
         
-        
-    if (findCommonElement(roles, acceptedRoles)) {            
-        embed.setTitle(`ℹ️Info Seite von ${subjectName}`)
-        embed.addFields(
-            { name: 'Ilias', value: `Hier ist der Link zum [Ilias](${iliasLink})  <:ilias:776366543093235712>` },
-            { name: 'Zoom', value: `Hier ist der Link zur [Zoom](${zoomLink}) Vorlesung <:ilias:776366543093235712>` },
-            { name: '\u200B', value: '\u200B' },
-            )
-    } else {
-        embed.setTitle(`🛡️FEHLENDE RECHTE`)
-        embed.addFields(
-            { name: '⚠️Du hast nicht die benötigten Rechte, um diesen Befehl auszuführen⚠️', value: `\u200B` },
-            { name: '\u200B', value: '\u200B' },
-    )
+    var title = `🛡️ FEHLENDE RECHTE`;
+    var fields = [
+        { name: '⚠️Du hast nicht die benötigten Rechte, um diesen Befehl auszuführen⚠️', value: `\u200B` },
+        { name: '\u200B', value: '\u200B' }
+    ];
+    
+    
+    if (findCommonElement(roles, acceptedRoles)) {
+        title = `ℹ️ Info Seite von ${subjectName}`;
+        fields = [
+            { name: 'Ilias', value: `<:ilias:776366543093235712> Hier ist der Link zum [Ilias](${iliasLink})` },
+            { name: 'Zoom', value: `<:zoom:776402157334822964> Hier ist der Link zur [Zoom](${zoomLink}) Vorlesung` },
+            { name: '\u200B', value: '\u200B' }
+        ];
 
     }
+
+    embed.setTitle(title);
+    embed.addFields(fields);
     return embed.setTimestamp();
 }

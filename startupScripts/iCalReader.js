@@ -16,10 +16,49 @@ exports.run = async (client) => {
     ;(async () => {
         // you can also use the async lib to download and parse iCal from the web
         const webEvents = await ical.async.fromURL(config.ical);
-        filterToadaysEvents(client, webEvents);
+        // console.log(webEvents);
+        getEvents(webEvents, client);
+        // filterToadaysEvents(client, webEvents);
     })()
         .catch(console.error.bind());
     
+}
+
+
+
+function getEvents(webEvents, client) {
+    var foo = " ";
+    for (entry in webEvents) {
+        var icalEvent = webEvents[entry];
+        if (icalEvent.type == "VEVENT") {
+            var summary = icalEvent.summary;
+            var start = icalEvent.start;
+            var end = icalEvent.end;
+
+            //check if rrule exists in icalEvent
+            if (icalEvent.rrule) {
+                var ruleOption = icalEvent.rrule.options;
+                
+                var endDate = ruleOption.until;
+                var today = new Date();
+
+                if (endDate && endDate >= today) {
+                    continue;
+                }
+
+                var count = ruleOption.count;
+                if (count) {
+                    
+                }
+            }        
+        }
+    }
+    // debug(foo, client)
+}
+
+
+function debug(message, client) {
+    client.channels.cache.get(debugChannel).send(`\`\`\`js\n${message}\`\`\``, {split: true});
 }
 
 /**
@@ -88,12 +127,11 @@ function checkForToday(dateToCheck){
 
 
 
-//This function extracts the zoom Links from HTML tag
-//if the HTML tag contains "#success" it cuts the string before that string, to make the link automatically open zoom 
 /**
- * 
+ * extracts the zoom Links from HTML tag
+ * if the HTML tag contains "#success" it cuts the string before that string, to make the link automatically open zoom 
  * @param {*} description 
- * @returns 
+ * @returns link
  */
 function extractZoomLinks(description) {
     if (description.length == 0) {
