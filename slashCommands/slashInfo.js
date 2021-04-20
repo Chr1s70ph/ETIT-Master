@@ -149,12 +149,12 @@ function switchEmbed(roles, subjectName, iliasLink, zoomLink, client) {
         
         
     if (findCommonElement(roles, acceptedRoles)) {            
-            embed.setTitle(`ℹ️Info Seite von ${subjectName}`)
-            embed.addFields(
-                { name: 'Ilias', value: `Hier ist der Link zum [Ilias](${iliasLink})  <:ilias:776366543093235712>` },
-                { name: 'Zoom', value: `Hier ist der Link zur [Zoom](${zoomLink}) Vorlesung <:ilias:776366543093235712>` },
-                { name: '\u200B', value: '\u200B' },
-                )
+        embed.setTitle(`ℹ️Info Seite von ${subjectName}`)
+        embed.addFields(
+            { name: 'Ilias', value: `Hier ist der Link zum [Ilias](${iliasLink})  <:ilias:776366543093235712>` },
+            { name: 'Zoom', value: `Hier ist der Link zur [Zoom](${zoomLink}) Vorlesung <:ilias:776366543093235712>` },
+            { name: '\u200B', value: '\u200B' },
+            )
     } else {
         embed.setTitle(`🛡️FEHLENDE RECHTE`)
         embed.addFields(
