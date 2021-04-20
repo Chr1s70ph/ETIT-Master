@@ -25,14 +25,13 @@ exports.run = async (client) => {
 }
 
 
-
 function getEvents(webEvents, client) {
     var foo = " ";
     for (entry in webEvents) {
         var icalEvent = webEvents[entry];
         if (icalEvent.type == "VEVENT") {
             var summary = icalEvent.summary;
-            var start = icalEvent.start;
+            var eventStart = icalEvent.start;
             var end = icalEvent.end;
 
             //check if rrule exists in icalEvent
@@ -48,7 +47,15 @@ function getEvents(webEvents, client) {
 
                 var count = ruleOption.count;
                 if (count) {
-                    
+
+                    var interval = ruleOption.interval;
+                    if (interval) {                        
+                        var daysInWeek = 7;
+                        var intervalEndDate = new Date(eventStart + daysInWeek * interval * count);
+                        if (amountOfDaysDifference(today, intervalEndDate) < 0) {
+                            continue;
+                        }
+                    }
                 }
             }        
         }
@@ -56,6 +63,13 @@ function getEvents(webEvents, client) {
     // debug(foo, client)
 }
 
+
+function amountOfDaysDifference(dateToday, dateToCheck) {
+    var timediff = Math.abs(dateToCheck.getTime() - dateToday.getTime());
+    var diffDays = Math.ceil(timediff / (1000 * 3600 * 24));
+
+    return diffDays;
+}
 
 function debug(message, client) {
     client.channels.cache.get(debugChannel).send(`\`\`\`js\n${message}\`\`\``, {split: true});
