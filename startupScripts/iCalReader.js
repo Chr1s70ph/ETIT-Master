@@ -65,8 +65,11 @@ function getEvents(webEvents, client) {
 
 
 function amountOfDaysDifference(dateToday, dateToCheck) {
+    var milisecondsInOneMinute = 1000;
+    var minutesInOneHour = 3600;
+    var hoursInOneDay = 24;
     var timediff = Math.abs(dateToCheck.getTime() - dateToday.getTime());
-    var diffDays = Math.ceil(timediff / (1000 * 3600 * 24));
+    var diffDays = Math.ceil(timediff / (milisecondsInOneMinute * minutesInOneHour * hoursInOneDay));
 
     return diffDays;
 }

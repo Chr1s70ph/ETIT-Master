@@ -31,6 +31,9 @@ client.login(config.botToken);
 
 
 //Commands "handler"
+/**
+ * 
+ */
 fs.readdir("./commands/", (err, files) => {
     if (err) return console.log(err);
     files.forEach(file => {
@@ -43,6 +46,9 @@ fs.readdir("./commands/", (err, files) => {
 });
 
 //Events "handler"
+/**
+ * 
+ */
 fs.readdir('./events/', (err, files) => {
     if (err) console.log(err);
     files.forEach(file => {
@@ -71,7 +77,9 @@ async function loadScripts(client) {
     });
 }
 
-
+/**
+ * 
+ */
 function Presence() {
     client.user.setPresence(config.presence);     
 
