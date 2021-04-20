@@ -1,14 +1,19 @@
-var private = require('../private.js');
+const config = require('../privateData/config.json');
 const discord = require('../node_modules/discord.js');
-const serverId = private.serverId;
-const botUserID = private.botUserID;
-const links = private.links;
+const links = config.links;
 var switchEmbed;
 
 exports.info = info;
 
 async function info(client) {
-    await client.api.applications(client.user.id).guilds(serverId).commands.post({
+    var hm2 = "Höhere Mathematik II";
+    var es = "Elektronische Schaltungen";
+    var emf = "Elektromagnetische Felder";
+    var kai = "Komplexe Analysis und Integraltransformationen";
+    var it = "Informationstechnik 1";
+
+
+    await client.api.applications(client.user.id).guilds(config.ids.serverID).commands.post({
         data: {
             name: "Info",
             description: "Gibt infos",    
@@ -21,21 +26,26 @@ async function info(client) {
                     required: true,
                     choices: [
                         {                    
-                            name: "Höhere Mathematik",
-                            value: "hm"
+                            name: hm2,
+                            value: hm2
                         },
-                        {
-                            name: "Experimental Physik",
-                            value: "ex-phy"
+                        {                    
+                            name: es,
+                            value: es
                         },
-                        {
-                            name: "Lineare Elektrische Netze",
-                            value: "len"
+                        {                    
+                            name: emf,
+                            value: emf
                         },
-                        {
-                            name: "Digitaltechnik",
-                            value: "dt"
-                        }
+                        {                    
+                            name: kai,
+                            value: kai
+                        },
+                        {                    
+                            name: it,
+                            value: it
+                        },
+                        
                     ]
                 }
             ]
@@ -47,19 +57,39 @@ async function info(client) {
         const command = interaction.data.name.toLowerCase();
         const args = interaction.data.options;
         if (command === 'info') {
-            switch (args[0].value) {
-                case "hm":
-                    switchEmbed = matheInfo.setTimestamp();
-                    break;
-                case "ex-phy":
-                    switchEmbed = exPhyInfo.setTimestamp();
-                    break;
-                case "len":
-                    switchEmbed = lENInfo.setTimestamp();
-                    break;
-                case "dt":
-                    switchEmbed = dTInfo.setTimestamp();
-                    break;
+            console.log(interaction.data.options);
+            var iliasLink = "";
+            var zoomLink = "";
+            var ilias = links.ilias;
+            var zoom = links.zoom;
+
+            if (findCommonElement(interaction.member.roles, acceptedRoles)) {
+                
+                switch (args[0].value) {
+                    case hm2:
+                        iliasLink = ilias.hm2;
+                        zoomLink = zoom.hm2;
+                        break;
+                    case es:
+                        iliasLink = ilias.es;
+                        zoomLink = zoom.es;
+                        break;
+                    case emf:
+                        iliasLink = ilias.emf;
+                        zoomLink = zoom.emf;
+                        break;
+                    case kai:
+                        iliasLink = ilias.kai;
+                        zoomLink = zoom.kai;
+                        break;
+                    case it:
+                        iliasLink = ilias.it;
+                        zoomLink = zoom.it;
+                        break;
+                }
+
+
+
             }
             await client.api.interactions(interaction.id, interaction.token).callback.post({
                 data: {
@@ -67,71 +97,71 @@ async function info(client) {
                     data: {
                         content: '<@' + interaction.member.user.id + '>\n',
                         embeds: [
-                            switchEmbed
+                            switchEmbed(interaction.member.roles, interaction.data.options[0].value, iliasLink, zoomLink, client)
                         ]
                     }
                 }
             });
+
         }
     });
 
-    var Avatar = client.guilds.resolve(serverId).members.resolve(botUserID).user.avatarURL(); //get Avatar URL of Bot
+}
+
+function findCommonElement(array1, array2) {
     
-    const matheInfo = new discord.MessageEmbed()
+    // Loop for array1
+    for(let i = 0; i < array1.length; i++) {
+        
+        // Loop for array2
+        for(let j = 0; j < array2.length; j++) {
+            
+            // Compare the element of each and
+            // every element from both of the
+            // arrays
+            if(array1[i] === array2[j]) {
+            
+                // Return if common element found
+                return true;
+            }
+        }
+    }
+    
+    // Return if no common element exist
+    return false; 
+}
+
+const role = config.ids.roleIDs;
+const acceptedRoles = [
+    role.ETIT, //ETIT Bachelorstudent
+    role.Moderator, //Moderator
+    role.Fachschaft_ETEC //Fachschaft ETEC       
+]
+
+function switchEmbed(roles, subjectName, iliasLink, zoomLink, client) {
+    var Avatar = client.guilds.resolve(config.ids.serverID).members.resolve(config.ids.userID.botUserID).user.avatarURL(); //get Avatar URL of Bot
+    
+    const embed = new discord.MessageEmbed()
         .setColor('#0099ff')
-        .setTitle('Info Seite der HM1')
-        .setAuthor('Hm1 Informationen', Avatar)
+        .setAuthor(subjectName, Avatar)
         .setThumbnail('https://images.emojiterra.com/twitter/v13.0/512px/1f4c8.png')
-        .addFields(
-            { name: 'Die Fragestunde findet ebenfalls auf Zoom statt', value: 'Hier ist der [Link](' + links.hmuZoom + ') <:zoom:776402157334822964>' },
-            { name: 'Ilias', value: 'Hier ist der Link zur [Ilias](' + links.hmIlias + ') von der HM1 <:ilias:776366543093235712>'},
-            { name: 'Altklausuren', value: '[Hier](' + links.hmOneDriveAK + ') sind ein paar Altklausuren auf Ondrive <:od:776371361185792030> \n[Hier](' + links.hmIliasAK + ') sind Links zu Altklausuren von Ioannis im Ilias <:ilias:776366543093235712>'},
+        
+        
+        
+    if (findCommonElement(roles, acceptedRoles)) {            
+            embed.setTitle(`ℹ️Info Seite von ${subjectName}`)
+            embed.addFields(
+                { name: 'Ilias', value: `Hier ist der Link zum [Ilias](${iliasLink})  <:ilias:776366543093235712>` },
+                { name: 'Zoom', value: `Hier ist der Link zur [Zoom](${zoomLink}) Vorlesung <:ilias:776366543093235712>` },
+                { name: '\u200B', value: '\u200B' },
+                )
+    } else {
+        embed.setTitle(`🛡️FEHLENDE RECHTE`)
+        embed.addFields(
+            { name: '⚠️Du hast nicht die benötigten Rechte, um diesen Befehl auszuführen⚠️', value: `\u200B` },
             { name: '\u200B', value: '\u200B' },
-            { name: 'Dozent', value: 'Ioannis Anapolitanos', inline: true },
-            { name: 'Assistent', value: 'Semjon Wugalter', inline: true },
-        )
-    
-    const exPhyInfo = new discord.MessageEmbed()
-        .setColor('#0099ff')
-        .setTitle('Info Seite der Experimental-Physik')
-        .setAuthor('Experimental-Physik Informationen', Avatar)
-        .setThumbnail('https://cdn-0.emojis.wiki/emoji-pics/microsoft/collision-microsoft.png')
-        .addFields(
-            { name: 'Die Vorlesung findet auf Youtube statt', value: 'Hier ist der [Link](' + links.phyYouTube + ') zur Youtube Playlist <:youtube:776400533203714048>'},
-            { name: 'Ilias', value: 'Hier ist der Link zum [Ilias](' + links.phyIlias + ') von Physik <:ilias:776366543093235712>' },
-            { name: 'Altklausuren', value: '[Hier](' + links.phyOneDriveAK + ') sind ein paar Altklausuren auf Ondrive <:od:776371361185792030> \n[Hier](' + links.phyIliasAK + ') sind die Altklausuren im Ilias <:ilias:776366543093235712>'},
-            { name: '\u200B', value: '\u200B' },
-            { name: 'Dozent', value: 'Thomas Schimmel', inline: true },
-            { name: 'Assistent', value: 'Schwerkraftaus Schubi', inline: true },
-        )
-    
-    const lENInfo = new discord.MessageEmbed()
-        .setColor('#0099ff')
-        .setTitle('Info Seite der Linearen Elektrischen Netze')
-        .setAuthor('LEN Informationen', Avatar)
-        .setThumbnail('https://images.emojiterra.com/twitter/v13.0/512px/1f50c.png')
-        .addFields(
-            { name: 'Die Vorlesung findet auf Zoom statt', value: 'Hier ist der [Link](' + links.lenZoom + ') <:zoom:776402157334822964>' },            
-            { name: 'Ilias', value: 'Hier ist der Link zum [Ilias](' + links.lenIlias + ') von LEN <:ilias:776366543093235712>' },
-            { name: 'Altklausuren', value: '[Hier](' + links.lenOneDriveAK + ') sind ein paar Altklausuren auf Ondrive <:od:776371361185792030> \n[Hier](' + links.lenIliasAK + ') sind die Altklausuren im Ilias <:ilias:776366543093235712>'},
-            { name: '\u200B', value: '\u200B' },
-            { name: 'Dozent', value: 'Olaf Dössel', inline: true },
-            { name: 'Assistent', value: 'Alp Cehri', inline: true },
-            { name: 'Übungsleiter', value: 'Jochen Brenneisen', inline: true }
     )
-    
-    const dTInfo = new discord.MessageEmbed()
-		.setColor('#0099ff')
-		.setTitle('Info Seite der Digitaltechnik')
-		.setAuthor('Digitaltechnik Informationen', Avatar)
-		.setThumbnail('https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/microsoft/209/floppy-disk_1f4be.png')
-        .addFields(
-            { name: 'Die Vorlesung findet auf Zoom statt', value: 'Hier ist der [Link](' + links.dtZoom + ') <:zoom:776402157334822964>' },
-            { name: 'Ilias', value: 'Hier ist der Link zum [Ilias](' + links.dtIlias + ') von Digitaltechnik <:ilias:776366543093235712>' },
-            { name: 'Altklausuren', value: '[Hier](' + links.dtOneDriveAK + ') sind ein paar Altklausuren auf Ondrive <:od:776371361185792030> \n[Hier](' + links.dtIliasAK + ') sind die Altklausuren im Ilias <:ilias:776366543093235712>'},
-            { name: '\u200B', value: '\u200B' },
-			{ name: 'Dozent', value: 'Jürgen Becker', inline: true },
-			{ name: 'Assistent', value: 'Fabian Kempf', inline: true },
-    )
-    
+
+    }
+    return embed.setTimestamp();
 }
