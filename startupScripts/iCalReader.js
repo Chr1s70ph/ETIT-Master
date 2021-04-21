@@ -25,21 +25,35 @@ exports.run = async (client) => {
 }
 
 
+Date.prototype.getWeek = function() {
+    var date = new Date(this.getTime());
+    date.setHours(0, 0, 0, 0);
+  
+    date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+  
+    var week1 = new Date(date.getFullYear(), 0, 4);
+    return 2 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+  }
+
+
+
 function getEvents(webEvents, client) {
-    var foo = " ";
+    var thisWeeksEvents = [];
     for (entry in webEvents) {
         var icalEvent = webEvents[entry];
         if (icalEvent.type == "VEVENT") {
             var summary = icalEvent.summary;
             var eventStart = icalEvent.start;
             var end = icalEvent.end;
-
+            var today = new Date();
+            
             //check if rrule exists in icalEvent
             if (icalEvent.rrule) {
                 var ruleOption = icalEvent.rrule.options;
+                var weekStartDate = new Date();
+                weekStartDate.setDate(weekStartDate.getDate() - today.getDay() + 1);
                 
                 var endDate = ruleOption.until;
-                var today = new Date();
 
                 if (endDate && endDate >= today) {
                     continue;
@@ -47,9 +61,10 @@ function getEvents(webEvents, client) {
 
                 var count = ruleOption.count;
                 if (count) {
-
-                    var interval = ruleOption.interval;
-                    if (interval) {                        
+                    
+                    if (ruleOption.interval > 1) {
+                        var interval = ruleOption.interval;
+                        //retuns days until last day of webEvent
                         var daysInWeek = 7;
                         var intervalEndDate = new Date(eventStart + daysInWeek * interval * count);
                         if (amountOfDaysDifference(today, intervalEndDate) < 0) {
@@ -57,12 +72,26 @@ function getEvents(webEvents, client) {
                         }
                     }
                 }
+                
+                if (ruleOption.interval > 1) {
+                    var interval = ruleOption.interval;                   
+                    if ((Math.abs(weekStartDate.getWeek() - eventStart.getWeek()) % interval) == 0) {
+                        var foo = addEntryToWeeksEvents(thisWeeksEvents, eventStart.getDay(), eventStart, summary)
+                        continue;
+                    }
+                }
             }        
         }
     }
+    console.log(foo)
     // debug(foo, client)
 }
 
+
+function addEntryToWeeksEvents(thisWeeksEvents, day, start, summary) {
+    thisWeeksEvents.push("start:" + start + "summary:" + summary);
+    return thisWeeksEvents
+}
 
 function amountOfDaysDifference(dateToday, dateToCheck) {
     var milisecondsInOneMinute = 1000;
