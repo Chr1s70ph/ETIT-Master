@@ -61,12 +61,14 @@ async function info(client) {
             var zoomLink = "";
             var ilias = links.ilias;
             var zoom = links.zoom;
+            var zoomAdditional = links.zoomAdditional;
 
 
             if (findCommonElement(interaction.member.roles, acceptedRoles)) {
                 var course = args[0].value;
                 iliasLink = ilias[course];
                 zoomLink = zoom[course];
+                zoomAdditional = zoomAdditional[course];
             }
 
             await client.api.interactions(interaction.id, interaction.token).callback.post({
@@ -75,7 +77,7 @@ async function info(client) {
                     data: {
                         content: '<@' + interaction.member.user.id + '>\n',
                         embeds: [
-                            switchEmbed(interaction.member.roles, interaction.data.options[0].value, iliasLink, zoomLink, client)
+                            switchEmbed(interaction.member.roles, interaction.data.options[0].value, iliasLink, zoomLink, zoomAdditional, client)
                         ]
                     }
                 }
@@ -97,7 +99,7 @@ const acceptedRoles = [
     role.Fachschaft_ETEC //Fachschaft ETEC       
 ]
 
-function switchEmbed(roles, subjectName, iliasLink, zoomLink, client) {
+function switchEmbed(roles, subjectName, iliasLink, zoomLink, zoomAdditional, client) {
     var avatar = client.guilds.resolve(config.ids.serverID).members.resolve(config.ids.userID.botUserID).user.avatarURL(); //get Avatar URL of Bot
     
     const embed = new discord.MessageEmbed()
@@ -114,12 +116,21 @@ function switchEmbed(roles, subjectName, iliasLink, zoomLink, client) {
     
     
     if (findCommonElement(roles, acceptedRoles)) {
-        title = `ℹ️ Info Seite von ${subjectName}`;
         fields = [
             { name: 'Ilias', value: `<:ilias:776366543093235712> Hier ist der Link zum [Ilias](${iliasLink})` },
             { name: 'Zoom', value: `<:zoom:776402157334822964> Hier ist der Link zur [Zoom](${zoomLink}) Vorlesung` },
             { name: '\u200B', value: '\u200B' }
         ];
+        title = `ℹ️ Info Seite von ${subjectName}`;
+        if (links.zoomAdditional[subjectName]) {
+            fields = [
+                { name: 'Ilias', value: `<:ilias:776366543093235712> Hier ist der Link zum [Ilias](${iliasLink})` },
+                { name: 'Zoom', value: `<:zoom:776402157334822964> Hier ist der Link zur [Zoom](${zoomLink}) Vorlesung` },
+                { name: 'Zoom', value: `<:zoom:776402157334822964> Hier ist der Link zur [Zoom](${zoomAdditional}) Übung/Fragestunde` },
+                { name: '\u200B', value: '\u200B' }
+            ];
+            
+        }
 
     }
 
