@@ -1,18 +1,16 @@
-var private = require('../private.js');
-var schedule = require('node-schedule');
-const discord = require('../node_modules/discord.js');
-const serverId = private.serverId;
-const botUserID = private.botUserID;
-const links = private.links;
+// var private = require('../private.js');
+// var schedule = require('node-schedule');
+// const discord = require('../node_modules/discord.js');
+// const serverId = private.serverId;
+// const botUserID = private.botUserID;
+// const links = private.links;
 
-exports.WeekPlanReminder = WeekPlanReminder;
-
-function WeekPlanReminder(client) {
-	HmSchedule(client);
-    eSSchedule(client);
-    eMFSchedule(client);
-	kaiSchedule(client);
-	ITSchedule(client);
+exports.run = async (client) => {
+	// HmSchedule(client);
+    // eSSchedule(client);
+    // eMFSchedule(client);
+	// kaiSchedule(client);
+	// ITSchedule(client);
 	// foo(client);
 }
 
