@@ -24,38 +24,38 @@ exports.run = async (client) => {
     
 }
 
-
+//NOTE: This function is from stackoverflow
+//I don't understand it, but it works
 Date.prototype.getWeek = function() {
     var date = new Date(this.getTime());
     date.setHours(0, 0, 0, 0);
-  
+
     date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
-  
+
     var week1 = new Date(date.getFullYear(), 0, 4);
     return 2 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
-  }
+}
 
 
 
 function getEvents(webEvents, client) {
     var thisWeeksEvents = [];
+    var today = new Date();
+    var weekStartDate = new Date();
+    weekStartDate.setDate(weekStartDate.getDate() - today.getDay() + 1);
+    mainLoop:
     for (entry in webEvents) {
         var icalEvent = webEvents[entry];
         if (icalEvent.type == "VEVENT") {
             var summary = icalEvent.summary;
             var eventStart = icalEvent.start;
             var end = icalEvent.end;
-            var today = new Date();
             
             //check if rrule exists in icalEvent
             if (icalEvent.rrule) {
                 var ruleOption = icalEvent.rrule.options;
-                var weekStartDate = new Date();
-                weekStartDate.setDate(weekStartDate.getDate() - today.getDay() + 1);
                 
-                var endDate = ruleOption.until;
-
-                if (endDate && endDate >= today) {
+                if ((eventStart.getDay() - weekStartDate.getDay()) > 6) {
                     continue;
                 }
 
@@ -76,20 +76,31 @@ function getEvents(webEvents, client) {
                 if (ruleOption.interval > 1) {
                     var interval = ruleOption.interval;                   
                     if ((Math.abs(weekStartDate.getWeek() - eventStart.getWeek()) % interval) == 0) {
-                        var foo = addEntryToWeeksEvents(thisWeeksEvents, eventStart.getDay(), eventStart, summary)
+                        addEntryToWeeksEvents(thisWeeksEvents, eventStart.getDay(), eventStart, summary)
                         continue;
+                    }
+                }
+
+
+                if (icalEvent.exdate) {
+                    var exdate = icalEvent.exdate;
+                    for (date in exdate) {
+                        console.log(exdate[date] == today)
+                        if (exdate[date] >= today) {
+                            continue mainLoop;
+                        }                            
+                        addEntryToWeeksEvents(thisWeeksEvents, eventStart.getDay(), eventStart, summary);
                     }
                 }
             }        
         }
     }
-    console.log(foo)
-    // debug(foo, client)
+    debug(thisWeeksEvents, client)
 }
 
 
 function addEntryToWeeksEvents(thisWeeksEvents, day, start, summary) {
-    thisWeeksEvents.push("start:" + start + "summary:" + summary);
+    thisWeeksEvents.push("\nstart: " + start + "\nsummary: " + summary);
     return thisWeeksEvents
 }
 
