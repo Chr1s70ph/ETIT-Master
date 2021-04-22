@@ -41,30 +41,39 @@ Date.prototype.getWeek = function() {
 function getEvents(webEvents, client) {
     var thisWeeksEvents = [];
     var today = new Date();
-    var weekStartDate = new Date();
-    weekStartDate.setDate(weekStartDate.getDate() - today.getDay() + 1);
+    today.setHours(today.getHours() + 2); //#2 to change Date to german Timezone
+    var weekStartDate = new Date(today.setDate(today.getDate() - today.getDay() + 1));
+    
     mainLoop:
     for (entry in webEvents) {
         var icalEvent = webEvents[entry];
+
+        
         if (icalEvent.type == "VEVENT") {
             var summary = icalEvent.summary;
             var eventStart = icalEvent.start;
             var end = icalEvent.end;
             
+            if (eventStart == today) {
+                addEntryToWeeksEvents(thisWeeksEvents, eventStart.getDay(), eventStart, summary)
+            }
+
             //check if rrule exists in icalEvent
             if (icalEvent.rrule) {
                 var ruleOption = icalEvent.rrule.options;
+
+
                 
-                if ((eventStart.getDay() - weekStartDate.getDay()) > 6) {
+                if (eventStart > today) {
                     continue;
                 }
-
+                
                 var count = ruleOption.count;
                 if (count) {
                     
                     if (ruleOption.interval > 1) {
                         var interval = ruleOption.interval;
-                        //retuns days until last day of webEvent
+                        //retuns days until last day of webEvent based on interval
                         var daysInWeek = 7;
                         var intervalEndDate = new Date(eventStart + daysInWeek * interval * count);
                         if (amountOfDaysDifference(today, intervalEndDate) < 0) {
@@ -73,19 +82,32 @@ function getEvents(webEvents, client) {
                     }
                 }
                 
-                if (ruleOption.interval > 1) {
-                    var interval = ruleOption.interval;                   
+                if (ruleOption.interval) {
+                    var interval = ruleOption.interval;
                     if ((Math.abs(weekStartDate.getWeek() - eventStart.getWeek()) % interval) == 0) {
                         addEntryToWeeksEvents(thisWeeksEvents, eventStart.getDay(), eventStart, summary)
-                        continue;
+                    }
+                    continue;
+                }
+                
+                var byday = ruleOption.byweekday;
+                if (byday.length > 1) {
+                    for (day in byday) {
+                        if (byday[day] == (today.getDay - 1)) {
+                            if (icalEvent.exdate) {
+                                for (entry in icalEvent.exdate) {
+                                    if (icalEvent.exdate[entry].getDay() == byday[day]) {
+                                        addEntryToWeeksEvents(thisWeeksEvents, eventStart.getDay(), eventStart, summary)
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
-
-
+                
                 if (icalEvent.exdate) {
                     var exdate = icalEvent.exdate;
                     for (date in exdate) {
-                        console.log(exdate[date] == today)
                         if (exdate[date] >= today) {
                             continue mainLoop;
                         }                            
@@ -202,13 +224,16 @@ function extractZoomLinks(description) {
 }
 
 /**
+ * generate all needed variables for the CRON-Format
+ *  
+ * SECONDS MINUTES HOURS DAY_OF_MONTH MONTH DAY_OF_WEEK
  * 
- * @param {*} date 
+ * @param {Date} date 
  * @returns 
  */
 function dateToCron(date) {
-    //generate all needed variables for the CRON-Format
-    //SECONDS MINUTES HOURS DAY_OF_MONTH MONTH DAY_OF_WEEK
+    //
+    //
     var seconds = '0';
     var minutes = '55';
     var hour = date.getHours() -1; //Subtract one, to give the alert not at the exact start of the event, but coupled with minutes = '55' 5 minutes earlier
@@ -226,7 +251,7 @@ function dateToCron(date) {
  * 
  * Only returns an embed with link, when link is set
  * 
- * @param {var} client needed for the client Avatar
+ * @param {object} client needed for the client Avatar
  * @param {string} subject used to set the Title and contents of the embed
  * @param {string} professor sets the professor
  * @param {string} link link to the lecture
@@ -261,7 +286,7 @@ function dynamicEmbed(client, subject, professor, link) {
  * analyzes the contents of the "subject" and sets "channel" based on its contents
  * sends in case of an error, said error to the debug channel
  * 
- * @param {var} client necessary to return error messages to debug channel
+ * @param {object} client necessary to return error messages to debug channel
  * @param {String} subject subject exported from iCal
  * @return {string}     returns the channelID based on subject
  * 
@@ -303,16 +328,12 @@ function findChannel(client, subject) {
 }
 
 
-//creates a dynamic Cron schedule
-//needs a valid cronDate in the right format(eg https://crontab.guru/)
-//needs a valid channelID to send the message to
-//needs a message (here an embed, but generally it does not matter)
 /**
- * 
- * @param {*} cronDate 
- * @param {*} channel 
- * @param {*} embed 
- * @param {*} client 
+ * creates a dynamic Cron schedule
+ * @param {string} cronDate cronDate in the right format(eg https://crontab.guru/)
+ * @param {string} channel valid channelID to send the message to
+ * @param {object} embed  message (here an embed, but generally it does not matter)
+ * @param {object} client 
  */
 function createCron(cronDate, channel ,embed, client) {
     var job = schedule.scheduleJob(cronDate, function () {
