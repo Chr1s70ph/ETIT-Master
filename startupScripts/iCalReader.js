@@ -12,16 +12,17 @@ var embed = '';
 
 
 exports.run = async (client) => {
+    var today = new Date();
+
     // do stuff in an async function
     ;(async () => {
         // you can also use the async lib to download and parse iCal from the web
         const webEvents = await ical.async.fromURL(config.ical);
         // console.log(webEvents);
-        getEvents(webEvents, client);
-        // filterToadaysEvents(client, webEvents);
+        
+        filterToadaysEvents(client, today, getEvents(webEvents, today, client));
     })()
         .catch(console.error.bind());
-    
 }
 
 //NOTE: This function is from stackoverflow
@@ -38,11 +39,12 @@ Date.prototype.getWeek = function() {
 
 
 
-function getEvents(webEvents, client) {
-    var thisWeeksEvents = [];
-    var today = new Date();
+function getEvents(webEvents, today, client) {
+    var events = {};
     today.setHours(today.getHours() + 2); //#2 to change Date to german Timezone
-    var weekStartDate = new Date(today.setDate(today.getDate() - today.getDay() + 1));
+    var weekStartDate = new Date();
+    weekStartDate.setHours(weekStartDate.getHours() + 2); //#2 to change Date to german Timezone
+    weekStartDate.setDate(weekStartDate.getDate() - weekStartDate.getDay() + 1)
     
     mainLoop:
     for (entry in webEvents) {
@@ -53,9 +55,10 @@ function getEvents(webEvents, client) {
             var summary = icalEvent.summary;
             var eventStart = icalEvent.start;
             var end = icalEvent.end;
+            var description = icalEvent.description;
             
             if (eventStart == today) {
-                addEntryToWeeksEvents(thisWeeksEvents, eventStart.getDay(), eventStart, summary)
+                addEntryToWeeksEvents(events, eventStart.getDay(), eventStart, summary)
             }
 
             //check if rrule exists in icalEvent
@@ -85,7 +88,7 @@ function getEvents(webEvents, client) {
                 if (ruleOption.interval) {
                     var interval = ruleOption.interval;
                     if ((Math.abs(weekStartDate.getWeek() - eventStart.getWeek()) % interval) == 0) {
-                        addEntryToWeeksEvents(thisWeeksEvents, eventStart.getDay(), eventStart, summary)
+                        addEntryToWeeksEvents(events, eventStart.getDay(), eventStart, summary, description)
                     }
                     continue;
                 }
@@ -97,7 +100,7 @@ function getEvents(webEvents, client) {
                             if (icalEvent.exdate) {
                                 for (entry in icalEvent.exdate) {
                                     if (icalEvent.exdate[entry].getDay() == byday[day]) {
-                                        addEntryToWeeksEvents(thisWeeksEvents, eventStart.getDay(), eventStart, summary)
+                                        addEntryToWeeksEvents(events, eventStart.getDay(), eventStart, summary, description)
                                     }
                                 }
                             }
@@ -111,19 +114,24 @@ function getEvents(webEvents, client) {
                         if (exdate[date] >= today) {
                             continue mainLoop;
                         }                            
-                        addEntryToWeeksEvents(thisWeeksEvents, eventStart.getDay(), eventStart, summary);
+                        addEntryToWeeksEvents(events, eventStart.getDay(), eventStart, summary, description);
                     }
                 }
             }        
         }
     }
-    debug(thisWeeksEvents, client)
+    return events;
 }
 
 
-function addEntryToWeeksEvents(thisWeeksEvents, day, start, summary) {
-    thisWeeksEvents.push("\nstart: " + start + "\nsummary: " + summary);
-    return thisWeeksEvents
+function addEntryToWeeksEvents(events, day, start, summary, description) {
+    events[Object.keys(events).length] = {
+        "day": day,
+        "start": start,    
+        "summary": summary,
+        "description": description
+    }
+    return events
 }
 
 function amountOfDaysDifference(dateToday, dateToCheck) {
@@ -140,70 +148,32 @@ function debug(message, client) {
     client.channels.cache.get(debugChannel).send(`\`\`\`js\n${message}\`\`\``, {split: true});
 }
 
-/**
- * 
- * @param {*} client 
- * @param {*} webEvents 
- */
-function filterToadaysEvents(client, webEvents) {
-    list = '';
-    for (entry in webEvents) {
-        if (webEvents[entry].summary == undefined || webEvents[entry].start == undefined) {
-            continue;
-        } else {
-            try {
-                var events = webEvents[entry].summary;
+function filterToadaysEvents(client, today, thisWeeksEvents) {
+    for (entry in thisWeeksEvents) {
+        if (thisWeeksEvents[entry].day == today.getDay()) {
+            
+            var event = thisWeeksEvents[entry];
+            var summary = event.subject;
+            //extract the subject after the "-" in the string
+            var subject = event.summary.split('-')[1];
 
-                var dates = webEvents[entry].start;
+            //extract the professors Name before the "-" in the string 
+            var professor = event.summary.split('-')[0];
 
-                var description = webEvents[entry].description;
-                
-                if (checkForToday(dates) == true) {
+            var link = extractZoomLinks(event.description);
 
-                    //extract the subject after the "-" in the string
-                    var subject = events.split('-')[1]; 
+            var time = event.start;
 
-                    //extract the professors Name before the "-" in the string 
-                    var professor = events.split('-')[0];
-                    // console.log(description);
+            var cronDate = dateToCron(time);
 
+            var embed = dynamicEmbed(client, subject, professor, link)
 
-                    var link = '';
-                    //extract the link from an html hyperlink
-                    link = extractZoomLinks(description);
+            createCron(cronDate, findChannel(subject, config.ids.channelIDs.subject), embed, client);
 
-                    var time = dates;
-
-                    var cronDate = dateToCron(time);
-
-                    embed = dynamicEmbed(client, subject, professor, link)
-
-                    createCron(cronDate, findChannel(client, subject), embed, client);
-
-                    client.channels.cache.get('770276625040146463').send(subject + time + link, { split: true });
-                }
-            }
-            catch (e) {
-                console.log(e);            
-            }
+            // client.channels.cache.get('770276625040146463').send(embed.setTimestamp())
         }
     }
-    
-
 }
-
-/**
- * checks for today
- * 
- * @param {string} dateToCheck 
- * @returns {boolean} true if eneted day is today 
- */
-function checkForToday(dateToCheck){
-    var today = new Date().toString().slice(0, -49);
-    dateToCheck = dateToCheck.toString().slice(0, -49);
-        return(today === dateToCheck)
-}
-
 
 
 /**
@@ -255,15 +225,13 @@ function dateToCron(date) {
  * @param {string} subject used to set the Title and contents of the embed
  * @param {string} professor sets the professor
  * @param {string} link link to the lecture
- * @returns {object} Embed that was built using the given parameters
+ * @returns {any} Embed that was built using the given parameters
  */
 function dynamicEmbed(client, subject, professor, link) {
-    var Avatar = client.guilds.resolve(serverID).members.resolve(botUserID).user.avatarURL();
-
-    embed = new discord.MessageEmbed()
+    var embedDynamic = new discord.MessageEmbed()
             .setColor('#0099ff')
             .setTitle(subject + ' Vorlesung')
-            .setAuthor(subject + ' Reminder', Avatar)
+            .setAuthor(subject + ' Reminder', client.guilds.resolve(serverID).members.resolve(botUserID).user.avatarURL())
             .setDescription('Die ' + subject + ' fängt in 5 Minuten an')
             .setThumbnail('https://www.pngarts.com/files/7/Zoom-Logo-PNG-Download-Image.png')
             .addFields(
@@ -274,10 +242,10 @@ function dynamicEmbed(client, subject, professor, link) {
         
     if (link.length != 0) {
 
-        embed.setURL(link);
+        embedDynamic.setURL(link);
 
     }
-    return embed;
+    return embedDynamic;
 }
 
 /**
@@ -292,38 +260,17 @@ function dynamicEmbed(client, subject, professor, link) {
  * 
  * @throws Error in debug channel
  */
-function findChannel(client, subject) {
+function findChannel(subject, channels) {
     var channel = "";
-    if (subject.includes("Höhere Mathematik")) {
 
-        channel = subjects.HM;
-        return channel;
+    Object.keys(channels).forEach(function (key) {
+        if (subject.includes(key)) {
+            channel = channels[key];
+        }
+    })
 
-    } else if (subject.includes("Elektronische Schaltungen")) {
-
-        channel = subjects.ES;
-        return channel;
-
-    } else if (subject.includes("Elektromagnetische Felder")) {
-
-        channel = subjects.EMF;
-        return channel;
-
-    } else if (subject.includes("KAI")) {
-
-        channel = subjects.KAI;
-        return channel;
-
-    } else if (subject.includes("Informationstechnik")) {
-
-        channel = subjects.IT;
-        return channel;
-    } else {
-
-        client.channels.cache.get(debugChannel).send("There was a problem, finding the subject and its channel");
-        client.channels.cache.get(debugChannel).send(subject);
-
-    }
+    return channel;
+    
 
 }
 
