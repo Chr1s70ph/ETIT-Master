@@ -8,22 +8,28 @@ var serverID = config.ids.serverID;
 var botUserID = config.ids.userID.botUserID;
 var debugChannel = config.ids.channelIDs.dev.botTestLobby;
 var embed = '';
-
+const { DateTime } = require('luxon');
 
 
 exports.run = async (client) => {
-    var today = new Date();
+    var today = localDate();
+    for (entry in config.calenders) {
+        var events = {};
+        var webEvents = await ical.async.fromURL(config.calenders[entry]);
+        var eventsFromIcal = await getEvents(webEvents, today, client, events);
+        await filterToadaysEvents(client, today, eventsFromIcal);
 
-    // do stuff in an async function
-    ;(async () => {
-        // you can also use the async lib to download and parse iCal from the web
-        const webEvents = await ical.async.fromURL(config.ical);
-        // console.log(webEvents);
-        
-        filterToadaysEvents(client, today, getEvents(webEvents, today, client));
-    })()
-        .catch(console.error.bind());
+    }
 }
+
+
+function localDate() {
+    var tempToday = DateTime.local().toString();
+    var todayString = tempToday.slice(0, -10) + "z";
+    var today = new Date(todayString);
+    return today;
+}
+
 
 //NOTE: This function is from stackoverflow
 //I don't understand it, but it works
@@ -39,33 +45,25 @@ Date.prototype.getWeek = function() {
 
 
 
-function getEvents(webEvents, today, client) {
-    var events = {};
-    today.setHours(today.getHours() + 2); //#2 to change Date to german Timezone
-    var weekStartDate = new Date();
-    weekStartDate.setHours(weekStartDate.getHours() + 2); //#2 to change Date to german Timezone
+function getEvents(webEvents, today, client, events) {
+    var weekStartDate = localDate();
     weekStartDate.setDate(weekStartDate.getDate() - weekStartDate.getDay() + 1)
     
     mainLoop:
     for (entry in webEvents) {
         var icalEvent = webEvents[entry];
-
-        
         if (icalEvent.type == "VEVENT") {
             var summary = icalEvent.summary;
             var eventStart = icalEvent.start;
-            var end = icalEvent.end;
             var description = icalEvent.description;
-            
             if (eventStart == today) {
                 addEntryToWeeksEvents(events, eventStart.getDay(), eventStart, summary)
             }
-
+            
             //check if rrule exists in icalEvent
             if (icalEvent.rrule) {
                 var ruleOption = icalEvent.rrule.options;
-
-
+                
                 
                 if (eventStart > today) {
                     continue;
@@ -86,6 +84,7 @@ function getEvents(webEvents, today, client) {
                 }
                 
                 if (ruleOption.interval) {
+                    
                     var interval = ruleOption.interval;
                     if ((Math.abs(weekStartDate.getWeek() - eventStart.getWeek()) % interval) == 0) {
                         addEntryToWeeksEvents(events, eventStart.getDay(), eventStart, summary, description)
@@ -95,6 +94,7 @@ function getEvents(webEvents, today, client) {
                 
                 var byday = ruleOption.byweekday;
                 if (byday.length > 1) {
+                    
                     for (day in byday) {
                         if (byday[day] == (today.getDay - 1)) {
                             if (icalEvent.exdate) {
@@ -113,7 +113,7 @@ function getEvents(webEvents, today, client) {
                     for (date in exdate) {
                         if (exdate[date] >= today) {
                             continue mainLoop;
-                        }                            
+                        }
                         addEntryToWeeksEvents(events, eventStart.getDay(), eventStart, summary, description);
                     }
                 }
@@ -138,7 +138,7 @@ function amountOfDaysDifference(dateToday, dateToCheck) {
     var milisecondsInOneMinute = 1000;
     var minutesInOneHour = 3600;
     var hoursInOneDay = 24;
-    var timediff = Math.abs(dateToCheck.getTime() - dateToday.getTime());
+    var timediff = Math.abs(dateToCheck - dateToday.getTime());
     var diffDays = Math.ceil(timediff / (milisecondsInOneMinute * minutesInOneHour * hoursInOneDay));
 
     return diffDays;
@@ -148,17 +148,16 @@ function debug(message, client) {
     client.channels.cache.get(debugChannel).send(`\`\`\`js\n${message}\`\`\``, {split: true});
 }
 
-function filterToadaysEvents(client, today, thisWeeksEvents) {
+async function filterToadaysEvents(client, today, thisWeeksEvents) {
     for (entry in thisWeeksEvents) {
         if (thisWeeksEvents[entry].day == today.getDay()) {
-            
             var event = thisWeeksEvents[entry];
-            var summary = event.subject;
+            var summary = event.summary;
             //extract the subject after the "-" in the string
-            var subject = event.summary.split('-')[1];
-
+            var subject = summary.split('-')[1];
+            
             //extract the professors Name before the "-" in the string 
-            var professor = event.summary.split('-')[0];
+            var professor = summary.split('-')[0];
 
             var link = extractZoomLinks(event.description);
 
@@ -170,7 +169,7 @@ function filterToadaysEvents(client, today, thisWeeksEvents) {
 
             createCron(cronDate, findChannel(subject, config.ids.channelIDs.subject), embed, client);
 
-            // client.channels.cache.get('770276625040146463').send(embed.setTimestamp())
+            client.channels.cache.get('835999562681548810').send(embed.setTimestamp())
         }
     }
 }
@@ -232,10 +231,10 @@ function dynamicEmbed(client, subject, professor, link) {
             .setColor('#0099ff')
             .setTitle(subject + ' Vorlesung')
             .setAuthor(subject + ' Reminder', client.guilds.resolve(serverID).members.resolve(botUserID).user.avatarURL())
-            .setDescription('Die ' + subject + ' fängt in 5 Minuten an')
+            .setDescription(subject + ' fängt in 5 Minuten an')
             .setThumbnail('https://www.pngarts.com/files/7/Zoom-Logo-PNG-Download-Image.png')
             .addFields(
-                { name: 'Die '+ subject + ' findet wie gewohnt auf Zoom statt.', value: 'Außer es gibt einen Sonderfall' },
+                { name: subject + ' findet wie gewohnt auf Zoom statt.', value: 'Außer es gibt einen Sonderfall' },
                 { name: 'Dozent', value: professor, inline: false }
             )
         .setFooter('Viel Spaß und Erfolg wünscht euch euer ETIT-Master', client.guilds.resolve(serverID).members.resolve(botUserID).user.avatarURL());
