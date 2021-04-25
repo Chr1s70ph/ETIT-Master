@@ -1,17 +1,15 @@
+
 <p align="center">
   <br/>
-  <img src="./images/logo_500.png" width="500px">
+  <img src="./images/logo_500.png" width="300px">
   <br/>
   <br/>
-  <h1 align="center">
-    <p  align="center">
-      ETIT-Master-Js
-    </p>
-  </h1>
+<a href="https://github.com/Chr1s70ph/ETIT-Master-JS/wiki"><span style="text-align:center">See</a> here how to use and configure the bot</span>
 </p>
 
 
 # ETIT-Master-JS
+
 This is a personal Discord-bot written in JS.
 
 The bot supports numerus commands, including the newly added slash-commands.
