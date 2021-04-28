@@ -18,7 +18,6 @@ exports.run = async (client) => {
         var webEvents = await ical.async.fromURL(config.calenders[entry]);
         var eventsFromIcal = await getEvents(webEvents, today, client, events);
         await filterToadaysEvents(client, today, eventsFromIcal);
-
     }
 }
 
@@ -43,6 +42,12 @@ Date.prototype.getWeek = function() {
     return 2 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
 }
 
+var datesAreOnSameDay = (first, second) =>
+    first.getFullYear() === second.getFullYear() &&
+    first.getMonth() === second.getMonth() &&
+    first.getDate() === second.getDate();
+
+
 
 
 function getEvents(webEvents, today, client, events) {
@@ -54,53 +59,91 @@ function getEvents(webEvents, today, client, events) {
         var icalEvent = webEvents[entry];
         if (icalEvent.type == "VEVENT") {
             var summary = icalEvent.summary;
-            var eventStart = icalEvent.start;
+
+
+            var startOfEventa = icalEvent.start;
+            eventStart = convertEventDate(startOfEventa, summary);
+
             var description = icalEvent.description;
-            if (eventStart == today) {
-                addEntryToWeeksEvents(events, eventStart.getDay(), eventStart, summary)
+            // console.log("Event:  " + summary + " is in Loop \n" + eventStart)       
+            if (datesAreOnSameDay(eventStart, today)) {
+                addEntryToWeeksEvents(events, eventStart.getDay(), eventStart, summary, description)
+                continue;
+            }                     
+            
+            if (eventStart > today) {
+                // console.log("removed " + summary + " greater than today \n" + eventStart + "\n" + today)                            
+                continue;
+                
             }
+            
             
             //check if rrule exists in icalEvent
             if (icalEvent.rrule) {
                 var ruleOption = icalEvent.rrule.options;
                 
-                
-                if (eventStart > today) {
-                    continue;
+
+                // console.log("Event:  " + summary + " in rrule \n" + eventStart + "\n" + ruleOption.until)       
+                if (ruleOption.until) {                    
+                    if ((ruleOption.until - today) < 0) {
+                        console.log("removed " + summary + " because of until");
+                        continue;
+                    }
                 }
                 
+
                 var count = ruleOption.count;
                 if (count) {
-                    
                     if (ruleOption.interval > 1) {
                         var interval = ruleOption.interval;
                         //retuns days until last day of webEvent based on interval
                         var daysInWeek = 7;
                         var intervalEndDate = new Date(eventStart + daysInWeek * interval * count);
                         if (amountOfDaysDifference(today, intervalEndDate) < 0) {
+                            console.log("removed " + summary + " count" + eventStart)                            
                             continue;
                         }
                     }
                 }
                 
-                if (ruleOption.interval) {
-                    
+                if (ruleOption.interval) {                    
                     var interval = ruleOption.interval;
                     if ((Math.abs(weekStartDate.getWeek() - eventStart.getWeek()) % interval) == 0) {
-                        addEntryToWeeksEvents(events, eventStart.getDay(), eventStart, summary, description)
+                        var byday = ruleOption.byweekday;
+                        var weekdayToday = today.getDay();
+                        // weekdayToday -= 1;
+                        if (byday) {
+                            for (day in byday) {
+                                if ((byday[day] +1) == weekdayToday) {
+                                    if (icalEvent.exdate) {
+                                        for (entry in icalEvent.exdate) {
+                                            if (icalEvent.exdate[entry] != today) {
+                                                addEntryToWeeksEvents(events, byday[day] + 1, eventStart, summary, description)
+                                                continue mainLoop;
+                                            }
+                                        }
+                                    } else {                                        
+                                        addEntryToWeeksEvents(events, eventStart.getDay(), eventStart, summary, description)
+                                        continue mainLoop;
+                                    }
+                                }
+                            }
+                        } else {
+                            addEntryToWeeksEvents(events, eventStart.getDay(), eventStart, summary, description)                            
+                        }                        
                     }
+                    console.log("removed " + summary + " interval" + eventStart)
                     continue;
                 }
                 
                 var byday = ruleOption.byweekday;
                 if (byday.length > 1) {
-                    
                     for (day in byday) {
-                        if (byday[day] == (today.getDay - 1)) {
+                        if (byday[day] == (today.getDay() - 1)) {
                             if (icalEvent.exdate) {
                                 for (entry in icalEvent.exdate) {
-                                    if (icalEvent.exdate[entry].getDay() == byday[day]) {
-                                        addEntryToWeeksEvents(events, eventStart.getDay(), eventStart, summary, description)
+                                    if (icalEvent.exdate[entry].getDay() != byday[day]) {
+                                        addEntryToWeeksEvents(events, icalEvent.exdate[entry].getDay(), eventStart, summary, description)
                                     }
                                 }
                             }
@@ -111,16 +154,39 @@ function getEvents(webEvents, today, client, events) {
                 if (icalEvent.exdate) {
                     var exdate = icalEvent.exdate;
                     for (date in exdate) {
-                        if (exdate[date] >= today) {
+                        if (exdate[date] != today) {
+                            addEntryToWeeksEvents(events, eventStart.getDay(), eventStart, summary, description);
+                        } else if (exdate[date] > today) {
+                            console.log("removed " + summary + " exdate" + eventStart)
                             continue mainLoop;
                         }
-                        addEntryToWeeksEvents(events, eventStart.getDay(), eventStart, summary, description);
                     }
                 }
             }        
         }
     }
+    console.log(events)
     return events;
+}
+
+
+function convertEventDate(eventStart, summary) {
+    var convertedDate = "";
+    var timezone = eventStart.tz;
+    if (timezone == "Etc/UTC") {
+        convertedDate = eventStart.toISOString();
+        convertedDate = DateTime.fromISO(convertedDate).setZone("Europe/Berlin").toString();
+        convertedDate = convertedDate.slice(0, -10) + "z";
+        convertedDate = new Date(convertedDate);
+    } else if (timezone == "Europe/Berlin" || eventStart.toString().includes("Europe")) {
+        convertedDate = new Date(eventStart)
+    } else if (eventStart.dateOnly) {
+        convertedDate = new Date(eventStart)
+    } else{
+        console.log("\n\n There was an unexpected Error converting" + summary +"\n"  + eventStart +" to local Time Zone \n\n" )
+        convertedDate = new Date(eventStart);        
+    }
+    return convertedDate;
 }
 
 
@@ -158,18 +224,18 @@ async function filterToadaysEvents(client, today, thisWeeksEvents) {
             
             //extract the professors Name before the "-" in the string 
             var professor = summary.split('-')[0];
-
+            
             var link = extractZoomLinks(event.description);
-
+            
             var time = event.start;
-
+            
             var cronDate = dateToCron(time);
-
+            
             var embed = dynamicEmbed(client, subject, professor, link)
-
-            createCron(cronDate, findChannel(subject, config.ids.channelIDs.subject), embed, client);
-
-            client.channels.cache.get('835999562681548810').send(embed.setTimestamp())
+            
+            createCron(cronDate, findChannel(subject, config.ids.channelIDs.subject), findRole(subject, config.ids.roleIDs), embed, client);
+                    
+            client.channels.cache.get('770276625040146463').send(embed.setTimestamp())
         }
     }
 }
@@ -189,7 +255,12 @@ function extractZoomLinks(description) {
     if (description.includes('#success')) {
         splitString = '#success'
     }
-    return description.split('<a href=')[1].split(splitString)[0];   
+    if (description.includes('<a href=')) {
+        return description.split('<a href=')[1].split(splitString)[0];           
+    } else {
+        return description;
+    }
+
 }
 
 /**
@@ -261,7 +332,6 @@ function dynamicEmbed(client, subject, professor, link) {
  */
 function findChannel(subject, channels) {
     var channel = "";
-
     Object.keys(channels).forEach(function (key) {
         if (subject.includes(key)) {
             channel = channels[key];
@@ -273,6 +343,18 @@ function findChannel(subject, channels) {
 
 }
 
+function findRole(subject, roles) {
+    var role = "";
+    Object.keys(roles).forEach(function (key) {
+        if (subject.includes(key)) {
+            role = roles[key];
+        }
+    })
+
+    return role;
+    
+
+}
 
 /**
  * creates a dynamic Cron schedule
@@ -281,9 +363,9 @@ function findChannel(subject, channels) {
  * @param {object} embed  message (here an embed, but generally it does not matter)
  * @param {object} client 
  */
-function createCron(cronDate, channel ,embed, client) {
+function createCron(cronDate, channel, role ,embed, client) {
     var job = schedule.scheduleJob(cronDate, function () {
-        client.channels.cache.get(channel).send('<@&' + config.ids.roleIDs.ETIT + '>', embed.setTimestamp())
+        client.channels.cache.get(channel).send('<@&' + role + '>', embed.setTimestamp())
         .then(msg => msg.delete({ timeout: 5400000 }))
     });
 }
