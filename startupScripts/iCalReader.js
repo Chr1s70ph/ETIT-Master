@@ -12,6 +12,7 @@ const { DateTime } = require('luxon');
 
 
 exports.run = async (client) => {
+
     var today = localDate();
     for (entry in config.calenders) {
         var events = {};
@@ -86,7 +87,7 @@ function getEvents(webEvents, today, client, events) {
                 // console.log("Event:  " + summary + " in rrule \n" + eventStart + "\n" + ruleOption.until)       
                 if (ruleOption.until) {                    
                     if ((ruleOption.until - today) < 0) {
-                        console.log("removed " + summary + " because of until");
+                        // console.log("removed " + summary + " because of until");
                         continue;
                     }
                 }
@@ -100,7 +101,7 @@ function getEvents(webEvents, today, client, events) {
                         var daysInWeek = 7;
                         var intervalEndDate = new Date(eventStart + daysInWeek * interval * count);
                         if (amountOfDaysDifference(today, intervalEndDate) < 0) {
-                            console.log("removed " + summary + " count" + eventStart)                            
+                            // console.log("removed " + summary + " count" + eventStart)                            
                             continue;
                         }
                     }
@@ -132,7 +133,7 @@ function getEvents(webEvents, today, client, events) {
                             addEntryToWeeksEvents(events, eventStart.getDay(), eventStart, summary, description)                            
                         }                        
                     }
-                    console.log("removed " + summary + " interval" + eventStart)
+                    // console.log("removed " + summary + " interval" + eventStart)
                     continue;
                 }
                 
@@ -157,7 +158,7 @@ function getEvents(webEvents, today, client, events) {
                         if (exdate[date] != today) {
                             addEntryToWeeksEvents(events, eventStart.getDay(), eventStart, summary, description);
                         } else if (exdate[date] > today) {
-                            console.log("removed " + summary + " exdate" + eventStart)
+                            // console.log("removed " + summary + " exdate" + eventStart)
                             continue mainLoop;
                         }
                     }
@@ -165,7 +166,7 @@ function getEvents(webEvents, today, client, events) {
             }        
         }
     }
-    console.log(events)
+    // console.log(events)
     return events;
 }
 
@@ -231,10 +232,14 @@ async function filterToadaysEvents(client, today, thisWeeksEvents) {
             
             var cronDate = dateToCron(time);
             
-            var embed = dynamicEmbed(client, subject, professor, link)
+            var embed = dynamicEmbed(client, findRole(subject, config.ids.roleIDs), subject, professor, link)
             
             createCron(cronDate, findChannel(subject, config.ids.channelIDs.subject), findRole(subject, config.ids.roleIDs), embed, client);
                     
+
+
+            
+
             client.channels.cache.get('770276625040146463').send(embed.setTimestamp())
         }
     }
@@ -297,11 +302,14 @@ function dateToCron(date) {
  * @param {string} link link to the lecture
  * @returns {any} Embed that was built using the given parameters
  */
-function dynamicEmbed(client, subject, professor, link) {
+function dynamicEmbed(client, role, subject, professor, link) {
+    var roleColor = client.guilds.resolve(serverID).roles.cache.get(role).color;
+
+
     var embedDynamic = new discord.MessageEmbed()
-            .setColor('#0099ff')
-            .setTitle(subject + ' Vorlesung')
+            .setColor(roleColor)
             .setAuthor(subject + ' Reminder', client.guilds.resolve(serverID).members.resolve(botUserID).user.avatarURL())
+            .setTitle(subject + ' Reminder')
             .setDescription(subject + ' fängt in 5 Minuten an')
             .setThumbnail('https://www.pngarts.com/files/7/Zoom-Logo-PNG-Download-Image.png')
             .addFields(
