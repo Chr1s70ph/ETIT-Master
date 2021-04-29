@@ -14,9 +14,9 @@ const { DateTime } = require('luxon');
 exports.run = async (client) => {
 
     var today = localDate();
-    for (entry in config.calenders) {
+    for (entry in config.calendars) {
         var events = {};
-        var webEvents = await ical.async.fromURL(config.calenders[entry]);
+        var webEvents = await ical.async.fromURL(config.calendars[entry]);
         var eventsFromIcal = await getEvents(webEvents, today, client, events);
         await filterToadaysEvents(client, today, eventsFromIcal);
     }
@@ -257,11 +257,18 @@ function extractZoomLinks(description) {
         return 
     }
     let splitString = '>'
+
+    //check for 'id' , because some links might contain an id parameter, which is not needed
+    if (description.includes('id')) { 
+        splitString = 'id'
+    }
+    //check for '#success' , because some links might have been copied wrong
     if (description.includes('#success')) {
         splitString = '#success'
     }
+    //check for html hyperlink parsing , because google calendar does some weird stuff
     if (description.includes('<a href=')) {
-        return description.split('<a href=')[1].split(splitString)[0];           
+        return description.split('<a href=')[1].split(splitString)[0];         
     } else {
         return description;
     }
@@ -319,9 +326,7 @@ function dynamicEmbed(client, role, subject, professor, link) {
         .setFooter('Viel Spaß und Erfolg wünscht euch euer ETIT-Master', client.guilds.resolve(serverID).members.resolve(botUserID).user.avatarURL());
         
     if (link.length != 0) {
-
         embedDynamic.setURL(link);
-
     }
     return embedDynamic;
 }
