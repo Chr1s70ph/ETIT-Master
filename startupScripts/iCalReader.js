@@ -60,10 +60,11 @@ function getEvents(webEvents, today, client, events) {
         var icalEvent = webEvents[entry];
         if (icalEvent.type == "VEVENT") {
             var summary = icalEvent.summary;
-
-
-            var startOfEventa = icalEvent.start;
-            eventStart = convertEventDate(startOfEventa, summary);
+            
+            
+            var tempEventStart = icalEvent.start;
+            eventStart = convertEventDate(tempEventStart);
+            // console.log(summary + eventStart)
 
             var description = icalEvent.description;
             // console.log("Event:  " + summary + " is in Loop \n" + eventStart)       
@@ -171,25 +172,40 @@ function getEvents(webEvents, today, client, events) {
 }
 
 
-function convertEventDate(eventStart, summary) {
-    var convertedDate = "";
-    var timezone = eventStart.tz;
-    if (timezone == "Etc/UTC") {
-        convertedDate = eventStart.toISOString();
-        convertedDate = DateTime.fromISO(convertedDate).setZone("Europe/Berlin").toString();
-        convertedDate = convertedDate.slice(0, -10) + "z";
-        convertedDate = new Date(convertedDate);
-    } else if (timezone == "Europe/Berlin" || eventStart.toString().includes("Europe")) {
-        convertedDate = new Date(eventStart)
-    } else if (eventStart.dateOnly) {
-        convertedDate = new Date(eventStart)
-    } else{
-        console.log("\n\n There was an unexpected Error converting" + summary +"\n"  + eventStart +" to local Time Zone \n\n" )
-        convertedDate = new Date(eventStart);        
-    }
-    return convertedDate;
+function convertEventDate(eventStart) {
+    //This works, because the DATE.toString() already converts to Date Object in the propper Timezone
+    //All this function does, is take the parameters and sets a new date object based on these parameters
+    var convertedDate;
+    var eventStartString = eventStart.toString();
+
+    var eventYear = eventStartString.slice(11, 15); //11 = startOfYearIndex, 15 = endOfYearIndex
+    var enventMonth = monthToIndex(eventStartString.slice(4, 7)) //4 = startOfMonthIndex, 7 = endOfMonthIndex
+    var eventDay = eventStartString.slice(8, 10); //8 = startOfDayIndex, 10 = endOfDayIndex
+    var eventHours = eventStartString.slice(16, 18); //16 = startOfHourIndex, 10 = endOfHourIndex
+    var eventMinutes = eventStartString.slice(19, 21); //8 = startOfMinuteIndex, 10 = endOfMinuteIndex
+
+    return convertedDate = new Date(eventYear, enventMonth, eventDay, eventHours, eventMinutes);
 }
 
+
+function monthToIndex(month) {    
+    var months = {
+        "Jan" : "0",
+        "Feb" : "1",
+        "Mar" : "2",
+        "Apr" : "3",
+        "May" : "4",
+        "Jun" : "5",
+        "Jul" : "6",
+        "Aug" : "7",
+        "Sep" : "8",
+        "Okt" : "9",
+        "Nov" : "10",
+        "Dec" : "11"
+    }
+
+    return months[month];
+}
 
 function addEntryToWeeksEvents(events, day, start, summary, description) {
     events[Object.keys(events).length] = {
