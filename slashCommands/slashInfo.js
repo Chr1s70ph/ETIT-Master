@@ -2,7 +2,7 @@ const config = require('../privateData/config.json');
 const discord = require('../node_modules/discord.js');
 const links = config.links;
 var serverID = config.ids.serverID;
-var ModeratorRoles = config.ids.ModeratorRoles;
+var moderatorRoles = config.ids.moderatorRoles;
 var switchEmbed;
 
 exports.info = info;
@@ -123,6 +123,8 @@ async function info(client) {
                 kitDirectoryLink = kitLectureDirectory[course];
             }
 
+            console.log("User " + interaction.member.user.username + " issued /info " + interaction.data.options[0].value)
+
 
             await client.api.interactions(interaction.id, interaction.token).callback.post({
                 data: {
@@ -142,37 +144,20 @@ async function info(client) {
 
 }
 
-function findCommonElement(array1, array2) {
-    return array1.some(element => array2.includes(element)) 
-}
-
-
 function userHasAccesRights(client, memberRoles, course) {
     var hasRights;
-    var allMemberRoles;
     for (entry in memberRoles) {
-        var roleName = client.guilds.resolve(serverID).roles.cache.get(memberRoles[entry]).name;
-        allMemberRoles += roleName;
-        if (course.toString().includes(roleName)) {            
-            if (allMemberRoles.includes("ETIT") && course.toString().includes("ETIT")) {    //check if member is part of ETIT to acces ETIT courses
-                hasRights = true;
-                break;
-            } else if (allMemberRoles.includes("MIT") && course.toString().includes("MIT")) {//check if member is part of MIT to acces MIT courses
-                hasRights = true;
-                break;
+        //allows moderators to acces all /info entries
+        for (role in moderatorRoles) {
+            if (moderatorRoles[role] == memberRoles[entry]) {
+                return true;
             }
         }
-    }
 
-    //allows moderators to acces all /info entries
-    Object.keys(ModeratorRoles).forEach(function (key) {
-        if (allMemberRoles.includes(key)) {
-            hasRights = true;
-        }
-    })
-
-    if (hasRights) {
-        return true;
+        var roleName = client.guilds.resolve(serverID).roles.cache.get(memberRoles[entry]).name;
+        if (course.toString().includes(roleName)) {
+                return true;
+        }        
     }
 }
 
