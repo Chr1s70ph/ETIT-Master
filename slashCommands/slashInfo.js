@@ -37,7 +37,7 @@ async function info(client) {
             options: [
                 {
                     name: "Fach",
-                    description: "Über welches Fach möchtest du etwas wissen?",
+                    description: "Über welches Fach möchtest du etwas wissen? Du kannst auch nach deinem Fach suchen!",
                     type: 3,
                     required: true,
                     choices: [
@@ -155,7 +155,7 @@ function userHasAccesRights(client, memberRoles, course) {
         }
 
         var roleName = client.guilds.resolve(serverID).roles.cache.get(memberRoles[entry]).name;
-        if (course.toString().includes(roleName)) {
+        if (course.toString() === roleName) {
                 return true;
         }        
     }
