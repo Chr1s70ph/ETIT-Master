@@ -167,7 +167,8 @@ function getEvents(webEvents, today, client, events) {
             }        
         }
     }
-    // console.log(events)
+
+    console.log(events)
     return events;
 }
 
@@ -227,10 +228,6 @@ function amountOfDaysDifference(dateToday, dateToCheck) {
     return diffDays;
 }
 
-function debug(message, client) {
-    client.channels.cache.get(debugChannel).send(`\`\`\`js\n${message}\`\`\``, {split: true});
-}
-
 async function filterToadaysEvents(client, today, thisWeeksEvents) {
     for (entry in thisWeeksEvents) {
         if (thisWeeksEvents[entry].day == today.getDay()) {
@@ -248,13 +245,38 @@ async function filterToadaysEvents(client, today, thisWeeksEvents) {
             
             var cronDate = dateToCron(time);
             
-            var embed = dynamicEmbed(client, findRole(subject, config.ids.roleIDs), subject, professor, link)
-            
-            createCron(cronDate, findChannel(subject, config.ids.channelIDs.subject), findRole(subject, config.ids.roleIDs), embed, client);
-                    
+            var role = findRole(subject, config.ids.roleIDs)
 
+            try {
 
+                var embed = dynamicEmbed(client, role, subject, professor, link)
+                
+            } catch (e) {
+
+                embed = "There was an error creating the embed";
+                client.channels.cache.get('770276625040146463').send(embed + "\n" + e); //sends login embed to channel
+
+            }
+
+            var channel = findChannel(subject, config.ids.channelIDs.subject)
             
+            if (channel == undefined) {
+                
+                channel = config.ids.channelIDs.generalChannels.general;
+
+            }
+
+            if (noVariableUndefined(cronDate, channel, role, embed, client)) {
+                role = ("<@&" + role + ">")
+                
+            } else if (role == undefined) {
+                
+                role = "";
+
+            }
+            
+            createCron(cronDate, channel, role, embed, client);
+
 
             client.channels.cache.get('770276625040146463').send(embed.setTimestamp())
         }
@@ -368,8 +390,6 @@ function findChannel(subject, channels) {
     })
 
     return channel;
-    
-
 }
 
 function findRole(subject, roles) {
@@ -380,10 +400,20 @@ function findRole(subject, roles) {
         }
     })
 
-    return role;
-    
-
+    return role;  
 }
+
+function noVariableUndefined() {
+    for (arg in arguments) {
+        if (arguments[arg] == undefined) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+
 
 /**
  * creates a dynamic Cron schedule
@@ -394,7 +424,7 @@ function findRole(subject, roles) {
  */
 function createCron(cronDate, channel, role ,embed, client) {
     var job = schedule.scheduleJob(cronDate, function () {
-        client.channels.cache.get(channel).send('<@&' + role + '>', embed.setTimestamp())
+        client.channels.cache.get(channel).send(role, embed.setTimestamp())
         .then(msg => msg.delete({ timeout: 5400000 }))
     });
 }
