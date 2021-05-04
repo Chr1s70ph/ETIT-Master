@@ -81,9 +81,14 @@ async function loadScripts(client) {
  * 
  */
 function Presence() {
-    client.user.setPresence(config.presence);     
-
+    var maxNumberOfPresence = Object.keys(config.presence).length;
+    var minNumberOfPresence = 0;
+    const presenceVariants = config.presence;
+    var keys = Object.keys(presenceVariants);
+    
     schedule.scheduleJob(presence_refresh_timer, function () {
-        client.user.setPresence(config.presence);
+        
+        var randomIndex = Math.floor(Math.random() * (maxNumberOfPresence - minNumberOfPresence) + minNumberOfPresence)
+        client.user.setPresence(presenceVariants[randomIndex]);
     });
 }
