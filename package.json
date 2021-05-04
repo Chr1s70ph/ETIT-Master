@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Christoph Bluem",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@slack/web-api": "^6.0.0",
     "cron": "^1.8.2",
@@ -16,6 +16,7 @@
     "discord.js": "^12.5.3",
     "fs": "^0.0.1-security",
     "getos": "^3.2.1",
+    "luxon": "^1.26.0",
     "node-ical": "^0.13.0",
     "node-schedule": "^2.0.0",
     "pm2": "^4.5.6",
