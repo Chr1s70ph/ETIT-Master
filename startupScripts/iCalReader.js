@@ -2,11 +2,9 @@ const ical = require('node-ical');
 const discord = require('../node_modules/discord.js');
 const config = require("../privateData/config.json");
 const schedule = require('node-schedule');
-const util = require('util');
 var subjects = config.ids.channelIDs.subject;
 var serverID = config.ids.serverID;
 var botUserID = config.ids.userID.botUserID;
-var debugChannel = config.ids.channelIDs.dev.botTestLobby;
 var embed = '';
 const { DateTime } = require('luxon');
 
@@ -17,7 +15,7 @@ exports.run = async (client) => {
     for (entry in config.calendars) {
         var events = {};
         var webEvents = await ical.async.fromURL(config.calendars[entry]);
-        var eventsFromIcal = await getEvents(webEvents, today, client, events);
+        var eventsFromIcal = await getEvents(webEvents, today, events);
         await filterToadaysEvents(client, today, eventsFromIcal);
     }
 }
@@ -51,7 +49,7 @@ var datesAreOnSameDay = (first, second) =>
 
 
 
-function getEvents(webEvents, today, client, events) {
+function getEvents(webEvents, today, events) {
     var weekStartDate = localDate();
     weekStartDate.setDate(weekStartDate.getDate() - weekStartDate.getDay() + 1)
     
@@ -63,7 +61,7 @@ function getEvents(webEvents, today, client, events) {
             
             
             var tempEventStart = icalEvent.start;
-            eventStart = convertEventDate(tempEventStart);
+            eventStart = convertDate(tempEventStart);
             // console.log(summary + eventStart)
 
             var description = icalEvent.description;
@@ -173,7 +171,7 @@ function getEvents(webEvents, today, client, events) {
 }
 
 
-function convertEventDate(eventStart) {
+function convertDate(eventStart) {
     //This works, because the DATE.toString() already converts to Date Object in the propper Timezone
     //All this function does, is take the parameters and sets a new date object based on these parameters
     var convertedDate;
@@ -247,16 +245,7 @@ async function filterToadaysEvents(client, today, thisWeeksEvents) {
             
             var role = findRole(subject, config.ids.roleIDs)
 
-            try {
-
-                var embed = dynamicEmbed(client, role, subject, professor, link)
-                
-            } catch (e) {
-
-                embed = "There was an error creating the embed";
-                client.channels.cache.get('770276625040146463').send(embed + "\n" + e); //sends login embed to channel
-
-            }
+            var embed = dynamicEmbed(client, role, subject, professor, link)
 
             var channel = findChannel(subject, config.ids.channelIDs.subject)
             
@@ -278,7 +267,7 @@ async function filterToadaysEvents(client, today, thisWeeksEvents) {
             createCron(cronDate, channel, role, embed, client);
 
 
-            client.channels.cache.get('770276625040146463').send(embed.setTimestamp())
+            // client.channels.cache.get('770276625040146463').send(embed.setTimestamp())
         }
     }
 }
@@ -350,20 +339,26 @@ function dateToCron(date) {
 function dynamicEmbed(client, role, subject, professor, link) {
     var roleColor = client.guilds.resolve(serverID).roles.cache.get(role).color;
 
+    try {
+        var embedDynamic = new discord.MessageEmbed()
+                .setColor(roleColor)
+                .setAuthor(subject + ' Reminder', client.guilds.resolve(serverID).members.resolve(botUserID).user.avatarURL())
+                .setTitle(subject + ' Reminder')
+                .setDescription(subject + ' fängt in 5 Minuten an')
+                .setThumbnail('https://www.pngarts.com/files/7/Zoom-Logo-PNG-Download-Image.png')
+                .addFields(
+                    { name: subject + ' findet wie gewohnt auf Zoom statt.', value: 'Außer es gibt einen Sonderfall' },
+                    { name: 'Dozent', value: professor, inline: false }
+                )
+            .setFooter('Viel Spaß und Erfolg wünscht euch euer ETIT-Master', client.guilds.resolve(serverID).members.resolve(botUserID).user.avatarURL());
+    } catch (e) {
 
-    var embedDynamic = new discord.MessageEmbed()
-            .setColor(roleColor)
-            .setAuthor(subject + ' Reminder', client.guilds.resolve(serverID).members.resolve(botUserID).user.avatarURL())
-            .setTitle(subject + ' Reminder')
-            .setDescription(subject + ' fängt in 5 Minuten an')
-            .setThumbnail('https://www.pngarts.com/files/7/Zoom-Logo-PNG-Download-Image.png')
-            .addFields(
-                { name: subject + ' findet wie gewohnt auf Zoom statt.', value: 'Außer es gibt einen Sonderfall' },
-                { name: 'Dozent', value: professor, inline: false }
-            )
-        .setFooter('Viel Spaß und Erfolg wünscht euch euer ETIT-Master', client.guilds.resolve(serverID).members.resolve(botUserID).user.avatarURL());
+        embed = "There was an error creating the embed";
+        client.channels.cache.get('770276625040146463').send(embed + "\n" + e); //sends login embed to channel
+
+    }       
         
-    if (link.length != 0) {
+    if (link) {
         embedDynamic.setURL(link);
     }
     return embedDynamic;
