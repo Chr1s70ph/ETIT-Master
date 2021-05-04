@@ -112,9 +112,9 @@ async function info(client) {
             var kitLectureDirectory = links.kitLectureDirectory;
             var zoomAdditional = links.zoomAdditional;
             var kitDirectoryLink = "";
+            var pictures = config.pictures.info;
 
-
-            var course = args[0].value;
+            var course = interaction.data.options[0].value;
             iliasLink = ilias[course];
             if (course != hmII_MIT) {
                 zoomLink = zoom[course];
@@ -123,16 +123,17 @@ async function info(client) {
                 kitDirectoryLink = kitLectureDirectory[course];
             }
 
-            console.log("User " + interaction.member.user.username + " issued /info " + interaction.data.options[0].value)
+            console.log("User " + interaction.member.user.username + " issued /info " + course)
 
+            var picture = findPicture(course, pictures);
+            console.log(picture);
 
             await client.api.interactions(interaction.id, interaction.token).callback.post({
                 data: {
                     type: 4, //https://discord.com/developers/docs/interactions/slash-commands#interaction-response-interactionresponsetype
                     data: {
-                        content: '<@' + interaction.member.user.id + '>\n',
                         embeds: [
-                            switchEmbed(interaction.member.roles, interaction.data.options[0].value, iliasLink, zoomLink, zoomAdditional, kitDirectoryLink, ilias ,client)
+                            switchEmbed(interaction.member.roles, course, iliasLink, zoomLink, zoomAdditional, kitDirectoryLink, ilias, picture, client)
                         ],
                         flags: 64
                     }
@@ -143,6 +144,19 @@ async function info(client) {
     });
 
 }
+
+
+function findPicture(course, pictures) {
+    var picture;
+    Object.keys(pictures).forEach(function (key) {
+        if (course.includes(key)) {
+            picture = pictures[key];
+        }
+    })
+
+    return picture;  
+}
+
 
 function userHasAccesRights(client, memberRoles, course) {
     var hasRights;
@@ -164,13 +178,13 @@ function userHasAccesRights(client, memberRoles, course) {
 
 
 
-function switchEmbed(roles, subjectName, iliasLink, zoomLink, zoomAdditional, kitDirectoryLink, ilias, client) {
+function switchEmbed(roles, subjectName, iliasLink, zoomLink, zoomAdditional, kitDirectoryLink, ilias, picture, client) {
     var avatar = client.guilds.resolve(config.ids.serverID).members.resolve(config.ids.userID.botUserID).user.avatarURL(); //get Avatar URL of Bot
     
     const embed = new discord.MessageEmbed()
         .setColor('#0099ff')
         .setAuthor(subjectName, avatar)
-        .setThumbnail('https://images.emojiterra.com/twitter/v13.0/512px/1f4c8.png')
+        .setThumbnail(picture)
     
     
     var title = `🛡️ FEHLENDE RECHTE`;
