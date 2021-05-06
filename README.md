@@ -15,3 +15,9 @@ This is a personal Discord-bot written in JS.
 The bot supports numerus commands, including the newly added slash-commands.
 
 The bot is written in JS using the official Discord API to do its job.
+
+---
+To run the bot you need to install following dependencies first:
+```bash
+npm install @slack/web-api cron discord-markdown discord-rpc discord.js fs getos luxon node-ical node-schedule pm2 slash-create
+```
