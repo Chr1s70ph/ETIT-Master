@@ -1,9 +1,4 @@
 const schedule = require('node-schedule');
-const reminder = require("./startupScripts/_Schedule.js");
-const reader = require("./startupScripts/iCalReader.js");
-const loginMessage = require("./startupScripts/loginMessage.js")
-const birthday = require("./startupScripts/birthdayPing.js");
-const slashCommands = require("./startupScripts/slashCommands.js")
 
 const config = require("./privateData/config.json")
 const discord = require('./node_modules/discord.js');
