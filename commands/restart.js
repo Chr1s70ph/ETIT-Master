@@ -2,14 +2,10 @@ const pm2 = require('pm2');
 const config = require("../privateData/config.json")
 
 exports.run = (client, message) => {
+    message.delete()
 
 
     if (message.author == config.ids.userID.ownerID) {
-        try {
-            message.delete()
-        } catch (error) {
-            console.error(error);
-        }
         message.channel.send("🤖Restarting...")
         pm2.connect(function(err) {
             if (err) {
@@ -22,11 +18,6 @@ exports.run = (client, message) => {
         
     } else
     {
-        try {
-            message.delete()
-        } catch (error) {
-            console.error(error);
-        }
         message.reply('You do not have the permissions to perform that command.');
     }
 
