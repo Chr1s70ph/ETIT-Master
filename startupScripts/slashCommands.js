@@ -2,7 +2,6 @@ let help = require("../slashCommands/slashHelp.js")
 let ping = require("../slashCommands/slashPing.js")
 let info = require("../slashCommands/slashInfo.js");
 let birthday = require("../slashCommands/slashBirthday.js");
-const config = require('../privateData/config.json');
 
 exports.run = async (client) => {
     await help.help(client);

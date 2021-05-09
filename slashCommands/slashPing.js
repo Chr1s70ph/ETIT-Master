@@ -18,7 +18,6 @@ async function Ping(client) {
                 data: {
                     type: 4,
                     data: {
-                        //content: `🏓Latency is ${Date.now() - interaction.Date}ms. API Latency is ${Math.round(client.ws.ping)}ms`,                        
                         content: "pong",
                         flags: 64
                     }
