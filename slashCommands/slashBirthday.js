@@ -14,18 +14,18 @@ async function birthdayEntry(client, listData, message) {
 
     await client.api.applications(client.user.id).guilds(serverID).commands.post({
         data: {
-            name: "Geburtstag",
+            name: "geburtstag",
             description: "Trage deinen Geburtstag ein, und erhalte Glückwünsche vom Bot!",
             type: 2,
             options: [
                 {
-                    name: "Tag",
+                    name: "tag",
                     description: "Der Tag an dem du geboren bist:",
                     type: 4,
                     required: true
                 },
                 {
-                    name: "Monat",
+                    name: "monat",
                     description: "Der Monat in dem du geboren bist:",
                     type: 3,
                     required: true,
@@ -81,7 +81,7 @@ async function birthdayEntry(client, listData, message) {
                     ]
                 },
                 {
-                    name: "Jahr",
+                    name: "jahr",
                     description: "Das Jahr in dem du geboren bist:",
                     type: 4,
                     required: true

@@ -31,12 +31,12 @@ async function info(client) {
 
     await client.api.applications(client.user.id).guilds(config.ids.serverID).commands.post({
         data: {
-            name: "Info",
+            name: "info",
             description: "Gibt infos",    
             type: 2,
             options: [
                 {
-                    name: "Fach",
+                    name: "fach",
                     description: "Über welches Fach möchtest du etwas wissen? Du kannst auch nach deinem Fach suchen!",
                     type: 3,
                     required: true,
@@ -93,7 +93,7 @@ async function info(client) {
                         {                    
                             name: hmII_MIT,
                             value: hmII_MIT
-                        },
+                        }
                     ]
                 }
             ]
