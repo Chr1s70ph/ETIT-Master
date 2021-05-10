@@ -126,7 +126,6 @@ async function info(client) {
             console.log("User " + interaction.member.user.username + " issued /info " + course)
 
             var picture = findPicture(course, pictures);
-            console.log(picture);
 
             await client.api.interactions(interaction.id, interaction.token).callback.post({
                 data: {
