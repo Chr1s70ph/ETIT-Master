@@ -1,5 +1,5 @@
 const pm2 = require('pm2');
-const config = require("../privateData/config.json")
+const config = require("../../privateData/config.json")
 
 exports.run = (client, message) => {
     message.delete()

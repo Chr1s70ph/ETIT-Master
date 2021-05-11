@@ -1,4 +1,4 @@
-const config = require('../privateData/config.json');
+const config = require("../../privateData/config.json");
 
 
 exports.run = (client, message) => {
