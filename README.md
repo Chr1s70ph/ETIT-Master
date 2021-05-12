@@ -19,5 +19,5 @@ The bot is written in JS using the official Discord API to do its job.
 ---
 To run the bot you need to install following dependencies first:
 ```bash
-npm install @slack/web-api cron discord-markdown discord-rpc discord.js fs getos luxon node-ical node-schedule pm2 slash-create
+npm install @slack/web-api cron discord-markdown discord-rpc discord.js fs luxon node-ical node-schedule pm2 slash-create
 ```
