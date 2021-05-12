@@ -10,8 +10,9 @@ exports.run = async (client, message) => {
 			args = messageArray.slice(1),
 			commandfile = client.commands.get(cmd.slice(prefix.length)) || client.aliases.get(cmd.slice(prefix.length));
 			
-		if (commandfile == ' '|| commandfile == undefined) return;
+		if (commandfile == undefined) return;
 		try {
+			console.log(client.commands);
 			commandfile.run(client, message, args);
 			console.log(`${message.author.username} used ${cmd}`)
 		}
