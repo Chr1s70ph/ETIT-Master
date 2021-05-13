@@ -1,6 +1,6 @@
 const config = require('../privateData/config.json')
 
-	
+
 exports.run = async (client, message) => {
     const guild = client.guilds.cache.get(config.ids.serverID);
     const memberCount = guild.memberCount;

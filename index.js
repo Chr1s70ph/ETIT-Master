@@ -17,7 +17,7 @@ client.on("ready", () => {
 
 
 async function foo(client) {
-    await loadScripts(client);        
+    await loadScripts(client);
     console.log("Online!");
 }
 
@@ -42,9 +42,9 @@ fs.readdir("./commands/", (err, elements) => {
                     setCommands(sub_directory, file, client); //adds commands from subfolder to collection
                 });
             });
-            return; 
+            return;
         }
-        
+
         setCommands(path, file, client) //adds commands from parentfolder to collection
     });
 });
@@ -83,9 +83,9 @@ fs.readdir('./events/', (err, files) => {
  */
 async function loadScripts(client) {
     let files;
-    try {        
+    try {
         files = await fs.promises.readdir('./startupScripts/')
-    } catch(e) {
+    } catch (e) {
         console.log(e);
     }
     files.forEach(file => {
@@ -103,9 +103,9 @@ function Presence() {
     var minNumberOfPresence = 0;
     const presenceVariants = config.presence;
     var keys = Object.keys(presenceVariants);
-    
+
     schedule.scheduleJob(presence_refresh_timer, function () {
-        
+
         var randomIndex = Math.floor(Math.random() * (maxNumberOfPresence - minNumberOfPresence) + minNumberOfPresence)
         client.user.setPresence(presenceVariants[randomIndex]);
     });

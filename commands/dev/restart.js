@@ -7,21 +7,19 @@ exports.run = (client, message) => {
 
     if (message.author == config.ids.userID.ownerID) {
         message.channel.send("🤖Restarting...")
-        pm2.connect(function(err) {
+        pm2.connect(function (err) {
             if (err) {
                 console.error(err);
                 process.exit(2);
             }
-            pm2.restart('index', (err, proc) => {
-            })
+            pm2.restart('index', (err, proc) => {})
         });
-        
-    } else
-    {
+
+    } else {
         message.reply('You do not have the permissions to perform that command.');
     }
 
 
-    
+
 
 }

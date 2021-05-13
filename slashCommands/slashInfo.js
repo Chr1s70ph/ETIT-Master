@@ -22,7 +22,7 @@ async function info(client) {
     var ofe = "Optik und Festkörperelektronik";
     var ght = "Grundlagen der Hochfrequenztechnik";
     var ees = "Elektroenergiesysteme"
-        
+
     //2.semester MIT
     var tmII = "Technische Mechanik II";
     var mklII = "Maschinenkonstruktionslehre II";
@@ -32,73 +32,70 @@ async function info(client) {
     await client.api.applications(client.user.id).guilds(config.ids.serverID).commands.post({
         data: {
             name: "info",
-            description: "Gibt infos",    
+            description: "Gibt infos",
             type: 2,
-            options: [
-                {
-                    name: "fach",
-                    description: "Über welches Fach möchtest du etwas wissen? Du kannst auch nach deinem Fach suchen!",
-                    type: 3,
-                    required: true,
-                    choices: [
-                        {                    
-                            name: hmII_EE,
-                            value: hmII_EE
-                        },
-                        {                    
-                            name: es,
-                            value: es
-                        },
-                        {                    
-                            name: emf,
-                            value: emf
-                        },
-                        {                    
-                            name: kai,
-                            value: kai
-                        },
-                        {                    
-                            name: itI,
-                            value: itI
-                        },
-                        
+            options: [{
+                name: "fach",
+                description: "Über welches Fach möchtest du etwas wissen? Du kannst auch nach deinem Fach suchen!",
+                type: 3,
+                required: true,
+                choices: [{
+                        name: hmII_EE,
+                        value: hmII_EE
+                    },
+                    {
+                        name: es,
+                        value: es
+                    },
+                    {
+                        name: emf,
+                        value: emf
+                    },
+                    {
+                        name: kai,
+                        value: kai
+                    },
+                    {
+                        name: itI,
+                        value: itI
+                    },
 
-                        {                    
-                            name: itII,
-                            value: itII
-                        },
-                        {                    
-                            name: ofe,
-                            value: ofe
-                        },
-                        {                    
-                            name: ght,
-                            value: ght
-                        },
-                        {                    
-                            name: ees,
-                            value: ees
-                        },
+
+                    {
+                        name: itII,
+                        value: itII
+                    },
+                    {
+                        name: ofe,
+                        value: ofe
+                    },
+                    {
+                        name: ght,
+                        value: ght
+                    },
+                    {
+                        name: ees,
+                        value: ees
+                    },
 
 
 
-                        {                    
-                            name: tmII,
-                            value: tmII
-                        },
-                        {                    
-                            name: mklII,
-                            value: mklII
-                        },
-                        {                    
-                            name: hmII_MIT,
-                            value: hmII_MIT
-                        }
-                    ]
-                }
-            ]
+                    {
+                        name: tmII,
+                        value: tmII
+                    },
+                    {
+                        name: mklII,
+                        value: mklII
+                    },
+                    {
+                        name: hmII_MIT,
+                        value: hmII_MIT
+                    }
+                ]
+            }]
         }
-    });   
+    });
 
 
     client.ws.on('INTERACTION_CREATE', async (interaction) => {
@@ -153,7 +150,7 @@ function findPicture(course, pictures) {
         }
     })
 
-    return picture;  
+    return picture;
 }
 
 
@@ -169,8 +166,8 @@ function userHasAccesRights(client, memberRoles, course) {
 
         var roleName = client.guilds.resolve(serverID).roles.cache.get(memberRoles[entry]).name;
         if (course.toString() === roleName) {
-                return true;
-        }        
+            return true;
+        }
     }
 }
 
@@ -179,41 +176,59 @@ function userHasAccesRights(client, memberRoles, course) {
 
 function switchEmbed(roles, subjectName, iliasLink, zoomLink, zoomAdditional, kitDirectoryLink, ilias, picture, client) {
     var avatar = client.guilds.resolve(config.ids.serverID).members.resolve(config.ids.userID.botUserID).user.avatarURL(); //get Avatar URL of Bot
-    
+
     const embed = new discord.MessageEmbed()
         .setColor('#0099ff')
         .setAuthor(subjectName, avatar)
         .setThumbnail(picture)
-    
-    
+
+
     var title = `🛡️ FEHLENDE RECHTE`;
-    var fields = [
-        { name: '⚠️Du hast nicht die benötigten Rechte, um diesen Befehl auszuführen⚠️', value: `\u200B` },
-        { name: '\u200B', value: '\u200B' }
+    var fields = [{
+            name: '⚠️Du hast nicht die benötigten Rechte, um diesen Befehl auszuführen⚠️',
+            value: `\u200B`
+        },
+        {
+            name: '\u200B',
+            value: '\u200B'
+        }
     ];
 
-    if (userHasAccesRights(client, roles ,subjectName) == true) {
+    if (userHasAccesRights(client, roles, subjectName) == true) {
         title = `ℹ️ Info Seite von ${subjectName}`;
-        fields = [
-            { name: 'Ilias', value: `<:ilias:776366543093235712> Hier ist der Link zum [Ilias](${iliasLink})` }
-        ]
+        fields = [{
+            name: 'Ilias',
+            value: `<:ilias:776366543093235712> Hier ist der Link zum [Ilias](${iliasLink})`
+        }]
         if (!kitDirectoryLink) {
 
-            fields[fields.length] = { name: 'Zoom', value: `<:zoom:776402157334822964> Hier ist der Link zur [Zoom](${zoomLink}) Vorlesung` }
+            fields[fields.length] = {
+                name: 'Zoom',
+                value: `<:zoom:776402157334822964> Hier ist der Link zur [Zoom](${zoomLink}) Vorlesung`
+            }
 
         } else {
 
-            fields[fields.length] = { name: 'Vorlesungsverzeichnis', value: `<:KIT:776497722203177020> Hier ist der Link zum [KIT Vorlesungsverzeichnis](${kitDirectoryLink})` }
-            
+            fields[fields.length] = {
+                name: 'Vorlesungsverzeichnis',
+                value: `<:KIT:776497722203177020> Hier ist der Link zum [KIT Vorlesungsverzeichnis](${kitDirectoryLink})`
+            }
+
         }
 
 
         if (links.zoomAdditional[subjectName]) {
-            fields[fields.length] = { name: 'Zoom', value: `<:zoom:776402157334822964> Hier ist der Link zur [Zoom](${zoomAdditional}) Übung/Fragestunde` }            
+            fields[fields.length] = {
+                name: 'Zoom',
+                value: `<:zoom:776402157334822964> Hier ist der Link zur [Zoom](${zoomAdditional}) Übung/Fragestunde`
+            }
         }
 
 
-        fields[fields.length] = { name: '\u200B', value: '\u200B' }        
+        fields[fields.length] = {
+            name: '\u200B',
+            value: '\u200B'
+        }
 
     }
 

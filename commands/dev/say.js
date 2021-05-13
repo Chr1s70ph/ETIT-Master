@@ -12,8 +12,7 @@ exports.run = (client, message) => {
             console.error(error);
         }
         message.channel.send(command);
-    } else
-    {
+    } else {
         try {
             message.delete()
         } catch (error) {

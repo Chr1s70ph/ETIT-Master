@@ -17,8 +17,7 @@ async function birthdayEntry(client, listData, message) {
             name: "geburtstag",
             description: "Trage deinen Geburtstag ein, und erhalte Glückwünsche vom Bot!",
             type: 2,
-            options: [
-                {
+            options: [{
                     name: "tag",
                     description: "Der Tag an dem du geboren bist:",
                     type: 4,
@@ -29,8 +28,7 @@ async function birthdayEntry(client, listData, message) {
                     description: "Der Monat in dem du geboren bist:",
                     type: 3,
                     required: true,
-                    choices: [
-                        {
+                    choices: [{
                             name: "Januar",
                             value: "01"
                         },
@@ -101,7 +99,7 @@ async function birthdayEntry(client, listData, message) {
         const args = interaction.data.options;
         var dateIsValid = false;
         var userID = interaction.member.user.id;
-        
+
         if (command === 'geburtstag') {
             if (dateCheck(dateIsValid, args, client) == true) {
                 await client.api.interactions(interaction.id, interaction.token).callback.post({
@@ -116,8 +114,7 @@ async function birthdayEntry(client, listData, message) {
                     }
                 });
                 addBirthday(args, userID, birthdayData, client, message);
-            }
-            else {
+            } else {
                 await client.api.interactions(interaction.id, interaction.token).callback.post({
                     data: {
                         type: 4,
@@ -150,8 +147,12 @@ function addBirthday(args, userID, birthdayData, client, message) {
 
 
 function BirthdayAddedEmbed(args, client, message) {
-    
-    var options = { day: 'numeric', month: 'long', year: 'numeric'}
+
+    var options = {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    }
     var birthDate = new Date(args[2].value, args[1].value - 1, args[0].value).toLocaleDateString('de-DE', options);
 
     const birthdayAdded = new discord.MessageEmbed()
@@ -159,10 +160,11 @@ function BirthdayAddedEmbed(args, client, message) {
         .setAuthor('ETIT-Master', client.guilds.resolve(serverID).members.resolve(config.ids.userID.botUserID).user.avatarURL())
         .setThumbnail('https://raw.githubusercontent.com/Chr1s70ph/ETIT-Master-JS/master/images/kuchen1.png')
         .setTitle('Geburtstag hinzugefügt 🍰')
-        .addFields(
-            { name: 'Dein Geburtstag wurde gesetzt auf den: ', value: util.inspect(birthDate) }
-        )
-    
+        .addFields({
+            name: 'Dein Geburtstag wurde gesetzt auf den: ',
+            value: util.inspect(birthDate)
+        })
+
     return (birthdayAdded);
 }
 
@@ -170,7 +172,7 @@ function BirthdayAddedEmbed(args, client, message) {
 
 //checks if date is valid
 function checkDate(dateIsValid, args) {
-    var checkCheck = new Date(args[2].value ,args[1].value -1 ,args[0].value);
+    var checkCheck = new Date(args[2].value, args[1].value - 1, args[0].value);
     return checkCheck != "Invalid Date";
 }
 
@@ -193,8 +195,7 @@ function minYearDifference(args) {
 }
 
 //check for leap year
-function leapYear(args)
-{
+function leapYear(args) {
     return ((args[2].value % 4 == 0) && (args[2].value % 100 != 0)) || (args[2].value % 400 == 0);
 }
 
