@@ -7,13 +7,13 @@ async function Ping(client) {
             name: "ping",
             description: "Prüft, ob der Bot ordnungsgemäß antwortet"
         }
-    });   
-    
+    });
+
     client.ws.on('INTERACTION_CREATE', async (interaction) => {
         const command = interaction.data.name.toLowerCase();
         const args = interaction.data.options;
-        
-        if (command === 'ping'){
+
+        if (command === 'ping') {
             await client.api.interactions(interaction.id, interaction.token).callback.post({
                 data: {
                     type: 4,

@@ -9,17 +9,24 @@ exports.run = (client, message) => {
     message.delete()
 
     const git = new discord.MessageEmbed() //Login Embed
-    .setColor('#ffa500')
-    .setAuthor(client.user.tag, 'https://git-scm.com/images/logos/downloads/Git-Icon-1788C.png')
-    .setThumbnail("https://git-scm.com/images/logos/downloads/Git-Icon-1788C.png")
-    .setTitle('[🌐] GIT Wiki')
-    .setURL("https://git-scm.com/book/en/v2")
-        .addFields(        
-        { name: 'Gitlab:', value: `[Link](${gitlab}) zur Gitlab Startseite`, inline: false },        
-        { name: `Github:`, value: `Github [Repository](${github}) von <@${config.ids.userID.botUserID}>`, inline: false },        
-        { name: '\u200B', value: '\u200B' }        
-        )
-    .setFooter(`[ID] ${config.ids.userID.botUserID} \n`, 'https://about.gitlab.com/images/press/logo/png/gitlab-icon-rgb.png');
+        .setColor('#ffa500')
+        .setAuthor(client.user.tag, 'https://git-scm.com/images/logos/downloads/Git-Icon-1788C.png')
+        .setThumbnail("https://git-scm.com/images/logos/downloads/Git-Icon-1788C.png")
+        .setTitle('[🌐] GIT Wiki')
+        .setURL("https://git-scm.com/book/en/v2")
+        .addFields({
+            name: 'Gitlab:',
+            value: `[Link](${gitlab}) zur Gitlab Startseite`,
+            inline: false
+        }, {
+            name: `Github:`,
+            value: `Github [Repository](${github}) von <@${config.ids.userID.botUserID}>`,
+            inline: false
+        }, {
+            name: '\u200B',
+            value: '\u200B'
+        })
+        .setFooter(`[ID] ${config.ids.userID.botUserID} \n`, 'https://about.gitlab.com/images/press/logo/png/gitlab-icon-rgb.png');
 
 
 
