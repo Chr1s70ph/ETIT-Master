@@ -6,8 +6,6 @@ const github = "https://git.io/J3Vao";
 
 exports.run = (client, message) => {
 
-    message.delete()
-
     const git = new discord.MessageEmbed() //Login Embed
         .setColor('#ffa500')
         .setAuthor(client.user.tag, 'https://git-scm.com/images/logos/downloads/Git-Icon-1788C.png')

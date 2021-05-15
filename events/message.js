@@ -12,7 +12,7 @@ exports.run = async (client, message) => {
 
 		if (commandfile == undefined) return;
 		try {
-			console.log(client.commands);
+			message.delete();
 			commandfile.run(client, message, args);
 			console.log(`${message.author.username} used ${cmd}`)
 		} catch (error) {
