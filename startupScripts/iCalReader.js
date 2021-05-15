@@ -140,8 +140,8 @@ function getEvents(webEvents, today, events) {
                     var byday = ruleOption.byweekday;
                     if (byday.length > 1) {
                         for (day in byday) {
-                            if (byday[day] == (today.getDay() - 1)) {
-                                addEntryToWeeksEvents(events, icalEvent.exdate[entry].getDay(), eventStart, summary, description)
+                            if ((byday[day] + 1) == today.getDay()) {
+                                addEntryToWeeksEvents(events, byday[day] + 1, eventStart, summary, description)
                             }
                         }
                     }
