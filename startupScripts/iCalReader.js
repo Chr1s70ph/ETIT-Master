@@ -87,12 +87,13 @@ function getEvents(webEvents, today, events) {
 
                     if (icalEvent.exdate) {
                         for (entry in icalEvent.exdate) {
-                            if (icalEvent.exdate[entry] == today) {
-                                addEntryToWeeksEvents(events, byday[day] + 1, eventStart, summary, description)
+                            if (datesAreOnSameDay(icalEvent.exdate[entry], today)) {
+                                continue mainLoop;
                             }
                         }
                     }
-                    // console.log("Event:  " + summary + " in rrule \n" + eventStart + "\n" + ruleOption.until)       
+
+                    // console.log("Event:  " + summary + " in rrule \n" + eventStart + "\n" + ruleOption.until)
                     if (ruleOption.until) {
                         if ((ruleOption.until - today) < 0) {
                             // console.log("removed " + summary + " because of until");
@@ -109,23 +110,12 @@ function getEvents(webEvents, today, events) {
                             var daysInWeek = 7;
                             var intervalEndDate = new Date(eventStart + daysInWeek * interval * (count - 1));
                             if (amountOfDaysDifference(today, intervalEndDate) < 0) {
-                                if (icalEvent.exdate) {
-                                    for (entry in icalEvent.exdate) {
-                                        if (icalEvent.exdate[entry] != today) {
-                                            addEntryToWeeksEvents(events, byday[day] + 1, eventStart, summary, description)
-                                            continue mainLoop;
-                                        }
-                                    }
-                                } else {
-                                    addEntryToWeeksEvents(events, eventStart.getDay(), eventStart, summary, description)
-                                    continue mainLoop;
-                                }
-                                // console.log("removed " + summary + " count" + eventStart)                            
-                                continue;
+                                addEntryToWeeksEvents(events, eventStart.getDay(), eventStart, summary, description)
                             }
+                            // console.log("removed " + summary + " count" + eventStart)                            
+                            continue;
                         }
                     }
-
                     if (ruleOption.interval) {
                         var interval = ruleOption.interval;
                         if ((Math.abs(weekStartDate.getWeek() - eventStart.getWeek()) % interval) == 0) {
@@ -135,17 +125,8 @@ function getEvents(webEvents, today, events) {
                             if (byday) {
                                 for (day in byday) {
                                     if ((byday[day] + 1) == weekdayToday) {
-                                        if (icalEvent.exdate) {
-                                            for (entry in icalEvent.exdate) {
-                                                if (icalEvent.exdate[entry] != today) {
-                                                    addEntryToWeeksEvents(events, byday[day] + 1, eventStart, summary, description)
-                                                    continue mainLoop;
-                                                }
-                                            }
-                                        } else {
-                                            addEntryToWeeksEvents(events, eventStart.getDay(), eventStart, summary, description)
-                                            continue mainLoop;
-                                        }
+                                        addEntryToWeeksEvents(events, byday[day] + 1, eventStart, summary, description)
+                                        continue mainLoop;
                                     }
                                 }
                             } else {
@@ -160,32 +141,15 @@ function getEvents(webEvents, today, events) {
                     if (byday.length > 1) {
                         for (day in byday) {
                             if (byday[day] == (today.getDay() - 1)) {
-                                if (icalEvent.exdate) {
-                                    for (entry in icalEvent.exdate) {
-                                        if (icalEvent.exdate[entry].getDay() != byday[day]) {
-                                            addEntryToWeeksEvents(events, icalEvent.exdate[entry].getDay(), eventStart, summary, description)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    if (icalEvent.exdate) {
-                        var exdate = icalEvent.exdate;
-                        for (date in exdate) {
-                            if (exdate[date] != today) {
-                                addEntryToWeeksEvents(events, eventStart.getDay(), eventStart, summary, description);
-                            } else if (exdate[date] > today) {
-                                // console.log("removed " + summary + " exdate" + eventStart)
-                                continue mainLoop;
+                                addEntryToWeeksEvents(events, icalEvent.exdate[entry].getDay(), eventStart, summary, description)
                             }
                         }
                     }
                 }
+
+
             }
         }
-
     console.log(events)
     return events;
 }
