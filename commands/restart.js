@@ -2,9 +2,6 @@ const pm2 = require('pm2');
 const config = require("../privateData/config.json")
 
 exports.run = (client, message) => {
-    message.delete()
-
-
     if (message.author == config.ids.userID.ownerID) {
         message.channel.send("🤖Restarting...")
         pm2.connect(function (err) {
