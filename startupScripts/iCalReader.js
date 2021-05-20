@@ -14,33 +14,41 @@ const {
 exports.run = async (client) => {
 
     var today = localDate();
+
     for (entry in config.calendars) {
+
         var events = {};
         var webEvents = await ical.async.fromURL(config.calendars[entry]);
         var eventsFromIcal = await getEvents(webEvents, today, events);
         await filterToadaysEvents(client, today, eventsFromIcal);
+
     }
+
 }
 
 
 function localDate() {
+
     var tempToday = DateTime.local().toString();
     var todayString = tempToday.slice(0, -10) + "z";
     var today = new Date(todayString);
     return today;
+
 }
 
 
 //NOTE: This function is from stackoverflow
 //I don't understand it, but it works
 Date.prototype.getWeek = function () {
+
     var date = new Date(this.getTime());
     date.setHours(0, 0, 0, 0);
-
     date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
 
     var week1 = new Date(date.getFullYear(), 0, 4);
+
     return 2 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+
 }
 
 var datesAreOnSameDay = (first, second) =>
@@ -53,105 +61,152 @@ var datesAreOnSameDay = (first, second) =>
 
 function getEvents(webEvents, today, events) {
     var weekStartDate = localDate();
-    weekStartDate.setDate(weekStartDate.getDate() - weekStartDate.getDay() + 1)
+    weekStartDate.setDate(weekStartDate.getDate() - weekStartDate.getDay() + 1);
 
     mainLoop:
         for (entry in webEvents) {
+
             var icalEvent = webEvents[entry];
+
             if (icalEvent.type == "VEVENT") {
+
                 var summary = icalEvent.summary;
-
-
                 var tempEventStart = icalEvent.start;
                 eventStart = convertDate(tempEventStart);
-                // console.log(summary + eventStart)
-
                 var description = icalEvent.description;
-                // console.log("Event:  " + summary + " is in Loop \n" + eventStart)       
+
                 if (datesAreOnSameDay(eventStart, today)) {
+
                     addEntryToWeeksEvents(events, eventStart.getDay(), eventStart, summary, description)
                     continue;
+
                 }
 
+
                 if (eventStart > today) {
-                    // console.log("removed " + summary + " greater than today \n" + eventStart + "\n" + today)                            
+
                     continue;
 
                 }
 
 
-                //check if rrule exists in icalEvent
-                if (icalEvent.rrule) {
+                if (icalEvent.rrule) { //check if rrule exists in icalEvent
+
                     var ruleOption = icalEvent.rrule.options;
+
+                    if (ruleOption.until) {
+
+                        if ((ruleOption.until - today) < 0) {
+
+                            continue;
+
+                        }
+
+                    }
 
 
                     if (icalEvent.exdate) {
+
                         for (entry in icalEvent.exdate) {
+
                             if (datesAreOnSameDay(icalEvent.exdate[entry], today)) {
+
                                 continue mainLoop;
+
                             }
                         }
-                    }
 
-                    // console.log("Event:  " + summary + " in rrule \n" + eventStart + "\n" + ruleOption.until)
-                    if (ruleOption.until) {
-                        if ((ruleOption.until - today) < 0) {
-                            // console.log("removed " + summary + " because of until");
-                            continue;
-                        }
                     }
 
 
                     var count = ruleOption.count;
+
                     if (count) {
-                        if (ruleOption.interval > 1) {
-                            var interval = ruleOption.interval;
+
+                        if (ruleOption.interval > 0) {
+
+                            var intervallModifier = (ruleOption.interval > 0) ? ruleOption.interval : 1;
                             //retuns days until last day of webEvent based on interval
                             var daysInWeek = 7;
-                            var intervalEndDate = new Date(eventStart + daysInWeek * interval * (count - 1));
-                            if (amountOfDaysDifference(today, intervalEndDate) < 0) {
-                                addEntryToWeeksEvents(events, eventStart.getDay(), eventStart, summary, description)
+                            var intervalEndDate = new Date(eventStart + daysInWeek * intervallModifier * (count - 1));
+
+                            if (amountOfDaysDifference(today, intervalEndDate) == 0) {
+
+                                addEntryToWeeksEvents(events, eventStart.getDay(), eventStart, summary, description);
+                                continue;
+
                             }
-                            // console.log("removed " + summary + " count" + eventStart)                            
-                            continue;
+
                         }
+
                     }
-                    if (ruleOption.interval) {
-                        var interval = ruleOption.interval;
+
+
+
+                    var interval = ruleOption.interval;
+
+                    if (interval) {
+
                         if ((Math.abs(weekStartDate.getWeek() - eventStart.getWeek()) % interval) == 0) {
-                            var byday = ruleOption.byweekday;
-                            var weekdayToday = today.getDay();
-                            // weekdayToday -= 1;
-                            if (byday) {
-                                for (day in byday) {
-                                    if ((byday[day] + 1) == weekdayToday) {
-                                        addEntryToWeeksEvents(events, byday[day] + 1, eventStart, summary, description)
-                                        continue mainLoop;
-                                    }
-                                }
-                            } else {
-                                addEntryToWeeksEvents(events, eventStart.getDay(), eventStart, summary, description)
+
+                            if (eventStart.getDay() == today.getDay()) {
+
+                                addEntryToWeeksEvents(events, eventStart.getDay(), eventStart, summary, description);
+                                continue mainLoop;
+
                             }
+
+
+                            var byday = ruleOption.byweekday;
+
+                            if (byday.length > 1) {
+
+                                for (day in byday) {
+
+                                    if ((byday[day] + 1) == today.getDay()) {
+
+                                        addEntryToWeeksEvents(events, byday[day] + 1, eventStart, summary, description);
+                                        continue mainLoop;
+
+                                    }
+
+                                }
+
+                            }
+
                         }
-                        // console.log("removed " + summary + " interval" + eventStart)
+
                         continue;
+
                     }
+
 
                     var byday = ruleOption.byweekday;
+
                     if (byday.length > 1) {
+
                         for (day in byday) {
+
                             if ((byday[day] + 1) == today.getDay()) {
-                                addEntryToWeeksEvents(events, byday[day] + 1, eventStart, summary, description)
+
+                                addEntryToWeeksEvents(events, byday[day] + 1, eventStart, summary, description);
+                                continue mainLoop;
+
                             }
+
                         }
+
                     }
+
                 }
 
-
             }
+
         }
+
     console.log(events)
     return events;
+
 }
 
 
@@ -172,6 +227,7 @@ function convertDate(eventStart) {
 
 
 function monthToIndex(month) {
+
     var months = {
         "Jan": "0",
         "Feb": "1",
@@ -191,16 +247,20 @@ function monthToIndex(month) {
 }
 
 function addEntryToWeeksEvents(events, day, start, summary, description) {
+
     events[Object.keys(events).length] = {
         "day": day,
         "start": start,
         "summary": summary,
         "description": description
     }
+
     return events
+
 }
 
 function amountOfDaysDifference(dateToday, dateToCheck) {
+
     var milisecondsInOneMinute = 1000;
     var minutesInOneHour = 3600;
     var hoursInOneDay = 24;
@@ -208,11 +268,15 @@ function amountOfDaysDifference(dateToday, dateToCheck) {
     var diffDays = Math.ceil(timediff / (milisecondsInOneMinute * minutesInOneHour * hoursInOneDay));
 
     return diffDays;
+
 }
 
 async function filterToadaysEvents(client, today, thisWeeksEvents) {
+
     for (entry in thisWeeksEvents) {
+
         if (thisWeeksEvents[entry].day == today.getDay()) {
+
             var event = thisWeeksEvents[entry];
             var summary = event.summary;
             //extract the subject after the "-" in the string
@@ -233,6 +297,7 @@ async function filterToadaysEvents(client, today, thisWeeksEvents) {
 
             var channel = findChannel(subject, config.ids.channelIDs.subject)
 
+
             if (channel == undefined) {
 
                 channel = config.ids.channelIDs.generalChannels.general;
@@ -240,7 +305,9 @@ async function filterToadaysEvents(client, today, thisWeeksEvents) {
             }
 
             if (noVariableUndefined(cronDate, channel, role, embed, client)) {
+
                 role = ("<@&" + role + ">")
+
 
             } else if (role == undefined) {
 
@@ -250,10 +317,10 @@ async function filterToadaysEvents(client, today, thisWeeksEvents) {
 
             createCron(cronDate, channel, role, embed, client);
 
-
-            // client.channels.cache.get('770276625040146463').send(embed.setTimestamp())
         }
+
     }
+
 }
 
 
@@ -264,24 +331,36 @@ async function filterToadaysEvents(client, today, thisWeeksEvents) {
  * @returns link
  */
 function extractZoomLinks(description) {
+
     if (description.length == 0) {
+
         return
+
     }
+
     let splitString = '>'
 
     //check for 'id' , because some links might contain an id parameter, which is not needed
     if (description.includes('id')) {
+
         splitString = 'id'
+
     }
     //check for '#success' , because some links might have been copied wrong
     if (description.includes('#success')) {
+
         splitString = '#success'
+
     }
     //check for html hyperlink parsing , because google calendar does some weird stuff
     if (description.includes('<a href=')) {
+
         return description.split('<a href=')[1].split(splitString)[0];
+
     } else {
+
         return description;
+
     }
 
 }
@@ -295,8 +374,7 @@ function extractZoomLinks(description) {
  * @returns 
  */
 function dateToCron(date) {
-    //
-    //
+
     var seconds = '0';
     var minutes = '55';
     var hour = date.getHours() - 1; //Subtract one, to give the alert not at the exact start of the event, but coupled with minutes = '55' 5 minutes earlier
@@ -307,6 +385,7 @@ function dateToCron(date) {
     var cronString = seconds + ' ' + minutes + ' ' + hour + ' ' + dayOfMonth + ' ' + month + ' ' + day;
 
     return cronString;
+
 }
 
 /**
@@ -321,24 +400,27 @@ function dateToCron(date) {
  * @returns {any} Embed that was built using the given parameters
  */
 function dynamicEmbed(client, role, subject, professor, link) {
+
     var roleColor = client.guilds.resolve(serverID).roles.cache.get(role).color;
+    var courseType = "Vorlesung";
+
+    if (subject.includes("(ü)") || subject.includes("(Ü)")) courseType = "Übung";
 
     try {
+
         var embedDynamic = new discord.MessageEmbed()
             .setColor(roleColor)
-            .setAuthor(subject + ' Reminder', client.guilds.resolve(serverID).members.resolve(botUserID).user.avatarURL())
+            .setAuthor(`${courseType}s Reminder`, client.guilds.resolve(serverID).members.resolve(botUserID).user.avatarURL())
             .setTitle(subject + ' Reminder')
-            .setDescription(subject + ' fängt in 5 Minuten an')
-            .setThumbnail('https://www.pngarts.com/files/7/Zoom-Logo-PNG-Download-Image.png')
+            .setDescription(`Die ${courseType} fängt in 5 Minuten an`)
+            .setThumbnail('https://pics.freeicons.io/uploads/icons/png/6029094171580282643-512.png')
             .addFields({
-                name: subject + ' findet wie gewohnt auf Zoom statt.',
-                value: 'Außer es gibt einen Sonderfall'
-            }, {
                 name: 'Dozent',
                 value: professor,
                 inline: false
             })
             .setFooter('Viel Spaß und Erfolg wünscht euch euer ETIT-Master', client.guilds.resolve(serverID).members.resolve(botUserID).user.avatarURL());
+
     } catch (e) {
 
         embed = "There was an error creating the embed";
@@ -347,9 +429,15 @@ function dynamicEmbed(client, role, subject, professor, link) {
     }
 
     if (link) {
+
         embedDynamic.setURL(link);
+
     }
+
+    client.channels.cache.get('770276625040146463').send(embedDynamic); //sends login embed to channel
+
     return embedDynamic;
+
 }
 
 /**
@@ -365,35 +453,55 @@ function dynamicEmbed(client, role, subject, professor, link) {
  * @throws Error in debug channel
  */
 function findChannel(subject, channels) {
+
     var channel = "";
+
     Object.keys(channels).forEach(function (key) {
+
         if (subject.includes(key)) {
+
             channel = channels[key];
+
         }
+
     })
 
     return channel;
+
 }
 
 function findRole(subject, roles) {
+
     var role = "";
+
     Object.keys(roles).forEach(function (key) {
+
         if (subject.includes(key)) {
+
             role = roles[key];
+
         }
+
     })
 
     return role;
+
 }
 
 function noVariableUndefined() {
+
     for (arg in arguments) {
+
         if (arguments[arg] == undefined) {
+
             return false;
+
         }
+
     }
 
     return true;
+
 }
 
 
@@ -406,10 +514,17 @@ function noVariableUndefined() {
  * @param {object} client 
  */
 function createCron(cronDate, channel, role, embed, client) {
+
     var job = schedule.scheduleJob(cronDate, function () {
+
         client.channels.cache.get(channel).send(role, embed.setTimestamp())
+
             .then(msg => msg.delete({
+
                 timeout: 5400000
+
             }))
+
     });
+
 }
