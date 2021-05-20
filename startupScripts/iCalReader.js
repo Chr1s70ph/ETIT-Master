@@ -165,7 +165,7 @@ function getEvents(webEvents, today, events) {
 
                                     if ((byday[day] + 1) == today.getDay()) {
 
-                                        addEntryToWeeksEvents(events, byday[day] + 1, eventStart, summary, description);
+                                        addEntryToWeeksEvents(events, today.getDay(), eventStart, summary, description);
                                         continue mainLoop;
 
                                     }
@@ -289,7 +289,7 @@ async function filterToadaysEvents(client, today, thisWeeksEvents) {
 
             var time = event.start;
 
-            var cronDate = dateToCron(time);
+            var cronDate = dateToCron(time, today.getDay());
 
             var role = findRole(subject, config.ids.roleIDs)
 
@@ -373,14 +373,14 @@ function extractZoomLinks(description) {
  * @param {Date} date 
  * @returns 
  */
-function dateToCron(date) {
+function dateToCron(date, weekDay) {
 
     var seconds = '0';
     var minutes = '55';
     var hour = date.getHours() - 1; //Subtract one, to give the alert not at the exact start of the event, but coupled with minutes = '55' 5 minutes earlier
     var dayOfMonth = '*'; //set to * so the Cron is for the current week
     var month = '*'; //set to * so the Cron is for the current week
-    var day = date.getDay(); //Extracts the weekday of the date string
+    var day = weekDay; //Extracts the weekday of the date string
 
     var cronString = seconds + ' ' + minutes + ' ' + hour + ' ' + dayOfMonth + ' ' + month + ' ' + day;
 
@@ -433,8 +433,6 @@ function dynamicEmbed(client, role, subject, professor, link) {
         embedDynamic.setURL(link);
 
     }
-
-    client.channels.cache.get('770276625040146463').send(embedDynamic); //sends login embed to channel
 
     return embedDynamic;
 
@@ -507,24 +505,18 @@ function noVariableUndefined() {
 
 
 /**
- * creates a dynamic Cron schedule
- * @param {string} cronDate cronDate in the right format(eg https://crontab.guru/)
- * @param {string} channel valid channelID to send the message to
- * @param {object} embed  message (here an embed, but generally it does not matter)
- * @param {object} client 
+ * 
+ * @param {string} cronDate string in Cron format
+ * @param {string} channel destination channel for message
+ * @param {string} role role what is supposed to be pinged
+ * @param {object} embed embed what is sent
+ * @param {object} client required by discord.js
  */
 function createCron(cronDate, channel, role, embed, client) {
-
     var job = schedule.scheduleJob(cronDate, function () {
-
         client.channels.cache.get(channel).send(role, embed.setTimestamp())
-
             .then(msg => msg.delete({
-
                 timeout: 5400000
-
             }))
-
     });
-
 }
