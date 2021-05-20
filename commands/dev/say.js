@@ -6,18 +6,8 @@ exports.run = (client, message) => {
         var content = message.content;
 
         var command = content.substring(content.indexOf(" ") + 1);
-        try {
-            message.delete()
-        } catch (error) {
-            console.error(error);
-        }
         message.channel.send(command);
     } else {
-        try {
-            message.delete()
-        } catch (error) {
-            console.error(error);
-        }
         message.reply('You do not have the permissions to perform that command.');
     }
 }
