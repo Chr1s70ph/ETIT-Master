@@ -18,6 +18,7 @@ client.on("ready", () => {
 
 async function foo(client) {
     await loadScripts(client);
+    await loadSlashCommands(client);
     console.log("Online!");
 }
 
@@ -90,9 +91,28 @@ async function loadScripts(client) {
     }
     files.forEach(file => {
         let script = require(`./startupScripts/${file}`);
-        console.log("Successfully executed startupScript " + file)
         script.run(client);
+        console.log("Successfully executed startupScript " + file)
     });
+}
+
+
+async function loadSlashCommands(cliehnt){
+    let files;
+    try {
+        files = await fs.promises.readdir('./slashCommands/')
+    } catch (e) {
+        console.log(e);
+    }
+    files.forEach(file => {
+        let slashCommand = require(`./slashCommands/${file}`);
+        try {            
+            slashCommand.run(client);
+        } catch (e) {
+            console.log(e)
+        }
+        console.log("Successfully posted slashCommand " + file)
+    })
 }
 
 /**

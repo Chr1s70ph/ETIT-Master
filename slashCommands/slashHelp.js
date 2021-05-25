@@ -1,6 +1,4 @@
-exports.help = help;
-
-async function help(client) {
+exports.run = async (client) => {
 
     await client.api.applications(client.user.id).commands.post({
         data: {
