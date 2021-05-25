@@ -5,9 +5,7 @@ var serverID = config.ids.serverID;
 var moderatorRoles = config.ids.moderatorRoles;
 var switchEmbed;
 
-exports.info = info;
-
-async function info(client) {
+exports.run = async (client) => {
 
     //2. semester EE
     var hmII_EE = "Höhere Mathematik II ETIT";

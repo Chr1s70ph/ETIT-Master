@@ -1,6 +1,4 @@
-exports.Ping = Ping;
-
-async function Ping(client) {
+exports.run = async (client) => {
 
     await client.api.applications(client.user.id).commands.post({
         data: {
