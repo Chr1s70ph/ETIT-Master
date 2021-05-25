@@ -1,35 +1,97 @@
+const {
+    log
+} = require("console");
+const fs = require("fs");
+var discord = require('discord.js');
+const config = require('../privateData/config.json');
+
+
+
+
 exports.run = async (client) => {
+
+    let embed = await getCommands();
 
     await client.api.applications(client.user.id).commands.post({
         data: {
             name: "help",
-            description: "Hilfe ist hier"
+            description: "hilfe ist hier"
         }
     });
 
     client.ws.on('INTERACTION_CREATE', async interaction => {
         const command = interaction.data.name.toLowerCase();
         const args = interaction.data.options;
-
         if (command === 'help') {
             await client.api.interactions(interaction.id, interaction.token).callback.post({
                 data: {
                     type: 4, //https://discord.com/developers/docs/interactions/slash-commands#interaction-response-interactionresponsetype
                     data: {
-                        content: "```asciidoc\n = Die Hauptfunktion des Bots ist es, an Vorlesungen und in Zukunft auch an Tutorien zu erinnern =\n----------" +
-                            "\nVorlesungserinnerung :: Der Bot schickt automatisch in den Channel des jeweiligen Faches 5 Minuten vor Vorlesungsbeginn einen Link zum jeweiligen Zoom-Meeting (oder zur YouTube Playlist bei Experimental Physik.\n```",
-
+                        embeds: [
+                            embed.setTimestamp()
+                        ],
                         flags: 64
                     }
                 }
             });
-            client.api.webhooks(client.user.id, interaction.token).post({
-                data: {
-                    content: "```asciidoc\n = Das ist die Hilfeseite der Befehle! =\nHier werden alle Befehle aufgelistet\n----------" +
-                        "\nping :: gibt die Ping werte zum Bot und zur API aus\n```",
-                    flags: 64
-                }
-            })
         }
     });
+
+    async function getCommands() {
+
+        let commandsEmbed = new discord.MessageEmbed() //Login Embed
+            .setColor('#ffa500')
+            .setAuthor('Help', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/160/google/56/white-question-mark-ornament_2754.png')
+            // .setThumbnail(client.guilds.resolve(config.ids.serverID).members.resolve(config.ids.userID.botUserID).user.avatarURL())
+            // .setTitle('[❔] Help')
+
+            .setTimestamp()
+            .setFooter(`[ID] ${config.ids.userID.botUserID} \nstarted`, 'https://image.flaticon.com/icons/png/512/888/888879.png');
+
+
+
+        //get all enteties from folder
+        let commandFiles = await fs.promises.readdir("./commands/", (err, elements) => {
+            if (err) return console.log(err);
+        });
+
+        let commandsInFolder = " ";
+        for (const file of commandFiles) {
+            const element_in_folder = fs.statSync(`./commands/${file}`)
+            if (element_in_folder.isDirectory()) { //check if element in folder is a subfolder
+                await addCommandsFromSubFolder(commandsEmbed, file);
+            } else {
+                let slicedFileName = file.split(".js")[0];
+                commandsInFolder += slicedFileName + "\n"
+            }
+
+        }
+
+        commandsEmbed.addFields({
+            name: "commands",
+            value: commandsInFolder,
+            inline: false	
+        })
+
+        return commandsEmbed; //return full object with all commands
+
+        async function addCommandsFromSubFolder(commandsEmbed, file) {            
+            const sub_directory = `./commands/${file}/`;
+            try {
+                files = await fs.promises.readdir(sub_directory);
+                let commandsInSubfolder = " ";
+                for (const command of files) {
+                    let slicedFileName = command.split(".js")[0];
+                    commandsInSubfolder += slicedFileName + "\n";
+                }
+                commandsEmbed.addFields({
+                    name: file,
+                    value: commandsInSubfolder,
+                    inline: true
+                })
+            } catch (e) {
+                console.log( e);
+            }
+        }
+    }
 }
