@@ -91,7 +91,11 @@ async function loadScripts(client) {
     }
     files.forEach(file => {
         let script = require(`./startupScripts/${file}`);
-        script.run(client);
+        try {
+            script.run(client);
+        } catch (e) {
+            console.log(e);
+        }
         console.log("Successfully executed startupScript " + file)
     });
 }
