@@ -95,8 +95,8 @@ exports.run = async (client) => {
         }
     });
 
-
     client.ws.on('INTERACTION_CREATE', async (interaction) => {
+        if (interaction.type != '2') return; //type 2 interactions are slashcommands
         const command = interaction.data.name.toLowerCase();
         const args = interaction.data.options;
         if (command === 'info') {
