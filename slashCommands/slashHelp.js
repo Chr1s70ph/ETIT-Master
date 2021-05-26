@@ -20,9 +20,12 @@ exports.run = async (client) => {
     });
 
     client.ws.on('INTERACTION_CREATE', async interaction => {
+        if (interaction.type != '2') return; //type 2 interactions are slashcommands
         const command = interaction.data.name.toLowerCase();
         const args = interaction.data.options;
         if (command === 'help') {
+            console.log("User " + interaction.member.user.username + " issued /help")
+
             await client.api.interactions(interaction.id, interaction.token).callback.post({
                 data: {
                     type: 4, //https://discord.com/developers/docs/interactions/slash-commands#interaction-response-interactionresponsetype
@@ -42,9 +45,6 @@ exports.run = async (client) => {
         let commandsEmbed = new discord.MessageEmbed() //Login Embed
             .setColor('#ffa500')
             .setAuthor('Help', 'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/160/google/56/white-question-mark-ornament_2754.png')
-            // .setThumbnail(client.guilds.resolve(config.ids.serverID).members.resolve(config.ids.userID.botUserID).user.avatarURL())
-            // .setTitle('[❔] Help')
-
             .setTimestamp()
             .setFooter(`[ID] ${config.ids.userID.botUserID} \nstarted`, 'https://image.flaticon.com/icons/png/512/888/888879.png');
 
@@ -70,12 +70,12 @@ exports.run = async (client) => {
         commandsEmbed.addFields({
             name: "commands",
             value: commandsInFolder,
-            inline: false	
+            inline: false
         })
 
         return commandsEmbed; //return full object with all commands
 
-        async function addCommandsFromSubFolder(commandsEmbed, file) {            
+        async function addCommandsFromSubFolder(commandsEmbed, file) {
             const sub_directory = `./commands/${file}/`;
             try {
                 files = await fs.promises.readdir(sub_directory);
@@ -90,7 +90,7 @@ exports.run = async (client) => {
                     inline: true
                 })
             } catch (e) {
-                console.log( e);
+                console.log(e);
             }
         }
     }
