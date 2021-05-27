@@ -131,11 +131,18 @@ function getEvents(webEvents, today, events) {
                             var intervallModifier = (ruleOption.interval > 0) ? ruleOption.interval : 1;
                             //retuns days until last day of webEvent based on interval
                             var daysInWeek = 7;
-                            var intervalEndDate = new Date(eventStart + daysInWeek * intervallModifier * (count - 1));
+                            var intervalEndDate = new Date(eventStart);
+                            intervalEndDate.setDate(intervalEndDate.getDate() +  daysInWeek * intervallModifier * count)
 
                             if (amountOfDaysDifference(today, intervalEndDate) == 0) {
 
                                 addEntryToWeeksEvents(events, eventStart.getDay(), eventStart, summary, description);
+                                continue;
+
+                            }
+
+                            if (intervalEndDate < today) {
+
                                 continue;
 
                             }
