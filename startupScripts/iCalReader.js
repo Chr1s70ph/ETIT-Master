@@ -9,6 +9,9 @@ var embed = '';
 const {
     DateTime
 } = require('luxon');
+const {
+    MessageButton
+} = require('discord-buttons');
 
 
 exports.run = async (client) => {
@@ -315,7 +318,7 @@ async function filterToadaysEvents(client, today, thisWeeksEvents) {
 
             }
 
-            createCron(cronDate, channel, role, embed, client);
+            createCron(cronDate, channel, role, embed, link, client);
 
         }
 
@@ -512,11 +515,27 @@ function noVariableUndefined() {
  * @param {object} embed embed what is sent
  * @param {object} client required by discord.js
  */
-function createCron(cronDate, channel, role, embed, client) {
-    var job = schedule.scheduleJob(cronDate, function () {
-        client.channels.cache.get(channel).send(role, embed.setTimestamp())
-            .then(msg => msg.delete({
-                timeout: 5400000
-            }))
-    });
+function createCron(cronDate, channel, role, embed, link, client) {
+    if (link == undefined) {
+        var job = schedule.scheduleJob(cronDate, function () {
+            client.channels.cache.get(channel).send(role, embed.setTimestamp())
+                .then(msg => msg.delete({
+                    timeout: 5400000
+                }))
+        });
+    } else {
+        let linkButton = new MessageButton()
+            .setStyle('url')
+            .setLabel('In Zoom öffnen')
+            .setURL(link)
+        var job = schedule.scheduleJob(cronDate, function () {
+            client.channels.cache.get(channel).send(role, {
+                    buttons: [linkButton],
+                    embed: embed.setTimestamp()
+                })
+                .then(msg => msg.delete({
+                    timeout: 5400000
+                }))
+        });
+    }
 }
