@@ -1,6 +1,7 @@
 const config = require("../../privateData/config.json");
 const {
-    MessageButton
+    MessageButton,
+    MessageActionRow
 } = require('discord-buttons');
 const discord = require('discord.js');
 
@@ -26,7 +27,6 @@ exports.run = async (client, message) => {
     let neverGonnaGiveYouUp = new MessageButton()
         .setStyle('url')
         .setLabel('Hi')
-        .setID('test_id1')
         .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
 
 
@@ -34,11 +34,24 @@ exports.run = async (client, message) => {
         .setStyle('red')
         .setLabel('Test')
         .setID('test_id2')
-    
-    
 
-    message.channel.send('Hi', {
-        buttons: [neverGonnaGiveYouUp, replyTest],
+
+    let emojiButton = new MessageButton()
+        .setStyle('green')
+        .setLabel("I Like")
+        .setEmoji("👌")
+        .setID("emojiButton")
+
+    let row = new MessageActionRow()
+        .addComponent(neverGonnaGiveYouUp)
+        .addComponent(replyTest)
+
+    let row2 = new MessageActionRow()
+        .addComponent(emojiButton)
+
+
+    message.channel.send({
+        components: [row, row2],
         embed: myEmbed
     });
 
@@ -50,6 +63,13 @@ exports.run = async (client, message) => {
 
         if (button.id === 'test_id2') {
             button.reply.send(`Hallo du neugieriger Mensch :3`, true);
+        }
+
+        if (button.id === 'emojiButton') {
+            await button.message.edit("You hit me!", {
+                components: [row, row2]
+            });
+            button.defer();
         }
     })
 }
