@@ -3,7 +3,7 @@ const schedule = require('node-schedule');
 const config = require("./privateData/config.json")
 const discord = require('./node_modules/discord.js');
 const client = new discord.Client();
-require ("discord-buttons")(client);
+const disbut = require('discord-buttons')(client);
 const fs = require("fs");
 const presence_refresh_timer = "15 * * * * *"
 
