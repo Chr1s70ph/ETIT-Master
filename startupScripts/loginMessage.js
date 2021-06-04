@@ -1,6 +1,8 @@
 var discord = require('discord.js');
 var fs = require('fs');
 const config = require('../privateData/config.json');
+const os = require('os');
+
 
 exports.run = async (client) => {
 	let commands = [];
@@ -33,7 +35,7 @@ exports.run = async (client) => {
 		.setTitle('[🌐] Bot erfolgreich gestartet')
 		.addFields({
 			name: 'OS:',
-			value: 'Ubuntu 20.04.1 LTS',
+			value: `${os.type()} ${os.release()}`,
 			inline: true
 		}, {
 			name: 'Prozessor:',
