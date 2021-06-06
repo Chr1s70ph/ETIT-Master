@@ -9,12 +9,9 @@
   "author": "Christoph Bluem",
   "license": "MIT",
   "dependencies": {
-    "@slack/web-api": "^6.0.0",
     "canvas": "^2.8.0",
     "cron": "^1.8.2",
-    "discord-buttons": "^3.0.1",
-    "discord-markdown": "^2.4.1",
-    "discord-rpc": "^3.2.0",
+    "discord-buttons": "^3.1.1",
     "discord.js": "^12.5.3",
     "fs": "^0.0.1-security",
     "luxon": "^1.26.0",
@@ -22,7 +19,6 @@
     "node-schedule": "^2.0.0",
     "node-superfetch": "^0.2.3",
     "os": "^0.1.1",
-    "pm2": "^4.5.6",
-    "slash-create": "^3.2.3"
+    "pm2": "^4.5.6"
   }
 }
