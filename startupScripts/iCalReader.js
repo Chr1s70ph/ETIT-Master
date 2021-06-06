@@ -10,7 +10,8 @@ const {
     DateTime
 } = require('luxon');
 const {
-    MessageButton
+    MessageButton,
+    MessageActionRow
 } = require('discord-buttons');
 
 
@@ -132,7 +133,7 @@ function getEvents(webEvents, today, events) {
                             //retuns days until last day of webEvent based on interval
                             var daysInWeek = 7;
                             var intervalEndDate = new Date(eventStart);
-                            intervalEndDate.setDate(intervalEndDate.getDate() +  daysInWeek * intervallModifier * count)
+                            intervalEndDate.setDate(intervalEndDate.getDate() + daysInWeek * intervallModifier * count)
 
                             if (amountOfDaysDifference(today, intervalEndDate) == 0) {
 
@@ -535,9 +536,14 @@ function createCron(cronDate, channel, role, embed, link, client) {
             .setStyle('url')
             .setLabel('In Zoom öffnen')
             .setURL(link)
+            .setEmoji('776402157334822964')
+
+        let row = new MessageActionRow()
+            .addComponent(linkButton)
+
         var job = schedule.scheduleJob(cronDate, function () {
             client.channels.cache.get(channel).send(role, {
-                    buttons: [linkButton],
+                    components: [row],
                     embed: embed.setTimestamp()
                 })
                 .then(msg => msg.delete({
