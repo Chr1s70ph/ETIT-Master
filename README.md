@@ -20,5 +20,5 @@ The bot is written in JS using the official Discord API to do its job.
 To run the bot you need to install following dependencies first:
 
 ```bash
-npm install canvas cron discord-buttons discord.js fs luxon node-ical node-schedule node-superfetch os pm2
+npm install canvas cron discord-buttons discord.js fs luxon node-ical node-schedule node-superfetch os pm2 valid-url
 ```
