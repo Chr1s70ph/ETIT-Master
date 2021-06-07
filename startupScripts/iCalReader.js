@@ -2,6 +2,7 @@ const ical = require('node-ical');
 const discord = require('../node_modules/discord.js');
 const config = require("../privateData/config.json");
 const schedule = require('node-schedule');
+const validUrl = require('valid-url')
 var subjects = config.ids.channelIDs.subject;
 var serverID = config.ids.serverID;
 var botUserID = config.ids.userID.botUserID;
@@ -524,7 +525,7 @@ function noVariableUndefined() {
  * @param {object} client required by discord.js
  */
 function createCron(cronDate, channel, role, embed, link, client) {
-    if (link == undefined) {
+    if (!validUrl.isUri(link)) {
         var job = schedule.scheduleJob(cronDate, function () {
             client.channels.cache.get(channel).send(role, embed.setTimestamp())
                 .then(msg => msg.delete({
