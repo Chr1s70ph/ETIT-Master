@@ -11,9 +11,9 @@ exports.run = (client, message) => {
             process.exit(2);
         }
 
-        pm2.restart('index', (err, proc) => {})
-        pm2.flush('index', (err, proc) => {})
-        pm2.restart('index', (err, proc) => {})
+        pm2.restart('0', (err, proc) => {})
+        pm2.flush('0', (err, proc) => {})
+        pm2.restart('0', (err, proc) => {})
 
     });
 
