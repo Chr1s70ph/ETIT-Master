@@ -19,7 +19,6 @@ exports.run = async (client, message) => {
             value: 'Im just here to test stuff',
             inline: true
         })
-        .setTimestamp()
         .setFooter(`[ID] ${config.ids.userID.botUserID} \nstarted`, 'https://image.flaticon.com/icons/png/512/888/888879.png');
 
 
@@ -55,6 +54,23 @@ exports.run = async (client, message) => {
         embed: myEmbed
     });
 
+
+
+
+    let linkButton = new MessageButton()
+        .setStyle('url')
+        .setLabel('In Zoom öffnen')
+        .setURL("https://www.google.com")
+        .setEmoji('776402157334822964')
+
+
+    let rowa = new MessageActionRow()
+        .addComponent(linkButton)
+
+    message.channel.send({
+        components: [rowa],
+        embed: myEmbed.setTimestamp()
+    })
 
     client.on('clickButton', async (button) => {
         if (button.id === 'test_id1') {
