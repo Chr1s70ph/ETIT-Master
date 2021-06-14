@@ -17,8 +17,8 @@ The bot supports numerus commands, including the newly added slash-commands.
 The bot is written in JS using the official Discord API to do its job.
 
 ---
-To run the bot you need to install following dependencies first:
+To run the bot you need to install the required dependencies first using:
 
 ```bash
-npm install canvas cron discord-buttons discord.js fs luxon node-ical node-schedule node-superfetch os pm2 valid-url
+npm install
 ```
