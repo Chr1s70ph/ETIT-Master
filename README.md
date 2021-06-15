@@ -81,7 +81,7 @@ Set the subjects to the role-IDs of your event roles. These are the roles that a
 
 You can add as many calendars as you want.
 Check [here](https://support.google.com/calendar/answer/37111?hl=en) on how to get your ical Link.
-Simply scroll down to the bottom and copy your `secret adress in iCal format`.
+Simply scroll down to the bottom and copy your `Secret address in iCal format`.
 <img src="images/icalLink.png">
 
 ---
