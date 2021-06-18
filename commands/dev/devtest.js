@@ -7,7 +7,7 @@ const discord = require('discord.js');
 
 
 exports.run = async (client, message) => {
-    if (message.author != config.ids.userID.ownerID) return message.reply('You do not have the permissions to perform that command.');
+    if (!(Object.values(config.ids.acceptedAdmins).includes(message.author.id))) return message.reply('You do not have the permissions to perform that command.');
 
     const myEmbed = new discord.MessageEmbed() //Login Embed
         .setColor('#ffa500')

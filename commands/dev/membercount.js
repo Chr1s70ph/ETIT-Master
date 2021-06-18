@@ -2,7 +2,7 @@ const config = require("../../privateData/config.json");
 
 
 exports.run = (client, message) => {
-    if (message.author != config.ids.userID.ownerID) return message.reply('You do not have the permissions to perform that command.');
+    if (!(Object.values(config.ids.acceptedAdmins).includes(message.author.id))) return message.reply('You do not have the permissions to perform that command.');
 
     const guild = client.guilds.cache.get(config.ids.serverID);
     const memberCount = guild.memberCount;
