@@ -62,5 +62,5 @@ exports.run = async (client) => {
 		.setTimestamp()
 		.setFooter(`[ID] ${config.ids.userID.botUserID} \nstarted`, 'https://image.flaticon.com/icons/png/512/888/888879.png');
 
-	client.channels.cache.get('770276625040146463').send(loginMessage); //sends login embed to channel
+	client.channels.cache.get(config.ids.channelIDs.dev.botTestLobby).send(loginMessage); //sends login embed to channel
 }

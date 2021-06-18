@@ -30,7 +30,7 @@ exports.run = async (client, oldPresence, newPresence) => {
                 if (newPresence.status === "offline") {
 
                     // client.channels.cache.get('770276625040146463').send(`<@${config.ids.userID.leonard}>` + emergency);
-                    client.channels.cache.get('770276625040146463').send('<@' + config.ids.userID.leonard + '>', emergency);
+                    client.channels.cache.get(config.ids.channelIDs.dev.botTestLobby).send('<@' + config.ids.userID.leonard + '>', emergency);
 
                 } else if (newPresence.status === "online") {
 
