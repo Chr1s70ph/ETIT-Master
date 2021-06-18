@@ -14,7 +14,7 @@ exports.run = async (client, message) => {
 		try {
 			message.delete();
 			commandfile.run(client, message, args);
-			console.log(`${message.author.username} used ${cmd}`)
+			console.log(`${message.author.username} used ${cmd} with arguments: ${args}`)
 		} catch (error) {
 			console.error(error);
 		}
