@@ -1,18 +1,14 @@
-const schedule = require('node-schedule');
-
 const config = require("./privateData/config.json")
 const discord = require('./node_modules/discord.js');
 const client = new discord.Client();
 const disbut = require('discord-buttons')(client);
 const fs = require("fs");
-const presence_refresh_timer = "15 * * * * *"
 
 client.commands = new discord.Collection();
 client.aliases = new discord.Collection();
 client.events = new discord.Collection();
 
 client.on("ready", () => {
-    Presence();
     foo(client);
 });
 
@@ -118,20 +114,4 @@ async function loadSlashCommands(client){
         }
         console.log("Successfully posted slashCommand " + file)
     })
-}
-
-/**
- * 
- */
-function Presence() {
-    var maxNumberOfPresence = Object.keys(config.presence).length;
-    var minNumberOfPresence = 0;
-    const presenceVariants = config.presence;
-    var keys = Object.keys(presenceVariants);
-
-    schedule.scheduleJob(presence_refresh_timer, function () {
-
-        var randomIndex = Math.floor(Math.random() * (maxNumberOfPresence - minNumberOfPresence) + minNumberOfPresence)
-        client.user.setPresence(presenceVariants[randomIndex]);
-    });
 }
