@@ -14,7 +14,8 @@ const {
     MessageButton,
     MessageActionRow
 } = require('discord-buttons');
-
+const cron_to_delete_lesson_notifications = "1 0 * * * " //cron string to trigger deletion of all messages that contain notifications about lessons
+const cron_to_send_todays_lesson_notifications = "5 0 * * * " //cron string to trigger sending of all messages that contain notifications about lessons
 
 exports.run = async (client) => {
 
@@ -22,13 +23,101 @@ exports.run = async (client) => {
 
     for (entry in config.calendars) {
 
+        var icalLink = config.calendars[entry]
         var events = {};
-        var webEvents = await ical.async.fromURL(config.calendars[entry]);
-        var eventsFromIcal = await getEvents(webEvents, today, events);
+        var webEvents = await ical.async.fromURL(icalLink);
+        var eventsFromIcal = await getEvents(webEvents, today, events, client);
+
+
         await filterToadaysEvents(client, today, eventsFromIcal);
 
+        if (todaysLessons(events, client).fields.length > 0) {
+            var todaysLessonsEmbed = todaysLessons(events, client);
+            var icalName = getKeyByValue(config.calendars, icalLink)
+            var channelID = findChannelInCategory(icalName, "bot-commands", client);
+
+            sendTodaysLessons(todaysLessonsEmbed, icalName, channelID, events, client);
+
+
+            await deleteYesterdaysLessonMessage(channelID, icalName, client);
+        }
     }
 
+}
+
+/**
+ * 
+ * @param {string} channelID ID of channel to delete the notification Message in
+ * @param {string} icalName name of Calendar
+ * @param {object} client 
+ */
+async function deleteYesterdaysLessonMessage(channelID, icalName, client) {
+    await client.channels.cache.get(channelID).messages.fetch({
+        limit: 100
+    }).then(fetchedMessages => {
+        console.log(`fetched ${fetchedMessages.size} messages in ${icalName}`);
+        fetchedMessages.forEach(message => {
+            if (message.author.id == config.ids.userID.botUserID) {
+                if (message.embeds[0].title.includes("Heutige Benachrichtigungen")) {
+                    console.log("Found notification Message " + message.id + " in " + icalName)
+                    scheduleDeleteMessages(channelID, message.id, icalName, client)
+                }
+            }
+        })
+    })
+}
+
+/**
+ * delete messages by ID and category Name
+ * @param {string} channelID ID of channel to delete the notification
+ * @param {string} messageToDelete ID of the message to be deleted
+ * @param {string} categoryName name of category the message is being deleted in
+ * @param {object} client 
+ */
+function scheduleDeleteMessages(channelID, messageToDelete, categoryName, client) {
+    console.log("Set schedule to delete old reminder list message.")
+    var job = schedule.scheduleJob(cron_to_delete_lesson_notifications, function () {
+        client.channels.cache.get(channelID).messages.fetch(messageToDelete).then(async msg => {
+            if (msg) {
+                try {
+                    msg.delete();
+                    console.log("Message deleted in " + categoryName)
+                } catch (e) {
+                    console.log("could not delete message!\n" + e)
+                }
+
+            }
+
+        })
+    });
+}
+
+/**
+ * 
+ * @param {string} categoryName category name
+ * @param {string} channelName channel name
+ * @param {object} client 
+ * @returns chanelid of desired channel out of that category
+ */
+function findChannelInCategory(categoryName, channelName, client) {
+    var category = client.channels.cache.find(c => c.name.toLowerCase().includes(categoryName.toLowerCase()))
+    var channelId = category.children.find(c => c.name.toLowerCase().includes(channelName.toLowerCase())).id
+    return channelId;
+}
+
+
+
+
+//https://stackoverflow.com/a/28191966/10926046
+function getKeyByValue(object, value) {
+    return Object.keys(object).find(key => object[key] === value);
+}
+
+function sendTodaysLessons(embed, icalName, channel, events, client) {
+    var job = schedule.scheduleJob(cron_to_send_todays_lesson_notifications, function () {
+        client.channels.cache.get(channel).send(todaysLessons(events, client))
+    });
+    console.log(`Set shedule to send todays Lessons for ${icalName}`)
 }
 
 
@@ -42,8 +131,7 @@ function localDate() {
 }
 
 
-//NOTE: This function is from stackoverflow
-//I don't understand it, but it works
+//Modified function : https://stackoverflow.com/a/36356320/10926046
 Date.prototype.getWeek = function () {
 
     var date = new Date(this.getTime());
@@ -64,7 +152,7 @@ var datesAreOnSameDay = (first, second) =>
 
 
 
-function getEvents(webEvents, today, events) {
+function getEvents(webEvents, today, events, client) {
     var weekStartDate = localDate();
     weekStartDate.setDate(weekStartDate.getDate() - weekStartDate.getDay() + 1);
 
@@ -134,7 +222,7 @@ function getEvents(webEvents, today, events) {
                             //retuns days until last day of webEvent based on interval
                             var daysInWeek = 7;
                             var intervalEndDate = new Date(eventStart);
-                            intervalEndDate.setDate(intervalEndDate.getDate() + daysInWeek * intervallModifier * count)
+                            intervalEndDate.setDate(intervalEndDate.getDate() + daysInWeek * intervallModifier * (count - 1))
 
                             if (amountOfDaysDifference(today, intervalEndDate) == 0) {
 
@@ -221,6 +309,37 @@ function getEvents(webEvents, today, events) {
 
 }
 
+/**
+ * 
+ * @param {object} events object of todays events
+ * @param {object} client 
+ * @returns embed with a list of todays lessons
+ */
+function todaysLessons(events, client) {
+    var lessonsEmbed = new discord.MessageEmbed()
+        .setColor("#FF0000")
+        .setAuthor(`Informationen`, client.guilds.resolve(serverID).members.resolve(botUserID).user.avatarURL())
+        .setTitle('Heutige Benachrichtigungen')
+    for (entry in events) {
+        var lessonStart = events[entry].start.toString().slice(16, 24);
+
+        //NOTE: the last field is there for a clearer format and it DOES contain an invisible character
+        lessonsEmbed.addFields({
+            name: "Fach",
+            value: events[entry].summary,
+            inline: true
+        }, {
+            name: "Vorlesungsbeginn",
+            value: lessonStart,
+            inline: true
+        }, {
+            name: '‎',
+            value: '‎',
+            inline: true
+        })
+    }
+    return lessonsEmbed;
+}
 
 function convertDate(eventStart) {
     //This works, because the DATE.toString() already converts to Date Object in the propper Timezone
@@ -525,12 +644,22 @@ function noVariableUndefined() {
  * @param {object} client required by discord.js
  */
 function createCron(cronDate, channel, role, embed, link, client) {
+    let channelName = client.channels.cache.get(channel).name;
+
     if (!validUrl.isUri(link)) {
         var job = schedule.scheduleJob(cronDate, function () {
+            console.log(`Sent notification to ${channelName}`);
             client.channels.cache.get(channel).send(role, embed.setTimestamp())
-                .then(msg => msg.delete({
-                    timeout: 5400000
-                }))
+                .then(msg => {
+                    setTimeout(function {
+                        try {
+                            msg.delete();
+                            console.log(`Deleted notification in ${channelName}`);
+                        } catch (error) {
+                            console.log(`There was a problem deleting the notification in ${channelName}\n${error}`)
+                        }
+                    }, 5400000);
+                })
         });
     } else {
         let linkButton = new MessageButton()
@@ -543,13 +672,21 @@ function createCron(cronDate, channel, role, embed, link, client) {
             .addComponent(linkButton)
 
         var job = schedule.scheduleJob(cronDate, function () {
+            console.log(`Sent notification to ${channelName}`);
             client.channels.cache.get(channel).send(role, {
                     components: [row],
                     embed: embed.setTimestamp()
                 })
-                .then(msg => msg.delete({
-                    timeout: 5400000
-                }))
+                .then(msg => {
+                    setTimeout(function {
+                        try {
+                            msg.delete();
+                            console.log(`Deleted notification in ${channelName}`);
+                        } catch (error) {
+                            console.log(`There was a problem deleting the notification in ${channelName}\n${error}`)
+                        }
+                    }, 5400000);
+                })
         });
     }
 }
