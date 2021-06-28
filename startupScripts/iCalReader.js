@@ -651,7 +651,7 @@ function createCron(cronDate, channel, role, embed, link, client) {
             console.log(`Sent notification to ${channelName}`);
             client.channels.cache.get(channel).send(role, embed.setTimestamp())
                 .then(msg => {
-                    setTimeout(function {
+                    setTimeout(function() {
                         try {
                             msg.delete();
                             console.log(`Deleted notification in ${channelName}`);
@@ -678,7 +678,7 @@ function createCron(cronDate, channel, role, embed, link, client) {
                     embed: embed.setTimestamp()
                 })
                 .then(msg => {
-                    setTimeout(function {
+                    setTimeout(function() {
                         try {
                             msg.delete();
                             console.log(`Deleted notification in ${channelName}`);
