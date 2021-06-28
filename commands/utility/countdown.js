@@ -1,3 +1,14 @@
+const config = require("../../privateData/config.json");
+
+exports.name = "countdown";
+
+exports.description = "Ein simpler countdown von 10 runter";
+
+exports.usage = `${config.prefix}countdown`
+
+
+
+
 exports.run = (client, message) => {
     message.channel.send("Liftoff in:");
     message.channel.send("🚀10🚀");
