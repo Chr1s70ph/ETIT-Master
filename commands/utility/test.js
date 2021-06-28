@@ -2,9 +2,9 @@ const config = require("../../privateData/config.json");
 
 exports.name = "test";
 
-exports.description = "Tests if the bot is up an operational.";
+exports.description = "Prüft ob der Bot online und funktionstüchtig ist.";
 
-exports.usage = "not much to do..."
+exports.usage = `${config.prefix}test`
 
 
 exports.run = (client, message) => {
