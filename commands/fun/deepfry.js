@@ -1,6 +1,14 @@
 const {createCanvas, loadImage} = require('canvas');
 const request = require("node-superfetch")
 const Discord = require('../../node_modules/discord.js');
+const config = require("../../privateData/config.json");
+
+
+exports.name = "deepfry";
+
+exports.description = "Deepfried Bilder";
+
+exports.usage = `Schicke ein Bild und nutze ${config.prefix}deepfry`;
 
 
 exports.run = async (client, message, args) => {
