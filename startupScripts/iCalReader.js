@@ -599,8 +599,10 @@ function findChannel(subject, client) {
 function findRole(subject, client) {
 
     var role = "";
+    subject = subject.trim(); //remove leading and trailing space
+    subject = subject.replace(/ *\([^)]*\) */g, ""); //remove all content in, and brackets
     const guild = client.guilds.cache.get(config.ids.serverID);
-    role = guild.roles.cache.find(role => subject.toLowerCase().includes(role.name.toLowerCase())).id;
+    role = guild.roles.cache.find(role => subject.toLowerCase() == role.name.toLowerCase()).id;
     return role;
 
 }
