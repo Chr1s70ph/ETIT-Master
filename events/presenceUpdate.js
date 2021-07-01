@@ -1,5 +1,6 @@
 const config = require('../privateData/config.json');
 const discord = require('../node_modules/discord.js');
+const pm2 = require('pm2');
 
 
 exports.run = async (client, oldPresence, newPresence) => {
@@ -29,8 +30,30 @@ exports.run = async (client, oldPresence, newPresence) => {
 
                 if (newPresence.status === "offline") {
 
-                    // client.channels.cache.get('770276625040146463').send(`<@${config.ids.userID.leonard}>` + emergency);
+                    //This is to start an instance of another bot, on the server. This only triggers, when that bot is offline
                     client.channels.cache.get(config.ids.channelIDs.dev.botTestLobby).send('<@' + config.ids.userID.leonard + '>', emergency);
+                    pm2.connect(function (err) {
+                        if (err) {
+                            console.error(err);
+                            process.exit(2);
+                        }
+
+                        pm2.start('3', (err, proc) => {})
+
+                    });
+
+                } else if (oldPresence.status === "offline" && newPresence.status === "online") {
+
+                    //This is to stop an instance of another bot, on the server. This only triggers, when that bot comes online again
+                    pm2.connect(function (err) {
+                        if (err) {
+                            console.error(err);
+                            process.exit(2);
+                        }
+
+                        pm2.stop('3', (err, proc) => {})
+
+                    });
 
                 } else if (newPresence.status === "online") {
 
