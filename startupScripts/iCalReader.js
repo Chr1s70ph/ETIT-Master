@@ -422,11 +422,11 @@ async function filterToadaysEvents(client, today, thisWeeksEvents) {
 
             var cronDate = dateToCron(time, today.getDay());
 
-            var role = findRole(subject, config.ids.roleIDs)
+            var role = findRole(subject, client)
 
             var embed = dynamicEmbed(client, role, subject, professor, link)
 
-            var channel = findChannel(subject, config.ids.channelIDs.subject)
+            var channel = findChannel(subject, client)
 
 
             if (channel == undefined) {
@@ -581,38 +581,26 @@ function dynamicEmbed(client, role, subject, professor, link) {
  * 
  * @throws Error in debug channel
  */
-function findChannel(subject, channels) {
+function findChannel(subject, client) {
 
     var channel = "";
 
-    Object.keys(channels).forEach(function (key) {
-
-        if (subject.includes(key)) {
-
-            channel = channels[key];
-
-        }
-
-    })
+    subject = subject.trim(); //remove leading and trailing space
+    subject = subject.replace(/ *\([^)]*\) */g, ""); //remove all content in, and brackets
+    subject = subject.replace(/\s+/g, '-'); //replace all spaces with "-"
+    subject = subject.toLowerCase();
+    const guild = client.guilds.cache.get(config.ids.serverID);
+    channel = guild.channels.cache.find(channel => channel.name.substring(1).toLowerCase().includes(subject)).id;
 
     return channel;
 
 }
 
-function findRole(subject, roles) {
+function findRole(subject, client) {
 
     var role = "";
-
-    Object.keys(roles).forEach(function (key) {
-
-        if (subject.includes(key)) {
-
-            role = roles[key];
-
-        }
-
-    })
-
+    const guild = client.guilds.cache.get(config.ids.serverID);
+    role = guild.roles.cache.find(role => subject.toLowerCase().includes(role.name.toLowerCase())).id;
     return role;
 
 }
@@ -651,7 +639,7 @@ function createCron(cronDate, channel, role, embed, link, client) {
             console.log(`Sent notification to ${channelName}`);
             client.channels.cache.get(channel).send(role, embed.setTimestamp())
                 .then(msg => {
-                    setTimeout(function() {
+                    setTimeout(function () {
                         try {
                             msg.delete();
                             console.log(`Deleted notification in ${channelName}`);
@@ -678,7 +666,7 @@ function createCron(cronDate, channel, role, embed, link, client) {
                     embed: embed.setTimestamp()
                 })
                 .then(msg => {
-                    setTimeout(function() {
+                    setTimeout(function () {
                         try {
                             msg.delete();
                             console.log(`Deleted notification in ${channelName}`);
