@@ -67,11 +67,6 @@ exports.run = async (client) => {
 
         }
 
-        commandsEmbed.addFields({
-            name: "commands",
-            value: commandsInFolder,
-            inline: false
-        })
 
         return commandsEmbed; //return full object with all commands
 
