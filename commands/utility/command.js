@@ -9,6 +9,8 @@ exports.usage = `${config.prefix}command {COMMAND}`;
 
 exports.example = `${config.prefix}command test`;
 
+exports.aliases = ['commandinfo'];
+
 
 exports.run = (client, message, args) => {
     let commandHelpEmbed = new discord.MessageEmbed()
