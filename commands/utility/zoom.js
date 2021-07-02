@@ -7,6 +7,8 @@ exports.description = "Schickt ein Emoji, das beschreibt, worin Zoom am besten i
 exports.usage = `${config.prefix}zoom`
 
 
+exports.aliases = ['loading'];
+
 exports.run = (client, message) => {
     message.channel.send("<a:loading:783688114509578271>")
 }
