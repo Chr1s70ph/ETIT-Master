@@ -11,7 +11,7 @@
   "dependencies": {
     "canvas": "^2.8.0",
     "cron": "^1.8.2",
-    "discord-buttons": "^3.2.1",
+    "discord-buttons": "^4.0.0",
     "discord.js": "^12.5.3",
     "fs": "^0.0.1-security",
     "luxon": "^1.26.0",
