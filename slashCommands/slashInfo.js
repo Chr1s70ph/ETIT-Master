@@ -31,7 +31,7 @@ exports.run = async (client) => {
         data: {
             name: "info",
             description: "Gibt infos",
-            type: 2,
+            type: 1,
             options: [{
                 name: "fach",
                 description: "Über welches Fach möchtest du etwas wissen? Du kannst auch nach deinem Fach suchen!",
