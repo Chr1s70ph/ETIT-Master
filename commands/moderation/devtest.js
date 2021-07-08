@@ -14,6 +14,10 @@ exports.usage = `${config.prefix}devtest`;
 
 
 exports.run = async (client, message) => {
-    message.channel.send(client.guilds.cache.get(config.ids.serverID).members.cache
+    message.channel.send("🟢Online: " + client.guilds.cache.get(config.ids.serverID).members.cache
         .filter(m => m.presence.status === 'online').size);
+    message.channel.send("🟡Idle: " + client.guilds.cache.get(config.ids.serverID).members.cache
+        .filter(m => m.presence.status === 'idle').size);
+    message.channel.send("🔴DND: " + client.guilds.cache.get(config.ids.serverID).members.cache
+        .filter(m => m.presence.status === 'dnd').size);
 }
