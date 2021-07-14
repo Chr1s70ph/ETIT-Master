@@ -1,12 +1,11 @@
-const config = require("../../privateData/config.json");
+const config = require("../../privateData/config.json")
 
-exports.name = "nice";
+exports.name = "nice"
 
-exports.description = "nice";
+exports.description = "nice"
 
-exports.usage = `${config.prefix}nice`;
-
+exports.usage = `${config.prefix}nice`
 
 exports.run = (client, message) => {
-    message.channel.send('https://tenor.com/view/wii-bowling-nice-cock-perfect-gif-18674484');
+	message.channel.send("https://tenor.com/view/wii-bowling-nice-cock-perfect-gif-18674484")
 }
