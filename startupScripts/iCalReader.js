@@ -29,7 +29,6 @@ exports.run = async (client) => {
 			var channelID = findChannelInCategory(icalName, "bot-commands", client)
 
 			sendTodaysLessons(todaysLessonsEmbed, icalName, channelID, events, client)
-
 			await deleteYesterdaysLessonMessage(channelID, icalName, client)
 		}
 	}
@@ -168,6 +167,12 @@ function getEvents(webEvents, today, events, client) {
 			if (icalEvent.rrule) {
 				//check if rrule exists in icalEvent
 
+				//count the number of Exdates
+				var numberOfExdates = 0
+				for (entry in icalEvent.exdate) {
+					numberOfExdates += 1
+				}
+
 				var ruleOption = icalEvent.rrule.options
 
 				if (ruleOption.until) {
@@ -193,7 +198,8 @@ function getEvents(webEvents, today, events, client) {
 						var daysInWeek = 7
 						var intervalEndDate = new Date(eventStart)
 						intervalEndDate.setDate(
-							intervalEndDate.getDate() + daysInWeek * intervallModifier * (count - 1)
+							intervalEndDate.getDate() +
+								daysInWeek * intervallModifier * (count - (numberOfExdates ? numberOfExdates + 1 : 1)) // +1 / 1 needed because of Date formatting
 						)
 
 						if (amountOfDaysDifference(today, intervalEndDate) == 0) {
