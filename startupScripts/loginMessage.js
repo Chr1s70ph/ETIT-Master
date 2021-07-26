@@ -46,13 +46,13 @@ exports.run = async (client) => {
 				inline: true
 			},
 			{
-				name: "Prozessor:",
-				value: "Intel Xeon X3480 (8) @ 3.068GHz",
+				name: "NodeJs:",
+				value: `${process.version}`,
 				inline: true
 			},
 			{
-				name: "⠀",
-				value: "⠀",
+				name: "Prozessor:",
+				value: "Intel Xeon X3480 (8) @ 3.068GHz",
 				inline: true
 			}
 		)
