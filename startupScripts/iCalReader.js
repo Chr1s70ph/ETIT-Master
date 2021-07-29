@@ -9,10 +9,18 @@ var botUserID = config.ids.userID.botUserID
 var embed = ""
 const { DateTime } = require("luxon")
 const { MessageButton, MessageActionRow } = require("discord-buttons")
+const cron_to_fetch_new_notifications = "0 0 * * *"
 const cron_to_delete_lesson_notifications = "1 0 * * * " //cron string to trigger deletion of all messages that contain notifications about lessons
 const cron_to_send_todays_lesson_notifications = "5 0 * * * " //cron string to trigger sending of all messages that contain notifications about lessons
 
 exports.run = async (client) => {
+	fetchAndSend(client)
+	schedule.scheduleJob(cron_to_fetch_new_notifications, async function () {
+		fetchAndSend(client)
+	})
+}
+
+async function fetchAndSend(client) {
 	var today = localDate()
 
 	for (entry in config.calendars) {

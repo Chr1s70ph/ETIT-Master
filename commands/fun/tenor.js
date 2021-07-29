@@ -7,6 +7,7 @@ const Tenor = require("tenorjs").client({
 	MediaFilter: "minimal", // either minimal or basic, not case sensitive
 	DateFormat: "D/MM/YYYY - H:mm:ss A" // Change this accordingly
 })
+const mention_Regex = /<@!?(\d{17,19})>/g
 
 exports.name = "tenor"
 
@@ -17,6 +18,15 @@ exports.usage = `${config.prefix}tenor <searchQuery>\n${config.prefix}gif <searc
 exports.aliases = ["gif"]
 
 exports.run = (client, message, args) => {
+	const embed = new discord.MessageEmbed().setFooter(
+		message.author.tag,
+		message.author.avatarURL({ dynamic: true })
+	)
+
+	const userPing = args.find((value) => discord.MessageMentions.USERS_PATTERN.test(value))
+
+	args = removeMatching(args, discord.MessageMentions.USERS_PATTERN)
+
 	let searchQuery = ""
 	for (word in args) {
 		searchQuery = searchQuery + args[word] + " "
@@ -30,7 +40,20 @@ exports.run = (client, message, args) => {
 		if (Results.length == 0)
 			return message.channel.send("Es konnten keine Gifs gefunden werden!")
 		Results.forEach((Post) => {
-			message.reply(Post.url)
+			let gifUrl = Post.media.find((element) => element.hasOwnProperty("mediumgif")).mediumgif
+				.url
+			embed.setImage(gifUrl)
 		})
+		message.channel.send(userPing, embed)
 	})
+}
+
+//https://stackoverflow.com/a/3661083/10926046
+function removeMatching(originalArray, regex) {
+	var j = 0
+	while (j < originalArray.length) {
+		if (regex.test(originalArray[j])) originalArray.splice(j, 1)
+		else j++
+	}
+	return originalArray
 }

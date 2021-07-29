@@ -2,6 +2,7 @@ var discord = require("discord.js")
 var fs = require("fs")
 const config = require("../privateData/config.json")
 const os = require("os")
+const package = require("../package.json")
 
 exports.run = async (client) => {
 	let commands = []
@@ -51,8 +52,9 @@ exports.run = async (client) => {
 				inline: true
 			},
 			{
-				name: "Prozessor:",
-				value: "Intel Xeon X3480 (8) @ 3.068GHz",
+				name: "Discord.js:",
+				value: `v${package.dependencies["discord.js"].slice(1)}`,
+				//prints aout the version of installed discord.js version and slices of  '^' infront of version number
 				inline: true
 			}
 		)
