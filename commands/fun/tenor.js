@@ -40,11 +40,13 @@ exports.run = (client, message, args) => {
 		if (Results.length == 0)
 			return message.channel.send("Es konnten keine Gifs gefunden werden!")
 		Results.forEach((Post) => {
-			let gifUrl = Post.media.find((element) => element.hasOwnProperty("mediumgif")).mediumgif
-				.url
+			let gifUrl = Post.media.find((element) => element.hasOwnProperty("gif")).gif.url
 			embed.setImage(gifUrl)
 		})
-		message.channel.send(userPing, embed)
+		message.channel.send({
+			content: userPing,
+			embeds: [embed]
+		})
 	})
 }
 

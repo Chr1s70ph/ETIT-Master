@@ -8,7 +8,6 @@ var serverID = config.ids.serverID
 var botUserID = config.ids.userID.botUserID
 var embed = ""
 const { DateTime } = require("luxon")
-const { MessageButton, MessageActionRow } = require("discord-buttons")
 const cron_to_fetch_new_notifications = "0 0 * * *"
 const cron_to_delete_lesson_notifications = "1 0 * * * " //cron string to trigger deletion of all messages that contain notifications about lessons
 const cron_to_send_todays_lesson_notifications = "5 0 * * * " //cron string to trigger sending of all messages that contain notifications about lessons
@@ -76,21 +75,25 @@ async function deleteYesterdaysLessonMessage(channelID, icalName, client) {
  */
 function scheduleDeleteMessages(channelID, messageToDelete, categoryName, client) {
 	console.log("Set schedule to delete old reminder list message.")
-	var job = schedule.scheduleJob(cron_to_delete_lesson_notifications, function () {
-		client.channels.cache
-			.get(channelID)
-			.messages.fetch(messageToDelete)
-			.then(async (msg) => {
-				if (msg) {
-					try {
-						msg.delete()
-						console.log("Message deleted in " + categoryName)
-					} catch (e) {
-						console.log("could not delete message!\n" + e)
+	var deleteMessages = schedule.scheduleJob(
+		cron_to_delete_lesson_notifications,
+		function () {
+			client.channels.cache
+				.get(channelID)
+				.messages.fetch(messageToDelete)
+				.then(async (msg) => {
+					if (msg) {
+						try {
+							msg.delete()
+							console.log("Message deleted in " + categoryName)
+						} catch (e) {
+							console.log("could not delete message!\n" + e)
+						}
 					}
-				}
-			})
-	})
+				})
+		}
+	)
+	deleteMessages.isOneTimeJob = true
 }
 
 /**
@@ -116,9 +119,13 @@ function getKeyByValue(object, value) {
 }
 
 function sendTodaysLessons(embed, icalName, channel, events, client) {
-	var job = schedule.scheduleJob(cron_to_send_todays_lesson_notifications, function () {
-		client.channels.cache.get(channel).send(todaysLessons(events, client))
-	})
+	var sendLessons = schedule.scheduleJob(
+		cron_to_send_todays_lesson_notifications,
+		function () {
+			client.channels.cache.get(channel).send(todaysLessons(events, client))
+		}
+	)
+	sendLessons.isOneTimeJob = true
 	console.log(`Set shedule to send todays Lessons for ${icalName}`)
 }
 
@@ -564,11 +571,11 @@ function createCron(cronDate, channel, role, embed, link, client) {
 	let channelName = client.channels.cache.get(channel).name
 
 	if (!validUrl.isUri(link)) {
-		var job = schedule.scheduleJob(cronDate, function () {
+		var sendNotification = schedule.scheduleJob(cronDate, function () {
 			console.log(`Sent notification to ${channelName}`)
 			client.channels.cache
 				.get(channel)
-				.send(role, embed.setTimestamp())
+				.send({ content: role, embeds: [embed.setTimestamp()] })
 				.then((msg) => {
 					setTimeout(function () {
 						try {
@@ -581,22 +588,11 @@ function createCron(cronDate, channel, role, embed, link, client) {
 				})
 		})
 	} else {
-		let linkButton = new MessageButton()
-			.setStyle("url")
-			.setLabel("In Zoom öffnen")
-			.setURL(link)
-			.setEmoji("776402157334822964")
-
-		let row = new MessageActionRow().addComponent(linkButton)
-
-		var job = schedule.scheduleJob(cronDate, function () {
+		var sendNotification = schedule.scheduleJob(cronDate, function () {
 			console.log(`Sent notification to ${channelName}`)
 			client.channels.cache
 				.get(channel)
-				.send(role, {
-					components: [row],
-					embed: embed.setTimestamp()
-				})
+				.send({ content: role, embeds: [embed.setTimestamp()] })
 				.then((msg) => {
 					setTimeout(function () {
 						try {
@@ -609,4 +605,5 @@ function createCron(cronDate, channel, role, embed, link, client) {
 				})
 		})
 	}
+	sendNotification.isOneTimeJob = true
 }

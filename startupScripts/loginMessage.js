@@ -54,19 +54,18 @@ exports.run = async (client) => {
 			{
 				name: "Discord.js:",
 				value: `v${package.dependencies["discord.js"].slice(1)}`,
-				//prints aout the version of installed discord.js version and slices of  '^' infront of version number
 				inline: true
 			}
 		)
 		.addFields(
 			{
 				name: "Befehle geladen:",
-				value: commands.length,
+				value: commands.length.toString(),
 				inline: true
 			},
 			{
 				name: "SlashCommands geladen:",
-				value: slashCount.length,
+				value: slashCount.length.toString(),
 				inline: true
 			},
 			{
@@ -81,5 +80,7 @@ exports.run = async (client) => {
 			"https://image.flaticon.com/icons/png/512/888/888879.png"
 		)
 
-	client.channels.cache.get(config.ids.channelIDs.dev.botTestLobby).send(loginMessage) //sends login embed to channel
+	client.channels.cache
+		.get(config.ids.channelIDs.dev.botTestLobby)
+		.send({ embeds: [loginMessage] }) //sends login embed to channel
 }

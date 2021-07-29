@@ -1,7 +1,14 @@
 const config = require("./privateData/config.json")
 const discord = require("./node_modules/discord.js")
-const client = new discord.Client()
-const disbut = require("discord-buttons")(client)
+const client = new discord.Client({
+	intents: [
+		discord.Intents.FLAGS.GUILDS,
+		discord.Intents.FLAGS.GUILD_MEMBERS,
+		discord.Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
+		discord.Intents.FLAGS.GUILD_PRESENCES,
+		discord.Intents.FLAGS.GUILD_MESSAGES
+	]
+})
 const fs = require("fs")
 
 client.commands = new discord.Collection()

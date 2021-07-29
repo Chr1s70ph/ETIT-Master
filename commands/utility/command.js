@@ -41,13 +41,20 @@ exports.run = (client, message, args) => {
 			if (value.aliases && value.aliases.length > 0) {
 				addAliasesToEmbed(value.aliases, commandHelpEmbed)
 			}
-			commandHelpEmbed.setDescription(value.description)
+
 			commandHelpEmbed.setTitle(`‎${value.name}\n ‎`)
-			commandHelpEmbed.addFields({
-				name: "Beschreibung",
-				value: `${value.description}\n‎ ‎`,
-				inline: false
-			})
+			commandHelpEmbed.addFields(
+				{
+					name: "Beschreibung",
+					value: `${value.description}\n‎ ‎`,
+					inline: false
+				},
+				{
+					name: "Benutzung:",
+					value: `${value.usage}\n ‎`,
+					inline: false
+				}
+			)
 			return message.channel.send(commandHelpEmbed)
 		}
 	}
