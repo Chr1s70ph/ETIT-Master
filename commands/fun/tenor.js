@@ -1,12 +1,6 @@
 const config = require("../../private/config.json")
 const discord = require("discord.js")
-const Tenor = require("tenorjs").client({
-	Key: "U1BY9KJBOWIT", // https://tenor.com/developer/keyregistration
-	Filter: "off", // "off", "low", "medium", "high", not case sensitive
-	Locale: "en_US", // Your locale here, case-sensitivity depends on input
-	MediaFilter: "minimal", // either minimal or basic, not case sensitive
-	DateFormat: "D/MM/YYYY - H:mm:ss A" // Change this accordingly
-})
+const Tenor = require("tenorjs").client(config.tenor)
 const mention_Regex = /<@!?(\d{17,19})>/g
 
 exports.name = "tenor"
