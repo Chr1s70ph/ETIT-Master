@@ -18,8 +18,8 @@ exports.run = (client, message) => {
 			process.exit(2)
 		}
 
-		pm2.restart("0", (err, proc) => {})
-		pm2.flush("0", (err, proc) => {})
-		pm2.restart("0", (err, proc) => {})
+		pm2.restart(process.env.pm_id, (err, proc) => {})
+		pm2.flush(process.env.pm_id, (err, proc) => {})
+		pm2.restart(process.env.pm_id, (err, proc) => {})
 	})
 }
