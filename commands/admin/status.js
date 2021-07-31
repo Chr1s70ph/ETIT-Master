@@ -1,4 +1,4 @@
-const config = require("../../privateData/config.json")
+const config = require("../../private/config.json")
 
 exports.name = "status"
 
@@ -10,11 +10,13 @@ exports.example = `${config.prefix}status Bitte nicht stören -dnd\n
 ${config.prefix}status `
 
 let presence = {
-	status: "",
-	activity: {
-		name: "",
-		type: "PLAYING"
-	}
+	activities: [
+		{
+			name: "",
+			type: "PLAYING"
+		}
+	],
+	status: ""
 }
 
 exports.presence = presence
@@ -28,7 +30,7 @@ exports.run = (client, message) => {
 	messageContent = messageContent.split(".status")[1]
 
 	let activityName = messageContent.split("-")[0]
-	presence.activity.name = activityName
+	presence.activities[0].name = activityName
 
 	let icon = messageContent.split("-")[1]
 	if (icon) {
@@ -47,9 +49,7 @@ exports.run = (client, message) => {
 		presence.status = "online"
 	}
 
-	console.log(presence)
-
-	if (presence.activity.name == " " || presence.activity.name == "") {
+	if (presence.activities[0].name == " " || presence.activities[0].name == "") {
 		let defaultPresence = config.presence[0]
 		Presence(client, message, defaultPresence)
 	} else {
@@ -58,7 +58,6 @@ exports.run = (client, message) => {
 }
 
 function Presence(client, message, presence) {
-	console.log(presence)
 	client.user.setPresence(presence)
 	message.channel.send("👥Präsenz wurde geupdated!")
 }

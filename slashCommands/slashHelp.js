@@ -1,7 +1,7 @@
 const { log } = require("console")
 const fs = require("fs")
 var discord = require("discord.js")
-const config = require("../privateData/config.json")
+const config = require("../private/config.json")
 
 exports.run = async (client) => {
 	let embed = await getCommands()

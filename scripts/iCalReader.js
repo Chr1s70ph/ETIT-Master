@@ -1,6 +1,6 @@
 const ical = require("node-ical")
 const discord = require("../node_modules/discord.js")
-const config = require("../privateData/config.json")
+const config = require("../private/config.json")
 const schedule = require("node-schedule")
 const validUrl = require("valid-url")
 var subjects = config.ids.channelIDs.subject
@@ -16,6 +16,20 @@ exports.run = async (client) => {
 	fetchAndSend(client)
 	schedule.scheduleJob(cron_to_fetch_new_notifications, async function () {
 		fetchAndSend(client)
+		let markdownType = "yaml"
+		let calendarList = Object.keys(config.calendars).toString()
+		let calendars = calendarList.replaceAll(",", "\n")
+		//create embed for each new fetch
+		var updatedCalendars = new discord.MessageEmbed()
+			.setColor("#C7BBED")
+			.setAuthor(client.user.tag, client.user.avatarURL())
+			.setDescription(
+				`**Kalender nach Events durchgesucht**\`\`\`${markdownType}\n${calendars} \`\`\``
+			)
+		//send notification what calendars have been queried for todays events
+		client.channels.cache
+			.get(config.ids.channelIDs.dev.botTestLobby)
+			.send({ embeds: [updatedCalendars] })
 	})
 }
 

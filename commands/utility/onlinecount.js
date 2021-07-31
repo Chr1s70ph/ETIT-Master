@@ -1,4 +1,4 @@
-const config = require("../../privateData/config.json")
+const config = require("../../private/config.json")
 const discord = require("discord.js")
 
 exports.name = "onlinecount"

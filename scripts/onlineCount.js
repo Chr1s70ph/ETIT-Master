@@ -1,5 +1,5 @@
 const schedule = require("node-schedule")
-const config = require("../privateData/config.json")
+const config = require("../private/config.json")
 const online_refresh_timer = "*/15 * * * *"
 
 exports.run = async (client) => {
@@ -10,7 +10,6 @@ exports.run = async (client) => {
 
 	schedule.scheduleJob(online_refresh_timer, async function () {
 		let onlineCount = await fetchNumberOfOnlineMembers(client)
-		console.log(onlineCount)
 		onlineCounterChannel.setName(`🟢Online:${onlineCount.toLocaleString()}`)
 		console.log(`Updated online Member count to ${onlineCount.toLocaleString()}`)
 	})

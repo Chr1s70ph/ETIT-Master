@@ -1,25 +1,24 @@
 const pm2 = require("pm2")
-const config = require("../../privateData/config.json")
+const config = require("../../private/config.json")
 
-exports.name = "restart"
+exports.name = "clearlogs"
 
-exports.description = ""
+exports.description = "Löscht die lokalen Log Dateien des Bottes"
 
-exports.usage = `${config.prefix}restart`
+exports.usage = `${config.prefix}clearlogs`
 
 exports.run = (client, message) => {
 	if (!Object.values(config.ids.acceptedAdmins).includes(message.author.id))
 		return message.reply("You do not have the permissions to perform that command.")
 
-	message.channel.send("🤖Restarting...")
 	pm2.connect(function (err) {
 		if (err) {
 			console.error(err)
 			process.exit(2)
 		}
-
-		pm2.restart("3", (err, proc) => {})
-		pm2.flush("3", (err, proc) => {})
-		pm2.restart("3", (err, proc) => {})
+		message.channel.send("🤖Deleting logs...")
+		pm2.flush("index", (err, proc) => {
+			pm2.disconnect()			
+		})
 	})
 }

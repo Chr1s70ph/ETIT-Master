@@ -1,5 +1,5 @@
 const discord = require("discord.js")
-const config = require("../../privateData/config.json")
+const config = require("../../private/config.json")
 const gitlab = "https://git.scc.kit.edu"
 const github = "https://git.io/J3Vao"
 
