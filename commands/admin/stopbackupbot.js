@@ -1,11 +1,11 @@
 const pm2 = require("pm2")
 const config = require("../../private/config.json")
 
-exports.name = "restart"
+exports.name = "stopbackupbot"
 
-exports.description = ""
+exports.description = "stops backup bot"
 
-exports.usage = `${config.prefix}restart`
+exports.usage = `${config.prefix}stopbackupbot`
 
 exports.run = (client, message) => {
 	if (!Object.values(config.ids.acceptedAdmins).includes(message.author.id))
