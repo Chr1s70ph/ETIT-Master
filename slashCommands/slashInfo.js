@@ -1,4 +1,4 @@
-const config = require("../privateData/config.json")
+const config = require("../private/config.json")
 const discord = require("../node_modules/discord.js")
 const links = config.links
 var serverID = config.ids.serverID

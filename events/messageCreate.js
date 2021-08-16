@@ -1,4 +1,4 @@
-const config = require("../privateData/config.json")
+const config = require("../private/config.json")
 var prefix = config.prefix
 
 exports.run = async (client, message) => {

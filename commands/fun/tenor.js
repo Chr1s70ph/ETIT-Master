@@ -1,12 +1,6 @@
-const config = require("../../privateData/config.json")
+const config = require("../../private/config.json")
 const discord = require("discord.js")
-const Tenor = require("tenorjs").client({
-	Key: "U1BY9KJBOWIT", // https://tenor.com/developer/keyregistration
-	Filter: "off", // "off", "low", "medium", "high", not case sensitive
-	Locale: "en_US", // Your locale here, case-sensitivity depends on input
-	MediaFilter: "minimal", // either minimal or basic, not case sensitive
-	DateFormat: "D/MM/YYYY - H:mm:ss A" // Change this accordingly
-})
+const Tenor = require("tenorjs").client(config.tenor)
 const mention_Regex = /<@!?(\d{17,19})>/g
 
 exports.name = "tenor"
@@ -37,14 +31,20 @@ exports.run = (client, message, args) => {
 	}
 
 	Tenor.Search.Random(searchQuery, "1").then((Results) => {
-		if (Results.length == 0)
-			return message.channel.send("Es konnten keine Gifs gefunden werden!")
+		if (Results.length == 0) {
+			embed.setDescription(
+				`<@${message.author.id}> Es konnten keine Gifs gefunden werden für: '${searchQuery}'`
+			)
+			return message.channel.send({ embeds: [embed] })
+		}
 		Results.forEach((Post) => {
-			let gifUrl = Post.media.find((element) => element.hasOwnProperty("mediumgif")).mediumgif
-				.url
+			let gifUrl = Post.media.find((element) => element.hasOwnProperty("gif")).gif.url
 			embed.setImage(gifUrl)
 		})
-		message.channel.send(userPing, embed)
+		message.channel.send({
+			content: userPing,
+			embeds: [embed]
+		})
 	})
 }
 

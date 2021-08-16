@@ -8,7 +8,7 @@
 private.js
 birthdayList.json
 package-lock.json
-/privateData
+/private
 
 # User-specific files
 *.rsuser

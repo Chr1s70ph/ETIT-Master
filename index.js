@@ -1,12 +1,17 @@
-const config = require("./privateData/config.json")
+const config = require("./private/config.json")
 const discord = require("./node_modules/discord.js")
-const client = new discord.Client()
-const disbut = require("discord-buttons")(client)
+const client = new discord.Client({
+	intents: [
+		discord.Intents.FLAGS.GUILDS,
+		discord.Intents.FLAGS.GUILD_MEMBERS,
+		discord.Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
+		discord.Intents.FLAGS.GUILD_PRESENCES,
+		discord.Intents.FLAGS.GUILD_MESSAGES
+	]
+})
 const fs = require("fs")
 
 client.commands = new discord.Collection()
-client.aliases = new discord.Collection()
-client.events = new discord.Collection()
 
 client.on("ready", () => {
 	foo(client)
@@ -81,12 +86,12 @@ fs.readdir("./events/", (err, files) => {
 async function loadScripts(client) {
 	let files
 	try {
-		files = await fs.promises.readdir("./startupScripts/")
+		files = await fs.promises.readdir("./scripts/")
 	} catch (e) {
 		console.log(e)
 	}
 	files.forEach((file) => {
-		let script = require(`./startupScripts/${file}`)
+		let script = require(`./scripts/${file}`)
 		try {
 			script.run(client)
 		} catch (e) {
