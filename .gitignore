@@ -5,10 +5,8 @@
 
 
 #My Private Data
-private.js
-birthdayList.json
 package-lock.json
-/private
+private/config.json
 
 # User-specific files
 *.rsuser
