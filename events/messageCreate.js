@@ -7,7 +7,7 @@ exports.run = async (client, message) => {
 		let messageArray = message.content.split(" "),
 			commandName = messageArray[0],
 			args = messageArray.slice(1)
-		commandName = commandName.slice(prefix.length)
+		commandName = commandName.slice(prefix.length).toLowerCase()
 
 		commandfile =
 			client.commands.get(commandName) ||
