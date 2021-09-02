@@ -9,23 +9,19 @@ exports.run = async (client) => {
 	)
 
 	schedule.scheduleJob(online_refresh_timer, async function () {
-		let onlineCount = await fetchNumberOfOnlineMembers(client)
-		onlineCounterChannel.setName(`🟢Online:${onlineCount.toLocaleString()}`)
-		console.log(`Updated online Member count to ${onlineCount.toLocaleString()}`)
+		let GUILD_MEMBERS = await client.guilds.cache
+			.get(config.ids.serverID)
+			.members.fetch({ withPresences: true })
+
+		var onlineMembers = {
+			online: await GUILD_MEMBERS.filter((online) => online.presence?.status === "online").size,
+			idle: await GUILD_MEMBERS.filter((online) => online.presence?.status === "idle").size,
+			dnd: await GUILD_MEMBERS.filter((online) => online.presence?.status === "dnd").size
+		}
+
+		let onlineCount = `🟢:${onlineMembers.online.toLocaleString()} 🟡:${onlineMembers.idle.toLocaleString()} 🔴:${onlineMembers.dnd.toLocaleString()}`
+
+		onlineCounterChannel.setName(onlineCount)
+		console.log(`Updated online Member count to ${onlineCount}`)
 	})
-}
-
-async function fetchNumberOfOnlineMembers(client) {
-	let GUILD_MEMBERS = await client.guilds.cache
-		.get(config.ids.serverID)
-		.members.fetch({ withPresences: true })
-
-	let online = await GUILD_MEMBERS.filter((online) => online.presence?.status === "online")
-		.size
-
-	let idle = await GUILD_MEMBERS.filter((online) => online.presence?.status === "idle").size
-
-	let dnd = await GUILD_MEMBERS.filter((online) => online.presence?.status === "dnd").size
-
-	return online + idle + dnd
 }
