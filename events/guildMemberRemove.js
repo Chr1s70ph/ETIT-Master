@@ -4,6 +4,6 @@ exports.run = async (client, message) => {
 	const guild = client.guilds.cache.get(config.ids.serverID)
 	const memberCount = guild.memberCount
 	const channel = guild.channels.cache.get(config.ids.channelIDs.dev.memberCounter)
-	channel.setName(`👥 Mitglieder:${memberCount.toLocaleString()}`)
+	channel.setName(`👥 ${memberCount.toLocaleString()} Mitglieder`)
 	console.log(`Member left. Updated membercount to ${memberCount.toLocaleString()}`)
 }
