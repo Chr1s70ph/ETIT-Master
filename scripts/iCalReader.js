@@ -136,7 +136,7 @@ function sendTodaysLessons(embed, icalName, channel, events, client) {
 	var sendLessons = schedule.scheduleJob(
 		cron_to_send_todays_lesson_notifications,
 		function () {
-			client.channels.cache.get(channel).send(todaysLessons(events, client))
+			client.channels.cache.get(channel).send({embeds: [todaysLessons(events, client)]})
 		}
 	)
 	sendLessons.isOneTimeJob = true

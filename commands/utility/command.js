@@ -55,7 +55,7 @@ exports.run = (client, message, args) => {
 					inline: false
 				}
 			)
-			return message.channel.send(commandHelpEmbed)
+			return message.channel.send({ embeds: [commandHelpEmbed] })
 		}
 	}
 

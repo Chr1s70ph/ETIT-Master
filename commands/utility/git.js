@@ -40,5 +40,5 @@ exports.run = (client, message) => {
 			"https://about.gitlab.com/images/press/logo/png/gitlab-icon-rgb.png"
 		)
 
-	message.channel.send(git.setTimestamp())
+	message.channel.send({ embeds: [git.setTimestamp()] })
 }

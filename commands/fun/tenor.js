@@ -35,7 +35,7 @@ exports.run = (client, message, args) => {
 			embed.setDescription(
 				`<@${message.author.id}> Es konnten keine Gifs gefunden werden für: '${searchQuery}'`
 			)
-			return message.channel.send({ embeds: [embed] })
+			return message.channel.send({ embeds: [embed]})
 		}
 		Results.forEach((Post) => {
 			let gifUrl = Post.media.find((element) => element.hasOwnProperty("gif")).gif.url
