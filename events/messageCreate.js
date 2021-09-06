@@ -3,6 +3,12 @@ var prefix = config.prefix
 
 exports.run = async (client, message) => {
 	if (message.author.bot) return
+	if (message.guildId === null) {
+		client.users.fetch(config.ids.acceptedAdmins.Christoph, false).then((user) => {
+			user.send(`User <@${message.author.id}> said: 
+			\`${message}\``)
+		})
+	}
 	if (message.content.startsWith(prefix)) {
 		let messageArray = message.content.split(" "),
 			commandName = messageArray[0],
