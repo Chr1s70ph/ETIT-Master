@@ -8,8 +8,10 @@ const client = new discord.Client({
 		discord.Intents.FLAGS.GUILD_PRESENCES,
 		discord.Intents.FLAGS.GUILD_MESSAGES,
 		discord.Intents.FLAGS.GUILD_INVITES,
-		discord.Intents.FLAGS.GUILD_VOICE_STATES
-	]
+		discord.Intents.FLAGS.GUILD_VOICE_STATES,
+		discord.Intents.FLAGS.DIRECT_MESSAGES
+	],
+	partials: ["MESSAGE", "CHANNEL", "REACTION"]
 })
 const fs = require("fs")
 
