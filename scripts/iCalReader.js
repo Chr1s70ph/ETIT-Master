@@ -10,7 +10,6 @@ var embed = ""
 const { DateTime } = require("luxon")
 const cron_to_fetch_new_notifications = "0 0 * * *"
 const cron_to_delete_lesson_notifications = "1 0 * * * " //cron string to trigger deletion of all messages that contain notifications about lessons
-const cron_to_send_todays_lesson_notifications = "5 0 * * * " //cron string to trigger sending of all messages that contain notifications about lessons
 
 exports.run = async (client) => {
 	fetchAndSend(client)
@@ -90,7 +89,7 @@ async function deleteYesterdaysLessonMessage(channelID, icalName, client) {
 function scheduleDeleteMessages(channelID, messageToDelete, categoryName, client) {
 	console.log("Set schedule to delete old reminder list message.")
 	var deleteMessages = schedule.scheduleJob(
-		cron_to_delete_lesson_notifications,
+		dateToCron( undefined, new Date(), undefined, undefined, 1),
 		function () {
 			client.channels.cache
 				.get(channelID)
@@ -106,8 +105,7 @@ function scheduleDeleteMessages(channelID, messageToDelete, categoryName, client
 					}
 				})
 		}
-	)
-	deleteMessages.isOneTimeJob = true
+	)  //function set to only delete notifications at 00:05 AM
 }
 
 /**
@@ -134,13 +132,12 @@ function getKeyByValue(object, value) {
 
 function sendTodaysLessons(embed, icalName, channel, events, client) {
 	var sendLessons = schedule.scheduleJob(
-		cron_to_send_todays_lesson_notifications,
+		dateToCron(undefined, new Date(), undefined, undefined, 5),
 		function () {
 			client.channels.cache.get(channel).send({ embeds: [todaysLessons(events, client)] })
 			console.log(`Todays lessons info sent to ${icalName}`)
-		}
+		} //function set to only send notifications at 00:05 AM
 	)
-	sendLessons.isOneTimeJob = true
 	console.log(`Set shedule to send todays Lessons for ${icalName}`)
 }
 
@@ -400,9 +397,7 @@ async function filterToadaysEvents(client, today, thisWeeksEvents) {
 
 			var link = extractZoomLinks(event.description)
 
-			var time = event.start
-
-			var cronDate = dateToCron(time, today.getDay())
+			var cronDate = dateToCron(event.start, today, "calendarEvent", undefined, undefined, undefined, undefined, undefined, today.getDay())
 
 			var role = findRole(subject, client)
 
@@ -454,24 +449,103 @@ function extractZoomLinks(description) {
 	}
 }
 
+// /**
+//  *
+//  * @param {Date} date
+//  * @returns
+//  */
+// function dateToCron(date, weekDay) {
+// 	var seconds = "0"
+// 	var minutes = "55"
+// 	var hour = date.getHours() - 1 //Subtract one, to give the alert not at the exact start of the event, but coupled with minutes = '55' 5 minutes earlier
+// 	var dayOfMonth = "*" //set to * so the Cron is for the current week
+// 	var month = "*" //set to * so the Cron is for the current week
+// 	var day = weekDay //Extracts the weekday of the date string
+
+// 	var cronString =
+// 		seconds + " " + minutes + " " + hour + " " + dayOfMonth + " " + month + " " + day
+
+// 	return cronString
+// }
+
 /**
- * generate all needed variables for the CRON-Format
+ * #### using type = "*calendarEvent*" and event\* = undefined
+ * 	- cronSeconds are set to 0
+ * 	- cronMinutes are set to 55
+ * 	- cronHours are set to eventDate 1
+ * 	- cronDayOfMonth is set to *
+ * 	- cronMonth is set to *
  *
- * SECONDS MINUTES HOURS DAY_OF_MONTH MONTH DAY_OF_WEEK
- *
- * @param {Date} date
- * @returns
+ * @param {Date} eventDate datestring of Event
+ * @param {Object} todaysDate Dateobject
+ * @param {string} type of event *calendarEvent*
+ * @param {string} eventSeconds default: seconds from todaysDate-Object
+ * @param {string} eventMinutes default: minutes  from todaysDate-Object
+ * @param {string} eventHour default: hour  from todaysDate-Object
+ * @param {string} eventDayOfMonth default: date from todaysDate-Object
+ * @param {string} eventMonth default: day from todaysDate-Object
+ * @param {string} eventWeekDay default: month from todaysDate-Object
  */
-function dateToCron(date, weekDay) {
-	var seconds = "0"
-	var minutes = "55"
-	var hour = date.getHours() - 1 //Subtract one, to give the alert not at the exact start of the event, but coupled with minutes = '55' 5 minutes earlier
-	var dayOfMonth = "*" //set to * so the Cron is for the current week
-	var month = "*" //set to * so the Cron is for the current week
-	var day = weekDay //Extracts the weekday of the date string
+function dateToCron(
+	eventDate,
+	todaysDate,
+	type,
+	eventSeconds,
+	eventMinutes,
+	eventHours,
+	eventDayOfMonth,
+	eventMonth,
+	eventWeekDay
+) {
+	var cronSeconds =
+		eventSeconds != undefined
+			? eventSeconds
+			: type === "calendarEvent"
+			? "0"
+			: todaysDate.getSeconds()
+
+	var cronMinutes =
+		eventMinutes != undefined
+			? eventMinutes
+			: type === "calendarEvent"
+			? "55"
+			: todaysDate.getMinutes()
+
+	var cronHours =
+		eventHours != undefined
+			? eventHours
+			: type === "calendarEvent"
+			? eventDate.getHours() - 1
+			: todaysDate.getHours()
+
+	var cronDayOfMonth =
+		eventDayOfMonth != undefined
+			? eventDayOfMonth
+			: type === "calendarEvent"
+			? "*"
+			: todaysDate.getDay()
+
+	var cronMonth =
+		eventMonth != undefined
+			? eventMonth
+			: type === "calendarEvent"
+			? "*"
+			: todaysDate.getMonth()
+
+	var cronWeekDay = eventWeekDay != undefined ? eventWeekDay : todaysDate.getDay()
 
 	var cronString =
-		seconds + " " + minutes + " " + hour + " " + dayOfMonth + " " + month + " " + day
+		cronSeconds +
+		" " +
+		cronMinutes +
+		" " +
+		cronHours +
+		" " +
+		cronDayOfMonth +
+		" " +
+		cronMonth +
+		" " +
+		cronWeekDay
 
 	return cronString
 }
@@ -620,5 +694,4 @@ function createCron(cronDate, channel, role, embed, link, client) {
 				})
 		})
 	}
-	sendNotification.isOneTimeJob = true
 }
