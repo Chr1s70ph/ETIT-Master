@@ -18,7 +18,7 @@ exports.aliases = ["commandinfo"]
  * @param {array} args arguments of issued command
  * @returns commandHelpEmbed with description, example and name of command
  */
-exports.run = (client, message, args) => {
+exports.run = async (client, message, args) => {
 	let commandHelpEmbed = new discord.MessageEmbed()
 		.setColor("#7289da")
 		.setAuthor(

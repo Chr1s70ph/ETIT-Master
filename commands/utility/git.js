@@ -9,7 +9,7 @@ exports.description = "Link zum KIT Gitlab und zur Repository"
 
 exports.usage = `${config.prefix}git`
 
-exports.run = (client, message) => {
+exports.run = async (client, message) => {
 	const git = new discord.MessageEmbed() //Login Embed
 		.setColor("#ffa500")
 		.setAuthor(

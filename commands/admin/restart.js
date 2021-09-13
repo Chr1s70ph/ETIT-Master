@@ -7,7 +7,7 @@ exports.description = ""
 
 exports.usage = `${config.prefix}restart`
 
-exports.run = (client, message) => {
+exports.run = async (client, message) => {
 	if (!Object.values(config.ids.acceptedAdmins).includes(message.author.id))
 		return message.reply("You do not have the permissions to perform that command.")
 

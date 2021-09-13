@@ -8,6 +8,6 @@ exports.usage = `${config.prefix}zoom`
 
 exports.aliases = ["loading"]
 
-exports.run = (client, message) => {
+exports.run = async (client, message) => {
 	message.channel.send("<a:loading:783688114509578271>")
 }

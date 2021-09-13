@@ -6,7 +6,7 @@ exports.description = "Ein simpler countdown von 10 runter"
 
 exports.usage = `${config.prefix}countdown`
 
-exports.run = (client, message) => {
+exports.run = async (client, message) => {
 	message.channel.send("Liftoff in:")
 	message.channel.send("🚀10🚀")
 	setTimeout(() => {

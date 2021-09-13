@@ -6,6 +6,6 @@ exports.description = "Liftoff celebration"
 
 exports.usage = `${config.prefix}liftoff`
 
-exports.run = (client, message) => {
+exports.run = async (client, message) => {
 	message.channel.send("Hurraaa 🚀🚀")
 }

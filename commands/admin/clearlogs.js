@@ -7,7 +7,7 @@ exports.description = "Löscht die lokalen Log Dateien des Bottes"
 
 exports.usage = `${config.prefix}clearlogs`
 
-exports.run = (client, message) => {
+exports.run = async (client, message) => {
 	if (!Object.values(config.ids.acceptedAdmins).includes(message.author.id))
 		return message.reply("You do not have the permissions to perform that command.")
 
@@ -18,7 +18,7 @@ exports.run = (client, message) => {
 		}
 		message.channel.send("🤖Deleting logs...")
 		pm2.flush("index", (err, proc) => {
-			pm2.disconnect()			
+			pm2.disconnect()
 		})
 	})
 }

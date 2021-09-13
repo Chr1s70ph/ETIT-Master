@@ -28,9 +28,12 @@ exports.description = `Trickst die API aus um Discord-Spiele freizuschalten.
 exports.usage = `${config.prefix}start \`${Object.keys(defaultApplications)}\``
 
 exports.run = async (client, message, args, applications = defaultApplications) => {
+	//save message, before it magically gets lost (thanks discord API :] )
+	var message = message
+	//throw an error, when user not in voiceChannel
 	if (!message.member.voice.channel) {
 		try {
-			message.reply({
+			return message.reply({
 				embeds: [
 					new discord.MessageEmbed().setDescription(
 						`⚠️ You are not in a Voice-Channel.
@@ -71,6 +74,7 @@ exports.run = async (client, message, args, applications = defaultApplications) 
 			})
 				.then((res) => res.json())
 				.then((invite) => {
+					//error handling
 					if (invite.error || !invite.code)
 						throw new Error("An error occured while retrieving data !")
 					if (invite.code === 50013 || invite.code === "50013")
@@ -84,7 +88,7 @@ exports.run = async (client, message, args, applications = defaultApplications) 
 		}
 	} else {
 		try {
-			message.reply({
+			return message.reply({
 				embeds: [new discord.MessageEmbed().setDescription(`⚠️ Invalid option!`)]
 			})
 		} catch (e) {
@@ -92,7 +96,7 @@ exports.run = async (client, message, args, applications = defaultApplications) 
 		}
 		throw new SyntaxError("Invalid option !")
 	}
-	message.channel.send({
+	return message.reply({
 		content: returnData.code,
 		embeds: [
 			new discord.MessageEmbed().setDescription(
