@@ -89,7 +89,7 @@ async function deleteYesterdaysLessonMessage(channelID, icalName, client) {
 function scheduleDeleteMessages(channelID, messageToDelete, categoryName, client) {
 	console.log("Set schedule to delete old reminder list message.")
 	var deleteMessages = schedule.scheduleJob(
-		dateToCron( undefined, new Date(), undefined, undefined, 1),
+		dateToCron(undefined, new Date(), undefined, 0, 1),
 		function () {
 			client.channels.cache
 				.get(channelID)
@@ -105,7 +105,7 @@ function scheduleDeleteMessages(channelID, messageToDelete, categoryName, client
 					}
 				})
 		}
-	)  //function set to only delete notifications at 00:05 AM
+	) //function set to only delete notifications at 00:05 AM
 }
 
 /**
@@ -397,7 +397,17 @@ async function filterToadaysEvents(client, today, thisWeeksEvents) {
 
 			var link = extractZoomLinks(event.description)
 
-			var cronDate = dateToCron(event.start, today, "calendarEvent", undefined, undefined, undefined, undefined, undefined, today.getDay())
+			var cronDate = dateToCron(
+				event.start,
+				today,
+				"calendarEvent",
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				today.getDay()
+			)
 
 			var role = findRole(subject, client)
 
