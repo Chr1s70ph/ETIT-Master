@@ -11,11 +11,10 @@ exports.usage = `${config.prefix}tenor <searchQuery>\n${config.prefix}gif <searc
 
 exports.aliases = ["gif"]
 
-exports.run = (client, message, args) => {
-	const embed = new discord.MessageEmbed().setFooter(
-		message.author.tag,
-		message.author.avatarURL({ dynamic: true })
-	)
+exports.run = async (client, message, args) => {
+	const embed = new discord.MessageEmbed()
+		.setFooter(message.author.tag, message.author.avatarURL({ dynamic: true }))
+		.setColor("RANDOM")
 
 	const userPing = args.find((value) => discord.MessageMentions.USERS_PATTERN.test(value))
 
@@ -35,7 +34,7 @@ exports.run = (client, message, args) => {
 			embed.setDescription(
 				`<@${message.author.id}> Es konnten keine Gifs gefunden werden für: '${searchQuery}'`
 			)
-			return message.channel.send({ embeds: [embed]})
+			return message.channel.send({ embeds: [embed] })
 		}
 		Results.forEach((Post) => {
 			let gifUrl = Post.media.find((element) => element.hasOwnProperty("gif")).gif.url
