@@ -21,8 +21,9 @@ exports.run = async (client, message) => {
 
 		if (commandfile == undefined) return
 		try {
+			message.channel.sendTyping()
+			await commandfile.run(client, message, args)
 			message.delete()
-			commandfile.run(client, message, args)
 			console.log(
 				`${message.author.username} used ${commandName} ${
 					args.length > 0 ? `with arguments: ${args}` : ""
