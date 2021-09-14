@@ -33,7 +33,7 @@ exports.run = async (client, message, args, applications = defaultApplications) 
 	//throw an error, when user not in voiceChannel
 	if (!message.member.voice.channel) {
 		try {
-			return message.reply({
+			message.reply({
 				embeds: [
 					new discord.MessageEmbed().setDescription(
 						`⚠️ You are not in a Voice-Channel.
@@ -88,7 +88,7 @@ exports.run = async (client, message, args, applications = defaultApplications) 
 		}
 	} else {
 		try {
-			return message.reply({
+			message.reply({
 				embeds: [new discord.MessageEmbed().setDescription(`⚠️ Invalid option!`)]
 			})
 		} catch (e) {
