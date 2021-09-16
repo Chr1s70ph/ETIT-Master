@@ -1,13 +1,24 @@
 const config = require("../private/config.json")
+const discord = require("discord.js")
 var prefix = config.prefix
 
 exports.run = async (client, message) => {
 	if (message.author.bot) return
 	if (message.guildId === null) {
+		console.log(message.attachments)
+		let userMessage = new discord.MessageEmbed().setDescription(message.content || "᲼")
+		let messageAttachment =
+			message.attachments.size > 0 ? message.attachments.first().url : null
+		userMessage.setImage(messageAttachment)
 		client.users.fetch(config.ids.acceptedAdmins.Christoph, false).then((user) => {
-			user.send(`User <@${message.author.id}> said: 
-			\`${message}\``)
+			user.send({
+				content: `User <@${message.author.id}> said:`,
+				embeds: [userMessage]
+			})
 		})
+		console.log(
+			`User ${message.author.tag} sent a DM: ${message.content || "without content"}`
+		)
 	}
 	if (message.content.startsWith(prefix)) {
 		let messageArray = message.content.split(" "),
@@ -22,8 +33,7 @@ exports.run = async (client, message) => {
 		if (commandfile == undefined) return
 		try {
 			message.channel.sendTyping()
-			await commandfile.run(client, message, args)
-			message.delete()
+			commandfile.run(client, message, args).then(message.delete())
 			console.log(
 				`${message.author.username} used ${commandName} ${
 					args.length > 0 ? `with arguments: ${args}` : ""
