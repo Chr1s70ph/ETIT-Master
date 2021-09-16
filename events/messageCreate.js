@@ -5,7 +5,6 @@ var prefix = config.prefix
 exports.run = async (client, message) => {
 	if (message.author.bot) return
 	if (message.guildId === null) {
-		console.log(message.attachments)
 		let userMessage = new discord.MessageEmbed().setDescription(message.content || "᲼")
 		let messageAttachment =
 			message.attachments.size > 0 ? message.attachments.first().url : null
