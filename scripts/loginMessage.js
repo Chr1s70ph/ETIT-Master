@@ -1,5 +1,5 @@
-var discord = require("discord.js")
-var fs = require("fs")
+const discord = require("discord.js")
+const fs = require("fs")
 const config = require("../private/config.json")
 const os = require("os")
 const package = require("../package.json")
