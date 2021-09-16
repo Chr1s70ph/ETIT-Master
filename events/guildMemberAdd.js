@@ -11,7 +11,7 @@ exports.run = async (client, member) => {
 	)
 
 	let welcomeMessage = new discord.MessageEmbed()
-		.setTitle("🗲 Willkommen auf dem ETIT-KIT Server 🗲")
+		.setTitle(`🗲 Willkommen auf dem ETIT-KIT Server ${member.user.username} 🗲`)
 		.setColor("#FFDA00")
 		.setAuthor(client.user.tag, member.guild.iconURL())
 		.setThumbnail(
@@ -26,5 +26,10 @@ exports.run = async (client, member) => {
 		
 		Falls du noch irgendwelche Fragen hast, wende dich einfach an einen Admin des Servers (wir sind auch nur einfache Studenten, genauso wie du).`)
 
-	member.send({ embeds: [welcomeMessage] })
+	try {
+		member.send({ embeds: [welcomeMessage] })
+		console.log(`Sent welcome message to ${member.user.username}`)
+	} catch (error) {
+		throw new Error(error)
+	}
 }
