@@ -6,7 +6,7 @@
 
 #My Private Data
 package-lock.json
-private/config.json
+private/*
 
 # User-specific files
 *.rsuser
