@@ -24,7 +24,7 @@ exports.run = async (client, member) => {
 		In <#830837597587767306> kannst du deinen Studiengang auswählen.
 		In der Kategorie <#830891013266604062> findest du dann weitere Kanäle, in denen du deine Fächer auswählen kannst.
 		
-		Falls du noch irgendwelche Fragen hast, wende dich einfach an einen Admin des Servers (wir sind auch nur einfache Studenten, genauso wie du).`)
+		Falls du noch irgendwelche Fragen hast, wende dich einfach an <@${config.ids.userID.basti}> (wir Admins sind auch nur einfache Studenten, genauso wie du).`)
 
 	try {
 		member.send({ embeds: [welcomeMessage] })
