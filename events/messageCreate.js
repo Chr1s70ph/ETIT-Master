@@ -4,21 +4,41 @@ var prefix = config.prefix
 
 exports.run = async (client, message) => {
 	if (message.author.bot) return
+
+	//DM handling and forwarding
 	if (message.guildId === null) {
-		let userMessage = new discord.MessageEmbed().setDescription(message.content || "᲼")
-		let messageAttachment =
-			message.attachments.size > 0 ? message.attachments.first().url : null
-		userMessage.setImage(messageAttachment)
-		client.users.fetch(config.ids.acceptedAdmins.Christoph, false).then((user) => {
-			user.send({
-				content: `User <@${message.author.id}> said:`,
-				embeds: [userMessage]
+		const messagePayload = {
+			type: "USER_DM",
+			user: message.author,
+			content: message.content,
+			sticker: message.stickers.size > 0 ? message.stickers.first() : null,
+			attachments: message.attachments.size > 0 ? message.attachments.first().url : null
+		}
+
+		let userMessage = new discord.MessageEmbed()
+			.setDescription(
+				message.content +
+					(messagePayload.sticker != null
+						? `\n${message.content ? "and" : "Sent"} a sticker: ` +
+						  "**" +
+						  messagePayload.sticker.name +
+						  "**"
+						: "")
+			)
+			.setAuthor(message.author.tag, message.author.avatarURL())
+			.setImage(messagePayload.attachments)
+
+		try {
+			client.users.fetch(config.ids.acceptedAdmins.Christoph, false).then((user) => {
+				user.send({ embeds: [userMessage] })
 			})
-		})
-		console.log(
-			`User ${message.author.tag} sent a DM: ${message.content || "without content"}`
-		)
+			console.log(messagePayload)
+		} catch (error) {
+			throw new Error(error)
+		}
 	}
+
+	//command handling
 	if (message.content.startsWith(prefix)) {
 		let messageArray = message.content.split(" "),
 			commandName = messageArray[0],
@@ -39,7 +59,7 @@ exports.run = async (client, message) => {
 				}`
 			)
 		} catch (error) {
-			console.error(error)
+			throw new Error(error)
 		}
 	}
 }
