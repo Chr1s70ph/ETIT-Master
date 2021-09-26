@@ -14,12 +14,7 @@ exports.run = async (client, member) => {
 		.setTitle(`🗲 Willkommen auf dem ETIT-KIT Server ${member.user.username} 🗲`)
 		.setColor("#FFDA00")
 		.setAuthor(client.user.tag, member.guild.iconURL())
-		.setThumbnail(
-			client.guilds
-				.resolve(config.ids.serverID)
-				.members.resolve(config.ids.userID.botUserID)
-				.user.avatarURL()
-		)
+		.setThumbnail(client.user.avatarURL())
 		.setDescription(`Wir hoffen, dass der Server dir gefällt, und dir im Studium weiterhelfen kann.
 		In <#830837597587767306> kannst du deinen Studiengang auswählen.
 		In der Kategorie <#830891013266604062> findest du dann weitere Kanäle, in denen du deine Fächer auswählen kannst.

@@ -54,12 +54,7 @@ exports.run = async (client, oldMember, newMember) => {
 				.setTitle(`🗲 Personalisierung 🗲`)
 				.setColor("#FFDA00")
 				.setAuthor(client.user.tag, newMember.guild.iconURL())
-				.setThumbnail(
-					client.guilds
-						.resolve(config.ids.serverID)
-						.members.resolve(config.ids.userID.botUserID)
-						.user.avatarURL()
-				)
+				.setThumbnail(client.user.avatarURL())
 				.setDescription(
 					`Meine Spione haben mir erzählt, dass du \`${memberCourseOfStudies}\` bist.
 					In [<#${memberClassificationchannel}>](${memberClassificationLink}) kannst du dich weiter einteilen, und die Fächer für dein Semester auswählen.`

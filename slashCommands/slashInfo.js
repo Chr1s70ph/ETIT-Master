@@ -187,10 +187,7 @@ function switchEmbed(
 	picture,
 	client
 ) {
-	var avatar = client.guilds
-		.resolve(config.ids.serverID)
-		.members.resolve(config.ids.userID.botUserID)
-		.user.avatarURL() //get Avatar URL of Bot
+	var avatar = client.user.avatarURL() //get Avatar URL of Bot
 
 	const embed = new discord.MessageEmbed()
 		.setColor("#0099ff")

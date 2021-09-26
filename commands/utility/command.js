@@ -25,12 +25,7 @@ exports.run = async (client, message, args) => {
 			"Befehlshilfe",
 			"https://upload.wikimedia.org/wikipedia/commons/f/f6/Lol_question_mark.png"
 		)
-		.setThumbnail(
-			client.guilds
-				.resolve(config.ids.serverID)
-				.members.resolve(config.ids.userID.botUserID)
-				.user.avatarURL()
-		)
+		.setThumbnail(client.user.avatarURL())
 
 	if (args[0] == undefined) {
 		return message.channel.send("Please provide arguments!")

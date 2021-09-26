@@ -33,12 +33,7 @@ exports.run = async (client) => {
 	const loginMessage = new discord.MessageEmbed() //Login Embed
 		.setColor("#ffa500")
 		.setAuthor(client.user.tag, "https://www.iconsdb.com/icons/preview/orange/code-xxl.png")
-		.setThumbnail(
-			client.guilds
-				.resolve(config.ids.serverID)
-				.members.resolve(config.ids.userID.botUserID)
-				.user.avatarURL()
-		)
+		.setThumbnail(client.user.avatarURL())
 		.setTitle("[🌐] Bot erfolgreich gestartet")
 		.addFields(
 			{
