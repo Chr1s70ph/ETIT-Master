@@ -7,7 +7,7 @@
 #My Private Data
 package-lock.json
 private/*
-secret/*
+*/secret/*
 
 # User-specific files
 *.rsuser
