@@ -7,6 +7,7 @@ const client = new discord.Client({
 		discord.Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
 		discord.Intents.FLAGS.GUILD_PRESENCES,
 		discord.Intents.FLAGS.GUILD_MESSAGES,
+		discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
 		discord.Intents.FLAGS.GUILD_INVITES,
 		discord.Intents.FLAGS.GUILD_VOICE_STATES,
 		discord.Intents.FLAGS.DIRECT_MESSAGES
