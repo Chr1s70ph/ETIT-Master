@@ -9,5 +9,7 @@ exports.description = "Testfunktion von neuen Features"
 exports.usage = `${config.prefix}devtest`
 
 exports.run = async (client, message) => {
-	console.log(process.env.pm_id)
+	if (!Object.values(config.ids.acceptedAdmins).includes(message.author.id))
+		return message.reply("You do not have the permissions to perform that command.")
+	console.log(client)
 }
