@@ -1,5 +1,4 @@
 const discord = require("discord.js")
-
 const config = require("../../private/config.json")
 
 exports.name = "test"
