@@ -178,8 +178,7 @@ function getEvents(webEvents, today, events, client) {
 
 		if (icalEvent.type == "VEVENT") {
 			var summary = icalEvent.summary
-			var tempEventStart = icalEvent.start
-			eventStart = convertDate(tempEventStart)
+			var eventStart = icalEvent.start
 			var description = icalEvent.description
 
 			if (datesAreOnSameDay(eventStart, today)) {
@@ -397,17 +396,7 @@ async function filterToadaysEvents(client, today, thisWeeksEvents) {
 
 			var link = extractZoomLinks(event.description)
 
-			var cronDate = dateToCron(
-				event.start,
-				today,
-				"calendarEvent",
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				today.getDay()
-			)
+			var cronDate = dateToCron(event.start, today)
 
 			var role = findRole(subject, client)
 
@@ -459,105 +448,20 @@ function extractZoomLinks(description) {
 	}
 }
 
-// /**
-//  *
-//  * @param {Date} date
-//  * @returns
-//  */
-// function dateToCron(date, weekDay) {
-// 	var seconds = "0"
-// 	var minutes = "55"
-// 	var hour = date.getHours() - 1 //Subtract one, to give the alert not at the exact start of the event, but coupled with minutes = '55' 5 minutes earlier
-// 	var dayOfMonth = "*" //set to * so the Cron is for the current week
-// 	var month = "*" //set to * so the Cron is for the current week
-// 	var day = weekDay //Extracts the weekday of the date string
-
-// 	var cronString =
-// 		seconds + " " + minutes + " " + hour + " " + dayOfMonth + " " + month + " " + day
-
-// 	return cronString
-// }
-
 /**
- * #### using type = "*calendarEvent*" and event\* = undefined
- * 	- cronSeconds are set to 0
- * 	- cronMinutes are set to 55
- * 	- cronHours are set to eventDate 1
- * 	- cronDayOfMonth is set to *
- * 	- cronMonth is set to *
- *
+ * Create CronTimestamp for event
  * @param {Date} eventDate datestring of Event
  * @param {Object} todaysDate Dateobject
- * @param {string} type of event *calendarEvent*
- * @param {string} eventSeconds default: seconds from todaysDate-Object
- * @param {string} eventMinutes default: minutes  from todaysDate-Object
- * @param {string} eventHour default: hour  from todaysDate-Object
- * @param {string} eventDayOfMonth default: date from todaysDate-Object
- * @param {string} eventMonth default: day from todaysDate-Object
- * @param {string} eventWeekDay default: month from todaysDate-Object
  */
-function dateToCron(
-	eventDate,
-	todaysDate,
-	type,
-	eventSeconds,
-	eventMinutes,
-	eventHours,
-	eventDayOfMonth,
-	eventMonth,
-	eventWeekDay
-) {
-	var cronSeconds =
-		eventSeconds != undefined
-			? eventSeconds
-			: type === "calendarEvent"
-			? "0"
-			: todaysDate.getSeconds()
-
-	var cronMinutes =
-		eventMinutes != undefined
-			? eventMinutes
-			: type === "calendarEvent"
-			? "55"
-			: todaysDate.getMinutes()
-
-	var cronHours =
-		eventHours != undefined
-			? eventHours
-			: type === "calendarEvent"
-			? eventDate.getHours() - 1
-			: todaysDate.getHours()
-
-	var cronDayOfMonth =
-		eventDayOfMonth != undefined
-			? eventDayOfMonth
-			: type === "calendarEvent"
-			? "*"
-			: todaysDate.getDay()
-
-	var cronMonth =
-		eventMonth != undefined
-			? eventMonth
-			: type === "calendarEvent"
-			? "*"
-			: todaysDate.getMonth()
-
-	var cronWeekDay = eventWeekDay != undefined ? eventWeekDay : todaysDate.getDay()
-
-	var cronString =
-		cronSeconds +
-		" " +
-		cronMinutes +
-		" " +
-		cronHours +
-		" " +
-		cronDayOfMonth +
-		" " +
-		cronMonth +
-		" " +
-		cronWeekDay
-
-	return cronString
+function dateToCron(eventDate, todaysDate) {
+	let tempDate = todaysDate
+	tempDate.setSeconds(eventDate.getSeconds())
+	tempDate.setMinutes(eventDate.getMinutes())
+	tempDate.setHours(eventDate.getHours())
+	tempDate.setDate(todaysDate.getDate())
+	tempDate.setMonth(todaysDate.getMonth())
+	tempDate.setYear(todaysDate.getFullYear())
+	return tempDate
 }
 
 /**
@@ -670,7 +574,7 @@ function createCron(cronDate, channel, role, embed, link, client) {
 	let channelName = client.channels.cache.get(channel).name
 
 	if (!validUrl.isUri(link)) {
-		var sendNotification = schedule.scheduleJob(cronDate, function () {
+		var sendNotification = schedule.scheduleJob(new Date(cronDate), function () {
 			console.log(`Sent notification to ${channelName}`)
 			client.channels.cache
 				.get(channel)
@@ -687,7 +591,7 @@ function createCron(cronDate, channel, role, embed, link, client) {
 				})
 		})
 	} else {
-		var sendNotification = schedule.scheduleJob(cronDate, function () {
+		var sendNotification = schedule.scheduleJob(new Date(cronDate), function () {
 			console.log(`Sent notification to ${channelName}`)
 			client.channels.cache
 				.get(channel)
