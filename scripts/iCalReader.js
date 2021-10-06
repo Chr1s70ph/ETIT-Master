@@ -3,6 +3,7 @@ const discord = require("../node_modules/discord.js")
 const config = require("../private/config.json")
 const schedule = require("node-schedule")
 const validUrl = require("valid-url")
+const moment = require("moment")
 var subjects = config.ids.channelIDs.subject
 var serverID = config.ids.serverID
 var botUserID = config.ids.userID.botUserID
@@ -89,7 +90,7 @@ async function deleteYesterdaysLessonMessage(channelID, icalName, client) {
 function scheduleDeleteMessages(channelID, messageToDelete, categoryName, client) {
 	console.log("Set schedule to delete old reminder list message.")
 	var deleteMessages = schedule.scheduleJob(
-		dateToCron(undefined, new Date(), undefined, 0, 1),
+		dateToRecurrenceRule(undefined, new Date(), undefined, 0, 1),
 		function () {
 			client.channels.cache
 				.get(channelID)
@@ -132,7 +133,7 @@ function getKeyByValue(object, value) {
 
 function sendTodaysLessons(embed, icalName, channel, events, client) {
 	var sendLessons = schedule.scheduleJob(
-		dateToCron(undefined, new Date(), undefined, undefined, 5),
+		dateToRecurrenceRule(undefined, new Date(), undefined, undefined, 5),
 		function () {
 			client.channels.cache.get(channel).send({ embeds: [todaysLessons(events, client)] })
 			console.log(`Todays lessons info sent to ${icalName}`)
@@ -143,8 +144,13 @@ function sendTodaysLessons(embed, icalName, channel, events, client) {
 
 function localDate() {
 	var tempToday = DateTime.local().toString()
+	tempToday.toLocaleString("en-US", { timezone: "Berlin/Europe" })
 	var todayString = tempToday.slice(0, -10) + "z"
 	var today = new Date(todayString)
+	let tzOffset = today.getTimezoneOffset() //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getTimezoneOffset
+	today.setHours(-tzOffset / 60) //account for TZ-Offset
+	today.setMinutes(0)
+	today.setSeconds(0)
 	return today
 }
 
@@ -169,108 +175,103 @@ var datesAreOnSameDay = (first, second) =>
 	first.getMonth() === second.getMonth() &&
 	first.getDate() === second.getDate()
 
-function getEvents(webEvents, today, events, client) {
+function getEvents(data, today, events, client) {
 	var weekStartDate = localDate()
 	weekStartDate.setDate(weekStartDate.getDate() - weekStartDate.getDay() + 1)
+	var todayEnd = localDate()
+	todayEnd.setHours(23)
+	todayEnd.setMinutes(59)
+	todayEnd.setSeconds(59)
 
-	mainLoop: for (entry in webEvents) {
-		var icalEvent = webEvents[entry]
+	for (var k in data) {
+		// When dealing with calendar recurrences, you need a range of dates to query against,
+		// because otherwise you can get an infinite number of calendar events.
+		var rangeStart = moment(today)
+		var rangeEnd = moment(todayEnd)
 
-		if (icalEvent.type == "VEVENT") {
-			var summary = icalEvent.summary
-			var eventStart = icalEvent.start
-			var description = icalEvent.description
+		var event = data[k]
+		if (event.type === "VEVENT") {
+			var title = event.summary
+			var description = event.description
+			var startDate = moment(event.start)
+			var endDate = moment(event.end)
 
-			if (datesAreOnSameDay(eventStart, today)) {
-				addEntryToWeeksEvents(events, eventStart.getDay(), eventStart, summary, description)
-				continue
+			// Calculate the duration of the event for use with recurring events.
+			var duration = parseInt(endDate.format("x")) - parseInt(startDate.format("x"))
+
+			// Simple case - no recurrences, just print out the calendar event.
+			if (typeof event.rrule === "undefined" && datesAreOnSameDay(event.start, today)) {
+				addEntryToWeeksEvents(events, today.getDay(), event.start, title, description)
 			}
 
-			if (eventStart > today) {
-				continue
-			}
-
-			if (icalEvent.rrule) {
-				//check if rrule exists in icalEvent
-
-				//count the number of Exdates
-				var numberOfExdates = 0
-				for (entry in icalEvent.exdate) {
-					numberOfExdates += 1
-				}
-
-				var ruleOption = icalEvent.rrule.options
-
-				if (ruleOption.until) {
-					if (ruleOption.until - today < 0) {
-						continue
+			// Complicated case - if an RRULE exists, handle multiple recurrences of the event.
+			else if (typeof event.rrule !== "undefined") {
+				// For recurring events, get the set of event start dates that fall within the range
+				// of dates we're looking for.
+				var dates = event.rrule.between(
+					rangeStart.toDate(),
+					rangeEnd.toDate(),
+					true,
+					function (date, i) {
+						return true
 					}
-				}
+				)
 
-				if (icalEvent.exdate) {
-					for (entry in icalEvent.exdate) {
-						if (datesAreOnSameDay(icalEvent.exdate[entry], today)) {
-							continue mainLoop
-						}
-					}
-				}
-
-				var count = ruleOption.count
-
-				if (count) {
-					if (ruleOption.interval > 0) {
-						var intervallModifier = ruleOption.interval > 0 ? ruleOption.interval : 1
-						//retuns days until last day of webEvent based on interval
-						var daysInWeek = 7
-						var intervalEndDate = new Date(eventStart)
-						intervalEndDate.setDate(
-							intervalEndDate.getDate() +
-								daysInWeek * intervallModifier * (count - (numberOfExdates ? numberOfExdates + 1 : 1)) // +1 / 1 needed because of Date formatting
-						)
-
-						if (amountOfDaysDifference(today, intervalEndDate) == 0) {
-							addEntryToWeeksEvents(events, eventStart.getDay(), eventStart, summary, description)
-							continue
-						}
-
-						if (intervalEndDate < today) {
-							continue
+				// The "dates" array contains the set of dates within our desired date range range that are valid
+				// for the recurrence rule.  *However*, it's possible for us to have a specific recurrence that
+				// had its date changed from outside the range to inside the range.  One way to handle this is
+				// to add *all* recurrence override entries into the set of dates that we check, and then later
+				// filter out any recurrences that don't actually belong within our range.
+				if (event.recurrences != undefined) {
+					for (var r in event.recurrences) {
+						// Only add dates that weren't already in the range we added from the rrule so that
+						// we don't double-add those events.
+						if (moment(new Date(r)).isBetween(rangeStart, rangeEnd) != true) {
+							dates.push(new Date(r))
 						}
 					}
 				}
 
-				var interval = ruleOption.interval
+				// Loop through the set of date entries to see which recurrences should be printed.
+				for (var i in dates) {
+					var date = dates[i]
+					var curEvent = event
+					var showRecurrence = true
+					var curDuration = duration
 
-				if (interval) {
-					if (Math.abs(weekStartDate.getWeek() - eventStart.getWeek()) % interval == 0) {
-						if (eventStart.getDay() == today.getDay()) {
-							addEntryToWeeksEvents(events, eventStart.getDay(), eventStart, summary, description)
-							continue mainLoop
-						}
+					startDate = moment(date)
 
-						var byday = ruleOption.byweekday
+					// Use just the date of the recurrence to look up overrides and exceptions (i.e. chop off time information)
+					var dateLookupKey = date.toISOString().substring(0, 10)
 
-						if (byday.length > 1) {
-							for (day in byday) {
-								if (byday[day] + 1 == today.getDay()) {
-									addEntryToWeeksEvents(events, today.getDay(), eventStart, summary, description)
-									continue mainLoop
-								}
-							}
-						}
+					// For each date that we're checking, it's possible that there is a recurrence override for that one day.
+					if (
+						curEvent.recurrences != undefined &&
+						curEvent.recurrences[dateLookupKey] != undefined
+					) {
+						// We found an override, so for this recurrence, use a potentially different title, start date, and duration.
+						curEvent = curEvent.recurrences[dateLookupKey]
+						startDate = moment(curEvent.start)
+						curDuration = parseInt(moment(curEvent.end).format("x")) - parseInt(startDate.format("x"))
+					}
+					// If there's no recurrence override, check for an exception date.  Exception dates represent exceptions to the rule.
+					else if (curEvent.exdate != undefined && curEvent.exdate[dateLookupKey] != undefined) {
+						// This date is an exception date, which means we should skip it in the recurrence pattern.
+						showRecurrence = false
 					}
 
-					continue
-				}
+					// Set the the title and the end date from either the regular event or the recurrence override.
+					var recurrenceTitle = curEvent.summary
+					endDate = moment(parseInt(startDate.format("x")) + curDuration, "x")
 
-				var byday = ruleOption.byweekday
+					// If this recurrence ends before the start of the date range, or starts after the end of the date range,
+					// don't process it.
+					if (endDate.isBefore(rangeStart) || startDate.isAfter(rangeEnd)) {
+						showRecurrence = false
+					}
 
-				if (byday.length > 1) {
-					for (day in byday) {
-						if (byday[day] + 1 == today.getDay()) {
-							addEntryToWeeksEvents(events, byday[day] + 1, eventStart, summary, description)
-							continue mainLoop
-						}
+					if (showRecurrence === true) {
+						addEntryToWeeksEvents(events, today.getDay(), event.start, title, description)
 					}
 				}
 			}
@@ -396,7 +397,7 @@ async function filterToadaysEvents(client, today, thisWeeksEvents) {
 
 			var link = extractZoomLinks(event.description)
 
-			var cronDate = dateToCron(event.start, today)
+			var RecurrenceRule = dateToRecurrenceRule(event.start, today)
 
 			var role = findRole(subject, client)
 
@@ -408,13 +409,13 @@ async function filterToadaysEvents(client, today, thisWeeksEvents) {
 				channel = config.ids.channelIDs.generalChannels.general
 			}
 
-			if (noVariableUndefined(cronDate, channel, role, embed, client)) {
+			if (noVariableUndefined(RecurrenceRule, channel, role, embed, client)) {
 				role = "<@&" + role + ">"
 			} else if (role == undefined) {
 				role = ""
 			}
 
-			createCron(cronDate, channel, role, embed, link, client)
+			createCron(RecurrenceRule, channel, role, embed, link, client)
 		}
 	}
 }
@@ -453,15 +454,16 @@ function extractZoomLinks(description) {
  * @param {Date} eventDate datestring of Event
  * @param {Object} todaysDate Dateobject
  */
-function dateToCron(eventDate, todaysDate) {
-	let tempDate = todaysDate
-	tempDate.setSeconds(eventDate.getSeconds())
-	tempDate.setMinutes(eventDate.getMinutes())
-	tempDate.setHours(eventDate.getHours())
-	tempDate.setDate(todaysDate.getDate())
-	tempDate.setMonth(todaysDate.getMonth())
-	tempDate.setYear(todaysDate.getFullYear())
-	return tempDate
+function dateToRecurrenceRule(eventDate, todaysDate) {
+	const rule = new schedule.RecurrenceRule()
+	rule.second = eventDate.getSeconds()
+	rule.minute = eventDate.getMinutes()
+	rule.hour = eventDate.getHours()
+	rule.date = todaysDate.getDate()
+	rule.month = todaysDate.getMonth()
+	rule.year = todaysDate.getFullYear()
+	rule.tz = "Europe/Berlin"
+	return rule
 }
 
 /**
@@ -564,17 +566,17 @@ function noVariableUndefined() {
 
 /**
  *
- * @param {string} cronDate string in Cron format
+ * @param {string} RecurrenceRule string in RecurrenceRule format
  * @param {string} channel destination channel for message
  * @param {string} role role what is supposed to be pinged
  * @param {object} embed embed what is sent
  * @param {object} client required by discord.js
  */
-function createCron(cronDate, channel, role, embed, link, client) {
+function createCron(RecurrenceRule, channel, role, embed, link, client) {
 	let channelName = client.channels.cache.get(channel).name
 
 	if (!validUrl.isUri(link)) {
-		var sendNotification = schedule.scheduleJob(new Date(cronDate), function () {
+		var sendNotification = schedule.scheduleJob(RecurrenceRule, function () {
 			console.log(`Sent notification to ${channelName}`)
 			client.channels.cache
 				.get(channel)
@@ -591,7 +593,7 @@ function createCron(cronDate, channel, role, embed, link, client) {
 				})
 		})
 	} else {
-		var sendNotification = schedule.scheduleJob(new Date(cronDate), function () {
+		var sendNotification = schedule.scheduleJob(RecurrenceRule, function () {
 			console.log(`Sent notification to ${channelName}`)
 			client.channels.cache
 				.get(channel)
