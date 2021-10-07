@@ -8,6 +8,7 @@
 package-lock.json
 private/*
 */secret/*
+facts.txt
 
 # User-specific files
 *.rsuser
