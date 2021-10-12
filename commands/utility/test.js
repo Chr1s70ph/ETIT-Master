@@ -9,6 +9,10 @@ exports.usage = `${config.prefix}test`
 
 exports.run = async (client, message) => {
 	message.reply({
-		embeds: [new discord.MessageEmbed().setDescription("🌐 This Bot is working as intended!")]
+		embeds: [
+			new discord.MessageEmbed()
+				.setTitle("🌐 This Bot is working as intended!")
+				.setFooter(message.author.tag, message.author.avatarURL({ dynamic: true }))
+		]
 	})
 }
