@@ -25,7 +25,6 @@ exports.run = async (client, message) => {
 	uptime.minutes = Math.floor(uptime.seconds / 60)
 	uptime.seconds -= uptime.minutes * 60
 
-	console.log(uptime)
 	return message.reply({
 		embeds: [
 			new discord.MessageEmbed()
