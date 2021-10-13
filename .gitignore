@@ -9,6 +9,7 @@ package-lock.json
 private/*
 */secret/*
 facts.txt
+devtest.js
 
 # User-specific files
 *.rsuser
