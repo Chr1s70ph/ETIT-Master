@@ -10,6 +10,7 @@ private/*
 */secret/*
 facts.txt
 devtest.js
+*/built/*
 
 # User-specific files
 *.rsuser
