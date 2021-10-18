@@ -1,32 +1,28 @@
-const config = require("./private/config.json")
-const discord = require("./node_modules/discord.js")
-const client = new discord.Client({
+import config from "./private/config.json"
+import { Intents, Client, Collection } from "discord.js"
+const fs = require("fs")
+const client: any = new Client({
 	intents: [
-		discord.Intents.FLAGS.GUILDS,
-		discord.Intents.FLAGS.GUILD_MEMBERS,
-		discord.Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
-		discord.Intents.FLAGS.GUILD_PRESENCES,
-		discord.Intents.FLAGS.GUILD_MESSAGES,
-		discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-		discord.Intents.FLAGS.GUILD_INVITES,
-		discord.Intents.FLAGS.GUILD_VOICE_STATES,
-		discord.Intents.FLAGS.DIRECT_MESSAGES
+		Intents.FLAGS.GUILDS,
+		Intents.FLAGS.GUILD_MEMBERS,
+		Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
+		Intents.FLAGS.GUILD_PRESENCES,
+		Intents.FLAGS.GUILD_MESSAGES,
+		Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+		Intents.FLAGS.GUILD_INVITES,
+		Intents.FLAGS.GUILD_VOICE_STATES,
+		Intents.FLAGS.DIRECT_MESSAGES
 	],
 	partials: ["MESSAGE", "CHANNEL", "REACTION"]
 })
-const fs = require("fs")
 
-client.commands = new discord.Collection()
+client.commands = new Collection()
 
-client.on("ready", () => {
-	foo(client)
-})
-
-async function foo(client) {
+client.on("ready", async () => {
 	await loadScripts(client)
 	await loadSlashCommands(client)
 	console.log("Online!")
-}
+})
 
 client.login(config.botToken)
 
