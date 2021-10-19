@@ -2,11 +2,11 @@
 	"compilerOptions": {
 		"outDir": "./built",
 		"allowJs": true,
-		"target": "ES2021",
+		"target": "ESNext",
 		"watch": true,
 		"resolveJsonModule": true,
 		"esModuleInterop": true,
 		"moduleResolution": "node"
 	},
-	"exclude": ["node_modules"]
+	"exclude": ["node_modules", "./built"]
 }
