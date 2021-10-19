@@ -1,23 +1,22 @@
-const config = require("../../private/config.json")
-const discord = require("../../node_modules/discord.js")
+import { MessageEmbed } from "discord.js"
 
 exports.name = "say"
 
 exports.description =
 	"Der Bot sagt, was man ihm sagt, dass er sagen soll, weil er dir nach sagt."
 
-exports.usage = `${config.prefix}say`
+exports.usage = "say <messageContent>"
 
 exports.run = async (client, message) => {
-	if (!Object.values(config.ids.acceptedAdmins).includes(message.author.id))
+	if (!Object.values(client.config.ids.acceptedAdmins).includes(message.author.id))
 		return message.reply("You do not have the permissions to perform that command.")
 
 	let messageContent = message.content.substring(
-		message.content.indexOf(" ") + config.prefix.length
+		message.content.indexOf(" ") + client.config.prefix.length
 	)
 
-	const embed = new discord.MessageEmbed()
-		.setDescription(messageContent === `${config.prefix}say` ? "᲼" : messageContent)
+	const embed = new MessageEmbed()
+		.setDescription(messageContent === `${client.config.prefix}say` ? "᲼" : messageContent)
 		.setColor("RANDOM")
 
 	let messageAttachment =
