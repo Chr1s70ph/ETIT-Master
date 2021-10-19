@@ -2,9 +2,9 @@ import { Client, Collection, Intents } from "discord.js"
 import * as fs from "fs"
 import config from "./private/config.json"
 
-class DiscordClient extends Client {
-	commands = new Collection()
-	config = config
+export class DiscordClient extends Client {
+	commands
+	config
 }
 
 let client: DiscordClient = new DiscordClient({
@@ -21,6 +21,9 @@ let client: DiscordClient = new DiscordClient({
 	],
 	partials: ["MESSAGE", "CHANNEL", "REACTION"]
 })
+
+client.commands = new Collection()
+client.config = config
 
 client.on("ready", async () => {
 	await loadScripts(client)
