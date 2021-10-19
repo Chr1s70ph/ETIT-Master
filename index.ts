@@ -1,7 +1,13 @@
+import { Client, Collection, Intents } from "discord.js"
+import * as fs from "fs"
 import config from "./private/config.json"
-import { Intents, Client, Collection } from "discord.js"
-const fs = require("fs")
-const client: any = new Client({
+
+class DiscordClient extends Client {
+	commands = new Collection()
+	config = config
+}
+
+let client: DiscordClient = new DiscordClient({
 	intents: [
 		Intents.FLAGS.GUILDS,
 		Intents.FLAGS.GUILD_MEMBERS,
@@ -15,8 +21,6 @@ const client: any = new Client({
 	],
 	partials: ["MESSAGE", "CHANNEL", "REACTION"]
 })
-
-client.commands = new Collection()
 
 client.on("ready", async () => {
 	await loadScripts(client)
@@ -58,8 +62,8 @@ fs.readdir("./commands/", (err, elements) => {
  * @param {string} file actual filename of the file
  * @param {Object} client
  */
-function setCommands(path, file, client) {
-	if (!file.endsWith(".js")) return
+function setCommands(path: string, file: string, client: DiscordClient) {
+	if (!(file.endsWith(".js") || file.endsWith(".ts"))) return
 	let props = require(`${path}${file}`)
 	console.log("Successfully loaded command " + file)
 	let commandName = file.split(".")[0]
@@ -84,7 +88,7 @@ fs.readdir("./events/", (err, files) => {
  *
  * @param {object} client necessary to start scripts relying on client
  */
-async function loadScripts(client) {
+async function loadScripts(client: DiscordClient) {
 	let files
 	try {
 		files = await fs.promises.readdir("./scripts/")
@@ -102,7 +106,7 @@ async function loadScripts(client) {
 	})
 }
 
-async function loadSlashCommands(client) {
+async function loadSlashCommands(client: DiscordClient) {
 	let files
 	try {
 		files = await fs.promises.readdir("./slashCommands/")
