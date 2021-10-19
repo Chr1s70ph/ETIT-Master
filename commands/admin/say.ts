@@ -1,4 +1,5 @@
-import { MessageEmbed } from "discord.js"
+import { MessageEmbed, Message } from "discord.js"
+import { DiscordClient } from "../../index"
 
 exports.name = "say"
 
@@ -7,7 +8,7 @@ exports.description =
 
 exports.usage = "say <messageContent>"
 
-exports.run = async (client, message) => {
+exports.run = async (client: DiscordClient, message: Message) => {
 	if (!Object.values(client.config.ids.acceptedAdmins).includes(message.author.id))
 		return message.reply("You do not have the permissions to perform that command.")
 
@@ -24,9 +25,9 @@ exports.run = async (client, message) => {
 	embed.setImage(messageAttachment)
 
 	if (message.type === "REPLY") {
-		return (message = message.channel.messages
+		return message.channel.messages
 			.fetch(message.reference.messageId)
-			.then((message) => message.reply({ embeds: [embed] })))
+			.then((message) => message.reply({ embeds: [embed] }))
 	}
 	message.channel.send({ embeds: [embed] })
 }
