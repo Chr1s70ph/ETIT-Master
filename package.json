@@ -1,7 +1,7 @@
 {
 	"name": "etit-master",
 	"version": "1.1.0",
-	"description": "",
+	"description": "[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/G2G54TZ2T)",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
@@ -23,5 +23,13 @@
 		"tenorjs": "^1.0.8",
 		"tslib": "^2.3.1",
 		"valid-url": "^1.0.9"
-	}
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Chr1s70ph/ETIT-Master-JS.git"
+	},
+	"bugs": {
+		"url": "https://github.com/Chr1s70ph/ETIT-Master-JS/issues"
+	},
+	"homepage": "https://github.com/Chr1s70ph/ETIT-Master-JS#readme"
 }
