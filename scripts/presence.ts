@@ -1,15 +1,15 @@
-const schedule = require("node-schedule")
-const config = require("../private/config.json")
+import { DiscordClient } from "../index"
+import { scheduleJob } from "node-schedule"
 const presence_refresh_timer = "15 * * * * *"
-const custom_presence = require("../commands/admin/status.js")
+const custom_presence = require("../commands/admin/status.ts")
 
-exports.run = async (client) => {
-	const presenceVariants = config.presence
+exports.run = async (client: DiscordClient) => {
+	const presenceVariants = client.config.presence
 	var maxNumberOfPresence = Object.keys(presenceVariants).length
 	var minNumberOfPresence = 0
 	var keys = Object.keys(presenceVariants)
 
-	schedule.scheduleJob(presence_refresh_timer, function () {
+	scheduleJob(presence_refresh_timer, function () {
 		let customPresence = custom_presence.presence
 		if (customPresence.activities[0].name != "") {
 			client.user.setPresence(customPresence)
