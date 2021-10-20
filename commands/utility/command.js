@@ -20,7 +20,7 @@ exports.aliases = ["commandinfo"]
  */
 exports.run = async (client, message, args) => {
 	let commandHelpEmbed = new discord.MessageEmbed()
-		.setColor("#7289da")
+		.setColor("#7289ea")
 		.setAuthor(
 			"Befehlshilfe",
 			"https://upload.wikimedia.org/wikipedia/commons/f/f6/Lol_question_mark.png"
@@ -46,7 +46,7 @@ exports.run = async (client, message, args) => {
 				},
 				{
 					name: "Benutzung:",
-					value: `${value.usage}\n ‎`,
+					value: `${client.config.prefix}${value.usage}\n ‎`,
 					inline: false
 				}
 			)
