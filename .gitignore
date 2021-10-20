@@ -9,7 +9,7 @@ package-lock.json
 private/*
 */secret/*
 facts.txt
-devtest.js
+devtest.*
 built/*
 
 # User-specific files
