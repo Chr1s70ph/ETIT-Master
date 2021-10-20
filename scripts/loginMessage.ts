@@ -1,18 +1,20 @@
-const discord = require("discord.js")
-const fs = require("fs")
-const config = require("../private/config.json")
+import { DiscordClient } from "../index"
+import { MessageEmbed } from "discord.js"
+import { readdir as readdir_promise } from "fs/promises"
+import { statSync, readdir } from "fs"
 const os = require("os")
-const package = require("../package.json")
+
+import project from "../package.json"
 
 exports.run = async (client) => {
 	let commands = []
-	files = await fs.promises.readdir("./commands")
+	let files = await readdir_promise("./commands")
 	files.forEach((file) => {
-		const element_in_folder = fs.statSync(`./commands/${file}`)
+		const element_in_folder = statSync(`./commands/${file}`)
 		if (element_in_folder.isDirectory() == true) {
 			//check if element is a folder
 			const sub_directory = `./commands/${file}/`
-			fs.readdir(sub_directory, (err, elements) => {
+			readdir(sub_directory, (err, elements) => {
 				//reads all subcommands
 				if (err) return console.log(err)
 				elements.forEach((element) => {
@@ -26,11 +28,9 @@ exports.run = async (client) => {
 		}
 	})
 
-	var slashCount = await fs.promises.readdir("./slashCommands", (err, files) => {
-		return files
-	})
+	var slashCount = await readdir_promise("./slashCommands")
 
-	const loginMessage = new discord.MessageEmbed() //Login Embed
+	const loginMessage = new MessageEmbed() //Login Embed
 		.setColor("#ffa500")
 		.setAuthor(client.user.tag, "https://www.iconsdb.com/icons/preview/orange/code-xxl.png")
 		.setThumbnail(client.user.avatarURL())
@@ -48,7 +48,7 @@ exports.run = async (client) => {
 			},
 			{
 				name: "Discord.js:",
-				value: `v${package.dependencies["discord.js"].slice(1)}`,
+				value: `v${project.dependencies["discord.js"].slice(1)}`,
 				inline: true
 			}
 		)
@@ -71,11 +71,11 @@ exports.run = async (client) => {
 		)
 		.setTimestamp()
 		.setFooter(
-			`[ID] ${config.ids.userID.botUserID} \nstarted`,
+			`[ID] ${client.config.ids.userID.botUserID} \nstarted`,
 			"https://image.flaticon.com/icons/png/512/888/888879.png"
 		)
 
 	client.channels.cache
-		.get(config.ids.channelIDs.dev.botTestLobby)
-		.send({ embeds: [loginMessage] }) //sends login embed to channel
+		.find((channel) => channel.id == client.config.ids.channelIDs.dev.botTestLobby)
+		.send({ embeds: [loginMessage] })
 }
