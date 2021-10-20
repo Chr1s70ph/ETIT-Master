@@ -1,33 +1,35 @@
-const config = require("../../private/config.json")
-const discord = require("discord.js")
-const Tenor = require("tenorjs").client(config.tenor)
-const mention_Regex = /<@!?(\d{17,19})>/g
+import { MessageEmbed, Message, MessageMentions } from "discord.js"
+import { DiscordClient } from "../../index"
+
+const MENTION_REGEX = /<@!?(\d{17,19})>/g
 
 exports.name = "tenor"
 
 exports.description = "send gifs"
 
-exports.usage = `${config.prefix}tenor <searchQuery>\n${config.prefix}gif <searchQuery>`
+exports.usage = `tenor <searchQuery>`
 
 exports.aliases = ["gif"]
 
-exports.run = async (client, message, args) => {
-	const embed = new discord.MessageEmbed()
+exports.run = async (client: DiscordClient, message: Message, args: string[]) => {
+	const embed = new MessageEmbed()
 		.setFooter(message.author.tag, message.author.avatarURL({ dynamic: true }))
 		.setColor("RANDOM")
 
-	const userPing = args.find((value) => discord.MessageMentions.USERS_PATTERN.test(value))
+	const userPing = args.find((value) => MessageMentions.USERS_PATTERN.test(value))
 
-	args = removeMatching(args, discord.MessageMentions.USERS_PATTERN)
+	args = removeMatching(args, MessageMentions.USERS_PATTERN)
 
 	let searchQuery = ""
-	for (word in args) {
+	for (var word in args) {
 		searchQuery = searchQuery + args[word] + " "
 	}
 
 	if (searchQuery.length == 0) {
 		return message.channel.send("Bitte gebe einen suchwort an!")
 	}
+
+	const Tenor = require("tenorjs").client(client.config.tenor)
 
 	Tenor.Search.Random(searchQuery, "1").then((Results) => {
 		if (Results.length == 0) {
@@ -48,10 +50,10 @@ exports.run = async (client, message, args) => {
 }
 
 //https://stackoverflow.com/a/3661083/10926046
-function removeMatching(originalArray, regex) {
+function removeMatching(originalArray: string[], regex: RegExp) {
 	var j = 0
 	while (j < originalArray.length) {
-		if (regex.test(originalArray[j])) originalArray.splice(j, 1)
+		if (regex.test(originalArray[j])) originalArray.slice(j, 1)
 		else j++
 	}
 	return originalArray
