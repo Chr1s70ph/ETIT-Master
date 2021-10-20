@@ -1,8 +1,7 @@
-const config = require("../private/config.json")
-const discord = require("discord.js")
-var prefix = config.prefix
+import { DiscordClient } from "../index"
+import { Message, MessageEmbed } from "discord.js"
 
-exports.run = async (client, message) => {
+exports.run = async (client: DiscordClient, message: Message) => {
 	if (message.author.bot) return
 
 	//DM handling and forwarding
@@ -15,7 +14,7 @@ exports.run = async (client, message) => {
 			attachments: message.attachments.size > 0 ? message.attachments.first().url : null
 		}
 
-		let userMessage = new discord.MessageEmbed()
+		let userMessage = new MessageEmbed()
 			.setDescription(
 				message.content +
 					(messagePayload.sticker != null
@@ -29,23 +28,23 @@ exports.run = async (client, message) => {
 			.setImage(messagePayload.attachments)
 
 		try {
-			client.users.fetch(config.ids.acceptedAdmins.Christoph, false).then((user) => {
+			client.users.fetch(client.config.ids.acceptedAdmins.Christoph).then((user) => {
 				user.send({ embeds: [userMessage] })
 			})
 			console.log(messagePayload)
 		} catch (error) {
-			throw new Error(error)
+			// throw new Error(error)
 		}
 	}
 
 	//command handling
-	if (message.content.startsWith(prefix)) {
+	if (message.content.startsWith(client.config.prefix)) {
 		let messageArray = message.content.split(" "),
 			commandName = messageArray[0],
 			args = messageArray.slice(1)
-		commandName = commandName.slice(prefix.length).toLowerCase()
+		commandName = commandName.slice(client.config.prefix.length).toLowerCase()
 
-		commandfile =
+		let commandfile =
 			client.commands.get(commandName) ||
 			client.commands.find((cmd) => cmd.aliases && cmd.aliases.includes(commandName))
 
@@ -53,7 +52,7 @@ exports.run = async (client, message) => {
 		try {
 			message.channel.sendTyping()
 			commandfile.run(client, message, args)
-			setTimeout(() => message.delete(), 500)
+			// setTimeout(() => message.delete(), 500)
 			console.log(
 				`${message.author.username} used ${commandName} ${
 					args.length > 0 ? `with arguments: ${args}` : ""
