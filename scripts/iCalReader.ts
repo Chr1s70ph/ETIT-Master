@@ -1,55 +1,61 @@
-const ical = require("node-ical")
-const discord = require("../node_modules/discord.js")
-const config = require("../private/config.json")
-const schedule = require("node-schedule")
-const validUrl = require("valid-url")
-const moment = require("moment")
-var subjects = config.ids.channelIDs.subject
-var serverID = config.ids.serverID
-var botUserID = config.ids.userID.botUserID
+import { DiscordClient } from "../index"
+import { scheduleJob, RecurrenceRule } from "node-schedule"
+import {
+	CategoryChannel,
+	Guild,
+	MessageEmbed,
+	Role,
+	RoleData,
+	TextChannel
+} from "discord.js"
+import { async } from "node-ical"
+import { GuildChannel } from "discord.js/typings/index.js"
+import moment from "moment"
+
 var embed = ""
 const { DateTime } = require("luxon")
 const cron_to_fetch_new_notifications = "0 0 * * *"
 const cron_to_delete_lesson_notifications = "1 0 * * * " //cron string to trigger deletion of all messages that contain notifications about lessons
 
-exports.run = async (client) => {
+exports.run = async (client: DiscordClient) => {
 	fetchAndSend(client)
-	schedule.scheduleJob(cron_to_fetch_new_notifications, async function () {
+	scheduleJob(cron_to_fetch_new_notifications, async function () {
 		fetchAndSend(client)
 		let markdownType = "yaml"
-		let calendarList = Object.keys(config.calendars).toString()
+		let calendarList = Object.keys(client.config.calendars).toString()
 		let calendars = calendarList.replaceAll(",", "\n")
 		//create embed for each new fetch
-		var updatedCalendars = new discord.MessageEmbed()
+		var updatedCalendars = new MessageEmbed()
 			.setColor("#C7BBED")
 			.setAuthor(client.user.tag, client.user.avatarURL())
 			.setDescription(
 				`**Kalender nach Events durchgesucht**\`\`\`${markdownType}\n${calendars} \`\`\``
 			)
 		//send notification what calendars have been queried for todays events
-		client.channels.cache
-			.get(config.ids.channelIDs.dev.botTestLobby)
-			.send({ embeds: [updatedCalendars] })
+		const channel = client.channels.cache.find(
+			(channel) => channel.id == client.config.ids.channelIDs.dev.botTestLobby
+		) as TextChannel
+		channel.send({ embeds: [updatedCalendars] })
 	})
 }
 
-async function fetchAndSend(client) {
-	var today = localDate()
+async function fetchAndSend(client: DiscordClient) {
+	var today: Date = localDate()
 
-	for (entry in config.calendars) {
-		var icalLink = config.calendars[entry]
+	for (var entry in client.config.calendars) {
+		var icalLink = client.config.calendars[entry]
 		var events = {}
-		var webEvents = await ical.async.fromURL(icalLink)
+		var webEvents = await async.fromURL(icalLink)
 		var eventsFromIcal = await getEvents(webEvents, today, events, client)
 
 		await filterToadaysEvents(client, today, eventsFromIcal)
 
 		if (todaysLessons(events, client).fields.length > 0) {
 			var todaysLessonsEmbed = todaysLessons(events, client)
-			var icalName = getKeyByValue(config.calendars, icalLink)
+			var icalName = getKeyByValue(client.config.calendars, icalLink)
 			var channelID = findChannelInCategory(icalName, "bot-commands", client)
 
-			sendTodaysLessons(todaysLessonsEmbed, icalName, channelID, events, client)
+			sendTodaysLessons(icalName, channelID, events, client)
 			await deleteYesterdaysLessonMessage(channelID, icalName, client)
 		}
 	}
@@ -61,16 +67,22 @@ async function fetchAndSend(client) {
  * @param {string} icalName name of Calendar
  * @param {object} client
  */
-async function deleteYesterdaysLessonMessage(channelID, icalName, client) {
-	await client.channels.cache
-		.get(channelID)
-		.messages.fetch({
+async function deleteYesterdaysLessonMessage(
+	channelID: string,
+	icalName: string,
+	client: DiscordClient
+) {
+	const channel = (await client.channels.cache.find(
+		(channel) => channel.id == channelID
+	)) as TextChannel
+	channel.messages
+		.fetch({
 			limit: 100
 		})
 		.then((fetchedMessages) => {
 			console.log(`fetched ${fetchedMessages.size} messages in ${icalName}`)
 			fetchedMessages.forEach((message) => {
-				if (message.author.id == config.ids.userID.botUserID) {
+				if (message.author.id == client.config.ids.userID.botUserID) {
 					if (message.embeds[0].title.includes("Heutige Benachrichtigungen")) {
 						console.log("Found notification Message " + message.id + " in " + icalName)
 						scheduleDeleteMessages(channelID, message.id, icalName, client)
@@ -87,24 +99,29 @@ async function deleteYesterdaysLessonMessage(channelID, icalName, client) {
  * @param {string} categoryName name of category the message is being deleted in
  * @param {object} client
  */
-function scheduleDeleteMessages(channelID, messageToDelete, categoryName, client) {
+function scheduleDeleteMessages(
+	channelID: string,
+	messageToDelete: {},
+	categoryName: string,
+	client: DiscordClient
+) {
 	console.log("Set schedule to delete old reminder list message.")
-	var deleteMessages = schedule.scheduleJob(
-		dateToRecurrenceRule(undefined, new Date(), undefined, 0, 1),
+	var deleteMessages = scheduleJob(
+		dateToRecurrenceRule(undefined, new Date()),
 		function () {
-			client.channels.cache
-				.get(channelID)
-				.messages.fetch(messageToDelete)
-				.then(async (msg) => {
-					if (msg) {
-						try {
-							msg.delete()
-							console.log("Message deleted in " + categoryName)
-						} catch (e) {
-							console.log("could not delete message!\n" + e)
-						}
+			const channel = client.channels.cache.find(
+				(channel) => channel.id == channelID
+			) as TextChannel
+			channel.messages.fetch(messageToDelete).then(async (msg) => {
+				if (msg) {
+					try {
+						msg.delete("true")
+						console.log("Message deleted in " + categoryName)
+					} catch (e) {
+						console.log("could not delete message!\n" + e)
 					}
-				})
+				}
+			})
 		}
 	) //function set to only delete notifications at 00:05 AM
 }
@@ -116,26 +133,38 @@ function scheduleDeleteMessages(channelID, messageToDelete, categoryName, client
  * @param {object} client
  * @returns chanelid of desired channel out of that category
  */
-function findChannelInCategory(categoryName, channelName, client) {
-	var category = client.channels.cache.find((c) =>
+function findChannelInCategory(
+	categoryName: string,
+	channelName: string,
+	client: DiscordClient
+) {
+	var category = client.channels.cache.find((c: CategoryChannel) =>
 		c.name.toLowerCase().includes(categoryName.toLowerCase())
-	)
-	var channelId = category.children.find((c) =>
+	) as CategoryChannel
+	var channelId = category.children.find((c: GuildChannel) =>
 		c.name.toLowerCase().includes(channelName.toLowerCase())
 	).id
 	return channelId
 }
 
 //https://stackoverflow.com/a/28191966/10926046
-function getKeyByValue(object, value) {
+function getKeyByValue(object: object, value: string) {
 	return Object.keys(object).find((key) => object[key] === value)
 }
 
-function sendTodaysLessons(embed, icalName, channel, events, client) {
-	var sendLessons = schedule.scheduleJob(
-		dateToRecurrenceRule(undefined, new Date(), undefined, undefined, 5),
+function sendTodaysLessons(
+	icalName: string,
+	_channel: string,
+	events: {},
+	client: DiscordClient
+) {
+	var sendLessons = scheduleJob(
+		dateToRecurrenceRule(undefined, new Date()),
 		function () {
-			client.channels.cache.get(channel).send({ embeds: [todaysLessons(events, client)] })
+			const channel = client.channels.cache.find(
+				(channel) => channel.id.toString() == _channel
+			) as TextChannel
+			channel.send({ embeds: [todaysLessons(events, client)] })
 			console.log(`Todays lessons info sent to ${icalName}`)
 		} //function set to only send notifications at 00:05 AM
 	)
@@ -154,28 +183,12 @@ function localDate() {
 	return today
 }
 
-//Modified function : https://stackoverflow.com/a/36356320/10926046
-Date.prototype.getWeek = function () {
-	var date = new Date(this.getTime())
-	date.setHours(0, 0, 0, 0)
-	date.setDate(date.getDate() + 3 - ((date.getDay() + 6) % 7))
-
-	var week1 = new Date(date.getFullYear(), 0, 4)
-
-	return (
-		2 +
-		Math.round(
-			((date.getTime() - week1.getTime()) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7
-		)
-	)
-}
-
-var datesAreOnSameDay = (first, second) =>
+var datesAreOnSameDay = (first: Date, second: Date) =>
 	first.getFullYear() === second.getFullYear() &&
 	first.getMonth() === second.getMonth() &&
 	first.getDate() === second.getDate()
 
-function getEvents(data, today, events, client) {
+function getEvents(data: {}, today: Date, events: {}, client: DiscordClient) {
 	var weekStartDate = localDate()
 	weekStartDate.setDate(weekStartDate.getDate() - weekStartDate.getDay() + 1)
 	var todayEnd = localDate()
@@ -201,7 +214,7 @@ function getEvents(data, today, events, client) {
 
 			// Simple case - no recurrences, just print out the calendar event.
 			if (typeof event.rrule === "undefined" && datesAreOnSameDay(event.start, today)) {
-				addEntryToWeeksEvents(events, today.getDay(), event.start, title, description)
+				addEntryToWeeksEvents(events, today.getDay().toString(), event.start, title, description)
 			}
 
 			// Complicated case - if an RRULE exists, handle multiple recurrences of the event.
@@ -271,7 +284,7 @@ function getEvents(data, today, events, client) {
 					}
 
 					if (showRecurrence === true) {
-						addEntryToWeeksEvents(events, today.getDay(), event.start, title, description)
+						addEntryToWeeksEvents(events, today.getDay().toString(), event.start, title, description)
 					}
 				}
 			}
@@ -288,15 +301,18 @@ function getEvents(data, today, events, client) {
  * @param {object} client
  * @returns embed with a list of todays lessons
  */
-function todaysLessons(events, client) {
-	var lessonsEmbed = new discord.MessageEmbed()
+function todaysLessons(events: {}, client: DiscordClient) {
+	var lessonsEmbed = new MessageEmbed()
 		.setColor("#FF0000")
 		.setAuthor(
 			`Informationen`,
-			client.guilds.resolve(serverID).members.resolve(botUserID).user.avatarURL()
+			client.guilds
+				.resolve(client.config.ids.serverID)
+				.members.resolve(client.config.ids.userID.botUserID)
+				.user.avatarURL()
 		)
 		.setTitle("Heutige Benachrichtigungen")
-	for (entry in events) {
+	for (var entry in events) {
 		var lessonStart = events[entry].start.toString().slice(16, 24)
 
 		//NOTE: the last field is there for a clearer format and it DOES contain an invisible character
@@ -321,17 +337,17 @@ function todaysLessons(events, client) {
 	return lessonsEmbed
 }
 
-function convertDate(eventStart) {
+function convertDate(eventStart: Date) {
 	//This works, because the DATE.toString() already converts to Date Object in the propper Timezone
 	//All this function does, is take the parameters and sets a new date object based on these parameters
 	var convertedDate
-	var eventStartString = eventStart.toString()
+	var eventStartString: string = eventStart.toString()
 
-	var eventYear = eventStartString.slice(11, 15) //11 = startOfYearIndex, 15 = endOfYearIndex
-	var enventMonth = monthToIndex(eventStartString.slice(4, 7)) //4 = startOfMonthIndex, 7 = endOfMonthIndex
-	var eventDay = eventStartString.slice(8, 10) //8 = startOfDayIndex, 10 = endOfDayIndex
-	var eventHours = eventStartString.slice(16, 18) //16 = startOfHourIndex, 10 = endOfHourIndex
-	var eventMinutes = eventStartString.slice(19, 21) //8 = startOfMinuteIndex, 10 = endOfMinuteIndex
+	var eventYear = Number(eventStartString.slice(11, 15)) //11 = startOfYearIndex, 15 = endOfYearIndex
+	var enventMonth = Number(monthToIndex(eventStartString.slice(4, 7))) //4 = startOfMonthIndex, 7 = endOfMonthIndex
+	var eventDay = Number(eventStartString.slice(8, 10)) //8 = startOfDayIndex, 10 = endOfDayIndex
+	var eventHours = Number(eventStartString.slice(16, 18)) //16 = startOfHourIndex, 10 = endOfHourIndex
+	var eventMinutes = Number(eventStartString.slice(19, 21)) //8 = startOfMinuteIndex, 10 = endOfMinuteIndex
 
 	return (convertedDate = new Date(
 		eventYear,
@@ -342,7 +358,7 @@ function convertDate(eventStart) {
 	))
 }
 
-function monthToIndex(month) {
+function monthToIndex(month: string): number {
 	var months = {
 		Jan: "0",
 		Feb: "1",
@@ -361,7 +377,13 @@ function monthToIndex(month) {
 	return months[month]
 }
 
-function addEntryToWeeksEvents(events, day, start, summary, description) {
+function addEntryToWeeksEvents(
+	events: {},
+	day: string,
+	start: Date,
+	summary: string,
+	description: string
+) {
 	events[Object.keys(events).length] = {
 		day: day,
 		start: start,
@@ -372,20 +394,12 @@ function addEntryToWeeksEvents(events, day, start, summary, description) {
 	return events
 }
 
-function amountOfDaysDifference(dateToday, dateToCheck) {
-	var milisecondsInOneMinute = 1000
-	var minutesInOneHour = 3600
-	var hoursInOneDay = 24
-	var timediff = Math.abs(dateToCheck - dateToday.getTime())
-	var diffDays = Math.ceil(
-		timediff / (milisecondsInOneMinute * minutesInOneHour * hoursInOneDay)
-	)
-
-	return diffDays
-}
-
-async function filterToadaysEvents(client, today, thisWeeksEvents) {
-	for (entry in thisWeeksEvents) {
+async function filterToadaysEvents(
+	client: DiscordClient,
+	today: Date,
+	thisWeeksEvents: {}
+) {
+	for (var entry in thisWeeksEvents) {
 		if (thisWeeksEvents[entry].day == today.getDay()) {
 			var event = thisWeeksEvents[entry]
 			var summary = event.summary
@@ -406,7 +420,7 @@ async function filterToadaysEvents(client, today, thisWeeksEvents) {
 			var channel = findChannel(subject, client)
 
 			if (channel == undefined) {
-				channel = config.ids.channelIDs.generalChannels.general
+				channel = client.config.ids.channelIDs.generalChannels.general
 			}
 
 			if (noVariableUndefined(RecurrenceRule, channel, role, embed, client)) {
@@ -426,7 +440,7 @@ async function filterToadaysEvents(client, today, thisWeeksEvents) {
  * @param {*} description
  * @returns link
  */
-function extractZoomLinks(description) {
+function extractZoomLinks(description: string) {
 	if (description.length == 0) {
 		return
 	}
@@ -454,11 +468,11 @@ function extractZoomLinks(description) {
  * @param {Date} eventDate datestring of Event
  * @param {Object} todaysDate Dateobject
  */
-function dateToRecurrenceRule(eventDate, todaysDate) {
-	const rule = new schedule.RecurrenceRule()
-	rule.second = eventDate.getSeconds()
-	rule.minute = eventDate.getMinutes()
-	rule.hour = eventDate.getHours()
+function dateToRecurrenceRule(eventDate: Date, todaysDate: Date) {
+	const rule = new RecurrenceRule()
+	rule.second = typeof eventDate === "undefined" ? 0 : eventDate.getSeconds()
+	rule.minute = typeof eventDate === "undefined" ? 0 : eventDate.getMinutes()
+	rule.hour = typeof eventDate === "undefined" ? 0 : eventDate.getHours()
 	rule.date = todaysDate.getDate()
 	rule.month = todaysDate.getMonth()
 	rule.year = todaysDate.getFullYear()
@@ -477,18 +491,30 @@ function dateToRecurrenceRule(eventDate, todaysDate) {
  * @param {string} link link to the lecture
  * @returns {any} Embed that was built using the given parameters
  */
-function dynamicEmbed(client, role, subject, professor, link) {
-	var roleColor = client.guilds.resolve(serverID).roles.cache.get(role).color
+function dynamicEmbed(
+	client: DiscordClient,
+	role: string,
+	subject: string,
+	professor: string,
+	link: string
+) {
+	var roleColor = client.guilds
+		.resolve(client.config.ids.serverID)
+		.roles.cache.get(role).color
 	var courseType = "Vorlesung"
 
 	if (subject.includes("(ü)") || subject.includes("(Ü)")) courseType = "Übung"
 
+	var embedDynamic = new MessageEmbed()
 	try {
-		var embedDynamic = new discord.MessageEmbed()
+		embedDynamic
 			.setColor(roleColor)
 			.setAuthor(
 				`${courseType}s Reminder`,
-				client.guilds.resolve(serverID).members.resolve(botUserID).user.avatarURL()
+				client.guilds
+					.resolve(client.config.ids.serverID)
+					.members.resolve(client.config.ids.userID.botUserID)
+					.user.avatarURL()
 			)
 			.setTitle(subject + " Reminder")
 			.setDescription(`Die ${courseType} fängt in 5 Minuten an`)
@@ -500,11 +526,17 @@ function dynamicEmbed(client, role, subject, professor, link) {
 			})
 			.setFooter(
 				"Viel Spaß und Erfolg wünscht euch euer ETIT-Master",
-				client.guilds.resolve(serverID).members.resolve(botUserID).user.avatarURL()
+				client.guilds
+					.resolve(client.config.ids.serverID)
+					.members.resolve(client.config.ids.userID.botUserID)
+					.user.avatarURL()
 			)
 	} catch (e) {
 		embed = "There was an error creating the embed"
-		client.channels.cache.get("770276625040146463").send(embed + "\n" + e) //sends login embed to channel
+		const channel = client.channels.cache.find(
+			(_channel) => _channel.id == "852530207336169523"
+		) as TextChannel
+		channel.send(embed + "\n" + e) //sends login embed to channel
 	}
 
 	if (link) {
@@ -526,8 +558,7 @@ function dynamicEmbed(client, role, subject, professor, link) {
  *
  * @throws Error in debug channel
  */
-function findChannel(subject, client) {
-	var channel = ""
+function findChannel(subject: string, client: DiscordClient) {
 	const REGEX_TO_REMOVE_EMOJIS =
 		/(?:[\u2700-\u27bf]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff]|[\u0023-\u0039]\ufe0f?\u20e3|\u3299|\u3297|\u303d|\u3030|\u24c2|\ud83c[\udd70-\udd71]|\ud83c[\udd7e-\udd7f]|\ud83c\udd8e|\ud83c[\udd91-\udd9a]|\ud83c[\udde6-\uddff]|\ud83c[\ude01-\ude02]|\ud83c\ude1a|\ud83c\ude2f|\ud83c[\ude32-\ude3a]|\ud83c[\ude50-\ude51]|\u203c|\u2049|[\u25aa-\u25ab]|\u25b6|\u25c0|[\u25fb-\u25fe]|\u00a9|\u00ae|\u2122|\u2139|\ud83c\udc04|[\u2600-\u26FF]|\u2b05|\u2b06|\u2b07|\u2b1b|\u2b1c|\u2b50|\u2b55|\u231a|\u231b|\u2328|\u23cf|[\u23e9-\u23f3]|[\u23f8-\u23fa]|\ud83c\udccf|\u2934|\u2935|[\u2190-\u21ff])/g
 
@@ -535,27 +566,28 @@ function findChannel(subject, client) {
 	subject = subject.replace(/ *\([^)]*\) */g, "") //remove all content in, and brackets
 	subject = subject.replace(/\s+/g, "-") //replace all spaces with "-"
 	subject = subject.toLowerCase()
-	const guild = client.guilds.cache.get(config.ids.serverID)
-	channel = guild.channels.cache.find(
+	const guild = client.guilds.cache.get(client.config.ids.serverID) as Guild
+	var channel = guild.channels.cache.find(
 		(channel) =>
 			channel.name.replace(REGEX_TO_REMOVE_EMOJIS, "").toLowerCase() == subject.toLowerCase()
-	).id
-	return channel
+	) as TextChannel
+	let channelID = channel.id
+	return channelID
 }
 
 function findRole(subject, client) {
 	var role = ""
 	subject = subject.trim() //remove leading and trailing space
 	subject = subject.replace(/ *\([^)]*\) */g, "") //remove all content in, and brackets
-	const guild = client.guilds.cache.get(config.ids.serverID)
+	const guild = client.guilds.cache.get(client.config.ids.serverID)
 	role = guild.roles.cache.find(
 		(role) => subject.toLowerCase() == role.name.toLowerCase()
 	).id
 	return role
 }
 
-function noVariableUndefined() {
-	for (arg in arguments) {
+function noVariableUndefined(...args) {
+	for (var arg in arguments) {
 		if (arguments[arg] == undefined) {
 			return false
 		}
@@ -572,42 +604,35 @@ function noVariableUndefined() {
  * @param {object} embed embed what is sent
  * @param {object} client required by discord.js
  */
-function createCron(RecurrenceRule, channel, role, embed, link, client) {
-	let channelName = client.channels.cache.get(channel).name
+function createCron(
+	RecurrenceRule: RecurrenceRule,
+	_channel: string,
+	role: string,
+	embed: MessageEmbed,
+	link: string,
+	client: DiscordClient
+) {
+	const channel = client.channels.cache.find(
+		(channel) => channel.id == _channel
+	) as TextChannel
+	let channelName = channel.name
 
-	if (!validUrl.isUri(link)) {
-		var sendNotification = schedule.scheduleJob(RecurrenceRule, function () {
-			console.log(`Sent notification to ${channelName}`)
-			client.channels.cache
-				.get(channel)
-				.send({ content: role, embeds: [embed.setTimestamp()] })
-				.then((msg) => {
-					setTimeout(function () {
-						try {
-							msg.delete()
-							console.log(`Deleted notification in ${channelName}`)
-						} catch (error) {
-							console.log(`There was a problem deleting the notification in ${channelName}\n${error}`)
-						}
-					}, 5400000)
-				})
-		})
-	} else {
-		var sendNotification = schedule.scheduleJob(RecurrenceRule, function () {
-			console.log(`Sent notification to ${channelName}`)
-			client.channels.cache
-				.get(channel)
-				.send({ content: role, embeds: [embed.setTimestamp()] })
-				.then((msg) => {
-					setTimeout(function () {
-						try {
-							msg.delete()
-							console.log(`Deleted notification in ${channelName}`)
-						} catch (error) {
-							console.log(`There was a problem deleting the notification in ${channelName}\n${error}`)
-						}
-					}, 5400000)
-				})
-		})
-	}
+	var sendNotification = scheduleJob(RecurrenceRule, function () {
+		console.log(`Sent notification to ${channelName}`)
+		const notificationChannel = client.channels.cache.find(
+			(_channel) => _channel == channel
+		) as TextChannel
+		notificationChannel
+			.send({ content: role, embeds: [embed.setTimestamp()] })
+			.then((msg) => {
+				setTimeout(function () {
+					try {
+						msg.delete()
+						console.log(`Deleted notification in ${channelName}`)
+					} catch (error) {
+						console.log(`There was a problem deleting the notification in ${channelName}\n${error}`)
+					}
+				}, 5400000)
+			})
+	})
 }
