@@ -1,12 +1,12 @@
 import { DiscordClient } from "../index"
-import { MessageEmbed } from "discord.js"
+import { MessageEmbed, TextChannel } from "discord.js"
 import { readdir as readdir_promise } from "fs/promises"
 import { statSync, readdir } from "fs"
 const os = require("os")
 
 import project from "../package.json"
 
-exports.run = async (client) => {
+exports.run = async (client: DiscordClient) => {
 	let commands = []
 	let files = await readdir_promise("./commands")
 	files.forEach((file) => {
@@ -75,7 +75,8 @@ exports.run = async (client) => {
 			"https://image.flaticon.com/icons/png/512/888/888879.png"
 		)
 
-	client.channels.cache
-		.find((channel) => channel.id == client.config.ids.channelIDs.dev.botTestLobby)
-		.send({ embeds: [loginMessage] })
+	const channel = client.channels.cache.find(
+		(channel) => channel.id == client.config.ids.channelIDs.dev.botTestLobby
+	) as TextChannel
+	channel.send({ embeds: [loginMessage] })
 }
