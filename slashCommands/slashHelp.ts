@@ -6,7 +6,7 @@ const config = require("../private/config.json")
 exports.run = async (client) => {
 	let embed = await getCommands()
 
-	await client.api.applications(client.user.id).commands.post({
+	await client.api.applications(config.client.user.id).commands.post({
 		data: {
 			name: "help",
 			description: "hilfe ist hier"
@@ -67,7 +67,7 @@ exports.run = async (client) => {
 		async function addCommandsFromSubFolder(commandsEmbed, file) {
 			const sub_directory = `./commands/${file}/`
 			try {
-				files = await fs.promises.readdir(sub_directory)
+				const files = await fs.promises.readdir(sub_directory)
 				let commandsInSubfolder = " "
 				for (const command of files) {
 					let slicedFileName = command.split(".js")[0]
