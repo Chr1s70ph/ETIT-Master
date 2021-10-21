@@ -1,8 +1,13 @@
-const discord = require("discord.js")
-const config = require("../private/config.json")
+import { GuildMember } from "discord.js/typings/index.js"
+import { DiscordClient } from "../index"
+import { TextChannel, MessageEmbed } from "discord.js"
 
-exports.run = async (client, oldMember, newMember) => {
-	let txtChannel = client.channels.cache.get("852530207336169523") //my own text channel, you may want to specify your own
+exports.run = async (
+	client: DiscordClient,
+	oldMember: GuildMember,
+	newMember: GuildMember
+) => {
+	let txtChannel = client.channels.cache.get("852530207336169523") as TextChannel //my own text channel, you may want to specify your own
 	let oldRoleIDs = []
 	oldMember.roles.cache.each((role) => {
 		oldRoleIDs.push(role.id)
@@ -25,32 +30,32 @@ exports.run = async (client, oldMember, newMember) => {
 
 		let IDNum = onlyRole[0]
 		let memberCourseOfStudies = newMember.roles.cache.has(
-			config.ids.roleIDs["ETIT Bachelorstudent"]
+			client.config.ids.roleIDs["ETIT Bachelorstudent"]
 		)
 			? "ETIT Bachelorstudent"
-			: newMember.roles.cache.has(config.ids.roleIDs["MIT Bachelorstudent"])
+			: newMember.roles.cache.has(client.config.ids.roleIDs["MIT Bachelorstudent"])
 			? "MIT Bachelorstudent"
 			: undefined
 
 		//get right classification channel based on role
 		let memberClassificationchannel = newMember.roles.cache.has(
-			config.ids.roleIDs["ETIT Bachelorstudent"]
+			client.config.ids.roleIDs["ETIT Bachelorstudent"]
 		)
-			? config.ids.channelIDs.ETITPersonalization
-			: newMember.roles.cache.has(config.ids.roleIDs["MIT Bachelorstudent"])
-			? config.ids.channelIDs.MITPersonalization
+			? client.config.ids.channelIDs.ETITPersonalization
+			: newMember.roles.cache.has(client.config.ids.roleIDs["MIT Bachelorstudent"])
+			? client.config.ids.channelIDs.MITPersonalization
 			: undefined
 		//get link to message in memberClassificationchannel
 		let memberClassificationLink = newMember.roles.cache.has(
-			config.ids.roleIDs["ETIT Bachelorstudent"]
+			client.config.ids.roleIDs["ETIT Bachelorstudent"]
 		)
-			? config.ids.einteilung.ETITersti
-			: newMember.roles.cache.has(config.ids.roleIDs["MIT Bachelorstudent"])
-			? config.ids.einteilung.MITersti
+			? client.config.ids.einteilung.ETITersti
+			: newMember.roles.cache.has(client.config.ids.roleIDs["MIT Bachelorstudent"])
+			? client.config.ids.einteilung.MITersti
 			: undefined
 
-		if (IDNum == config.ids.roleIDs.Ophase && memberCourseOfStudies != undefined) {
-			const ophaseInfo = new discord.MessageEmbed()
+		if (IDNum == client.config.ids.roleIDs.Ophase && memberCourseOfStudies != undefined) {
+			const ophaseInfo = new MessageEmbed()
 				.setTitle(`🗲 Personalisierung 🗲`)
 				.setColor("#FFDA00")
 				.setAuthor(client.user.tag, newMember.guild.iconURL())
