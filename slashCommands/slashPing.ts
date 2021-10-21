@@ -1,9 +1,7 @@
-const config = require("../private/config.json")
-
-exports.run = async (client) => {
+exports.run = async (client: any) => {
 	await client.api
 		.applications(client.user.id)
-		.guilds(config.ids.serverID)
+		.guilds(client.config.ids.serverID)
 		.commands.post({
 			data: {
 				name: "ping",
