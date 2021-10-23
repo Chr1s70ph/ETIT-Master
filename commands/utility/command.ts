@@ -1,13 +1,13 @@
-const discord = require("discord.js")
-const config = require("../../private/config.json")
+import { DiscordClient } from "../../index"
+import { Message, MessageEmbed } from "discord.js"
 
 exports.name = "command"
 
 exports.description = "Dieser Befehl zeigt eine Befehlshilfe an."
 
-exports.usage = `${config.prefix}command {COMMAND}`
+exports.usage = "command {COMMAND}"
 
-exports.example = `${config.prefix}command test`
+exports.example = "command test"
 
 exports.aliases = ["commandinfo"]
 
@@ -18,8 +18,8 @@ exports.aliases = ["commandinfo"]
  * @param {array} args arguments of issued command
  * @returns commandHelpEmbed with description, example and name of command
  */
-exports.run = async (client, message, args) => {
-	let commandHelpEmbed = new discord.MessageEmbed()
+exports.run = async (client: DiscordClient, message: Message, args: any) => {
+	let commandHelpEmbed = new MessageEmbed()
 		.setColor("#7289ea")
 		.setAuthor(
 			"Befehlshilfe",
@@ -27,7 +27,7 @@ exports.run = async (client, message, args) => {
 		)
 		.setThumbnail(client.user.avatarURL())
 
-	if (args[0] == undefined) {
+	if (args.length === 0) {
 		return message.channel.send("Please provide arguments!")
 	}
 
@@ -63,7 +63,7 @@ exports.run = async (client, message, args) => {
  * @param {array} args arguments of issued command
  * @returns array of aliases
  */
-function findAliases(aliasesArray, args) {
+function findAliases(aliasesArray: any, args: any) {
 	if (Array.isArray(aliasesArray) && aliasesArray.length > 0) {
 		return aliasesArray.some(
 			(commandName) => commandName.toLowerCase() === args[0].toLowerCase()
@@ -78,7 +78,7 @@ function findAliases(aliasesArray, args) {
  * @param {array} args arguments of issued command
  * @returns commandHelpEmbed with added aliases
  */
-function addAliasesToEmbed(aliasesArray, commandHelpEmbed) {
+function addAliasesToEmbed(aliasesArray: any, commandHelpEmbed: any) {
 	let aliasesString = aliasesArray.toString()
 	commandHelpEmbed.addFields({
 		name: "Aliase",
