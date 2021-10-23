@@ -6,7 +6,7 @@ const config = require("../private/config.json")
 exports.run = async (client) => {
 	let embed = await getCommands()
 
-	await client.api.applications(config.client.user.id).commands.post({
+	await client.api.applications(client.user.id).commands.post({
 		data: {
 			name: "help",
 			description: "hilfe ist hier"
