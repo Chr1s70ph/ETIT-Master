@@ -1,12 +1,12 @@
-const config = require("../../private/config.json")
-
+import { DiscordClient } from "../../index"
+import { Message } from "discord.js"
 exports.name = "ping"
 
 exports.description = "pong"
 
-exports.usage = `${config.prefix}ping`
+exports.usage = "ping"
 
-exports.run = async (client, message) => {
+exports.run = async (client: DiscordClient, message: Message) => {
 	message.channel.send(
 		`🏓Latency is ${Date.now() - message.createdTimestamp}ms. API Latency is ${Math.round(
 			client.ws.ping
