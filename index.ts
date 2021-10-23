@@ -1,11 +1,11 @@
-import { Client, Collection, Intents } from "discord.js"
+import { Client, Collection, Intents, MessageEmbed, TextChannel } from "discord.js"
 import * as fs from "fs"
 import config from "./private/config.json"
 
 export class DiscordClient extends Client {
-	commands
-	config
-	applications: {
+	public commands
+	public config
+	public applications: {
 		youtube: string
 		poker: string
 		betrayal: string
@@ -13,6 +13,22 @@ export class DiscordClient extends Client {
 		chessdev: string
 		chess: string
 		zombsroyale: string
+	}
+	/**
+	 *  example debug({ foo })
+	 * @param args parse with curly brackets to log name and value of variable
+	 */
+	public debug(args): void {
+		let channel = client.channels.cache.find(
+			(channel) => channel.id == config.ids.channelIDs.dev.botTestLobby
+		) as TextChannel
+		channel.send({
+			embeds: [
+				new MessageEmbed()
+					.setTitle(`Debug-Variable: \`${Object.keys(args)[0]}\``)
+					.setDescription(JSON.stringify(args[Object.keys(args)[0]]))
+			]
+		})
 	}
 }
 
@@ -42,10 +58,6 @@ client.on("ready", async () => {
 
 client.login(config.botToken)
 
-//Commands "handler"
-/**
- *
- */
 fs.readdir("./commands/", (err, elements) => {
 	var path = "./commands/"
 	if (err) return console.log(err)
@@ -68,12 +80,6 @@ fs.readdir("./commands/", (err, elements) => {
 	})
 })
 
-/**
- * Adds all commands to the commands collection
- * @param {string} path relative path to the file of each command
- * @param {string} file actual filename of the file
- * @param {Object} client
- */
 function setCommands(path: string, file: string, client: DiscordClient) {
 	if (!(file.endsWith(".js") || file.endsWith(".ts"))) return
 	let props = require(`${path}${file}`)
@@ -82,10 +88,6 @@ function setCommands(path: string, file: string, client: DiscordClient) {
 	client.commands.set(commandName, props)
 }
 
-//Events "handler"
-/**
- *  loads all events and adds them to the event collection
- */
 fs.readdir("./events/", (err, files) => {
 	if (err) console.log(err)
 	files.forEach((file) => {
@@ -96,10 +98,6 @@ fs.readdir("./events/", (err, files) => {
 	})
 })
 
-/**
- *
- * @param {object} client necessary to start scripts relying on client
- */
 async function loadScripts(client: DiscordClient) {
 	let files
 	try {
