@@ -5,6 +5,15 @@ import config from "./private/config.json"
 export class DiscordClient extends Client {
 	commands
 	config
+	applications: {
+		youtube: string
+		poker: string
+		betrayal: string
+		fishing: string
+		chessdev: string
+		chess: string
+		zombsroyale: string
+	}
 }
 
 let client: DiscordClient = new DiscordClient({
