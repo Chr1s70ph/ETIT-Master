@@ -47,7 +47,6 @@ async function fetchAndSend(client: DiscordClient) {
 		var events = {}
 		var webEvents = await async.fromURL(icalLink)
 		var eventsFromIcal = await getEvents(webEvents, today, events, client)
-
 		await filterToadaysEvents(client, today, eventsFromIcal)
 
 		if (todaysLessons(events, client).fields.length > 0) {
@@ -214,7 +213,14 @@ function getEvents(data: {}, today: Date, events: {}, client: DiscordClient) {
 
 			// Simple case - no recurrences, just print out the calendar event.
 			if (typeof event.rrule === "undefined" && datesAreOnSameDay(event.start, today)) {
-				addEntryToWeeksEvents(events, today.getDay().toString(), event.start, title, description)
+				addEntryToWeeksEvents(
+					events,
+					today.getDay().toString(),
+					event.start,
+					title,
+					description,
+					event.location
+				)
 			}
 
 			// Complicated case - if an RRULE exists, handle multiple recurrences of the event.
@@ -284,7 +290,14 @@ function getEvents(data: {}, today: Date, events: {}, client: DiscordClient) {
 					}
 
 					if (showRecurrence === true) {
-						addEntryToWeeksEvents(events, today.getDay().toString(), event.start, title, description)
+						addEntryToWeeksEvents(
+							events,
+							today.getDay().toString(),
+							event.start,
+							title,
+							description,
+							event.location
+						)
 					}
 				}
 			}
@@ -337,58 +350,20 @@ function todaysLessons(events: {}, client: DiscordClient) {
 	return lessonsEmbed
 }
 
-function convertDate(eventStart: Date) {
-	//This works, because the DATE.toString() already converts to Date Object in the propper Timezone
-	//All this function does, is take the parameters and sets a new date object based on these parameters
-	var convertedDate
-	var eventStartString: string = eventStart.toString()
-
-	var eventYear = Number(eventStartString.slice(11, 15)) //11 = startOfYearIndex, 15 = endOfYearIndex
-	var enventMonth = Number(monthToIndex(eventStartString.slice(4, 7))) //4 = startOfMonthIndex, 7 = endOfMonthIndex
-	var eventDay = Number(eventStartString.slice(8, 10)) //8 = startOfDayIndex, 10 = endOfDayIndex
-	var eventHours = Number(eventStartString.slice(16, 18)) //16 = startOfHourIndex, 10 = endOfHourIndex
-	var eventMinutes = Number(eventStartString.slice(19, 21)) //8 = startOfMinuteIndex, 10 = endOfMinuteIndex
-
-	return (convertedDate = new Date(
-		eventYear,
-		enventMonth,
-		eventDay,
-		eventHours,
-		eventMinutes
-	))
-}
-
-function monthToIndex(month: string): number {
-	var months = {
-		Jan: "0",
-		Feb: "1",
-		Mar: "2",
-		Apr: "3",
-		May: "4",
-		Jun: "5",
-		Jul: "6",
-		Aug: "7",
-		Sep: "8",
-		Okt: "9",
-		Nov: "10",
-		Dec: "11"
-	}
-
-	return months[month]
-}
-
 function addEntryToWeeksEvents(
 	events: {},
 	day: string,
 	start: Date,
 	summary: string,
-	description: string
+	description: string,
+	location: string
 ) {
 	events[Object.keys(events).length] = {
 		day: day,
 		start: start,
 		summary: summary,
-		description: description
+		description: description,
+		location: location
 	}
 
 	return events
@@ -399,6 +374,9 @@ async function filterToadaysEvents(
 	today: Date,
 	thisWeeksEvents: {}
 ) {
+	const MS_PER_MINUTE = 60000
+	const EVENT_NOTIFICATION_OFFSET_MINUTES = 30
+
 	for (var entry in thisWeeksEvents) {
 		if (thisWeeksEvents[entry].day == today.getDay()) {
 			var event = thisWeeksEvents[entry]
@@ -411,11 +389,15 @@ async function filterToadaysEvents(
 
 			var link = extractZoomLinks(event.description)
 
-			var RecurrenceRule = dateToRecurrenceRule(event.start, today)
+			var earlyEventStart = new Date(
+				event.start - EVENT_NOTIFICATION_OFFSET_MINUTES * MS_PER_MINUTE
+			)
+
+			var RecurrenceRule = dateToRecurrenceRule(earlyEventStart, today)
 
 			var role = findRole(subject, client)
 
-			var embed = dynamicEmbed(client, role, subject, professor, link)
+			var embed = dynamicEmbed(client, role, subject, professor, link, event.location)
 
 			var channel = findChannel(subject, client)
 
@@ -496,7 +478,8 @@ function dynamicEmbed(
 	role: string,
 	subject: string,
 	professor: string,
-	link: string
+	link: string,
+	location: string
 ) {
 	var roleColor = client.guilds
 		.resolve(client.config.ids.serverID)
@@ -519,11 +502,7 @@ function dynamicEmbed(
 			.setTitle(subject + " Reminder")
 			.setDescription(`Die ${courseType} fängt in 5 Minuten an`)
 			.setThumbnail("https://pics.freeicons.io/uploads/icons/png/6029094171580282643-512.png")
-			.addFields({
-				name: "Dozent",
-				value: professor,
-				inline: false
-			})
+			.addField("Dozent", professor, false)
 			.setFooter(
 				"Viel Spaß und Erfolg wünscht euch euer ETIT-Master",
 				client.guilds
@@ -541,6 +520,10 @@ function dynamicEmbed(
 
 	if (link) {
 		embedDynamic.setURL(link)
+	}
+
+	if (location) {
+		embedDynamic.addField("Location:", location, false)
 	}
 
 	return embedDynamic
@@ -571,6 +554,7 @@ function findChannel(subject: string, client: DiscordClient) {
 		(channel) =>
 			channel.name.replace(REGEX_TO_REMOVE_EMOJIS, "").toLowerCase() == subject.toLowerCase()
 	) as TextChannel
+
 	let channelID = channel.id
 	return channelID
 }
