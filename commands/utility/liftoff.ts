@@ -1,16 +1,15 @@
-const config = require("../../private/config.json")
-const discord = require("discord.js")
-
+import { DiscordClient } from "../../index"
+import { Message, MessageEmbed } from "discord.js"
 exports.name = "liftoff"
 
 exports.description = "Liftoff celebration"
 
-exports.usage = `${config.prefix}liftoff`
+exports.usage = "liftoff"
 
-exports.run = async (client, message) => {
+exports.run = async (client: DiscordClient, message: Message) => {
 	message.channel.send({
 		embeds: [
-			new discord.MessageEmbed()
+			new MessageEmbed()
 				.setTitle("Hurraaa 🚀🚀")
 				.setFooter(message.author.tag, message.author.avatarURL({ dynamic: true }))
 		]
