@@ -1,14 +1,11 @@
+import { DiscordClient } from "../../index"
+import { Message, MessageEmbed } from "discord.js"
 /**
  * NOTE:
  * This code is heavily inspired by the discord-together package
  * I did not like how it was implemented, so I rewrote parts of it myself here
  * this is the original package: https://www.npmjs.com/package/discord-together
  */
-
-const config = require("../../private/config.json")
-const discord = require("discord.js")
-const pm2 = require("pm2")
-const fetch = require("node-fetch")
 
 const defaultApplications = {
 	youtube: "755600276941176913", // Note : Thanks to Snowflake thanks to whom I got YouTube ID
@@ -25,9 +22,14 @@ exports.name = "start"
 exports.description = `Trickst die API aus um Discord-Spiele freizuschalten. 
 	**NOTIZ**: Nicht alle Spiele sind vollends implementiert`
 
-exports.usage = `${config.prefix}start \`${Object.keys(defaultApplications)}\``
+exports.usage = `start \`${Object.keys(defaultApplications)}\``
 
-exports.run = async (client, message, args, applications = defaultApplications) => {
+exports.run = async (
+	client: DiscordClient,
+	message: Message,
+	args: any,
+	applications = defaultApplications
+) => {
 	//save message, before it magically gets lost (thanks discord API :] )
 	var message = message
 	//throw an error, when user not in voiceChannel
@@ -35,7 +37,7 @@ exports.run = async (client, message, args, applications = defaultApplications) 
 		try {
 			message.reply({
 				embeds: [
-					new discord.MessageEmbed().setDescription(
+					new MessageEmbed().setDescription(
 						`⚠️ You are not in a Voice-Channel.
 						Please join a Voice-Channel to use this function`
 					)
@@ -89,7 +91,7 @@ exports.run = async (client, message, args, applications = defaultApplications) 
 	} else {
 		try {
 			message.reply({
-				embeds: [new discord.MessageEmbed().setDescription(`⚠️ Invalid option!`)]
+				embeds: [new MessageEmbed().setDescription(`⚠️ Invalid option!`)]
 			})
 		} catch (e) {
 			throw new Error(e)
@@ -99,7 +101,7 @@ exports.run = async (client, message, args, applications = defaultApplications) 
 	return message.reply({
 		content: returnData.code,
 		embeds: [
-			new discord.MessageEmbed().setDescription(
+			new MessageEmbed().setDescription(
 				`❔ If you can't join the activity **create it** by clicking the **[link](${returnData.code})** above.`
 			)
 		]
