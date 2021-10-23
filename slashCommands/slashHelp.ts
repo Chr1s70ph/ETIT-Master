@@ -57,7 +57,7 @@ exports.run = async (client) => {
 				//check if element in folder is a subfolder
 				await addCommandsFromSubFolder(commandsEmbed, file)
 			} else {
-				let slicedFileName = file.split(".js")[0]
+				let slicedFileName = file.split(".ts")[0]
 				commandsInFolder += slicedFileName + "\n"
 			}
 		}
@@ -70,7 +70,7 @@ exports.run = async (client) => {
 				const files = await fs.promises.readdir(sub_directory)
 				let commandsInSubfolder = " "
 				for (const command of files) {
-					let slicedFileName = command.split(".js")[0]
+					let slicedFileName = command.split(".ts")[0]
 					commandsInSubfolder += slicedFileName + "\n"
 				}
 				commandsEmbed.addFields({
