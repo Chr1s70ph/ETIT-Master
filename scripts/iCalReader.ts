@@ -1,16 +1,10 @@
-import { DiscordClient } from "../index"
-import { scheduleJob, RecurrenceRule } from "node-schedule"
-import {
-	CategoryChannel,
-	Guild,
-	MessageEmbed,
-	Role,
-	RoleData,
-	TextChannel
-} from "discord.js"
-import { async } from "node-ical"
+import { CategoryChannel, Guild, MessageEmbed, TextChannel } from "discord.js"
 import { GuildChannel } from "discord.js/typings/index.js"
 import moment from "moment"
+import { async } from "node-ical"
+import { RecurrenceRule, scheduleJob } from "node-schedule"
+
+import { DiscordClient } from ".."
 
 var embed = ""
 const { DateTime } = require("luxon")
