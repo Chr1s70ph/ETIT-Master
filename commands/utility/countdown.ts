@@ -1,14 +1,14 @@
-const config = require("../../private/config.json")
-const discord = require("discord.js")
+import { DiscordClient } from "../../index"
+import { Message, MessageEmbed } from "discord.js"
 
 exports.name = "countdown"
 
 exports.description = "Ein simpler countdown von 10 runter"
 
-exports.usage = `${config.prefix}countdown`
+exports.usage = "countdown"
 
-exports.run = async (client, message) => {
-	let msgEmbed = new discord.MessageEmbed()
+exports.run = async (client: DiscordClient, message: Message) => {
+	let msgEmbed = new MessageEmbed()
 		.setTitle("Liftoff in:")
 		.setFooter(message.author.tag, message.author.avatarURL({ dynamic: true }))
 		.setThumbnail(
