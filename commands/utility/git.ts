@@ -1,5 +1,6 @@
-const discord = require("discord.js")
-const config = require("../../private/config.json")
+import { MessageEmbed, Message } from "discord.js"
+import { DiscordClient } from "../../index"
+
 const gitlab = "https://git.scc.kit.edu"
 const github = "https://git.io/J3Vao"
 
@@ -7,10 +8,10 @@ exports.name = "git"
 
 exports.description = "Link zum KIT Gitlab und zur Repository"
 
-exports.usage = `${config.prefix}git`
+exports.usage = "git"
 
-exports.run = async (client, message) => {
-	const git = new discord.MessageEmbed() //Login Embed
+exports.run = async (client: DiscordClient, message: Message) => {
+	const git = new MessageEmbed() //Login Embed
 		.setColor("#ffa500")
 		.setAuthor(
 			client.user.tag,
@@ -27,7 +28,7 @@ exports.run = async (client, message) => {
 			},
 			{
 				name: `Github:`,
-				value: `Github [Repository](${github}) von <@${config.ids.userID.botUserID}>`,
+				value: `Github [Repository](${github}) von <@${client.config.ids.userID.botUserID}>`,
 				inline: false
 			},
 			{
@@ -36,7 +37,7 @@ exports.run = async (client, message) => {
 			}
 		)
 		.setFooter(
-			`[ID] ${config.ids.userID.botUserID} \n`,
+			`[ID] ${client.config.ids.userID.botUserID} \n`,
 			"https://about.gitlab.com/images/press/logo/png/gitlab-icon-rgb.png"
 		)
 
