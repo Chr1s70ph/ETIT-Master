@@ -9,7 +9,7 @@
 	"author": "Christoph Bluem",
 	"license": "MIT",
 	"dependencies": {
-		"discord.js": "^13.2.0",
+		"discord.js": "^13.3.0-dev.1634990584.579569a",
 		"fs": "^0.0.1-security",
 		"luxon": "^2.0.2",
 		"moment": "^2.29.1",
