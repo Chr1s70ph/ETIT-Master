@@ -1,13 +1,13 @@
-const config = require("../../private/config.json")
-const discord = require("discord.js")
+import { DiscordClient } from "../../index"
+import { Message, MessageEmbed } from "discord.js"
 
 exports.name = "uptime"
 
 exports.description = "Wie lange ist der Bot schon online"
 
-exports.usage = `${config.prefix}uptime`
+exports.usage = "uptime"
 
-exports.run = async (client, message) => {
+exports.run = async (client: DiscordClient, message: Message) => {
 	let uptime = {
 		days: null,
 		hours: null,
@@ -27,7 +27,7 @@ exports.run = async (client, message) => {
 
 	return message.reply({
 		embeds: [
-			new discord.MessageEmbed()
+			new MessageEmbed()
 				.setTitle("⏰Uptime")
 				.addField(
 					"Time since last restart:",
