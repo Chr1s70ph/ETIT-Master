@@ -7,12 +7,17 @@ export class DiscordClient extends Client {
 	public config
 	public applications: {
 		youtube: string
+		youtubedev: string
 		poker: string
 		betrayal: string
 		fishing: string
-		chessdev: string
 		chess: string
-		zombsroyale: string
+		chessdev: string
+		lettertile: string
+		wordsnack: string
+		doodlecrew: string
+		awkword: string
+		spellcast: string
 	}
 	/**
 	 *  example debug({ foo })
