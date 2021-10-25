@@ -6,7 +6,8 @@
 		"watch": true,
 		"resolveJsonModule": true,
 		"esModuleInterop": true,
-		"moduleResolution": "node"
+		"moduleResolution": "node",
+		"skipLibCheck": true
 	},
 	"exclude": ["node_modules", "./built"]
 }
