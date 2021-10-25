@@ -549,18 +549,18 @@ function findChannel(subject: string, client: DiscordClient) {
 			channel.name.replace(REGEX_TO_REMOVE_EMOJIS, "").toLowerCase() == subject.toLowerCase()
 	) as TextChannel
 
-	let channelID = channel.id
+	let channelID = channel?.id ? channel.id : client.config.ids.channelIDs.dev.botTestLobby
+
 	return channelID
 }
 
 function findRole(subject, client) {
-	var role = ""
 	subject = subject.trim() //remove leading and trailing space
 	subject = subject.replace(/ *\([^)]*\) */g, "") //remove all content in, and brackets
 	const guild = client.guilds.cache.get(client.config.ids.serverID)
-	role = guild.roles.cache.find(
-		(role) => subject.toLowerCase() == role.name.toLowerCase()
-	).id
+	let role =
+		guild.roles.cache.find((role) => subject.toLowerCase() == role.name.toLowerCase())?.id ??
+		null
 	return role
 }
 
