@@ -369,7 +369,7 @@ async function filterToadaysEvents(
 	thisWeeksEvents: {}
 ) {
 	const MS_PER_MINUTE = 60000
-	const EVENT_NOTIFICATION_OFFSET_MINUTES = 30
+	const EVENT_NOTIFICATION_OFFSET_MINUTES = 20
 
 	for (var entry in thisWeeksEvents) {
 		if (thisWeeksEvents[entry].day == today.getDay()) {
@@ -391,7 +391,15 @@ async function filterToadaysEvents(
 
 			var role = findRole(subject, client)
 
-			var embed = dynamicEmbed(client, role, subject, professor, link, event.location)
+			var embed = dynamicEmbed(
+				client,
+				role,
+				subject,
+				professor,
+				EVENT_NOTIFICATION_OFFSET_MINUTES,
+				link,
+				event.location
+			)
 
 			var channel = findChannel(subject, client)
 
@@ -472,6 +480,7 @@ function dynamicEmbed(
 	role: string,
 	subject: string,
 	professor: string,
+	lessonsOffset: number,
 	link: string,
 	location: string
 ) {
@@ -494,7 +503,7 @@ function dynamicEmbed(
 					.user.avatarURL()
 			)
 			.setTitle(subject + " Reminder")
-			.setDescription(`Die ${courseType} fängt in 5 Minuten an`)
+			.setDescription(`Die ${courseType} fängt in ${lessonsOffset} Minuten an`)
 			.setThumbnail("https://pics.freeicons.io/uploads/icons/png/6029094171580282643-512.png")
 			.addField("Dozent", professor, false)
 			.setFooter(
