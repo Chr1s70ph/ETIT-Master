@@ -528,9 +528,8 @@ function dynamicEmbed(
 	if (location) {
 		embedDynamic.addField(
 			"Location:",
-			`${location} [\(Maps\)](https://www.google.com/maps/search/${location.replace(
-				" ",
-				"+"
+			`${location} [Maps](https://www.google.com/maps/search/KIT+${encodeURIComponent(
+				location
 			)})`,
 			false
 		)
