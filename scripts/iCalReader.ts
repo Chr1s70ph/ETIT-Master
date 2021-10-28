@@ -183,18 +183,19 @@ function getEvents(data: {}, today: Date, events: {}, client: DiscordClient) {
 	var weekStartDate = localDate()
 	weekStartDate.setDate(weekStartDate.getDate() - weekStartDate.getDay() + 1)
 	var todayStart = today
-	todayStart.setHours(0 - today.getTimezoneOffset() / 60)
+	todayStart.setUTCHours(0, 0, 0, 0)
 	var todayEnd = localDate()
 	todayEnd.setHours(23)
 	todayEnd.setMinutes(59)
 	todayEnd.setSeconds(59)
 
+	var rangeStart = moment(todayStart).utc()
+	var rangeEnd = moment(todayEnd)
+
 	for (var k in data) {
 		if (data.hasOwnProperty(k)) {
 			// When dealing with calendar recurrences, you need a range of dates to query against,
 			// because otherwise you can get an infinite number of calendar events.
-			var rangeStart = moment(today)
-			var rangeEnd = moment(todayEnd)
 
 			var event = data[k]
 			if (event.type === "VEVENT") {
