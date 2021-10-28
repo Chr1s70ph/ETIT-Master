@@ -169,8 +169,6 @@ function localDate() {
 	tempToday.toLocaleString("en-US", { timezone: "Berlin/Europe" })
 	var todayString = tempToday.slice(0, -10) + "z"
 	var today = new Date(todayString)
-	let tzOffset = today.getTimezoneOffset() //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getTimezoneOffset
-	today.setHours(-tzOffset / 60) //account for TZ-Offset
 	today.setMinutes(0)
 	today.setSeconds(0)
 	return today
