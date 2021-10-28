@@ -182,6 +182,8 @@ var datesAreOnSameDay = (first: Date, second: Date) =>
 function getEvents(data: {}, today: Date, events: {}, client: DiscordClient) {
 	var weekStartDate = localDate()
 	weekStartDate.setDate(weekStartDate.getDate() - weekStartDate.getDay() + 1)
+	var todayStart = today
+	todayStart.setHours(0 - today.getTimezoneOffset() / 60)
 	var todayEnd = localDate()
 	todayEnd.setHours(23)
 	todayEnd.setMinutes(59)
@@ -284,10 +286,10 @@ function getEvents(data: {}, today: Date, events: {}, client: DiscordClient) {
 							addEntryToWeeksEvents(
 								events,
 								today.getDay().toString(),
-								event.start,
-								title,
-								description,
-								event.location
+								curEvent.start,
+								recurrenceTitle,
+								curEvent.description,
+								curEvent.location
 							)
 						}
 					}
