@@ -444,8 +444,8 @@ function extractZoomLinks(description: string) {
 	let splitString = ">"
 
 	//check for 'id' , because some links might contain an id parameter, which is not needed
-	if (description.includes("id")) {
-		splitString = "id"
+	if (description.includes("id=")) {
+		splitString = "id="
 	}
 	//check for '#success' , because some links might have been copied wrong
 	if (description.includes("#success")) {
