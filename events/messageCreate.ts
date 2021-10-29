@@ -1,5 +1,11 @@
 import { DiscordClient } from "../index"
 import { Message, MessageEmbed } from "discord.js"
+import { meter } from "tx2"
+const tx2 = require("tx2")
+
+var counter = tx2.counter({
+	name: "Commands used"
+})
 
 exports.run = async (client: DiscordClient, message: Message) => {
 	if (message.author.bot) return
@@ -52,6 +58,7 @@ exports.run = async (client: DiscordClient, message: Message) => {
 		try {
 			message.channel.sendTyping()
 			commandfile.run(client, message, args)
+			counter.inc()
 			// setTimeout(() => message.delete(), 500)
 			console.log(
 				`${message.author.username} used ${commandName} ${
