@@ -55,12 +55,6 @@ let client: DiscordClient = new DiscordClient({
 client.commands = new Collection()
 client.config = config
 
-client.on("ready", async () => {
-	await loadScripts(client)
-	await loadSlashCommands(client)
-	console.log("Online!")
-})
-
 client.login(config.botToken)
 
 fs.readdir("./commands/", (err, elements) => {
@@ -103,7 +97,7 @@ fs.readdir("./events/", (err, files) => {
 	})
 })
 
-async function loadScripts(client: DiscordClient) {
+export async function loadScripts(client: DiscordClient) {
 	let files
 	try {
 		files = await fs.promises.readdir("./scripts/")
@@ -121,7 +115,7 @@ async function loadScripts(client: DiscordClient) {
 	})
 }
 
-async function loadSlashCommands(client: DiscordClient) {
+export async function loadSlashCommands(client: DiscordClient) {
 	let files
 	try {
 		files = await fs.promises.readdir("./slashCommands/")
