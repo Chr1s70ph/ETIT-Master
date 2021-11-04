@@ -24,7 +24,7 @@ async function fetchAndSend(client: DiscordClient) {
 		var icalLink = client.config.calendars[entry]
 		var events = {}
 		var webEvents = await async.fromURL(icalLink)
-		var eventsFromIcal = await getEvents(webEvents, today, events, client)
+		var eventsFromIcal = await getEvents(webEvents, today, events, entry)
 		await filterToadaysEvents(client, today, eventsFromIcal)
 	}
 }
@@ -62,7 +62,7 @@ var datesAreOnSameDay = (first: Date, second: Date) =>
 	first.getMonth() === second.getMonth() &&
 	first.getDate() === second.getDate()
 
-function getEvents(data: {}, today: Date, events: {}, client: DiscordClient) {
+function getEvents(data: {}, today: Date, events: {}, icalName: string) {
 	var weekStartDate = localDate()
 	weekStartDate.setDate(weekStartDate.getDate() - weekStartDate.getDay() + 1)
 	var todayStart = today
@@ -182,7 +182,7 @@ function getEvents(data: {}, today: Date, events: {}, client: DiscordClient) {
 		}
 	}
 
-	console.log(events)
+	console.log(icalName, events)
 	return events
 }
 
@@ -205,6 +205,7 @@ function addEntryToWeeksEvents(
 			return events
 		}
 	}
+
 	events[Object.keys(events).length] = {
 		day: day,
 		start: start,
