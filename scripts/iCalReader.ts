@@ -503,7 +503,6 @@ function dynamicEmbed(
 	link: string,
 	location: string
 ): MessageEmbed {
-	console.log(role)
 	var roleColor: ColorResolvable =
 		client.guilds.resolve(client.config.ids.serverID).roles.cache.get(role)?.color ??
 		"DEFAULT"
