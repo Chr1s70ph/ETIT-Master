@@ -1,9 +1,9 @@
 import {
 	CategoryChannel,
+	ColorResolvable,
 	Guild,
 	MessageEmbed,
-	TextChannel,
-	ColorResolvable
+	TextChannel
 } from "discord.js"
 import { GuildChannel } from "discord.js/typings/index.js"
 import moment from "moment"
