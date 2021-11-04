@@ -1,4 +1,10 @@
-import { CategoryChannel, Guild, MessageEmbed, TextChannel } from "discord.js"
+import {
+	CategoryChannel,
+	Guild,
+	MessageEmbed,
+	TextChannel,
+	ColorResolvable
+} from "discord.js"
 import { GuildChannel } from "discord.js/typings/index.js"
 import moment from "moment"
 import { async } from "node-ical"
@@ -68,7 +74,7 @@ async function deleteYesterdaysLessonMessage(
 	const channel = (await client.channels.cache.find(
 		(channel) => channel.id == channelID
 	)) as TextChannel
-	channel.messages
+	channel?.messages
 		.fetch({
 			limit: 100
 		})
@@ -134,9 +140,10 @@ function findChannelInCategory(
 	var category = client.channels.cache.find((c: CategoryChannel) =>
 		c.name.toLowerCase().includes(categoryName.toLowerCase())
 	) as CategoryChannel
-	var channelId = category.children.find((c: GuildChannel) =>
-		c.name.toLowerCase().includes(channelName.toLowerCase())
-	).id
+	var channelId =
+		category.children.find((c: GuildChannel) =>
+			c.name.toLowerCase().includes(channelName.toLowerCase())
+		)?.id ?? undefined
 	return channelId
 }
 
@@ -496,9 +503,10 @@ function dynamicEmbed(
 	link: string,
 	location: string
 ): MessageEmbed {
-	var roleColor = client.guilds
-		.resolve(client.config.ids.serverID)
-		.roles.cache.get(role).color
+	console.log(role)
+	var roleColor: ColorResolvable =
+		client.guilds.resolve(client.config.ids.serverID).roles.cache.get(role)?.color ??
+		"DEFAULT"
 	var courseType = "Vorlesung"
 
 	if (subject.includes("(ü)") || subject.includes("(Ü)")) courseType = "Übung"
@@ -628,7 +636,7 @@ function createCron(
 			(_channel) => _channel == channel
 		) as TextChannel
 		notificationChannel
-			.send({ content: role, embeds: [embed.setTimestamp()] })
+			?.send({ content: role, embeds: [embed.setTimestamp()] })
 			.then((msg) => {
 				setTimeout(function () {
 					try {
