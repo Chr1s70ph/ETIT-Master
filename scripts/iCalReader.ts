@@ -401,6 +401,7 @@ async function filterToadaysEvents(
 			var professor = summary.split("-")[0]
 
 			var link = extractZoomLinks(event.description)
+			console.log(link)
 
 			var earlyEventStart = new Date(
 				event.start - EVENT_NOTIFICATION_OFFSET_MINUTES * MS_PER_MINUTE
@@ -440,30 +441,22 @@ async function filterToadaysEvents(
 /**
  * extracts the zoom Links from HTML tag
  * if the HTML tag contains "#success" it cuts the string before that string, to make the link automatically open zoom
- * @param {*} description
- * @returns link
+ * @param eventLinkString
+ * @returns Zoom URL
  */
-function extractZoomLinks(description: string) {
-	if (description.length == 0) {
-		return
-	}
+function extractZoomLinks(eventLinkString: string): string {
+	if (eventLinkString.length === 0) return
 
-	let splitString = ">"
+	//extract link from href tag
+	eventLinkString = eventLinkString.includes("<a href=")
+		? eventLinkString.split("<a href=")[1].split(">")[0]
+		: eventLinkString
 
-	//check for 'id' , because some links might contain an id parameter, which is not needed
-	if (description.includes("id=")) {
-		splitString = "id="
-	}
-	//check for '#success' , because some links might have been copied wrong
-	if (description.includes("#success")) {
-		splitString = "#success"
-	}
-	//check for html hyperlink parsing , because google calendar does some weird stuff
-	if (description.includes("<a href=")) {
-		return description.split("<a href=")[1].split(splitString)[0]
-	} else {
-		return description
-	}
+	//strip all html tags and encode as URI
+	let link = encodeURI(eventLinkString.replace(/(\<.*?\>)/g, ""))
+
+	//remove "#success" string, to automatically open zoom
+	return link.includes("#success") ? link.split("#success")[0] : link
 }
 
 /**
