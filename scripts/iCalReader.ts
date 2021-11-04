@@ -1,11 +1,4 @@
-import {
-	CategoryChannel,
-	ColorResolvable,
-	Guild,
-	MessageEmbed,
-	TextChannel
-} from "discord.js"
-import { GuildChannel } from "discord.js/typings/index.js"
+import { ColorResolvable, Guild, MessageEmbed, TextChannel, Client } from "discord.js"
 import moment from "moment"
 import { async } from "node-ical"
 import { RecurrenceRule, scheduleJob } from "node-schedule"
@@ -15,27 +8,12 @@ import { DiscordClient } from ".."
 var embed = ""
 const { DateTime } = require("luxon")
 const cron_to_fetch_new_notifications = "0 0 * * *"
-const cron_to_delete_lesson_notifications = "1 0 * * * " //cron string to trigger deletion of all messages that contain notifications about lessons
 
 exports.run = async (client: DiscordClient) => {
 	fetchAndSend(client)
 	scheduleJob(cron_to_fetch_new_notifications, async function () {
 		fetchAndSend(client)
-		let markdownType = "yaml"
-		let calendarList = Object.keys(client.config.calendars).toString()
-		let calendars = calendarList.replaceAll(",", "\n")
-		//create embed for each new fetch
-		var updatedCalendars = new MessageEmbed()
-			.setColor("#C7BBED")
-			.setAuthor(client.user.tag, client.user.avatarURL())
-			.setDescription(
-				`**Kalender nach Events durchgesucht**\`\`\`${markdownType}\n${calendars} \`\`\``
-			)
-		//send notification what calendars have been queried for todays events
-		const channel = client.channels.cache.find(
-			(channel) => channel.id == client.config.ids.channelIDs.dev.botTestLobby
-		) as TextChannel
-		channel.send({ embeds: [updatedCalendars] })
+		updatedCalendarsNotifications(client)
 	})
 }
 
@@ -48,127 +26,7 @@ async function fetchAndSend(client: DiscordClient) {
 		var webEvents = await async.fromURL(icalLink)
 		var eventsFromIcal = await getEvents(webEvents, today, events, client)
 		await filterToadaysEvents(client, today, eventsFromIcal)
-
-		if (todaysLessons(events, client).fields.length > 0) {
-			var todaysLessonsEmbed = todaysLessons(events, client)
-			var icalName = getKeyByValue(client.config.calendars, icalLink)
-			var channelID = findChannelInCategory(icalName, "bot-commands", client)
-
-			sendTodaysLessons(icalName, channelID, events, client)
-			await deleteYesterdaysLessonMessage(channelID, icalName, client)
-		}
 	}
-}
-
-/**
- *
- * @param {string} channelID ID of channel to delete the notification Message in
- * @param {string} icalName name of Calendar
- * @param {object} client
- */
-async function deleteYesterdaysLessonMessage(
-	channelID: string,
-	icalName: string,
-	client: DiscordClient
-) {
-	const channel = (await client.channels.cache.find(
-		(channel) => channel.id == channelID
-	)) as TextChannel
-	channel?.messages
-		.fetch({
-			limit: 100
-		})
-		.then((fetchedMessages) => {
-			console.log(`fetched ${fetchedMessages.size} messages in ${icalName}`)
-			fetchedMessages.forEach((message) => {
-				if (message.author.id == client.config.ids.userID.botUserID) {
-					if (message.embeds[0].title.includes("Heutige Benachrichtigungen")) {
-						console.log("Found notification Message " + message.id + " in " + icalName)
-						scheduleDeleteMessages(channelID, message.id, icalName, client)
-					}
-				}
-			})
-		})
-}
-
-/**
- * delete messages by ID and category Name
- * @param {string} channelID ID of channel to delete the notification
- * @param {string} messageToDelete ID of the message to be deleted
- * @param {string} categoryName name of category the message is being deleted in
- * @param {object} client
- */
-function scheduleDeleteMessages(
-	channelID: string,
-	messageToDelete: {},
-	categoryName: string,
-	client: DiscordClient
-) {
-	console.log("Set schedule to delete old reminder list message.")
-	var deleteMessages = scheduleJob(
-		dateToRecurrenceRule(undefined, new Date()),
-		function () {
-			const channel = client.channels.cache.find(
-				(channel) => channel.id == channelID
-			) as TextChannel
-			channel.messages.fetch(messageToDelete).then(async (msg) => {
-				if (msg) {
-					try {
-						msg.delete("true")
-						console.log("Message deleted in " + categoryName)
-					} catch (e) {
-						console.log("could not delete message!\n" + e)
-					}
-				}
-			})
-		}
-	) //function set to only delete notifications at 00:05 AM
-}
-
-/**
- *
- * @param {string} categoryName category name
- * @param {string} channelName channel name
- * @param {object} client
- * @returns chanelid of desired channel out of that category
- */
-function findChannelInCategory(
-	categoryName: string,
-	channelName: string,
-	client: DiscordClient
-) {
-	var category = client.channels.cache.find((c: CategoryChannel) =>
-		c.name.toLowerCase().includes(categoryName.toLowerCase())
-	) as CategoryChannel
-	var channelId =
-		category.children.find((c: GuildChannel) =>
-			c.name.toLowerCase().includes(channelName.toLowerCase())
-		)?.id ?? undefined
-	return channelId
-}
-
-//https://stackoverflow.com/a/28191966/10926046
-function getKeyByValue(object: object, value: string) {
-	return Object.keys(object).find((key) => object[key] === value)
-}
-
-function sendTodaysLessons(
-	icalName: string,
-	_channel: string,
-	events: {},
-	client: DiscordClient
-) {
-	var sendLessons = scheduleJob(
-		dateToRecurrenceRule(undefined, new Date()),
-		function () {
-			const channel = client.channels.cache.find(
-				(channel) => channel.id.toString() == _channel
-			) as TextChannel
-			channel.send({ embeds: [todaysLessons(events, client)] })
-			console.log(`Todays lessons info sent to ${icalName}`)
-		} //function set to only send notifications at 00:05 AM
-	)
-	console.log(`Set shedule to send todays Lessons for ${icalName}`)
 }
 
 function localDate() {
@@ -179,6 +37,24 @@ function localDate() {
 	today.setMinutes(0)
 	today.setSeconds(0)
 	return today
+}
+
+function updatedCalendarsNotifications(client: DiscordClient) {
+	let markdownType = "yaml"
+	let calendarList = Object.keys(client.config.calendars).toString()
+	let calendars = calendarList.replaceAll(",", "\n")
+	//create embed for each new fetch
+	var updatedCalendars = new MessageEmbed()
+		.setColor("#C7BBED")
+		.setAuthor(client.user.tag, client.user.avatarURL())
+		.setDescription(
+			`**Kalender nach Events durchgesucht**\`\`\`${markdownType}\n${calendars} \`\`\``
+		)
+	//send notification what calendars have been queried for todays events
+	const channel = client.channels.cache.find(
+		(channel) => channel.id == client.config.ids.channelIDs.dev.botTestLobby
+	) as TextChannel
+	channel.send({ embeds: [updatedCalendars] })
 }
 
 var datesAreOnSameDay = (first: Date, second: Date) =>
@@ -310,48 +186,6 @@ function getEvents(data: {}, today: Date, events: {}, client: DiscordClient) {
 	return events
 }
 
-/**
- *
- * @param {object} events object of todays events
- * @param {object} client
- * @returns embed with a list of todays lessons
- */
-function todaysLessons(events: {}, client: DiscordClient) {
-	var lessonsEmbed = new MessageEmbed()
-		.setColor("#FF0000")
-		.setAuthor(
-			`Informationen`,
-			client.guilds
-				.resolve(client.config.ids.serverID)
-				.members.resolve(client.config.ids.userID.botUserID)
-				.user.avatarURL()
-		)
-		.setTitle("Heutige Benachrichtigungen")
-	for (var entry in events) {
-		var lessonStart = events[entry].start.toString().slice(16, 24)
-
-		//NOTE: the last field is there for a clearer format and it DOES contain an invisible character
-		lessonsEmbed.addFields(
-			{
-				name: "Fach",
-				value: events[entry].summary,
-				inline: true
-			},
-			{
-				name: "Vorlesungsbeginn",
-				value: lessonStart,
-				inline: true
-			},
-			{
-				name: "‎",
-				value: "‎",
-				inline: true
-			}
-		)
-	}
-	return lessonsEmbed
-}
-
 function addEntryToWeeksEvents(
 	events: {},
 	day: string,
@@ -423,7 +257,7 @@ async function filterToadaysEvents(
 			var channel = findChannel(subject, client)
 
 			if (channel == undefined) {
-				channel = client.config.ids.channelIDs.generalChannels.general
+				channel = client.config.ids.channelIDs.dev.botTestLobby
 			}
 
 			if (noVariableUndefined(RecurrenceRule, channel, role, embed, client)) {
