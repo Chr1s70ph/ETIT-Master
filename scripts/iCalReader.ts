@@ -401,7 +401,6 @@ async function filterToadaysEvents(
 			var professor = summary.split("-")[0]
 
 			var link = extractZoomLinks(event.description)
-			console.log(link)
 
 			var earlyEventStart = new Date(
 				event.start - EVENT_NOTIFICATION_OFFSET_MINUTES * MS_PER_MINUTE
