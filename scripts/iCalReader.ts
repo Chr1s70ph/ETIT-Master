@@ -287,10 +287,14 @@ function extractZoomLinks(eventLinkString: string): string {
 		: eventLinkString
 
 	//strip all html tags and encode as URI
-	let link = encodeURI(eventLinkString.replace(/(\<.*?\>)/g, ""))
+	let link = eventLinkString.replace(/(\<.*?\>)/g, "")
 
 	//remove "#success" string, to automatically open zoom
-	return link.includes("#success") ? link.split("#success")[0] : link
+	return link.includes("#success")
+		? link.split("#success")[0]
+		: link.includes("id=")
+		? link.split("id=")[0]
+		: link
 }
 
 /**
