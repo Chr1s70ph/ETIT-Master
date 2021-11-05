@@ -229,11 +229,11 @@ async function filterToadaysEvents(
 		if (thisWeeksEvents[entry].day == today.getDay()) {
 			var event = thisWeeksEvents[entry]
 			var summary = event.summary
-			//extract the subject after the "-" in the string
-			var subject = summary.split("-")[1]
+			//extract the subject after the first "-" in the string
+			var subject = summary.split(/-(.+)/)[1]
 
 			//extract the professors Name before the "-" in the string
-			var professor = summary.split("-")[0]
+			var professor = summary.split(/-(.+)/)[0]
 
 			var link = extractZoomLinks(event.description)
 
@@ -466,7 +466,7 @@ function createCron(
 			(_channel) => _channel == channel
 		) as TextChannel
 		notificationChannel
-			?.send({ content: role, embeds: [embed.setTimestamp()] })
+			?.send({ content: role || null, embeds: [embed.setTimestamp()] })
 			.then((msg) => {
 				setTimeout(function () {
 					try {
