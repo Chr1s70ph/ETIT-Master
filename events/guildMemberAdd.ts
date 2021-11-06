@@ -1,5 +1,5 @@
 import { MessageEmbed } from "discord.js"
-import { DiscordClient } from "../index"
+import { DiscordClient } from "../types/customTypes"
 import { GuildMember } from "discord.js/typings/index.js"
 
 exports.run = async (client: DiscordClient, member: GuildMember) => {

@@ -1,4 +1,4 @@
-import { DiscordClient } from "../index"
+import { DiscordClient } from "../types/customTypes"
 import { scheduleJob } from "node-schedule"
 const presence_refresh_timer = "15 * * * * *"
 const custom_presence = require("../commands/admin/status.ts")

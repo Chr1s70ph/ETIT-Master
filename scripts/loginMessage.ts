@@ -1,4 +1,4 @@
-import { DiscordClient } from "../index"
+import { DiscordClient } from "../types/customTypes"
 import { MessageEmbed, TextChannel } from "discord.js"
 import { readdir as readdir_promise } from "fs/promises"
 import { statSync, readdir } from "fs"

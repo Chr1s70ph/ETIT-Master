@@ -3,7 +3,7 @@ import moment from "moment"
 import { async } from "node-ical"
 import { RecurrenceRule, scheduleJob } from "node-schedule"
 
-import { DiscordClient } from ".."
+import { DiscordClient } from "../types/customTypes"
 
 var embed = ""
 const { DateTime } = require("luxon")

@@ -1,5 +1,5 @@
 import { Presence } from "discord.js/typings/index.js"
-import { DiscordClient } from "../index"
+import { DiscordClient } from "../types/customTypes"
 import { MessageEmbed, TextChannel } from "discord.js"
 import { connect, start, stop } from "pm2"
 

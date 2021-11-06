@@ -1,4 +1,4 @@
-import { DiscordClient } from "../../index"
+import { DiscordClient } from "../../types/customTypes"
 import { Message, MessageEmbed } from "discord.js"
 import fetch from "node-fetch"
 /**

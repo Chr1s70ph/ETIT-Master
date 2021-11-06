@@ -1,5 +1,5 @@
 import { MessageEmbed, Message } from "discord.js"
-import { DiscordClient } from "../../index"
+import { DiscordClient } from "../../types/customTypes"
 
 exports.name = "say"
 

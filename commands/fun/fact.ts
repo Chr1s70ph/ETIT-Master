@@ -1,5 +1,5 @@
 import * as fs from "fs"
-import { DiscordClient } from "../../index"
+import { DiscordClient } from "../../types/customTypes"
 import { Message, MessageEmbed } from "discord.js"
 
 const FACTS_FILE = "./data/facts.txt"

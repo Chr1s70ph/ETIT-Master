@@ -1,4 +1,4 @@
-import { DiscordClient } from "../../index"
+import { DiscordClient } from "../../types/customTypes"
 import { Message, User, MessageEmbed } from "discord.js"
 import { GuildMember } from "discord.js/typings/index.js"
 

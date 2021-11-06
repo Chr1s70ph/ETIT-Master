@@ -1,5 +1,5 @@
 import { GuildMember } from "discord.js/typings/index.js"
-import { DiscordClient } from "../index"
+import { DiscordClient } from "../types/customTypes"
 import { TextChannel, MessageEmbed } from "discord.js"
 
 exports.run = async (

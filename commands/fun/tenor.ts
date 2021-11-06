@@ -1,5 +1,5 @@
 import { MessageEmbed, Message, MessageMentions } from "discord.js"
-import { DiscordClient } from "../../index"
+import { DiscordClient } from "../../types/customTypes"
 
 const MENTION_REGEX = /<@!?(\d{17,19})>/g
 

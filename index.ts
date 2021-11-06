@@ -1,41 +1,8 @@
-import { Client, Collection, Intents, MessageEmbed, TextChannel } from "discord.js"
+import { Collection, Intents } from "discord.js"
 import * as fs from "fs"
 import config from "./private/config.json"
 
-export class DiscordClient extends Client {
-	public commands
-	public config
-	public applications: {
-		youtube: string
-		youtubedev: string
-		poker: string
-		betrayal: string
-		fishing: string
-		chess: string
-		chessdev: string
-		lettertile: string
-		wordsnack: string
-		doodlecrew: string
-		awkword: string
-		spellcast: string
-	}
-	/**
-	 *  example debug({ foo })
-	 * @param args parse with curly brackets to log name and value of variable
-	 */
-	public debug(args): void {
-		let channel = client.channels.cache.find(
-			(channel) => channel.id == config.ids.channelIDs.dev.botTestLobby
-		) as TextChannel
-		channel.send({
-			embeds: [
-				new MessageEmbed()
-					.setTitle(`Debug-Variable: \`${Object.keys(args)[0]}\``)
-					.setDescription(JSON.stringify(args[Object.keys(args)[0]]))
-			]
-		})
-	}
-}
+import { DiscordClient } from "./types/customTypes"
 
 let client: DiscordClient = new DiscordClient({
 	intents: [
@@ -55,7 +22,7 @@ let client: DiscordClient = new DiscordClient({
 client.commands = new Collection()
 client.config = config
 
-client.login(config.botToken)
+client.login(client.config.botToken)
 
 fs.readdir("./commands/", (err, elements) => {
 	var path = "./commands/"

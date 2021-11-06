@@ -1,6 +1,6 @@
 import { Guild, GuildChannel, ThreadChannel } from "discord.js/typings/index.js"
 const shedule = require("node-schedule")
-import { DiscordClient } from "../index"
+import { DiscordClient } from "../types/customTypes"
 const online_refresh_timer = "*/15 * * * *"
 
 exports.run = async (client: DiscordClient) => {

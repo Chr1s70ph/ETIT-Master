@@ -1,4 +1,4 @@
-import { DiscordClient } from "../../index"
+import { DiscordClient } from "../../types/customTypes"
 import { Message } from "discord.js"
 const pm2 = require("pm2")
 exports.name = "restart"

@@ -1,4 +1,4 @@
-import { DiscordClient } from "../../index"
+import { DiscordClient } from "../../types/customTypes"
 import { Message } from "discord.js"
 import { connect, stop } from "pm2"
 
