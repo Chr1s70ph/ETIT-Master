@@ -1,15 +1,15 @@
 {
 	"name": "etit-master",
-	"version": "2.0.0",
+	"version": "2.1.0",
 	"description": "[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/G2G54TZ2T)",
-	"main": "index.js",
+	"main": "index.ts",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"author": "Christoph Bluem",
 	"license": "MIT",
 	"dependencies": {
-		"discord.js": "^13.3.0-dev.1634990584.579569a",
+		"discord.js": "^13.4.0-dev.1636157105.49e3ce2",
 		"fs": "^0.0.1-security",
 		"luxon": "^2.0.2",
 		"moment": "^2.29.1",
