@@ -1,24 +1,25 @@
-import { DiscordClient } from "../../types/customTypes"
-import { Message } from "discord.js"
-import { connect, stop } from "pm2"
+import { Message } from 'discord.js'
+import { connect, stop } from 'pm2'
+import { DiscordClient } from '../../types/customTypes'
 
-exports.name = "stopbackupbot"
+exports.name = 'stopbackupbot'
 
-exports.description = "stops backup bot"
+exports.description = 'stops backup bot'
 
-exports.usage = "stopbackupbot"
+exports.usage = 'stopbackupbot'
 
-exports.run = async (client: DiscordClient, message: Message) => {
-	if (!Object.values(client.config.ids.acceptedAdmins).includes(message.author.id))
-		return message.reply("You do not have the permissions to perform that command.")
+exports.run = (client: DiscordClient, message: Message) => {
+  if (!Object.values(client.config.ids.acceptedAdmins).includes(message.author.id)) {
+    return message.reply('You do not have the permissions to perform that command.')
+  }
 
-	message.channel.send("Stopping Backup Bot...")
-	connect(function (err) {
-		if (err) {
-			console.error(err)
-			process.exit(2)
-		}
+  message.channel.send('Stopping Backup Bot...')
+  return connect(err => {
+    if (err) {
+      console.error(err)
+      process.exit(2)
+    }
 
-		stop("ETIT-Chef", (err, proc) => {})
-	})
+    stop('ETIT-Chef', null)
+  })
 }

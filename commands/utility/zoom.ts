@@ -1,13 +1,13 @@
-import { DiscordClient } from "../../types/customTypes"
-import { Message } from "discord.js"
-exports.name = "zoom"
+import { Message } from 'discord.js'
+import { DiscordClient } from '../../types/customTypes'
+exports.name = 'zoom'
 
-exports.description = "Schickt ein Emoji, das beschreibt, worin Zoom am besten ist..."
+exports.description = 'Schickt ein Emoji, das beschreibt, worin Zoom am besten ist...'
 
-exports.usage = "zoom"
+exports.usage = 'zoom'
 
-exports.aliases = ["loading"]
+exports.aliases = ['loading']
 
 exports.run = async (client: DiscordClient, message: Message) => {
-	message.channel.send("<a:loading:783688114509578271>")
+  await message.channel.send('<a:loading:783688114509578271>')
 }
