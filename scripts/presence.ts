@@ -1,23 +1,20 @@
-import { DiscordClient } from "../types/customTypes"
-import { scheduleJob } from "node-schedule"
-const presence_refresh_timer = "15 * * * * *"
-const custom_presence = require("../commands/admin/status.ts")
+import { scheduleJob } from 'node-schedule'
+import { DiscordClient } from '../types/customTypes'
+const presence_refresh_timer = '15 * * * * *'
+const custom_presence = require('../commands/admin/status.ts')
 
 exports.run = async (client: DiscordClient) => {
-	const presenceVariants = client.config.presence
-	var maxNumberOfPresence = Object.keys(presenceVariants).length
-	var minNumberOfPresence = 0
-	var keys = Object.keys(presenceVariants)
+  const presenceVariants = client.config.presence
+  const maxNumberOfPresence = Object.keys(presenceVariants).length
+  const minNumberOfPresence = 0
 
-	scheduleJob(presence_refresh_timer, function () {
-		let customPresence = custom_presence.presence
-		if (customPresence.activities[0].name != "") {
-			client.user.setPresence(customPresence)
-		} else {
-			var randomIndex = Math.floor(
-				Math.random() * (maxNumberOfPresence - minNumberOfPresence) + minNumberOfPresence
-			)
-			client.user.setPresence(presenceVariants[randomIndex])
-		}
-	})
+  await scheduleJob(presence_refresh_timer, () => {
+    const customPresence = custom_presence.presence
+    if (customPresence.activities[0].name !== '') {
+      client.user.setPresence(customPresence)
+    } else {
+      const randomIndex = Math.floor(Math.random() * (maxNumberOfPresence - minNumberOfPresence) + minNumberOfPresence)
+      client.user.setPresence(presenceVariants[randomIndex])
+    }
+  })
 }

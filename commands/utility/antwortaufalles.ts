@@ -1,18 +1,18 @@
-import { DiscordClient } from "../../types/customTypes"
-import { Message, MessageEmbed } from "discord.js"
+import { Message, MessageEmbed } from 'discord.js'
+import { DiscordClient } from '../../types/customTypes'
 
-exports.name = "antwortaufalles"
+exports.name = 'antwortaufalles'
 
-exports.description = "Was ist die Antwort auf alles?"
+exports.description = 'Was ist die Antwort auf alles?'
 
-exports.usage = "antwortaufalles"
+exports.usage = 'antwortaufalles'
 
 exports.run = async (client: DiscordClient, message: Message) => {
-	return message.reply({
-		embeds: [
-			new MessageEmbed().setDescription(
-				"Die Antwort auf die Frage nach dem Leben, dem Universum und dem ganzen Rest ist :four::two:"
-			)
-		]
-	})
+  await message.reply({
+    embeds: [
+      new MessageEmbed().setDescription(
+        'Die Antwort auf die Frage nach dem Leben, dem Universum und dem ganzen Rest ist :four::two:',
+      ),
+    ],
+  })
 }
