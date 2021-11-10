@@ -206,7 +206,7 @@ function filterToadaysEvents(client: DiscordClient, today: Date, thisWeeksEvents
   const EVENT_NOTIFICATION_OFFSET_MINUTES = 20
 
   for (const entry in thisWeeksEvents) {
-    if (thisWeeksEvents[entry].day === today.getDay()) {
+    if (thisWeeksEvents[entry].day === today.getDay().toString()) {
       const event = thisWeeksEvents[entry]
       const summary = event.summary
       // Extract the subject after the first "-" in the string
