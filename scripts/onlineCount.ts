@@ -23,6 +23,5 @@ exports.run = async (client: DiscordClient) => {
     const onlineCount = `🟢:${onlineMembers.online} 🟡:${onlineMembers.idle} 🔴:${onlineMembers.dnd}`
 
     onlineCounterChannel.setName(onlineCount)
-    console.log(`Updated online Member count to ${onlineCount}`)
   })
 }
