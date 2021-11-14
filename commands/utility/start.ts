@@ -30,9 +30,7 @@ exports.description = `Trickst die API aus um Discord-Spiele freizuschalten.
 
 exports.usage = `start \`${Object.keys(defaultApplications)}\``
 
-exports.run = async (client: DiscordClient, _message: Message, args: any, applications = defaultApplications) => {
-  // Save message, before it magically gets lost (thanks discord API :] )
-  const message = _message
+exports.run = async (client: DiscordClient, message: Message, args: any, applications = defaultApplications) => {
   // Throw an error, when user not in voiceChannel
   if (!message.member.voice.channel) {
     return client.commandReplyPromise(message, {
@@ -84,12 +82,12 @@ exports.run = async (client: DiscordClient, _message: Message, args: any, applic
       throw new Error(`An error occured while starting ${option} !${err}`)
     }
   } else {
-    return client.commandReplyPromise(_message, {
+    return client.commandReplyPromise(message, {
       embeds: [new MessageEmbed().setDescription(`⚠️ Invalid option!`)],
     })
   }
 
-  return client.commandReplyPromise(_message, {
+  return client.commandReplyPromise(message, {
     content: returnData.code,
     embeds: [
       new MessageEmbed().setDescription(
