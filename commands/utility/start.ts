@@ -35,19 +35,14 @@ exports.run = async (client: DiscordClient, _message: Message, args: any, applic
   const message = _message
   // Throw an error, when user not in voiceChannel
   if (!message.member.voice.channel) {
-    try {
-      message.reply({
-        embeds: [
-          new MessageEmbed().setDescription(
-            `⚠️ You are not in a Voice-Channel.
+    return client.commandReplyPromise(message, {
+      embeds: [
+        new MessageEmbed().setDescription(
+          `⚠️ You are not in a Voice-Channel.
 						Please join a Voice-Channel to use this function`,
-          ),
-        ],
-      })
-    } catch (e) {
-      throw new Error(e)
-    }
-    throw new Error(`Did not find Voice-Channel of User !`)
+        ),
+      ],
+    })
   }
 
   client.applications = { ...defaultApplications, ...applications }
@@ -89,16 +84,12 @@ exports.run = async (client: DiscordClient, _message: Message, args: any, applic
       throw new Error(`An error occured while starting ${option} !${err}`)
     }
   } else {
-    try {
-      message.reply({
-        embeds: [new MessageEmbed().setDescription(`⚠️ Invalid option!`)],
-      })
-    } catch (e) {
-      throw new Error(e)
-    }
-    throw new SyntaxError('Invalid option !')
+    return client.commandReplyPromise(_message, {
+      embeds: [new MessageEmbed().setDescription(`⚠️ Invalid option!`)],
+    })
   }
-  return message.reply({
+
+  return client.commandReplyPromise(_message, {
     content: returnData.code,
     embeds: [
       new MessageEmbed().setDescription(
