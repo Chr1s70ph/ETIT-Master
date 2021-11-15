@@ -26,12 +26,14 @@ export class DiscordClient extends Client {
    */
   public commandSendPromise(message: Message, returnData: MessageOptions) {
     return new Promise<Message>((resolve, reject) => {
-      try {
-        message.channel.send(returnData)
-        resolve(message)
-      } catch (error) {
-        reject(error)
-      }
+      message.channel.send(returnData).then(
+        () => {
+          resolve(message)
+        },
+        error => {
+          reject(error)
+        },
+      )
     })
   }
   /**
@@ -42,12 +44,14 @@ export class DiscordClient extends Client {
    */
   public commandReplyPromise(message: Message, returnData: MessageOptions) {
     return new Promise<Message>((resolve, reject) => {
-      try {
-        message.reply(returnData)
-        resolve(message)
-      } catch (error) {
-        reject(error)
-      }
+      message.reply(returnData).then(
+        () => {
+          resolve(message)
+        },
+        error => {
+          reject(error)
+        },
+      )
     })
   }
 }
