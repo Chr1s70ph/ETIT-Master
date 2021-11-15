@@ -9,9 +9,9 @@
 	"author": "Christoph Bluem",
 	"license": "MIT",
 	"dependencies": {
-		"discord.js": "^13.4.0-dev.1636157105.49e3ce2",
+		"discord.js": "^13.4.0-dev.1636675518.5e0a7d5",
 		"eslint-config-prettier": "^8.3.0",
-		"eslint-plugin-import": "^2.25.2",
+		"eslint-plugin-import": "^2.25.3",
 		"eslint-plugin-prettier": "^4.0.0",
 		"fs": "^0.0.1-security",
 		"luxon": "^2.1.1",
