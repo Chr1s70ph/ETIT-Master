@@ -7,7 +7,7 @@ exports.description = 'Wie lange ist der Bot schon online'
 
 exports.usage = 'uptime'
 
-exports.run = async (client: DiscordClient, message: Message) => {
+exports.run = (client: DiscordClient, message: Message) => {
   const uptime = {
     days: null,
     hours: null,

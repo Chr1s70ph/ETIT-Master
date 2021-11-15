@@ -10,7 +10,7 @@ exports.description = 'Link zum KIT Gitlab und zur Repository'
 
 exports.usage = 'git'
 
-exports.run = async (client: DiscordClient, message: Message) => {
+exports.run = (client: DiscordClient, message: Message) => {
   const git = new MessageEmbed()
     .setColor('#ffa500')
     .setAuthor(client.user.tag, 'https://git-scm.com/images/logos/downloads/Git-Icon-1788C.png')
