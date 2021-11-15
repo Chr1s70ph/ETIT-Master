@@ -7,7 +7,7 @@ exports.description = 'Wie lange ist der Bot schon online'
 
 exports.usage = 'uptime'
 
-exports.run = async (client: DiscordClient, message: Message) => {
+exports.run = (client: DiscordClient, message: Message) => {
   const uptime = {
     days: null,
     hours: null,
@@ -25,7 +25,7 @@ exports.run = async (client: DiscordClient, message: Message) => {
   uptime.minutes = Math.floor(uptime.seconds / 60)
   uptime.seconds -= uptime.minutes * 60
 
-  await message.reply({
+  return client.reply(message, {
     embeds: [
       new MessageEmbed()
         .setTitle('⏰Uptime')

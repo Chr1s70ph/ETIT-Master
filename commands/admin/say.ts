@@ -9,7 +9,7 @@ exports.usage = 'say <messageContent>'
 
 exports.run = (client: DiscordClient, message: Message) => {
   if (!Object.values(client.config.ids.acceptedAdmins).includes(message.author.id)) {
-    return message.reply('You do not have the permissions to perform that command.')
+    return client.reply(message, { content: 'You do not have the permissions to perform that command.' })
   }
 
   const messageContent = message.content.substring(message.content.indexOf(' ') + client.config.prefix.length)
@@ -24,7 +24,7 @@ exports.run = (client: DiscordClient, message: Message) => {
   if (message.type === 'REPLY') {
     return message.channel.messages
       .fetch(message.reference.messageId)
-      .then(_message => _message.reply({ embeds: [embed] }))
+      .then(_message => client.reply(message, { embeds: [embed] }, _message))
   }
-  return message.channel.send({ embeds: [embed] })
+  return client.send(message, { embeds: [embed] })
 }

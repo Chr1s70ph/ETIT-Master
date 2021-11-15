@@ -6,8 +6,7 @@ exports.description = 'pong'
 
 exports.usage = 'ping'
 
-exports.run = async (client: DiscordClient, message: Message) => {
-  await message.channel.send(
-    `🏓Latency is ${Date.now() - message.createdTimestamp}ms. API Latency is ${Math.round(client.ws.ping)}ms`,
-  )
-}
+exports.run = (client: DiscordClient, message: Message) =>
+  client.send(message, {
+    content: `🏓Latency is ${Date.now() - message.createdTimestamp}ms. API Latency is ${Math.round(client.ws.ping)}ms`,
+  })

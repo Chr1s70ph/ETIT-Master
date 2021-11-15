@@ -8,6 +8,5 @@ exports.usage = 'zoom'
 
 exports.aliases = ['loading']
 
-exports.run = async (client: DiscordClient, message: Message) => {
-  await message.channel.send('<a:loading:783688114509578271>')
-}
+exports.run = (client: DiscordClient, message: Message) =>
+  client.send(message, { content: '<a:loading:783688114509578271>' })

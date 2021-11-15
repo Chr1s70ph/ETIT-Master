@@ -51,9 +51,8 @@ exports.run = (client: DiscordClient, message: Message) => {
     if (commandfile === undefined) return
     try {
       message.channel.sendTyping()
-      commandfile.run(client, message, args)
+      commandfile.run(client, message, args)?.then(msg => msg?.delete())
       commandsCounter.inc()
-      setTimeout(() => message.delete(), 500)
       console.log(`${message.author.username} used ${commandName} ${args.length > 0 ? `with arguments: ${args}` : ''}`)
     } catch (error) {
       throw new Error(error)

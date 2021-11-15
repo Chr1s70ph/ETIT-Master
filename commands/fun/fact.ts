@@ -21,7 +21,7 @@ exports.run = (client: DiscordClient, message: Message) => {
     // Choose one of the lines...
     const line = lines[Math.floor(Math.random() * lines.length)]
 
-    message.channel.send({
+    client.send(message, {
       embeds: [
         new MessageEmbed()
           .setTitle('🧠Fact')

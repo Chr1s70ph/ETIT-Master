@@ -7,12 +7,11 @@ exports.description = 'Was ist die Antwort auf alles?'
 
 exports.usage = 'antwortaufalles'
 
-exports.run = async (client: DiscordClient, message: Message) => {
-  await message.reply({
+exports.run = (client: DiscordClient, message: Message) =>
+  client.reply(message, {
     embeds: [
       new MessageEmbed().setDescription(
         'Die Antwort auf die Frage nach dem Leben, dem Universum und dem ganzen Rest ist :four::two:',
       ),
     ],
   })
-}
