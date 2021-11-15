@@ -7,6 +7,6 @@ exports.description = 'pong'
 exports.usage = 'ping'
 
 exports.run = (client: DiscordClient, message: Message) =>
-  client.commandSendPromise(message, {
+  client.send(message, {
     content: `🏓Latency is ${Date.now() - message.createdTimestamp}ms. API Latency is ${Math.round(client.ws.ping)}ms`,
   })

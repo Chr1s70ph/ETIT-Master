@@ -26,7 +26,7 @@ exports.run = async (client: DiscordClient, message: Message) => {
     ?.toString()
     .substring(0, messageUser.premiumSinceTimestamp?.toString().length - 3)
 
-  return client.commandReplyPromise(message, {
+  return client.reply(message, {
     embeds: [
       new MessageEmbed()
         .setAuthor('👤UserProfile')

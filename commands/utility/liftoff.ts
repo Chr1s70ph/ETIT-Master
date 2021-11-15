@@ -7,7 +7,7 @@ exports.description = 'Liftoff celebration'
 exports.usage = 'liftoff'
 
 exports.run = (client: DiscordClient, message: Message) =>
-  client.commandSendPromise(message, {
+  client.send(message, {
     embeds: [
       new MessageEmbed()
         .setTitle('Hurraaa 🚀🚀')

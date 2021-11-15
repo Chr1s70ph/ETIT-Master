@@ -24,5 +24,5 @@ exports.run = (client: DiscordClient, message: Message) => {
       throw new Error(error)
     }
   })
-  return client.commandSendPromise(message, { content: 'Stopping Backup Bot...' })
+  return client.send(message, { content: 'Stopping Backup Bot...' })
 }

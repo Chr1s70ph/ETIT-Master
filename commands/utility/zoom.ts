@@ -9,4 +9,4 @@ exports.usage = 'zoom'
 exports.aliases = ['loading']
 
 exports.run = (client: DiscordClient, message: Message) =>
-  client.commandSendPromise(message, { content: '<a:loading:783688114509578271>' })
+  client.send(message, { content: '<a:loading:783688114509578271>' })

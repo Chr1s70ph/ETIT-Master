@@ -38,5 +38,5 @@ exports.run = (client: DiscordClient, message: Message) => {
       'https://about.gitlab.com/images/press/logo/png/gitlab-icon-rgb.png',
     )
 
-  return client.commandReplyPromise(message, { embeds: [git.setTimestamp()] })
+  return client.reply(message, { embeds: [git.setTimestamp()] })
 }

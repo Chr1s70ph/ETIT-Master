@@ -24,7 +24,7 @@ export class DiscordClient extends Client {
    * @param {MessageOptions} returnData data to be sent back as answer
    * @returns {Message} original command message
    */
-  public commandSendPromise(message: Message, returnData: MessageOptions) {
+  public send(message: Message, returnData: MessageOptions) {
     return new Promise<Message>((resolve, reject) => {
       message.channel.send(returnData).then(
         () => {
@@ -43,7 +43,7 @@ export class DiscordClient extends Client {
    * @param {Message} [optionalReplyMessage] to reply to, instead of command message
    * @returns {Message} original command message
    */
-  public commandReplyPromise(message: Message, returnData: MessageOptions, optionalReplyMessage?: Message) {
+  public reply(message: Message, returnData: MessageOptions, optionalReplyMessage?: Message) {
     const replyMessage = optionalReplyMessage ?? message
     return new Promise<Message>((resolve, reject) => {
       replyMessage.reply(returnData).then(

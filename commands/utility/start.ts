@@ -33,7 +33,7 @@ exports.usage = `start \`${Object.keys(defaultApplications)}\``
 exports.run = async (client: DiscordClient, message: Message, args: any, applications = defaultApplications) => {
   // Throw an error, when user not in voiceChannel
   if (!message.member.voice.channel) {
-    return client.commandReplyPromise(message, {
+    return client.reply(message, {
       embeds: [
         new MessageEmbed().setDescription(
           `⚠️ You are not in a Voice-Channel.
@@ -82,12 +82,12 @@ exports.run = async (client: DiscordClient, message: Message, args: any, applica
       throw new Error(`An error occured while starting ${option} !${err}`)
     }
   } else {
-    return client.commandReplyPromise(message, {
+    return client.reply(message, {
       embeds: [new MessageEmbed().setDescription(`⚠️ Invalid option!`)],
     })
   }
 
-  return client.commandReplyPromise(message, {
+  return client.reply(message, {
     content: returnData.code,
     embeds: [
       new MessageEmbed().setDescription(

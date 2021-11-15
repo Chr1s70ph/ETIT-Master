@@ -11,7 +11,7 @@ exports.usage = 'restart'
 
 exports.run = (client: DiscordClient, message: Message) => {
   if (!Object.values(client.config.ids.acceptedAdmins).includes(message.author.id)) {
-    return client.commandReplyPromise(message, { content: 'You do not have the permissions to perform that command.' })
+    return client.reply(message, { content: 'You do not have the permissions to perform that command.' })
   }
 
   pm2.connect(err => {
@@ -24,5 +24,5 @@ exports.run = (client: DiscordClient, message: Message) => {
       throw new Error(error)
     }
   })
-  return client.commandSendPromise(message, { content: '🤖Restarting...' })
+  return client.send(message, { content: '🤖Restarting...' })
 }

@@ -24,7 +24,7 @@ exports.run = (client: DiscordClient, message: Message, args: string[]) => {
   }
 
   if (searchQuery.length === 0) {
-    return client.commandSendPromise(message, { content: 'Bitte gebe einen suchwort an!' })
+    return client.send(message, { content: 'Bitte gebe einen suchwort an!' })
   }
 
   const Tenor = require('tenorjs').client(client.config.tenor)
@@ -32,13 +32,13 @@ exports.run = (client: DiscordClient, message: Message, args: string[]) => {
   return Tenor.Search.Random(searchQuery, '1').then(Results => {
     if (Results.length === 0) {
       embed.setDescription(`<@${message.author.id}> Es konnten keine Gifs gefunden werden für: '${searchQuery}'`)
-      return client.commandSendPromise(message, { embeds: [embed] })
+      return client.send(message, { embeds: [embed] })
     }
     Results.forEach(Post => {
       const gifUrl = Post.media.find(element => Object.prototype.hasOwnProperty.call(element, 'gif')).gif.url
       embed.setImage(gifUrl)
     })
-    return client.commandSendPromise(message, {
+    return client.send(message, {
       content: userPing,
       embeds: [embed],
     })

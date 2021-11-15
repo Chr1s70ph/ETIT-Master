@@ -8,7 +8,7 @@ exports.description = 'Prüft ob der Bot online und funktionstüchtig ist.'
 exports.usage = 'test'
 
 exports.run = (client: DiscordClient, message: Message) =>
-  client.commandReplyPromise(message, {
+  client.reply(message, {
     embeds: [
       new MessageEmbed()
         .setTitle('🌐 This Bot is working as intended!')
