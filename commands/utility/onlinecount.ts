@@ -38,5 +38,5 @@ exports.run = async (client: DiscordClient, message: Message) => {
     },
   )
 
-  await message.channel.send({ embeds: [onlineCountEmbed.setTimestamp()] })
+  return client.commandReplyPromise(message, { embeds: [onlineCountEmbed.setTimestamp()] })
 }

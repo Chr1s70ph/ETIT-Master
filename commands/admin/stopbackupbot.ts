@@ -1,6 +1,7 @@
 import { Message } from 'discord.js'
-import { connect, stop } from 'pm2'
 import { DiscordClient } from '../../types/customTypes'
+// Const required, otherwise pm2 throws error
+const pm2 = require('pm2')
 
 exports.name = 'stopbackupbot'
 
@@ -13,13 +14,15 @@ exports.run = (client: DiscordClient, message: Message) => {
     return message.reply('You do not have the permissions to perform that command.')
   }
 
-  message.channel.send('Stopping Backup Bot...')
-  return connect(err => {
+  pm2.connect(err => {
     if (err) {
-      console.error(err)
-      process.exit(2)
+      throw new Error(err)
     }
-
-    stop('ETIT-Chef', null)
+    try {
+      pm2.stop('ETIT-Chef', null)
+    } catch (error) {
+      throw new Error(error)
+    }
   })
+  return client.commandSendPromise(message, { content: 'Stopping Backup Bot...' })
 }

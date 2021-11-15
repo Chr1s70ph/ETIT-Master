@@ -1,6 +1,8 @@
 import { Message } from 'discord.js'
-import { connect, restart } from 'pm2'
 import { DiscordClient } from '../../types/customTypes'
+// Const required, otherwise pm2 throws error
+const pm2 = require('pm2')
+
 exports.name = 'restart'
 
 exports.description = ''
@@ -9,16 +11,18 @@ exports.usage = 'restart'
 
 exports.run = (client: DiscordClient, message: Message) => {
   if (!Object.values(client.config.ids.acceptedAdmins).includes(message.author.id)) {
-    return message.reply('You do not have the permissions to perform that command.')
+    return client.commandReplyPromise(message, { content: 'You do not have the permissions to perform that command.' })
   }
 
-  message.channel.send('🤖Restarting...')
-  return connect(err => {
+  pm2.connect(err => {
     if (err) {
-      console.error(err)
-      process.exit(2)
+      throw new Error(err)
     }
-
-    restart(process.env.pm_id, null)
+    try {
+      pm2.restart(process.env.pm_id, null)
+    } catch (error) {
+      throw new Error(error)
+    }
   })
+  return client.commandSendPromise(message, { content: '🤖Restarting...' })
 }

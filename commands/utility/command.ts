@@ -25,7 +25,7 @@ exports.run = (client: DiscordClient, message: Message, args: any): any => {
     .setThumbnail(client.user.avatarURL())
 
   if (args.length === 0) {
-    return message.channel.send('Please provide arguments!')
+    return client.commandSendPromise(message, { content: 'Please provide arguments!' })
   }
 
   for (const [key, value] of client.commands.entries()) {
@@ -47,11 +47,11 @@ exports.run = (client: DiscordClient, message: Message, args: any): any => {
           inline: false,
         },
       )
-      return message.channel.send({ embeds: [commandHelpEmbed] })
+      return client.commandReplyPromise(message, { embeds: [commandHelpEmbed] })
     }
   }
 
-  return message.channel.send('Bitte verwende einen Commandnamen.')
+  return client.commandSendPromise(message, { content: 'Bitte verwende einen Commandnamen.' })
 }
 
 /**

@@ -25,7 +25,7 @@ exports.run = async (client: DiscordClient, message: Message) => {
   uptime.minutes = Math.floor(uptime.seconds / 60)
   uptime.seconds -= uptime.minutes * 60
 
-  await message.reply({
+  return client.commandReplyPromise(message, {
     embeds: [
       new MessageEmbed()
         .setTitle('⏰Uptime')
