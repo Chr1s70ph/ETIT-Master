@@ -21,8 +21,10 @@ const defaultApplications = {
   doodlecrew: '878067389634314250',
   awkword: '879863881349087252',
   spellcast: '852509694341283871',
+  checkers: '832013003968348200',
+  puttparty: '763133495793942528',
+  sketchyartist: '879864070101172255',
 }
-
 exports.name = 'start'
 
 exports.description = `Trickst die API aus um Discord-Spiele freizuschalten. 
