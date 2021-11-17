@@ -8,11 +8,15 @@ import { RecurrenceRule, scheduleJob } from 'node-schedule'
 import { DiscordClient } from '../types/customTypes'
 
 const { DateTime } = require('luxon')
-const cron_to_fetch_new_notifications = '0 0 * * *'
+const CRON_FETCH_EVENTS = '0 0 * * *'
+const MS_PER_MINUTE = 60000
+// Both Time consts are minutes
+const SEND_NOTIFICATION_OFFSET = 20
+const DELETE_NOTIFICATIONS_OFFSET = 90
 
 exports.run = async (client: DiscordClient) => {
   await fetchAndSend(client)
-  scheduleJob(cron_to_fetch_new_notifications, async () => {
+  scheduleJob(CRON_FETCH_EVENTS, async () => {
     await fetchAndSend(client)
     updatedCalendarsNotifications(client)
   })
@@ -202,9 +206,6 @@ function addEntryToWeeksEvents(
 }
 
 function filterToadaysEvents(client: DiscordClient, today: Date, thisWeeksEvents: object) {
-  const MS_PER_MINUTE = 60000
-  const EVENT_NOTIFICATION_OFFSET_MINUTES = 20
-
   for (const entry in thisWeeksEvents) {
     if (thisWeeksEvents[entry].day === today.getDay().toString()) {
       const event = thisWeeksEvents[entry]
@@ -217,21 +218,13 @@ function filterToadaysEvents(client: DiscordClient, today: Date, thisWeeksEvents
 
       const link = extractZoomLinks(event.description)
 
-      const earlyEventStart = new Date(event.start - EVENT_NOTIFICATION_OFFSET_MINUTES * MS_PER_MINUTE)
+      const earlyEventStart = new Date(event.start - SEND_NOTIFICATION_OFFSET * MS_PER_MINUTE)
 
       const recurrenceRule = dateToRecurrenceRule(earlyEventStart, today)
 
       let role = findRole(subject, client)
 
-      const embed = dynamicEmbed(
-        client,
-        role,
-        subject,
-        professor,
-        EVENT_NOTIFICATION_OFFSET_MINUTES,
-        link,
-        event.location,
-      )
+      const embed = dynamicEmbed(client, role, subject, professor, SEND_NOTIFICATION_OFFSET, link, event.location)
 
       let channel = findChannel(subject, client)
 
@@ -440,7 +433,7 @@ function createCron(
         } catch (error) {
           console.log(`There was a problem deleting the notification in ${channelName}\n${error}`)
         }
-      }, 5400000)
+      }, DELETE_NOTIFICATIONS_OFFSET * MS_PER_MINUTE)
     })
   })
 }
