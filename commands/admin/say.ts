@@ -22,9 +22,7 @@ exports.run = (client: DiscordClient, message: Message) => {
   embed.setImage(messageAttachment)
 
   if (message.type === 'REPLY') {
-    return message.channel.messages
-      .fetch(message.reference.messageId)
-      .then(_message => client.reply(message, { embeds: [embed] }, _message))
+    return client.reply(message, { embeds: [embed] })
   }
   return client.send(message, { embeds: [embed] })
 }

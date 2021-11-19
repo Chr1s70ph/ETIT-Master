@@ -43,10 +43,25 @@ export class DiscordClient extends Client {
    * @param {Message} [optionalReplyMessage] to reply to, instead of command message
    * @returns {Message} original command message
    */
-  public reply(message: Message, returnData: MessageOptions, optionalReplyMessage?: Message) {
-    const replyMessage = optionalReplyMessage ?? message
+  public reply(message: Message, returnData: MessageOptions) {
     return new Promise<Message>((resolve, reject) => {
-      replyMessage.reply(returnData).then(
+      if (message.type === 'REPLY') {
+        return message.channel.messages
+          .fetch(message.reference.messageId)
+          .then(_message => {
+            _message.reply(returnData)
+            return message
+          })
+          .then(
+            () => {
+              resolve(message)
+            },
+            error => {
+              reject(error)
+            },
+          )
+      }
+      return message.reply(returnData).then(
         () => {
           resolve(message)
         },
