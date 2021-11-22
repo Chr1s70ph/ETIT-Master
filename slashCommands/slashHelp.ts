@@ -8,6 +8,7 @@ exports.run = async client => {
   await client.api.applications(client.user.id).commands.post({
     data: {
       name: 'help',
+      type: 1,
       description: 'hilfe ist hier',
     },
   })

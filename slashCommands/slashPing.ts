@@ -5,6 +5,7 @@ exports.run = async (client: any) => {
     .commands.post({
       data: {
         name: 'ping',
+        type: 1,
         description: 'Prüft, ob der Bot ordnungsgemäß antwortet',
       },
     })
