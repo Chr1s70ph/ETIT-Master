@@ -49,6 +49,7 @@ exports.run = async client => {
       embeds: [
         new MessageEmbed().setTitle('Vorschlag angekommen!').setDescription('Vielen Dank für deinen Vorschlag!'),
       ],
+      ephemeral: true,
     })
   })
 }
