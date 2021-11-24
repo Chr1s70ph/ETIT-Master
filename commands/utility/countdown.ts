@@ -16,7 +16,10 @@ exports.run = async (client: DiscordClient, message: Message) => {
     .reply({
       embeds: [msgEmbed.setDescription(`🚀10🚀`)],
     })
-    .then(() => message.delete())
+    .then(_msg => {
+      message.delete()
+      return _msg
+    })
   // Counts only 8, 6, 4, 3, 2, 1, 0 and skips 9, 7, 5 due to API limits
   for (let i = 9; i >= 0; i--) {
     if (i > 3) {
