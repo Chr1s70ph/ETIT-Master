@@ -51,7 +51,7 @@ function updatedCalendarsNotifications(client: DiscordClient) {
   // Create embed for each new fetch
   const updatedCalendars = new MessageEmbed()
     .setColor('#C7BBED')
-    .setAuthor(client.user.tag, client.user.avatarURL())
+    .setAuthor({ name: client.user.tag, iconURL: client.user.avatarURL() })
     .setDescription(`**Kalender nach Events durchgesucht**\`\`\`${markdownType}\n${calendars} \`\`\``)
   // Send notification what calendars have been queried for todays events
   const channel = client.channels.cache.find(
@@ -312,13 +312,7 @@ function dynamicEmbed(
   try {
     embedDynamic
       .setColor(roleColor)
-      .setAuthor(
-        `${courseType}s Reminder`,
-        client.guilds
-          .resolve(client.config.ids.serverID)
-          .members.resolve(client.config.ids.userID.botUserID)
-          .user.avatarURL(),
-      )
+      .setAuthor({ name: `${courseType}s Reminder`, iconURL: client.user.avatarURL() })
       .setTitle(`${subject} Reminder`)
       .setDescription(`Die ${courseType} fängt in ${lessonsOffset} Minuten an`)
       .setThumbnail('https://pics.freeicons.io/uploads/icons/png/6029094171580282643-512.png')

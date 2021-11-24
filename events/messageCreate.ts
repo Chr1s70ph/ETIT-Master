@@ -26,7 +26,7 @@ exports.run = (client: DiscordClient, message: Message) => {
             ? `${`\n${message.content ? 'and' : 'Sent'} a sticker: + **`}${messagePayload.sticker.name}**`
             : ''),
       )
-      .setAuthor(message.author.tag, message.author.avatarURL())
+      .setAuthor({ name: message.author.tag, iconURL: message.author.avatarURL() })
       .setImage(messagePayload.attachments)
 
     try {

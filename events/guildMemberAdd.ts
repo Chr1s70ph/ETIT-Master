@@ -13,7 +13,7 @@ exports.run = (client: DiscordClient, member: GuildMember) => {
   const welcomeMessage = new MessageEmbed()
     .setTitle(`🗲 Willkommen auf dem ETIT-KIT Server ${member.user.username} 🗲`)
     .setColor('#FFDA00')
-    .setAuthor(client.user.tag, member.guild.iconURL())
+    .setAuthor({ name: client.user.tag, iconURL: member.guild.iconURL() })
     .setThumbnail(client.user.avatarURL())
     .setDescription(`Wir hoffen, dass der Server dir gefällt, und dir im Studium weiterhelfen kann.
 		In <#830837597587767306> kannst du deinen Studiengang auswählen.

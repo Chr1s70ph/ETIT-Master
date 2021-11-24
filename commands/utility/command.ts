@@ -21,7 +21,7 @@ exports.aliases = ['commandinfo']
 exports.run = (client: DiscordClient, message: Message, args: any): any => {
   const commandHelpEmbed = new MessageEmbed()
     .setColor('#7289ea')
-    .setAuthor('Befehlshilfe', 'https://upload.wikimedia.org/wikipedia/commons/f/f6/Lol_question_mark.png')
+    .setAuthor({ name: 'Befehlshilfe', iconURL: 'https://bit.ly/30ZO6jh' })
     .setThumbnail(client.user.avatarURL())
 
   if (args.length === 0) {

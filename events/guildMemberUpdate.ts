@@ -39,7 +39,7 @@ exports.run = (client: DiscordClient, oldMember: GuildMember, newMember: GuildMe
       const ophaseInfo = new MessageEmbed()
         .setTitle(`🗲 Personalisierung 🗲`)
         .setColor('#FFDA00')
-        .setAuthor(client.user.tag, newMember.guild.iconURL())
+        .setAuthor({ name: client.user.tag, iconURL: newMember.guild.iconURL() })
         .setThumbnail(client.user.avatarURL())
         .setDescription(
           `Meine Spione haben mir erzählt, dass du \`${memberCourseOfStudies}\` bist.

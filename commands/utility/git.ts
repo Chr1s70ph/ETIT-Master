@@ -13,7 +13,7 @@ exports.usage = 'git'
 exports.run = (client: DiscordClient, message: Message) => {
   const git = new MessageEmbed()
     .setColor('#ffa500')
-    .setAuthor(client.user.tag, 'https://git-scm.com/images/logos/downloads/Git-Icon-1788C.png')
+    .setAuthor({ name: client.user.tag, iconURL: 'https://git-scm.com/images/logos/downloads/Git-Icon-1788C.png' })
     .setThumbnail('https://git-scm.com/images/logos/downloads/Git-Icon-1788C.png')
     .setTitle('[🌐] GIT Wiki')
     .setURL('https://git-scm.com/book/en/v2')

@@ -35,11 +35,7 @@ exports.run = async client => {
   async function getCommands() {
     const commandsEmbed = new discord.MessageEmbed()
       .setColor('#ffa500')
-      .setAuthor(
-        'Help',
-        // eslint-disable-next-line max-len
-        'https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/160/google/56/white-question-mark-ornament_2754.png',
-      )
+      .setAuthor({ name: 'Help', iconURL: 'https://bit.ly/3CJU0lf' })
       .setTimestamp()
       .setFooter(
         `[ID] ${config.ids.userID.botUserID} \nstarted`,

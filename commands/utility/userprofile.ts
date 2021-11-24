@@ -29,7 +29,7 @@ exports.run = async (client: DiscordClient, message: Message) => {
   return client.reply(message, {
     embeds: [
       new MessageEmbed()
-        .setAuthor('👤UserProfile')
+        .setAuthor({ name: '👤UserProfile' })
         .setTitle(forceFetchedUser.tag)
         .setColor(messageUser.displayColor)
         .setThumbnail(messageUser.displayAvatarURL({ dynamic: true }))
