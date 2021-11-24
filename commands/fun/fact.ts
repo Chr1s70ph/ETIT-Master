@@ -1,4 +1,4 @@
-import { readFile } from 'fs'
+import { readFileSync } from 'fs'
 import { Message, MessageEmbed } from 'discord.js'
 import { DiscordClient } from '../../types/customTypes'
 
@@ -11,23 +11,14 @@ exports.description = 'Willst du Fakten? Dann bist du hier genau richtig.'
 exports.usage = 'fact'
 
 exports.run = (client: DiscordClient, message: Message) => {
-  readFile(FACTS_FILE, 'utf-8', (err, data) => {
-    if (err) {
-      throw err
-    }
-    data += ''
-    const lines = data.split('\n')
-
-    // Choose one of the lines...
-    const line = lines[Math.floor(Math.random() * lines.length)]
-
-    client.send(message, {
-      embeds: [
-        new MessageEmbed()
-          .setTitle('🧠Fact')
-          .setDescription(line)
-          .setFooter(message.author.tag, message.author.avatarURL({ dynamic: true })),
-      ],
-    })
+  const DATA = readFileSync(FACTS_FILE, 'utf-8').split('\n')
+  const fact = DATA[Math.floor(Math.random() * DATA.length)]
+  return client.send(message, {
+    embeds: [
+      new MessageEmbed()
+        .setTitle('🧠Fact')
+        .setDescription(fact)
+        .setFooter(message.author.tag, message.author.avatarURL({ dynamic: true })),
+    ],
   })
 }
