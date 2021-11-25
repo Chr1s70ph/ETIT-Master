@@ -13,29 +13,6 @@ exports.run = async client => {
   })
 }
 
-async function respond(interaction, COMMAND: string, client: any): Promise<void> {
-  console.log(`User ${interaction.user.username} issued /${COMMAND}`)
-
-  const options = {
-    token: client.config.github_token,
-    body: interaction.options.getString('vorschlag'),
-  }
-
-  createIssue(
-    REPOSITORY,
-    `${interaction.user.username}'s Vorschlag${
-      interaction.options.getString('titel') ? `: ${interaction.options.getString('titel')}` : ''
-    }`,
-    options,
-    clbk,
-  )
-
-  await interaction.reply({
-    embeds: [new MessageEmbed().setTitle('Vorschlag angekommen!').setDescription('Vielen Dank für deinen Vorschlag!')],
-    ephemeral: true,
-  })
-}
-
 async function postSlashCommand(client: any): Promise<void> {
   await client.api.applications(client.user.id).commands.post({
     data: {
@@ -56,6 +33,29 @@ async function postSlashCommand(client: any): Promise<void> {
         },
       ],
     },
+  })
+}
+
+async function respond(interaction, COMMAND: string, client: any): Promise<void> {
+  console.log(`User ${interaction.user.username} issued /${COMMAND}`)
+
+  const options = {
+    token: client.config.github_token,
+    body: interaction.options.getString('vorschlag'),
+  }
+
+  createIssue(
+    REPOSITORY,
+    `${interaction.user.username}'s Vorschlag${
+      interaction.options.getString('titel') ? `: ${interaction.options.getString('titel')}` : ''
+    }`,
+    options,
+    clbk,
+  )
+
+  await interaction.reply({
+    embeds: [new MessageEmbed().setTitle('Vorschlag angekommen!').setDescription('Vielen Dank für deinen Vorschlag!')],
+    ephemeral: true,
   })
 }
 
