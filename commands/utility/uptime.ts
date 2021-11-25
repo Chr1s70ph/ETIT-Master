@@ -8,6 +8,22 @@ exports.description = 'Wie lange ist der Bot schon online'
 exports.usage = 'uptime'
 
 exports.run = (client: DiscordClient, message: Message) => {
+  const uptime = getUptime()
+
+  return client.reply(message, {
+    embeds: [
+      new MessageEmbed()
+        .setTitle('⏰Uptime')
+        .addField(
+          'Time since last restart:',
+          `${uptime.days} Days, ${uptime.hours} Hours, ${uptime.minutes} Minutes, ${uptime.seconds} Seconds`,
+        )
+        .setColor('#FF4040'),
+    ],
+  })
+}
+
+function getUptime(): { days: any; hours: any; minutes: any; seconds: any } {
   const uptime = {
     days: null,
     hours: null,
@@ -24,16 +40,5 @@ exports.run = (client: DiscordClient, message: Message) => {
   uptime.seconds -= uptime.hours * 3600
   uptime.minutes = Math.floor(uptime.seconds / 60)
   uptime.seconds -= uptime.minutes * 60
-
-  return client.reply(message, {
-    embeds: [
-      new MessageEmbed()
-        .setTitle('⏰Uptime')
-        .addField(
-          'Time since last restart:',
-          `${uptime.days} Days, ${uptime.hours} Hours, ${uptime.minutes} Minutes, ${uptime.seconds} Seconds`,
-        )
-        .setColor('#FF4040'),
-    ],
-  })
+  return uptime
 }
