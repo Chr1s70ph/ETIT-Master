@@ -44,7 +44,7 @@ function dmForwarding(message: Message<boolean>, client: DiscordClient): void {
   }
 }
 
-function userMessageEmbed(message: Message<boolean>, messagePayload) {
+function userMessageEmbed(message: Message<boolean>, messagePayload): MessageEmbed {
   return new MessageEmbed()
     .setDescription(
       message.content +
