@@ -4,36 +4,14 @@ import { GuildMember } from 'discord.js/typings/index.js'
 import { DiscordClient } from '../types/customTypes'
 
 exports.run = (client: DiscordClient, oldMember: GuildMember, newMember: GuildMember) => {
-  const oldRoleIDs = []
-  oldMember.roles.cache.each(role => {
-    oldRoleIDs.push(role.id)
-  })
-  const newRoleIDs = []
-  newMember.roles.cache.each(role => {
-    newRoleIDs.push(role.id)
-  })
+  const { newRoleIDs, oldRoleIDs } = getRoleIDs(oldMember, newMember)
   // Check if the newRoleIDs had one more role, which means it added a new role
   if (newRoleIDs.length > oldRoleIDs.length) {
-    const onlyRole = newRoleIDs.filter(filterOutOld)
-    const IDNum = onlyRole[0]
-    const memberCourseOfStudies = newMember.roles.cache.has(client.config.ids.roleIDs['ETIT Bachelorstudent'])
-      ? 'ETIT Bachelorstudent'
-      : newMember.roles.cache.has(client.config.ids.roleIDs['MIT Bachelorstudent'])
-      ? 'MIT Bachelorstudent'
-      : undefined
-
-    // Get right classification channel based on role
-    const memberClassificationchannel = newMember.roles.cache.has(client.config.ids.roleIDs['ETIT Bachelorstudent'])
-      ? client.config.ids.channelIDs.ETITPersonalization
-      : newMember.roles.cache.has(client.config.ids.roleIDs['MIT Bachelorstudent'])
-      ? client.config.ids.channelIDs.MITPersonalization
-      : undefined
-    // Get link to message in memberClassificationchannel
-    const memberClassificationLink = newMember.roles.cache.has(client.config.ids.roleIDs['ETIT Bachelorstudent'])
-      ? client.config.ids.einteilung.ETITersti
-      : newMember.roles.cache.has(client.config.ids.roleIDs['MIT Bachelorstudent'])
-      ? client.config.ids.einteilung.MITersti
-      : undefined
+    const { IDNum, memberCourseOfStudies, memberClassificationchannel, memberClassificationLink } = getUserInfo(
+      newRoleIDs,
+      newMember,
+      client,
+    )
 
     if (IDNum === client.config.ids.roleIDs.Ophase && memberCourseOfStudies !== undefined) {
       const ophaseInfo = new MessageEmbed()
@@ -60,7 +38,47 @@ exports.run = (client: DiscordClient, oldMember: GuildMember, newMember: GuildMe
   }
 }
 
-function filterOutOld(id, oldRoleIDs) {
+function getRoleIDs(oldMember: GuildMember, newMember: GuildMember): { newRoleIDs: any[]; oldRoleIDs: any[] } {
+  const oldRoleIDs = []
+  oldMember.roles.cache.each(role => {
+    oldRoleIDs.push(role.id)
+  })
+  const newRoleIDs = []
+  newMember.roles.cache.each(role => {
+    newRoleIDs.push(role.id)
+  })
+  return { newRoleIDs, oldRoleIDs }
+}
+
+function getUserInfo(
+  newRoleIDs: any[],
+  newMember: GuildMember,
+  client: DiscordClient,
+): { IDNum: any; memberCourseOfStudies: string; memberClassificationchannel: any; memberClassificationLink: any } {
+  const onlyRole = newRoleIDs.filter(filterOutOld)
+  const IDNum = onlyRole[0]
+  const memberCourseOfStudies = newMember.roles.cache.has(client.config.ids.roleIDs['ETIT Bachelorstudent'])
+    ? 'ETIT Bachelorstudent'
+    : newMember.roles.cache.has(client.config.ids.roleIDs['MIT Bachelorstudent'])
+    ? 'MIT Bachelorstudent'
+    : undefined
+
+  // Get right classification channel based on role
+  const memberClassificationchannel = newMember.roles.cache.has(client.config.ids.roleIDs['ETIT Bachelorstudent'])
+    ? client.config.ids.channelIDs.ETITPersonalization
+    : newMember.roles.cache.has(client.config.ids.roleIDs['MIT Bachelorstudent'])
+    ? client.config.ids.channelIDs.MITPersonalization
+    : undefined
+  // Get link to message in memberClassificationchannel
+  const memberClassificationLink = newMember.roles.cache.has(client.config.ids.roleIDs['ETIT Bachelorstudent'])
+    ? client.config.ids.einteilung.ETITersti
+    : newMember.roles.cache.has(client.config.ids.roleIDs['MIT Bachelorstudent'])
+    ? client.config.ids.einteilung.MITersti
+    : undefined
+  return { IDNum, memberCourseOfStudies, memberClassificationchannel, memberClassificationLink }
+}
+
+function filterOutOld(id, oldRoleIDs): boolean {
   for (let i = 0; i < oldRoleIDs.length; i++) {
     if (id === oldRoleIDs[i]) {
       return false
