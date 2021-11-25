@@ -10,6 +10,10 @@ exports.run = (client: DiscordClient, member: GuildMember) => {
   channel.setName(`👥 ${memberCount.toLocaleString()} Mitglieder`)
   console.log(`${member.user.username} joined. Updated membercount to ${memberCount.toLocaleString()}`)
 
+  sendWelcomeMessage(member, client)
+}
+
+function sendWelcomeMessage(member: GuildMember, client: DiscordClient): void {
   const welcomeMessage = new MessageEmbed()
     .setTitle(`🗲 Willkommen auf dem ETIT-KIT Server ${member.user.username} 🗲`)
     .setColor('#FFDA00')

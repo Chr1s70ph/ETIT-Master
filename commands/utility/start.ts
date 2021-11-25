@@ -52,37 +52,7 @@ exports.run = async (client: DiscordClient, message: Message, args: any, applica
   const option = args[0]
   const voiceChannelId = message.member.voice.channel.id
   if (option && client.applications[option.toLowerCase()]) {
-    const applicationID = client.applications[option.toLowerCase()]
-    try {
-      // Send POST to the discordAPI to get an invite with a discord-together application
-      await fetch(`https://discord.com/api/v9/channels/${voiceChannelId}/invites`, {
-        method: 'POST',
-        body: JSON.stringify({
-          max_age: 86400,
-          max_uses: 0,
-          target_application_id: applicationID,
-          target_type: 2,
-          temporary: false,
-          validate: null,
-        }),
-        headers: {
-          Authorization: `Bot ${client.token}`,
-          'Content-Type': 'application/json',
-        },
-      })
-        .then(res => res.json())
-        .then(invite => {
-          // Error handling
-          if (invite.error || !invite.code) throw new Error('An error occured while retrieving data !')
-          if (invite.code === 50013 || invite.code === '50013') {
-            throw new Error('Your bot lacks permissions to perform that action')
-          }
-          if (invite.code === 50035 || invite.code === '50035') throw new Error('Error creating the application')
-          returnData.code = `https://discord.com/invite/${invite.code}`
-        })
-    } catch (err) {
-      throw new Error(`An error occured while starting ${option} !${err}`)
-    }
+    await createInvite(client, option, voiceChannelId, returnData)
   } else {
     return client.reply(message, {
       embeds: [new MessageEmbed().setDescription(`⚠️ Invalid option!`)],
@@ -97,4 +67,47 @@ exports.run = async (client: DiscordClient, message: Message, args: any, applica
       ),
     ],
   })
+}
+
+async function createInvite(
+  client: DiscordClient,
+  option: any,
+  voiceChannelId: string,
+  returnData: { code: string },
+): Promise<void> {
+  const applicationID = client.applications[option.toLowerCase()]
+  try {
+    // Send POST to the discordAPI to get an invite with a discord-together application
+    await fetch(`https://discord.com/api/v9/channels/${voiceChannelId}/invites`, {
+      method: 'POST',
+      body: JSON.stringify({
+        max_age: 86400,
+        max_uses: 0,
+        target_application_id: applicationID,
+        target_type: 2,
+        temporary: false,
+        validate: null,
+      }),
+      headers: {
+        Authorization: `Bot ${client.token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.json())
+      .then(invite => {
+        // Error handling
+        handleInviteErrors(invite, returnData)
+      })
+  } catch (err) {
+    throw new Error(`An error occured while starting ${option} !${err}`)
+  }
+}
+
+function handleInviteErrors(invite: any, returnData: { code: string }): void {
+  if (invite.error || !invite.code) throw new Error('An error occured while retrieving data !')
+  if (invite.code === 50013 || invite.code === '50013') {
+    throw new Error('Your bot lacks permissions to perform that action')
+  }
+  if (invite.code === 50035 || invite.code === '50035') throw new Error('Error creating the application')
+  returnData.code = `https://discord.com/invite/${invite.code}`
 }

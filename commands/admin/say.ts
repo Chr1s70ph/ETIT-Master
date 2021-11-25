@@ -12,6 +12,15 @@ exports.run = (client: DiscordClient, message: Message) => {
     return client.reply(message, { content: 'You do not have the permissions to perform that command.' })
   }
 
+  const embed = createEmbed(message, client)
+
+  if (message.type === 'REPLY') {
+    return client.reply(message, { embeds: [embed] })
+  }
+  return client.send(message, { embeds: [embed] })
+}
+
+function createEmbed(message: Message<boolean>, client: DiscordClient): MessageEmbed {
   const messageContent = message.content.substring(message.content.indexOf(' ') + client.config.prefix.length)
 
   const embed = new MessageEmbed()
@@ -20,9 +29,5 @@ exports.run = (client: DiscordClient, message: Message) => {
 
   const messageAttachment = message.attachments.size > 0 ? message.attachments.first().url : null
   embed.setImage(messageAttachment)
-
-  if (message.type === 'REPLY') {
-    return client.reply(message, { embeds: [embed] })
-  }
-  return client.send(message, { embeds: [embed] })
+  return embed
 }

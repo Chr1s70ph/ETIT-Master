@@ -14,17 +14,11 @@ exports.run = async (client: DiscordClient, message: Message) => {
   const user = (
     message.mentions.members.first() !== undefined ? message.mentions.members.first() : message.author
   ) as GuildMember
-  const messageUser = message.guild.members.cache.find(foundUser => foundUser.id === user.id) as GuildMember
-
-  const forceFetchedUser = (await client.users.fetch(messageUser, { force: true })) as User
-
-  const userJoinedTimestamp = messageUser.joinedTimestamp
-    .toString()
-    .substring(0, messageUser.joinedTimestamp.toString().length - 3)
-
-  const userPremiumSinceTimestamp = messageUser.premiumSinceTimestamp
-    ?.toString()
-    .substring(0, messageUser.premiumSinceTimestamp?.toString().length - 3)
+  const { forceFetchedUser, messageUser, userJoinedTimestamp, userPremiumSinceTimestamp } = await getUserInfo(
+    message,
+    user,
+    client,
+  )
 
   return client.reply(message, {
     embeds: [
@@ -43,4 +37,28 @@ exports.run = async (client: DiscordClient, message: Message) => {
         .setFooter(message.author.tag, message.author.avatarURL({ dynamic: true })),
     ],
   })
+}
+
+async function getUserInfo(
+  message: Message<boolean>,
+  user: GuildMember,
+  client: DiscordClient,
+): Promise<{
+  forceFetchedUser: User
+  messageUser: GuildMember
+  userJoinedTimestamp: string
+  userPremiumSinceTimestamp: string
+}> {
+  const messageUser = message.guild.members.cache.find(foundUser => foundUser.id === user.id) as GuildMember
+
+  const forceFetchedUser = (await client.users.fetch(messageUser, { force: true })) as User
+
+  const userJoinedTimestamp = messageUser.joinedTimestamp
+    .toString()
+    .substring(0, messageUser.joinedTimestamp.toString().length - 3)
+
+  const userPremiumSinceTimestamp = messageUser.premiumSinceTimestamp
+    ?.toString()
+    .substring(0, messageUser.premiumSinceTimestamp?.toString().length - 3)
+  return { forceFetchedUser, messageUser, userJoinedTimestamp, userPremiumSinceTimestamp }
 }

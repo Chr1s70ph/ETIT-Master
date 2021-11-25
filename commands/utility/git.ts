@@ -11,7 +11,12 @@ exports.description = 'Link zum KIT Gitlab und zur Repository'
 exports.usage = 'git'
 
 exports.run = (client: DiscordClient, message: Message) => {
-  const git = new MessageEmbed()
+  const gitEmbed = createEmbed(client)
+  return client.reply(message, { embeds: [gitEmbed.setTimestamp()] })
+}
+
+function createEmbed(client: DiscordClient): MessageEmbed {
+  return new MessageEmbed()
     .setColor('#ffa500')
     .setAuthor({ name: client.user.tag, iconURL: 'https://git-scm.com/images/logos/downloads/Git-Icon-1788C.png' })
     .setThumbnail('https://git-scm.com/images/logos/downloads/Git-Icon-1788C.png')
@@ -37,6 +42,4 @@ exports.run = (client: DiscordClient, message: Message) => {
       `[ID] ${client.config.ids.userID.botUserID} \n`,
       'https://about.gitlab.com/images/press/logo/png/gitlab-icon-rgb.png',
     )
-
-  return client.reply(message, { embeds: [git.setTimestamp()] })
 }

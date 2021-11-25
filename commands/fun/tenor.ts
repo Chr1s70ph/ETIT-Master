@@ -10,10 +10,6 @@ exports.usage = `tenor <searchQuery>`
 exports.aliases = ['gif']
 
 exports.run = (client: DiscordClient, message: Message, args: string[]) => {
-  const embed = new MessageEmbed()
-    .setFooter(message.author.tag, message.author.avatarURL({ dynamic: true }))
-    .setColor('RANDOM')
-
   const userPing = args.find(value => MessageMentions.USERS_PATTERN.test(value))
 
   args = removeMatching(args, MessageMentions.USERS_PATTERN)
@@ -27,9 +23,31 @@ exports.run = (client: DiscordClient, message: Message, args: string[]) => {
     return client.send(message, { content: 'Bitte gebe einen suchwort an!' })
   }
 
+  return queryTenorAndReply(client, searchQuery, message, userPing)
+}
+
+// https://stackoverflow.com/a/3661083/10926046
+function removeMatching(originalArray: string[], regex: RegExp): string[] {
+  let j = 0
+  while (j < originalArray.length) {
+    if (regex.test(originalArray[j])) originalArray.slice(j, 1)
+    else j++
+  }
+  return originalArray
+}
+
+function queryTenorAndReply(
+  client: DiscordClient,
+  searchQuery: string,
+  message: Message<boolean>,
+  userPing: string,
+): any {
   const Tenor = require('tenorjs').client(client.config.tenor)
 
   return Tenor.Search.Random(searchQuery, '1').then(Results => {
+    const embed = new MessageEmbed()
+      .setFooter(message.author.tag, message.author.avatarURL({ dynamic: true }))
+      .setColor('RANDOM')
     if (Results.length === 0) {
       embed.setDescription(`<@${message.author.id}> Es konnten keine Gifs gefunden werden für: '${searchQuery}'`)
       return client.send(message, { embeds: [embed] })
@@ -43,14 +61,4 @@ exports.run = (client: DiscordClient, message: Message, args: string[]) => {
       embeds: [embed],
     })
   })
-}
-
-// https://stackoverflow.com/a/3661083/10926046
-function removeMatching(originalArray: string[], regex: RegExp) {
-  let j = 0
-  while (j < originalArray.length) {
-    if (regex.test(originalArray[j])) originalArray.slice(j, 1)
-    else j++
-  }
-  return originalArray
 }

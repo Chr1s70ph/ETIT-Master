@@ -31,26 +31,10 @@ exports.run = (client: DiscordClient, message: Message) => {
   messageContent = messageContent.split('.status')[1]
 
   const activityName: string = messageContent.split('-')[0]
-  console.log(presence)
 
   presence.activities[0].name = activityName
 
-  const icon: string = messageContent.split('-')[1]
-  if (icon) {
-    if (icon === 'online') {
-      presence.status = 'online'
-    } else if (icon === 'dnd') {
-      presence.status = 'dnd'
-    } else if (icon === 'idle') {
-      presence.status = 'idle'
-    } else if (icon === 'invisible' || icon === 'offline') {
-      presence.status = 'invisible'
-    } else {
-      message.channel.send('Please enter a valid status type.')
-    }
-  } else {
-    presence.status = 'online'
-  }
+  getIcon(messageContent)
 
   if (presence.activities[0].name === ' ' || presence.activities[0].name === '') {
     const defaultPresence = client.config.presence[0]
@@ -60,7 +44,32 @@ exports.run = (client: DiscordClient, message: Message) => {
   }
 }
 
-function Presence(client: DiscordClient, message: Message, _presence: object) {
+function getIcon(messageContent: string): void {
+  switch (messageContent.split('-')[1]) {
+    case 'online': {
+      presence.status = 'online'
+      break
+    }
+    case 'dnd': {
+      presence.status = 'dnd'
+      break
+    }
+    case 'idle': {
+      presence.status = 'idle'
+      break
+    }
+    case 'invisible' || 'offline': {
+      presence.status = 'invisible'
+      break
+    }
+    default: {
+      presence.status = 'online'
+      break
+    }
+  }
+}
+
+function Presence(client: DiscordClient, message: Message, _presence: object): void {
   client.user.setPresence(_presence)
   message.channel.send('👥Präsenz wurde geupdated!')
 }

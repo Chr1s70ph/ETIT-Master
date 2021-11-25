@@ -11,47 +11,45 @@ exports.example = 'command test'
 
 exports.aliases = ['commandinfo']
 
-/**
- *
- * @param {Object} client discord bot client
- * @param {Object} message message object
- * @param {Array} args arguments of issued command
- * @returns {any} commandHelpEmbed with description, example and name of command
- */
 exports.run = (client: DiscordClient, message: Message, args: any): any => {
-  const commandHelpEmbed = new MessageEmbed()
-    .setColor('#7289ea')
-    .setAuthor({ name: 'Befehlshilfe', iconURL: 'https://bit.ly/30ZO6jh' })
-    .setThumbnail(client.user.avatarURL())
-
   if (args.length === 0) {
     return client.send(message, { content: 'Please provide arguments!' })
   }
 
   for (const [key, value] of client.commands.entries()) {
     if (key === args[0].toLowerCase() || findAliases(value.aliases, args)) {
-      if (value.aliases && value.aliases.length > 0) {
-        addAliasesToEmbed(value.aliases, commandHelpEmbed)
-      }
-
-      commandHelpEmbed.setTitle(`‎${value.name}\n ‎`)
-      commandHelpEmbed.addFields(
-        {
-          name: 'Beschreibung',
-          value: `${value.description}\n‎ ‎`,
-          inline: false,
-        },
-        {
-          name: 'Benutzung:',
-          value: `${client.config.prefix}${value.usage}\n ‎`,
-          inline: false,
-        },
-      )
+      const commandHelpEmbed = createEmbed(value, client)
       return client.reply(message, { embeds: [commandHelpEmbed] })
     }
   }
 
   return client.send(message, { content: 'Bitte verwende einen Commandnamen.' })
+}
+
+function createEmbed(value: any, client: DiscordClient): MessageEmbed {
+  const embed = new MessageEmbed()
+    .setColor('#7289ea')
+    .setAuthor({ name: 'Befehlshilfe', iconURL: 'https://bit.ly/30ZO6jh' })
+    .setThumbnail(client.user.avatarURL())
+
+  if (value.aliases && value.aliases.length > 0) {
+    addAliasesToEmbed(value.aliases, embed)
+  }
+
+  embed.setTitle(`‎${value.name}\n ‎`)
+  embed.addFields(
+    {
+      name: 'Beschreibung',
+      value: `${value.description}\n‎ ‎`,
+      inline: false,
+    },
+    {
+      name: 'Benutzung:',
+      value: `${client.config.prefix}${value.usage}\n ‎`,
+      inline: false,
+    },
+  )
+  return embed
 }
 
 /**

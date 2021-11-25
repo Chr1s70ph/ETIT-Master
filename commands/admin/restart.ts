@@ -14,6 +14,11 @@ exports.run = (client: DiscordClient, message: Message) => {
     return client.reply(message, { content: 'You do not have the permissions to perform that command.' })
   }
 
+  pm2Handle()
+  return client.send(message, { content: '🤖Restarting...' })
+}
+
+function pm2Handle(): void {
   pm2.connect(err => {
     if (err) {
       throw new Error(err)
@@ -24,5 +29,4 @@ exports.run = (client: DiscordClient, message: Message) => {
       throw new Error(error)
     }
   })
-  return client.send(message, { content: '🤖Restarting...' })
 }
