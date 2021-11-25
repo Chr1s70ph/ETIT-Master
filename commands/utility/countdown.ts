@@ -21,6 +21,10 @@ exports.run = async (client: DiscordClient, message: Message) => {
       return _msg
     })
   // Counts only 8, 6, 4, 3, 2, 1, 0 and skips 9, 7, 5 due to API limits
+  editEmbed(msg, msgEmbed)
+}
+
+function editEmbed(msg: Message<boolean>, msgEmbed: MessageEmbed) {
   for (let i = 9; i >= 0; i--) {
     if (i > 3) {
       if (i % 2 === 0) {
