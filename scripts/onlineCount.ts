@@ -9,6 +9,13 @@ exports.run = async (client: DiscordClient) => {
     client.config.ids.channelIDs.dev.onlineCounter,
   )
 
+  await setOnlineCount(client, onlineCounterChannel)
+}
+
+async function setOnlineCount(
+  client: DiscordClient,
+  onlineCounterChannel: GuildChannel | ThreadChannel,
+): Promise<void> {
   await scheduleJob(online_refresh_timer, async () => {
     const GUILD_MEMBERS = await client.guilds.cache
       .get(client.config.ids.serverID)
