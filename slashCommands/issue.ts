@@ -13,7 +13,7 @@ exports.run = async client => {
   })
 }
 
-async function respond(interaction, COMMAND: string, client: any) {
+async function respond(interaction, COMMAND: string, client: any): Promise<void> {
   console.log(`User ${interaction.user.username} issued /${COMMAND}`)
 
   const options = {
@@ -36,7 +36,7 @@ async function respond(interaction, COMMAND: string, client: any) {
   })
 }
 
-async function postSlashCommand(client: any) {
+async function postSlashCommand(client: any): Promise<void> {
   await client.api.applications(client.user.id).commands.post({
     data: {
       name: 'vorschlag',
@@ -59,7 +59,7 @@ async function postSlashCommand(client: any) {
   })
 }
 
-function clbk(error: Error, issue: object, info) {
+function clbk(error: Error, issue: object, info): void {
   if (info) {
     console.error('Limit: %d', info.limit)
     console.error('Remaining: %d', info.remaining)
