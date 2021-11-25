@@ -11,7 +11,7 @@ exports.run = async (client: any) => {
   })
 }
 
-async function postSlashCommand(client: any) {
+async function postSlashCommand(client: any): Promise<void> {
   await client.api.applications(client.user.id).commands.post({
     data: {
       name: 'ping',
@@ -20,7 +20,7 @@ async function postSlashCommand(client: any) {
   })
 }
 
-async function respond(client: any, interaction: any) {
+async function respond(client: any, interaction: any): Promise<void> {
   await client.api.interactions(interaction.id, interaction.token).callback.post({
     data: {
       type: 4,
