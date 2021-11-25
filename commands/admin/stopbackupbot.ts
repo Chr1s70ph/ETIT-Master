@@ -11,7 +11,7 @@ exports.usage = 'stopbackupbot'
 
 exports.run = (client: DiscordClient, message: Message) => {
   if (!Object.values(client.config.ids.acceptedAdmins).includes(message.author.id)) {
-    return message.reply('You do not have the permissions to perform that command.')
+    return client.reply(message, { content: 'You do not have the permissions to perform that command.' })
   }
 
   pm2Handle()
