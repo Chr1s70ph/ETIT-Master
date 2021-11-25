@@ -8,6 +8,15 @@ exports.run = async (client: DiscordClient) => {
   const maxNumberOfPresence = Object.keys(presenceVariants).length
   const minNumberOfPresence = 0
 
+  await updatePresence(client, maxNumberOfPresence, minNumberOfPresence, presenceVariants)
+}
+
+async function updatePresence(
+  client: DiscordClient,
+  maxNumberOfPresence: number,
+  minNumberOfPresence: number,
+  presenceVariants: any,
+): Promise<void> {
   await scheduleJob(presence_refresh_timer, () => {
     const customPresence = custom_presence.presence
     if (customPresence.activities[0].name !== '') {
