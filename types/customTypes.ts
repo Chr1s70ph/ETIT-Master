@@ -1,9 +1,26 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Client, Message, TextChannel, MessageOptions } from 'discord.js'
+import { Client, Message, TextChannel, MessageOptions, Collection } from 'discord.js'
 
+/**
+ * Extended version of the default {@link Client} with addidtional functions and properties.
+ * @extends { Client}
+ */
 export class DiscordClient extends Client {
-  public commands
-  public config
+  /**
+   * Collection of all commands to use
+   * @type {Collection<string, Command>}
+   */
+  public commands: Collection<string, Command>
+
+  /**
+   * Config file imported into the DiscordClient for global access
+   * @type { [key: string]: any }
+   */
+  public config: { [key: string]: any }
+
+  /**
+   * Object with ids of discord-games
+   */
   public applications: {
     youtube: string
     youtubedev: string
@@ -18,6 +35,7 @@ export class DiscordClient extends Client {
     awkword: string
     spellcast: string
   }
+
   /**
    * Uses {@link TextChannel.send()} to reply to the issued command.
    * @param {Message} message message to answer to
@@ -36,6 +54,7 @@ export class DiscordClient extends Client {
       )
     })
   }
+
   /**
    * Uses {@link Message.reply()} to reply to the issued command.
    * @param {Message} message message to ryply to
@@ -71,4 +90,17 @@ export class DiscordClient extends Client {
       )
     })
   }
+}
+
+/**
+ * Interface of Command structure
+ * @readonly
+ * @private
+ */
+interface Command extends Object {
+  name: string
+  description: string
+  usage: string
+  example: string
+  aliases: string[]
 }
