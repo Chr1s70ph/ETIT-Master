@@ -19,7 +19,7 @@ async function setOnlineCount(
   await scheduleJob(online_refresh_timer, async () => {
     const GUILD_MEMBERS = await client.guilds.cache
       .get(client.config.ids.serverID)
-      .members.fetch({ withPresences: true })
+      .members.fetch({ withPresences: true, force: true })
 
     const onlineMembers = {
       online: GUILD_MEMBERS.filter(online => online.presence?.status === 'online').size.toLocaleString(),
