@@ -21,8 +21,12 @@ exports.run = async (client: DiscordClient) => {
   })
 }
 
+/**
+ * Fetches and schedules the events of the current day
+ * @param {DiscordClient} client Bot-Client
+ */
 async function fetchAndSend(client: DiscordClient): Promise<void> {
-  const today: Date = localDate()
+  const today: Date = localDate('Berlin/Europe')
 
   for (const entry in client.config.calendars) {
     const icalLink = client.config.calendars[entry]
@@ -33,9 +37,14 @@ async function fetchAndSend(client: DiscordClient): Promise<void> {
   }
 }
 
-function localDate(): Date {
+/**
+ * Helperfunction to get current Date
+ * @param {string} Timezone to get the Date from
+ * @returns {Date} Current Date specified with {@link Timezone}
+ */
+function localDate(Timezone: string): Date {
   const tempToday = DateTime.local().toString()
-  tempToday.toLocaleString('en-US', { timezone: 'Berlin/Europe' })
+  tempToday.toLocaleString('en-US', { timezone: Timezone })
   const todayString = `${tempToday.slice(0, -10)}z`
   const today = new Date(todayString)
   today.setMinutes(0)
@@ -43,6 +52,10 @@ function localDate(): Date {
   return today
 }
 
+/**
+ * Sends a notification to the admin channel to signiy that the calendars have been updated
+ * @param {DsciordClient} client Bot-Client
+ */
 function updatedCalendarsNotifications(client: DiscordClient): void {
   const markdownType = 'yaml'
   const calendarList = Object.keys(client.config.calendars).toString()
@@ -65,11 +78,11 @@ const datesAreOnSameDay = (first: Date, second: Date): boolean =>
   first.getDate() === second.getDate()
 
 function getEvents(data: object, today: Date, events: object, icalName: string): object {
-  const weekStartDate = localDate()
+  const weekStartDate = localDate('Berlin/Europe')
   weekStartDate.setDate(weekStartDate.getDate() - weekStartDate.getDay() + 1)
   const todayStart = today
   todayStart.setUTCHours(0, 0, 0, 0)
-  const todayEnd = localDate()
+  const todayEnd = localDate('Berlin/Europe')
   todayEnd.setHours(23)
   todayEnd.setMinutes(59)
   todayEnd.setSeconds(59)
