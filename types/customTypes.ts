@@ -22,18 +22,21 @@ export class DiscordClient extends Client {
    * Object with ids of discord-games
    */
   public applications: {
-    youtube: string
-    youtubedev: string
-    poker: string
+    awkword: string
     betrayal: string
-    fishing: string
+    checkers: string
     chess: string
     chessdev: string
-    lettertile: string
-    wordsnack: string
     doodlecrew: string
-    awkword: string
+    fishing: string
+    lettertile: string
+    poker: string
+    puttparty: string
+    sketchyartist: string
     spellcast: string
+    wordsnack: string
+    youtube: string
+    youtubedev: string
   }
 
   /**

@@ -4,7 +4,7 @@
 
 <p align="center">
   <br/>
-  <img src="./images/logo_500.png" width="300px">
+  <img src="./images/etit-master.png" width="300px">
   <br/>
   <br/>
 See <a href="https://github.com/Chr1s70ph/ETIT-Master-JS/wiki"><span style="text-align:center">here</a> how to use and configure the bot</span>
