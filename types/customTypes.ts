@@ -5,18 +5,21 @@ export class DiscordClient extends Client {
   public commands
   public config
   public applications: {
-    youtube: string
-    youtubedev: string
-    poker: string
+    awkword: string
     betrayal: string
-    fishing: string
+    checkers: string
     chess: string
     chessdev: string
-    lettertile: string
-    wordsnack: string
     doodlecrew: string
-    awkword: string
+    fishing: string
+    lettertile: string
+    poker: string
+    puttparty: string
+    sketchyartist: string
     spellcast: string
+    wordsnack: string
+    youtube: string
+    youtubedev: string
   }
   /**
    * Uses {@link TextChannel.send()} to reply to the issued command.
