@@ -1,6 +1,8 @@
 import { Message } from 'discord.js'
 import { DiscordClient } from '../../types/customTypes'
-// Const required, otherwise pm2 throws error
+/**
+ * Const required, otherwise pm2 throws error
+ */
 const pm2 = require('pm2')
 
 exports.name = 'restart'
@@ -11,7 +13,7 @@ exports.usage = 'restart'
 
 exports.run = (client: DiscordClient, message: Message) => {
   /**
-   * Check if user has the correct rights to execute the command
+   * Check if user has the correct rights to execute the command.
    */
   if (!Object.values(client.config.ids.acceptedAdmins).includes(message.author.id)) {
     return client.reply(message, { content: 'You do not have the permissions to perform that command.' })
@@ -22,8 +24,8 @@ exports.run = (client: DiscordClient, message: Message) => {
 }
 
 /**
- * Pm2 restart handler
- * @description Connect to the pm2 interface and restarts the current process
+ * Pm2 restart handler.
+ * @description Connect to the pm2 interface and restarts the current process.
  */
 function pm2Handle(): void {
   pm2.connect(err => {
