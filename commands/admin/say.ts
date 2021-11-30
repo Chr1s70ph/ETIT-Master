@@ -8,18 +8,32 @@ exports.description = 'Der Bot sagt, was man ihm sagt, dass er sagen soll, weil 
 exports.usage = 'say <messageContent>'
 
 exports.run = (client: DiscordClient, message: Message) => {
+  /**
+   * Check if user has the correct rights to execute the command
+   */
   if (!Object.values(client.config.ids.acceptedAdmins).includes(message.author.id)) {
     return client.reply(message, { content: 'You do not have the permissions to perform that command.' })
   }
 
+  /**
+   * Embed to send back
+   */
   const embed = createEmbed(message, client)
 
-  if (message.type === 'REPLY') {
-    return client.reply(message, { embeds: [embed] })
-  }
-  return client.send(message, { embeds: [embed] })
+  /**
+   * Send reply based on message type
+   */
+  return message.type === 'REPLY'
+    ? client.reply(message, { embeds: [embed] })
+    : client.send(message, { embeds: [embed] })
 }
 
+/**
+ *
+ * @param {Message} message command Message
+ * @param {DiscordClient} client Bot-Client
+ * @returns {MessageEmbed} embed with given message.content
+ */
 function createEmbed(message: Message<boolean>, client: DiscordClient): MessageEmbed {
   const messageContent = message.content.substring(message.content.indexOf(' ') + client.config.prefix.length)
 
