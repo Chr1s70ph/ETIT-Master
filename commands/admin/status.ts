@@ -1,4 +1,4 @@
-import { Message } from 'discord.js'
+import { Message, PresenceData as setPresenceData, PresenceStatusData as getPresenceStatusData } from 'discord.js'
 import { DiscordClient } from '../../types/customTypes'
 exports.name = 'status'
 
@@ -9,67 +9,87 @@ exports.usage = 'status {STATUS} {ICON}'
 exports.example = `status Bitte nicht stören -dnd\n
 status `
 
-const presence = {
+/**
+ * Presence object to use for custom presences.
+ */
+const presence: setPresenceData = {
   activities: [
     {
       name: '',
       type: 'PLAYING',
     },
   ],
-  status: '',
+  status: 'online',
 }
 
 exports.presence = presence
 
 exports.run = (client: DiscordClient, message: Message) => {
+  /**
+   * Check if user has the correct rights to execute the command.
+   */
   if (!Object.values(client.config.ids.acceptedAdmins).includes(message.author.id)) {
     return client.reply(message, { content: 'You do not have the permissions to perform that command.' })
   }
 
+  /**
+   * Content of message.
+   */
   let messageContent: string = message.content
 
   messageContent = messageContent.split('.status')[1]
 
-  const activityName: string = messageContent.split('-')[0]
+  /**
+   * Set activity name.
+   */
+  presence.activities[0].name = messageContent.split('-')[0]
 
-  presence.activities[0].name = activityName
+  /**
+   * Set presence status.
+   */
+  presence.status = getPresenceStatusData(messageContent)
 
-  getIcon(messageContent)
-
-  if (presence.activities[0].name === ' ' || presence.activities[0].name === '') {
-    const defaultPresence = client.config.presence[0]
-    return Presence(client, message, defaultPresence)
-  } else {
-    return Presence(client, message, presence)
-  }
+  /**
+   * Only set custom presence if defined.
+   * Otherwise use default presence from config.
+   */
+  return presence.activities[0].name === ' ' || presence.activities[0].name === ''
+    ? setPresenceData(client, message, client.config.presence[0])
+    : setPresenceData(client, message, presence)
 }
 
-function getIcon(messageContent: string): void {
+/**
+ * Fetches {@link getPresenceStatusData}
+ * @param {string} messageContent {@link Message.content}
+ * @returns {getPresenceStatusData} {@link getPresenceStatusData}
+ */
+function getPresenceStatusData(messageContent: string): getPresenceStatusData {
   switch (messageContent.split('-')[1]) {
     case 'online': {
-      presence.status = 'online'
-      break
+      return 'online'
     }
     case 'dnd': {
-      presence.status = 'dnd'
-      break
+      return 'dnd'
     }
     case 'idle': {
-      presence.status = 'idle'
-      break
+      return 'idle'
     }
     case 'invisible' || 'offline': {
-      presence.status = 'invisible'
-      break
+      return 'invisible'
     }
     default: {
-      presence.status = 'online'
-      break
+      return 'online'
     }
   }
 }
 
-function Presence(client: DiscordClient, message: Message, _presence: object): void {
+/**
+ *
+ * @param {DiscordClient} client {@link DiscordClient}
+ * @param {Message} message Command {@link Message}
+ * @param {setPresenceData} _presence {@link setPresenceData}
+ */
+function setPresenceData(client: DiscordClient, message: Message, _presence: setPresenceData): void {
   client.user.setPresence(_presence)
   message.channel.send('👥Präsenz wurde geupdated!')
 }
