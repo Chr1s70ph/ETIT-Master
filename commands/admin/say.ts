@@ -9,19 +9,19 @@ exports.usage = 'say <messageContent>'
 
 exports.run = (client: DiscordClient, message: Message) => {
   /**
-   * Check if user has the correct rights to execute the command
+   * Check if user has the correct rights to execute the command.
    */
   if (!Object.values(client.config.ids.acceptedAdmins).includes(message.author.id)) {
     return client.reply(message, { content: 'You do not have the permissions to perform that command.' })
   }
 
   /**
-   * Embed to send back
+   * Embed to send back.
    */
   const embed = createEmbed(message, client)
 
   /**
-   * Send reply based on message type
+   * Send reply based on message type.
    */
   return message.type === 'REPLY'
     ? client.reply(message, { embeds: [embed] })
