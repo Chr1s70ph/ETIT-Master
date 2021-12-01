@@ -8,6 +8,9 @@ exports.description = 'Was ist die Antwort auf alles?'
 exports.usage = 'antwortaufalles'
 
 exports.run = (client: DiscordClient, message: Message) =>
+  /**
+   * Reply with the anwer to everything.
+   */
   client.reply(message, {
     embeds: [
       new MessageEmbed().setDescription(
