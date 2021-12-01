@@ -8,7 +8,10 @@ exports.description = 'Das Komedi Meme'
 exports.usage = 'komedi'
 
 exports.run = (client: DiscordClient, message: Message) =>
-  client.reply(message, {
+  /**
+   * Send back the komedi meme.
+   */
+  client.send(message, {
     embeds: [
       new MessageEmbed()
         .setImage('https://cdn.discordapp.com/attachments/768117219812835378/818145599894847488/eqmmb89gml941.png')
