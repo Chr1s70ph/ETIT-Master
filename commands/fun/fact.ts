@@ -24,7 +24,7 @@ exports.run = (client: DiscordClient, message: Message) => {
   const fact = DATA[Math.floor(Math.random() * DATA.length)]
 
   /**
-   * Send back random fact.
+   * Send back a random fact.
    */
   return client.send(message, {
     embeds: [
