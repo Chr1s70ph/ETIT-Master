@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { MessageEmbed, Message, MessageMentions, UserMention, MessageEmbedFooter } from 'discord.js'
 import { DiscordClient } from '../../types/customTypes'
 
