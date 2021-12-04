@@ -13,7 +13,7 @@ exports.usage = 'stopbackupbot'
 
 exports.run = (client: DiscordClient, message: Message) => {
   /**
-   * Check if user has the correct rights to execute the command
+   * Check if the user has the correct rights to execute the command.
    */
   if (!Object.values(client.config.ids.acceptedAdmins).includes(message.author.id)) {
     return client.reply(message, { content: 'You do not have the permissions to perform that command.' })
