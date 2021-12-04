@@ -11,10 +11,21 @@ exports.description = 'Link zum KIT Gitlab und zur Repository'
 exports.usage = 'git'
 
 exports.run = (client: DiscordClient, message: Message) => {
+  /**
+   * Embed containing information about git.
+   */
   const gitEmbed = createEmbed(client)
+
   return client.reply(message, { embeds: [gitEmbed.setTimestamp()] })
 }
 
+/**
+ * Create a {@link MessageEmbed} with git information.
+ * URL of the embed leads to the git-documentation.
+ * Seperate links to the repository of the bot and to the university gitlab.
+ * @param {DiscordClient} client Bot-Client
+ * @returns {MessageEmbed}
+ */
 function createEmbed(client: DiscordClient): MessageEmbed {
   return new MessageEmbed()
     .setColor('#ffa500')
