@@ -8,6 +8,9 @@ import { DiscordClient } from '../../types/customTypes'
  * this is the original package: https://www.npmjs.com/package/discord-together
  */
 
+/**
+ * IDs of discord applications.
+ */
 const defaultApplications = {
   awkword: '879863881349087252',
   betrayal: '773336526917861400',
@@ -33,7 +36,9 @@ exports.description = `Trickst die API aus um Discord-Spiele freizuschalten.
 exports.usage = `start \`${Object.keys(defaultApplications)}\``
 
 exports.run = async (client: DiscordClient, message: Message, args: any, applications = defaultApplications) => {
-  // Throw an error, when user not in voiceChannel
+  /**
+   * Throw an error, if the user is not in a voiceChannel.
+   */
   if (!message.member.voice.channel) {
     return client.reply(message, {
       embeds: [
@@ -45,20 +50,48 @@ exports.run = async (client: DiscordClient, message: Message, args: any, applica
     })
   }
 
+  /**
+   * Add applications to {@link DiscordClient}
+   */
   client.applications = { ...defaultApplications, ...applications }
+
+  /**
+   * Data to send back.
+   */
   const returnData = {
     code: 'none',
   }
+
+  /**
+   * Discord application selected by the user.
+   */
   const option = args[0]
+
+  /**
+   * VoicechannelID of the user who issued the command.
+   */
   const voiceChannelId = message.member.voice.channel.id
+
+  /**
+   * Check if the application selcted by the user exists.
+   */
   if (option && client.applications[option.toLowerCase()]) {
+    /**
+     * If selected application exists, create an invite with an invite code to the application.
+     */
     await createInvite(client, option, voiceChannelId, returnData)
   } else {
+    /**
+     * Send reply telling the user, that the application they selected does not exist.
+     */
     return client.reply(message, {
       embeds: [new MessageEmbed().setDescription(`⚠️ Invalid option!`)],
     })
   }
 
+  /**
+   * Send a message with the invite code.
+   */
   return client.reply(message, {
     content: returnData.code,
     embeds: [
@@ -69,6 +102,13 @@ exports.run = async (client: DiscordClient, message: Message, args: any, applica
   })
 }
 
+/**
+ * Query the API and fetch a invite code with the selected application.
+ * @param {DiscordClient} client Bot-Client
+ * @param {any} option Application selected by the user
+ * @param {string} voiceChannelId ID of the voice channel the user is inside
+ * @param {{code: string}} returnData Data to send back
+ */
 async function createInvite(
   client: DiscordClient,
   option: any,
@@ -77,7 +117,9 @@ async function createInvite(
 ): Promise<void> {
   const applicationID = client.applications[option.toLowerCase()]
   try {
-    // Send POST to the discordAPI to get an invite with a discord-together application
+    /**
+     * Send POST to the discordAPI to get an invite with a discord-together application.
+     */
     await fetch(`https://discord.com/api/v9/channels/${voiceChannelId}/invites`, {
       method: 'POST',
       body: JSON.stringify({
@@ -95,7 +137,9 @@ async function createInvite(
     })
       .then(res => res.json())
       .then(invite => {
-        // Error handling
+        /**
+         * Handle errors.
+         */
         handleInviteErrors(invite, returnData)
       })
   } catch (err) {
@@ -103,6 +147,11 @@ async function createInvite(
   }
 }
 
+/**
+ * Handle errors that occur when creating the invite.
+ * @param {any} invite Discord invite
+ * @param {{code: string}} returnData Data to send back
+ */
 function handleInviteErrors(invite: any, returnData: { code: string }): void {
   if (invite.error || !invite.code) throw new Error('An error occured while retrieving data !')
   if (invite.code === 50013 || invite.code === '50013') {
