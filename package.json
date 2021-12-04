@@ -1,6 +1,7 @@
 {
     "name": "etit-master",
     "version": "2.2.0",
+    "license": "MIT",
     "description": "[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/G2G54TZ2T)",
     "main": "index.ts",
     "repository": "https://github.com/Chr1s70ph/ETIT-Master-JS.git",
