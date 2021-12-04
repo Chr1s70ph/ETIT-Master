@@ -45,7 +45,7 @@ function removeMatching(originalArray: string[], regex: RegExp): string[] {
 }
 
 /**
- * Querys the Tenor-API and sends a reply with a random GIF.
+ * Query the Tenor-API and send a reply with a random GIF.
  * @param {DiscordClient} client Bot-Client.
  * @param {string} searchQuery Query to search for with the tenor api.
  * @param {Message<boolean>} message Command-message to respond to.
