@@ -1,7 +1,7 @@
 import { Message } from 'discord.js'
 import { DiscordClient } from '../../types/customTypes'
 /**
- * Const required, otherwise pm2 throws error
+ * Const required, otherwise pm2 throws an error.
  */
 const pm2 = require('pm2')
 
