@@ -64,7 +64,7 @@ function queryTenorAndReply(
   const Tenor = require('tenorjs').client(client.config.tenor)
 
   /**
-   * Query the Tenor-API for one random GIF
+   * Query the Tenor-API for one random GIF.
    */
   return Tenor.Search.Random(searchQuery, '1').then(Results => {
     /**
