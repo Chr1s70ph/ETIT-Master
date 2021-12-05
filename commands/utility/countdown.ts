@@ -35,8 +35,8 @@ exports.run = async (client: DiscordClient, message: Message) => {
 }
 /**
  * Edit the embed to display a countdown.
- * @param {Message<boolean>} msg Message of the reply with the embed.
- * @param {MessageEmbed} msgEmbed The embed to edit and attatch.
+ * @param {Message<boolean>} msg Message of the reply with the embed
+ * @param {MessageEmbed} msgEmbed The embed to edit and attatch
  * @returns {void}
  */
 function editEmbed(msg: Message<boolean>, msgEmbed: MessageEmbed): void {
