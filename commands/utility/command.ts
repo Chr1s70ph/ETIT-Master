@@ -29,7 +29,7 @@ exports.run = (client: DiscordClient, message: Message, args: any): any => {
 
 /**
  * Creates an Embed with the provided information.
- * @param {any} value Information about the command.
+ * @param {any} value Information about the command
  * @param {DiscordClient} client Bot-Client
  * @returns {MessageEmbed}
  */
