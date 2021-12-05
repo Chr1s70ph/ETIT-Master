@@ -32,9 +32,9 @@ exports.run = (client: DiscordClient, message: Message, args: string[]) => {
 
 /**
  * Derived from https://stackoverflow.com/a/3661083/10926046
- * @param {string[]} originalArray Array to get string from.
- * @param {RegExp} regex RegularExpression to look for.
- * @returns {string} String extracted from Array.
+ * @param {string[]} originalArray Array to get string from
+ * @param {RegExp} regex RegularExpression to look for
+ * @returns {string} String extracted from Array
  */
 function removeMatching(originalArray: string[], regex: RegExp): string[] {
   let iterator = 0
