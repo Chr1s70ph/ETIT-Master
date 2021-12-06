@@ -1,4 +1,4 @@
-import { Message, PresenceData as setPresenceData, PresenceStatusData as getPresenceStatusData } from 'discord.js'
+import { Message, PresenceData as setPresenceData, PresenceStatusData } from 'discord.js'
 import { DiscordClient } from '../../types/customTypes'
 exports.name = 'status'
 
@@ -63,7 +63,7 @@ exports.run = (client: DiscordClient, message: Message) => {
  * @param {string} messageContent {@link Message.content}
  * @returns {getPresenceStatusData} {@link getPresenceStatusData}
  */
-function getPresenceStatusData(messageContent: string): getPresenceStatusData {
+function getPresenceStatusData(messageContent: string): PresenceStatusData {
   switch (messageContent.split('-')[1]) {
     case 'online': {
       return 'online'
