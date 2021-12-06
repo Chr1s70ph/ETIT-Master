@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Message, MessageEmbed, MessagePayload } from 'discord.js'
 import { DiscordClient } from '../types/customTypes'
 const tx2 = require('tx2')
