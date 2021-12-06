@@ -9,7 +9,9 @@ import { DiscordClient } from '../types/customTypes'
 const { DateTime } = require('luxon')
 const CRON_FETCH_EVENTS = '0 0 * * *'
 const MS_PER_MINUTE = 60000
-// Both Time consts are minutes
+/**
+ * Both Time consts are minutes.
+ */
 const SEND_NOTIFICATION_OFFSET = 20
 const DELETE_NOTIFICATIONS_OFFSET = 90
 
@@ -22,8 +24,9 @@ exports.run = async (client: DiscordClient) => {
 }
 
 /**
- * Fetches and schedules the events of the current day
+ * Fetche and schedule the events of the current day.
  * @param {DiscordClient} client Bot-Client
+ * @returns {Promise<void>}
  */
 async function fetchAndSend(client: DiscordClient): Promise<void> {
   const today: Date = localDate('Berlin/Europe')
@@ -33,12 +36,12 @@ async function fetchAndSend(client: DiscordClient): Promise<void> {
     const events = {}
     const webEvents = await async.fromURL(icalLink)
     const eventsFromIcal = await getEvents(webEvents, today, events, entry)
-    await filterToadaysEvents(client, today, eventsFromIcal)
+    await sheduleNotifications(client, today, eventsFromIcal)
   }
 }
 
 /**
- * Helperfunction to get current Date
+ * Helperfunction to get current Date.
  * @param {string} Timezone to get the Date from
  * @returns {Date} Current Date specified with {@link Timezone}
  */
@@ -53,30 +56,47 @@ function localDate(Timezone: string): Date {
 }
 
 /**
- * Sends a notification to the admin channel to signiy that the calendars have been updated
+ * Sends a notification to the admin channel to signiy that the calendars have been updated.
  * @param {DsciordClient} client Bot-Client
  */
 function updatedCalendarsNotifications(client: DiscordClient): void {
   const markdownType = 'yaml'
   const calendarList = Object.keys(client.config.calendars).toString()
   const calendars = calendarList.replaceAll(',', '\n')
-  // Create embed for each new fetch
+  /**
+   * Create embed for each new fetch.
+   */
   const updatedCalendars = new MessageEmbed()
     .setColor('#C7BBED')
     .setAuthor({ name: client.user.tag, iconURL: client.user.avatarURL() })
     .setDescription(`**Kalender nach Events durchgesucht**\`\`\`${markdownType}\n${calendars} \`\`\``)
-  // Send notification what calendars have been queried for todays events
+  /**
+   * Send notification what calendars have been queried for todays events.
+   */
   const channel = client.channels.cache.find(
     _channel => _channel.id === client.config.ids.channelIDs.dev.botTestLobby,
   ) as TextChannel
   channel.send({ embeds: [updatedCalendars] })
 }
 
+/**
+ * Returns true, if dates are on the same day.
+ * @param {Date} first First date to compare
+ * @param {Date} second Second date to compare
+ * @returns {boolean}
+ */
 const datesAreOnSameDay = (first: Date, second: Date): boolean =>
   first.getFullYear() === second.getFullYear() &&
   first.getMonth() === second.getMonth() &&
   first.getDate() === second.getDate()
 
+/**
+ * @param {Object} data Ical data
+ * @param {Date} today Date object of todays date
+ * @param {Object} events Object with todays events
+ * @param {string} icalName Name of the calendar
+ * @returns {Object}
+ */
 function getEvents(data: object, today: Date, events: object, icalName: string): object {
   const weekStartDate = localDate('Berlin/Europe')
   weekStartDate.setDate(weekStartDate.getDate() - weekStartDate.getDay() + 1)
@@ -92,8 +112,10 @@ function getEvents(data: object, today: Date, events: object, icalName: string):
 
   for (const k in data) {
     if (Object.prototype.hasOwnProperty.call(data, k)) {
-      // When dealing with calendar recurrences, you need a range of dates to query against,
-      // because otherwise you can get an infinite number of calendar events.
+      /**
+       * When dealing with calendar recurrences, you need a range of dates to query against,
+       * because otherwise you can get an infinite number of calendar events.
+       */
 
       const event = data[k]
       if (event.type === 'VEVENT') eventFilter(event, today, events, rangeStart, rangeEnd)
@@ -104,6 +126,15 @@ function getEvents(data: object, today: Date, events: object, icalName: string):
   return events
 }
 
+/**
+ * Add {@link event} to {@link events} if it occurs today.
+ * @param {any} event Event to filter
+ * @param {Date} today Date object of todays date
+ * @param {Object} events Object with todays events
+ * @param {moment.Moment} rangeStart Start of current day
+ * @param {moment.Moment} rangeEnd End of current day
+ * @returns {void}
+ */
 function eventFilter(
   event: any,
   today: Date,
@@ -116,38 +147,63 @@ function eventFilter(
   const startDate = moment(event.start)
   const endDate = moment(event.end)
 
-  // Calculate the duration of the event for use with recurring events.
+  /**
+   * Calculate the duration of the event for use with recurring events.
+   */
   const duration = Number.parseInt(endDate.format('x'), 10) - Number.parseInt(startDate.format('x'), 10)
 
-  // Simple case - no recurrences, just print out the calendar event.
+  /**
+   * Simple case - no recurrences, just print out the calendar event.
+   */
   if (typeof event.rrule === 'undefined' && datesAreOnSameDay(event.start, today)) {
     addEntryToWeeksEvents(events, today.getDay().toString(), event.start, title, description, event.location)
   } else if (typeof event.rrule !== 'undefined') {
-    // Complicated case - if an RRULE exists, handle multiple recurrences of the event.
-    // For recurring events, get the set of event start dates that fall within the range
-    // of dates we're looking for.
+    /**
+     * Complicated case - if an RRULE exists, handle multiple recurrences of the event.
+     *  For recurring events, get the set of event start dates that fall within the range
+     *  of dates we're looking for.
+     */
     const dates = event.rrule.between(rangeStart.toDate(), rangeEnd.toDate(), true, () => true)
 
-    // The "dates" array contains the set of dates within our desired date range range that are valid
-    // for the recurrence rule.  *However*, it's possible for us to have a specific recurrence that
-    // had its date changed from outside the range to inside the range.  One way to handle this is
-    // to add *all* recurrence override entries into the set of dates that we check, and then later
-    // filter out any recurrences that don't actually belong within our range.
+    /**
+     * The "dates" array contains the set of dates within our desired date range range that are valid
+     * for the recurrence rule.  *However*, it's possible for us to have a specific recurrence that
+     * had its date changed from outside the range to inside the range.  One way to handle this is
+     * to add *all* recurrence override entries into the set of dates that we check, and then later
+     * filter out any recurrences that don't actually belong within our range.
+     */
     if (event.recurrences !== undefined) {
       for (const r in event.recurrences) {
-        // Only add dates that weren't already in the range we added from the rrule so that
-        // we don't double-add those events.
+        /**
+         * Only add dates that weren't already in the range we added from the rrule so that
+         * we don't double-add those events.
+         */
         if (moment(new Date(r)).isBetween(rangeStart, rangeEnd) !== true) {
           dates.push(new Date(r))
         }
       }
     }
 
-    // Loop through the set of date entries to see which recurrences should be printed.
+    /**
+     * Loop through the set of date entries to see which recurrences should be printed.
+     */
     rruleFilter(dates, event, duration, startDate, endDate, rangeStart, rangeEnd, today, events)
   }
 }
 
+/**
+ * Loop through the set of date entries to see which recurrences should be printed.
+ * @param {any} dates Dates of event
+ * @param {any} event Event to filter
+ * @param {number} duration Dudation of event
+ * @param {moment.Moment} startDate Start of event
+ * @param {moment.Moment} endDate End of event
+ * @param {moment.Moment} rangeStart Start of current day
+ * @param {moment.Moment} rangeEnd End of current day
+ * @param {Date} today Date object of todays date
+ * @param {Object} events Object with todays events
+ * @returns {moment}
+ */
 function rruleFilter(
   dates: any,
   event: any,
@@ -167,29 +223,41 @@ function rruleFilter(
 
     startDate = moment(date)
 
-    // Use just the date of the recurrence to look up overrides and exceptions (i.e. chop off time information)
+    /**
+     * Use just the date of the recurrence to look up overrides and exceptions (i.e. chop off time information)
+     */
     const dateLookupKey = date.toISOString().slice(0, 10)
 
-    // For each date that we're checking, it's possible that there is a recurrence override for that one day.
+    /**
+     * For each date that we're checking, it's possible that there is a recurrence override for that one day.
+     */
     if (curEvent.recurrences !== undefined && curEvent.recurrences[dateLookupKey] !== undefined) {
-      // We found an override, so for this recurrence
-      // use a potentially different title, start date, and duration.
+      /**
+       * We found an override, so for this recurrence
+       * use a potentially different title, start date, and duration.
+       */
       curEvent = curEvent.recurrences[dateLookupKey]
       startDate = moment(curEvent.start)
       curDuration = Number.parseInt(moment(curEvent.end).format('x'), 10) - Number.parseInt(startDate.format('x'), 10)
     } else if (curEvent.exdate !== undefined && curEvent.exdate[dateLookupKey] !== undefined) {
-      // If there's no recurrence override, check for an exception date.
-      // Exception dates represent exceptions to the rule.
-      // This date is an exception date, which means we should skip it in the recurrence pattern.
+      /**
+       * If there's no recurrence override, check for an exception date.
+       * Exception dates represent exceptions to the rule.
+       * This date is an exception date, which means we should skip it in the recurrence pattern.
+       */
       showRecurrence = false
     }
 
-    // Set the the title and the end date from either the regular event or the recurrence override.
+    /**
+     * Set the the title and the end date from either the regular event or the recurrence override.
+     */
     const recurrenceTitle = curEvent.summary
     endDate = moment(Number.parseInt(startDate.format('x'), 10) + curDuration, 'x')
 
-    // If this recurrence ends before the start of the date range, or starts after the end of the date range,
-    // don't process it.
+    /**
+     * If this recurrence ends before the start of the date range, or starts after the end of the date range,
+     * don't process it.
+     */
     if (endDate.isBefore(rangeStart) || startDate.isAfter(rangeEnd)) {
       showRecurrence = false
     }
@@ -208,6 +276,16 @@ function rruleFilter(
   return { startDate, endDate }
 }
 
+/**
+ * Add entries to {@link events}.
+ * @param {Object} events Object with todays events
+ * @param {string} day Current weekday
+ * @param {Date} start Start of event
+ * @param {string} summary Summary of event
+ * @param {string} description Description of event
+ * @param {string} location Location of event
+ * @returns {Object}
+ */
 function addEntryToWeeksEvents(
   events: object,
   day: string,
@@ -216,7 +294,9 @@ function addEntryToWeeksEvents(
   description: string,
   location: string,
 ): object {
-  // Protection against double events
+  /**
+   * Protection against double events.
+   */
   for (const elemtent in events) {
     if (
       events[elemtent].start === start &&
@@ -239,15 +319,26 @@ function addEntryToWeeksEvents(
   return events
 }
 
-function filterToadaysEvents(client: DiscordClient, today: Date, thisWeeksEvents: object): void {
-  for (const entry in thisWeeksEvents) {
-    if (thisWeeksEvents[entry].day === today.getDay().toString()) {
-      const event = thisWeeksEvents[entry]
+/**
+ * Create notifications for {@link events} and shedule them.
+ * @param {DiscordClient} client Bot-Client
+ * @param {Date} today Date object of todays date
+ * @param {Object} events object with todays events
+ * @returns {void}
+ */
+function sheduleNotifications(client: DiscordClient, today: Date, events: object): void {
+  for (const entry in events) {
+    if (events[entry].day === today.getDay().toString()) {
+      const event = events[entry]
       const summary = event.summary
-      // Extract the subject after the first "-" in the string
+      /**
+       * Extract the subject after the first "-" in the string.
+       */
       const subject = summary.split(/-(.+)/)[1]
 
-      // Extract the professors Name before the "-" in the string
+      /**
+       * Extract the professors Name before the "-" in the string.
+       */
       const professor = summary.split(/-(.+)/)[0]
 
       const link = extractZoomLinks(event.description)
@@ -286,15 +377,21 @@ function filterToadaysEvents(client: DiscordClient, today: Date, thisWeeksEvents
 function extractZoomLinks(eventLinkString: string): string {
   if (eventLinkString.length === 0) return undefined
 
-  // Extract link from href tag
+  /**
+   * Extract link from href tag.
+   */
   eventLinkString = eventLinkString.includes('<a href=')
     ? eventLinkString.split('<a href=')[1].split('>')[0]
     : eventLinkString
 
-  // Strip all html tags and encode as URI
+  /**
+   * Strip all html tags and encode as URI.
+   */
   const link = eventLinkString.replace(/(<.*?>)/g, '')
 
-  // Remove "#success" string, to automatically open zoom
+  /**
+   * Remove "#success" string, to automatically open zoom.
+   */
   return link.includes('#success') ? link.split('#success')[0] : link.includes('id=') ? link.split('id=')[0] : link
 }
 
@@ -317,7 +414,7 @@ function dateToRecurrenceRule(eventDate: Date, todaysDate: Date): RecurrenceRule
 }
 
 /**
- *
+ * Create dynamic embed.
  * @param {DiscordClient} client DiscordClient
  * @param {string} role role to ping
  * @param {string} subject lesson subject
@@ -361,7 +458,9 @@ function dynamicEmbed(
   } catch (e) {
     const embed = 'There was an error creating the embed'
     const channel = client.channels.cache.find(_channel => _channel.id === '852530207336169523') as TextChannel
-    // Sends login embed to channel
+    /**
+     * Send embed embed to channel.
+     */
     channel.send(`${embed}\n${e}`)
   }
 
@@ -388,18 +487,24 @@ function dynamicEmbed(
  *
  * @param {string} subject subject exported from iCal
  * @param {Object} client necessary to return error messages to debug channel
- * @returns {string}     returns the channelID based on subject
+ * @returns {Snowflake}
  *
  * @throws Error in debug channel
  */
-function findChannel(subject: string, client: DiscordClient): string {
+function findChannel(subject: string, client: DiscordClient): Snowflake {
   const REGEX_TO_REMOVE_EMOJIS = /\p{Emoji}/gu
 
-  // Remove leading and trailing space
+  /**
+   * Remove leading and trailing space.
+   */
   subject = subject.trim()
-  // Remove all content in, and brackets
+  /**
+   * Remove all content in, and brackets.
+   */
   subject = subject.replace(/ *\([^)]*\) */g, '')
-  // Replace all spaces with "-"
+  /**
+   * Replace all spaces with "-".
+   */
   subject = subject.replace(/\s+/g, '-')
   subject = subject.toLowerCase()
   const guild = client.guilds.cache.get(client.config.ids.serverID) as Guild
@@ -412,17 +517,32 @@ function findChannel(subject: string, client: DiscordClient): string {
   return channelID
 }
 
-function findRole(subject, client): Snowflake {
-  // Remove leading and trailing space
+/**
+ * Find a roleid based on its name.
+ * @param {string} subject Subject to find role for
+ * @param {DiscordClient} client Bot-Client
+ * @returns {Snowflake}
+ */
+function findRole(subject: string, client: DiscordClient): Snowflake {
+  /**
+   * Remove leading and trailing space.
+   */
   subject = subject.trim()
-  // Remove all content in, and brackets
+  /**
+   * Remove all content in, and brackets.
+   */
   subject = subject.replace(/ *\([^)]*\) */g, '')
   const guild = client.guilds.cache.get(client.config.ids.serverID)
   const role = guild.roles.cache.find(_role => subject.toLowerCase() === _role.name.toLowerCase())?.id ?? null
   return role
 }
 
-function noVariableUndefined(...args): boolean {
+/**
+ * Check if any provided arguments are undefined.
+ * @param {any} args Arguments to check for undefined
+ * @returns {boolean}
+ */
+function noVariableUndefined(...args: any): boolean {
   for (const arg in args) {
     if (args[arg] === undefined) {
       return false
