@@ -52,9 +52,15 @@ function sendWelcomeMessage(member: GuildMember, client: DiscordClient): void {
 		Falls du noch irgendwelche Fragen hast, wende dich einfach an <@${client.config.ids.userID.basti}> (wir Admins sind auch nur einfache Studenten, genauso wie du).`)
 
   try {
+    /**
+     * Send personalized embed to member.
+     */
     member.send({ embeds: [welcomeMessage] })
     console.log(`Sent welcome message to ${member.user.username}`)
   } catch (error) {
+    /**
+     * Handle Errors.
+     */
     throw new Error(error)
   }
 }
