@@ -6,19 +6,45 @@ import { DiscordClient } from '../types/customTypes'
 const os = require('os')
 
 exports.run = async (client: DiscordClient) => {
+  /**
+   * Array of commands.
+   */
   const commands = []
+
+  /**
+   * Count commands.
+   */
   await commandCounter(commands)
 
+  /**
+   * List of slashCommands.
+   */
   const slashCount = await readdir_promise('./slashCommands')
 
+  /**
+   * Login message {@link MessageEmbed}.
+   */
   const loginMessage = createEmbed(client, commands, slashCount)
 
+  /**
+   * Channel to send {@link loginMessage} to.
+   */
   const channel = client.channels.cache.find(
     _channel => _channel.id === client.config.ids.channelIDs.dev.botTestLobby,
   ) as TextChannel
+
+  /**
+   * Send {@link loginMessage}.
+   */
   channel.send({ embeds: [loginMessage] })
 }
-
+/**
+ * Create loginmessage.
+ * @param {DiscordClient} client Bot-Client
+ * @param {any[]} commands All commands
+ * @param {string[]} slashCount All slashCommands
+ * @returns {MessageEmbed}
+ */
 function createEmbed(client: DiscordClient, commands: any[], slashCount: string[]): MessageEmbed {
   return new MessageEmbed()
     .setColor('#ffa500')
@@ -65,25 +91,54 @@ function createEmbed(client: DiscordClient, commands: any[], slashCount: string[
       'https://image.flaticon.com/icons/png/512/888/888879.png',
     )
 }
-
+/**
+ * Count commands.
+ * @param {any[]} commands Array of commands
+ * @returns {Promise}
+ */
 async function commandCounter(commands: any[]): Promise<void> {
-  const files = await readdir_promise('./commands')
-  files.forEach(file => {
-    const element_in_folder = statSync(`./commands/${file}`)
-    if (element_in_folder.isDirectory() === true) {
-      // Check if element is a folder
+  /**
+   * Directory to count commands.
+   */
+  const directory = await readdir_promise('./commands')
+
+  /**
+   * Loop through all folders in {@link directory}.
+   */
+  directory.forEach(file => {
+    /**
+     * Check if elements in {@link directory} are folders.
+     */
+    if (statSync(`./commands/${file}`).isDirectory() === true) {
+      /**
+       * Sub directory to look for commands inside.
+       */
       const sub_directory = `./commands/${file}/`
+
+      /**
+       * Read directory.
+       */
       readdir(sub_directory, (err, elements) => {
-        // Reads all subcommands
+        /**
+         * Error handling.
+         */
         if (err) return console.log(err)
+
+        /**
+         * Loop through all files in {@link sub_directory}.
+         */
         elements.forEach(element => {
-          // Add command to commands array
+          /**
+           * Add command to commands array
+           */
           commands[commands.length] = element
         })
         return 0
       })
     } else {
-      // Add command to commands array
+      /**
+       * Add command to commands array
+       */
       commands[commands.length] = file
     }
   })
