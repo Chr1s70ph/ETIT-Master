@@ -29,14 +29,39 @@ exports.run = async (client: DiscordClient) => {
  * @returns {Promise<void>}
  */
 async function fetchAndSend(client: DiscordClient): Promise<void> {
+  /**
+   * Date of current day.
+   */
   const today: Date = localDate('Berlin/Europe')
 
+  /**
+   * Loop through all calendars.
+   */
   for (const entry in client.config.calendars) {
+    /**
+     * Link to ics file.
+     */
     const icalLink = client.config.calendars[entry]
+
+    /**
+     * Object with todays events.
+     */
     const events = {}
+
+    /**
+     * All events fetched from {@link icalLink}.
+     */
     const webEvents = await async.fromURL(icalLink)
+
+    /**
+     * All events from the current day.
+     */
     const eventsFromIcal = await getEvents(webEvents, today, events, entry)
-    await sheduleNotifications(client, today, eventsFromIcal)
+
+    /**
+     * Schedule the notifications.
+     */
+    await scheduleNotifications(client, today, eventsFromIcal)
   }
 }
 
@@ -46,12 +71,35 @@ async function fetchAndSend(client: DiscordClient): Promise<void> {
  * @returns {Date} Current Date specified with {@link Timezone}
  */
 function localDate(Timezone: string): Date {
+  /**
+   * Temporary date of local timezone.
+   */
   const tempToday = DateTime.local().toString()
+
+  /**
+   * Convert {@link tempToday} to {@link Timezone}.
+   */
   tempToday.toLocaleString('en-US', { timezone: Timezone })
+
+  /**
+   * Slice {@link tempToday} and add 'z' at the end.
+   */
   const todayString = `${tempToday.slice(0, -10)}z`
+
+  /**
+   * Create new date with {@link todayString}.
+   */
   const today = new Date(todayString)
+
+  /**
+   * Set minutes and seconds to 0, so {@link today} starts at an even hour.
+   */
   today.setMinutes(0)
   today.setSeconds(0)
+
+  /**
+   * Return date.
+   */
   return today
 }
 
@@ -60,9 +108,21 @@ function localDate(Timezone: string): Date {
  * @param {DsciordClient} client Bot-Client
  */
 function updatedCalendarsNotifications(client: DiscordClient): void {
+  /**
+   * Markdown type to format embed with.
+   */
   const markdownType = 'yaml'
+
+  /**
+   * List of all calendars.
+   */
   const calendarList = Object.keys(client.config.calendars).toString()
+
+  /**
+   * Format list to use newline characters.
+   */
   const calendars = calendarList.replaceAll(',', '\n')
+
   /**
    * Create embed for each new fetch.
    */
@@ -70,6 +130,7 @@ function updatedCalendarsNotifications(client: DiscordClient): void {
     .setColor('#C7BBED')
     .setAuthor({ name: client.user.tag, iconURL: client.user.avatarURL() })
     .setDescription(`**Kalender nach Events durchgesucht**\`\`\`${markdownType}\n${calendars} \`\`\``)
+
   /**
    * Send notification what calendars have been queried for todays events.
    */
@@ -91,6 +152,7 @@ const datesAreOnSameDay = (first: Date, second: Date): boolean =>
   first.getDate() === second.getDate()
 
 /**
+ * Get events from the current day.
  * @param {Object} data Ical data
  * @param {Date} today Date object of todays date
  * @param {Object} events Object with todays events
@@ -98,31 +160,68 @@ const datesAreOnSameDay = (first: Date, second: Date): boolean =>
  * @returns {Object}
  */
 function getEvents(data: object, today: Date, events: object, icalName: string): object {
-  const weekStartDate = localDate('Berlin/Europe')
-  weekStartDate.setDate(weekStartDate.getDate() - weekStartDate.getDay() + 1)
+  /**
+   * Start of todays day. (i.e 00:00:00).
+   */
   const todayStart = today
+
+  /**
+   * Set hours, minutes, seconds and miliseconds to 0.
+   */
   todayStart.setUTCHours(0, 0, 0, 0)
+
+  /**
+   * End of todays day. (i.e 23:59:59).
+   */
   const todayEnd = localDate('Berlin/Europe')
+
+  /**
+   * Set hours to last hour of the day.
+   */
   todayEnd.setHours(23)
+
+  /**
+   * Set minutes to the last minute.
+   */
   todayEnd.setMinutes(59)
+
+  /**
+   * Set seconds to the last second.
+   */
   todayEnd.setSeconds(59)
 
+  /**
+   * When dealing with calendar recurrences, you need a range of dates to query against,
+   * because otherwise you can get an infinite number of calendar events.
+   */
+
+  /**
+   * Start of timeframe to filter events.
+   */
   const rangeStart = moment(todayStart).utc()
+
+  /**
+   * End of timeframe to filter events.
+   */
   const rangeEnd = moment(todayEnd)
 
+  /**
+   * Loop through all entries in the calendar.
+   */
   for (const k in data) {
     if (Object.prototype.hasOwnProperty.call(data, k)) {
       /**
-       * When dealing with calendar recurrences, you need a range of dates to query against,
-       * because otherwise you can get an infinite number of calendar events.
+       * Filter events, and add them to {@link events} if they occur on the current day.
        */
-
-      const event = data[k]
-      if (event.type === 'VEVENT') eventFilter(event, today, events, rangeStart, rangeEnd)
+      if (data[k].type === 'VEVENT') eventFilter(data[k], today, events, rangeStart, rangeEnd)
     }
   }
 
+  /**
+   * Log events for overfiew of todays events.
+   */
   console.log(icalName, events)
+
   return events
 }
 
@@ -142,9 +241,24 @@ function eventFilter(
   rangeStart: moment.Moment,
   rangeEnd: moment.Moment,
 ): void {
+  /**
+   * Title of {@link event}.
+   */
   const title = event.summary
+
+  /**
+   * Description of {@link event}.
+   */
   const description = event.description
+
+  /**
+   * Start of {@link event}.
+   */
   const startDate = moment(event.start)
+
+  /**
+   * End of {@link event}.
+   */
   const endDate = moment(event.end)
 
   /**
@@ -156,7 +270,10 @@ function eventFilter(
    * Simple case - no recurrences, just print out the calendar event.
    */
   if (typeof event.rrule === 'undefined' && datesAreOnSameDay(event.start, today)) {
-    addEntryToWeeksEvents(events, today.getDay().toString(), event.start, title, description, event.location)
+    /**
+     * Add event to todays {@link events}.
+     */
+    addEntryToTodaysEvents(events, today.getDay().toString(), event.start, title, description, event.location)
   } else if (typeof event.rrule !== 'undefined') {
     /**
      * Complicated case - if an RRULE exists, handle multiple recurrences of the event.
@@ -216,11 +333,29 @@ function rruleFilter(
   events: object,
 ): { startDate: moment.Moment; endDate: moment.Moment } {
   for (const i in dates) {
+    /**
+     * Reccurence date.
+     */
     const date = dates[i]
+
+    /**
+     * Current event in for-loop.
+     */
     let curEvent = event
+
+    /**
+     * Boolean if event is today.
+     */
     let showRecurrence = true
+
+    /**
+     * Duration of {@link curEvent}.
+     */
     let curDuration = duration
 
+    /**
+     * Start of {@link curEvent} {@link curDuration}.
+     */
     startDate = moment(date)
 
     /**
@@ -263,7 +398,10 @@ function rruleFilter(
     }
 
     if (showRecurrence === true && datesAreOnSameDay(date, today)) {
-      addEntryToWeeksEvents(
+      /**
+       * Add event to todays {@link events}.
+       */
+      addEntryToTodaysEvents(
         events,
         today.getDay().toString(),
         curEvent.start,
@@ -273,6 +411,7 @@ function rruleFilter(
       )
     }
   }
+
   return { startDate, endDate }
 }
 
@@ -286,7 +425,7 @@ function rruleFilter(
  * @param {string} location Location of event
  * @returns {Object}
  */
-function addEntryToWeeksEvents(
+function addEntryToTodaysEvents(
   events: object,
   day: string,
   start: Date,
@@ -296,6 +435,7 @@ function addEntryToWeeksEvents(
 ): object {
   /**
    * Protection against double events.
+   * Only add event if it is one of a kind.
    */
   for (const elemtent in events) {
     if (
@@ -308,6 +448,10 @@ function addEntryToWeeksEvents(
     }
   }
 
+  /**
+   * Add entry with new key.
+   * Key increments by one (determined by length).
+   */
   events[Object.keys(events).length] = {
     day: day,
     start: start,
@@ -320,17 +464,25 @@ function addEntryToWeeksEvents(
 }
 
 /**
- * Create notifications for {@link events} and shedule them.
+ * Create notifications for {@link events} and schedule them.
  * @param {DiscordClient} client Bot-Client
  * @param {Date} today Date object of todays date
  * @param {Object} events object with todays events
  * @returns {void}
  */
-function sheduleNotifications(client: DiscordClient, today: Date, events: object): void {
+function scheduleNotifications(client: DiscordClient, today: Date, events: object): void {
   for (const entry in events) {
     if (events[entry].day === today.getDay().toString()) {
+      /**
+       * Current event in loop.
+       */
       const event = events[entry]
+
+      /**
+       * Summary of current event.
+       */
       const summary = event.summary
+
       /**
        * Extract the subject after the first "-" in the string.
        */
@@ -341,28 +493,55 @@ function sheduleNotifications(client: DiscordClient, today: Date, events: object
        */
       const professor = summary.split(/-(.+)/)[0]
 
+      /**
+       * Link of current event.
+       */
       const link = extractZoomLinks(event.description)
 
+      /**
+       * Timestamp to send notificaction.
+       */
       const earlyEventStart = new Date(event.start - SEND_NOTIFICATION_OFFSET * MS_PER_MINUTE)
 
+      /**
+       * Recurrencerule to send notification.
+       */
       const recurrenceRule = dateToRecurrenceRule(earlyEventStart, today)
 
+      /**
+       * Role to ping.
+       */
       let role = findRole(subject, client)
 
+      /**
+       * Notification Embed to send.
+       */
       const embed = dynamicEmbed(client, role, subject, professor, SEND_NOTIFICATION_OFFSET, link, event.location)
 
+      /**
+       * Channel to send notification to.
+       */
       let channel = findChannel(subject, client)
 
+      /**
+       * Send notification to botTestLobby in case channel is not found.
+       */
       if (channel === undefined) {
         channel = client.config.ids.channelIDs.dev.botTestLobby
       }
 
+      /**
+       * Check if all necessary variables are defined.
+       */
       if (noVariableUndefined(recurrenceRule, channel, role, embed, client)) {
         role = `<@&${role}>`
       } else if (role === undefined) {
         role = ''
       }
 
+      /**
+       * Schedule notifications.
+       */
       createCron(recurrenceRule, channel, role, embed, client)
     }
   }
@@ -402,14 +581,33 @@ function extractZoomLinks(eventLinkString: string): string {
  * @returns {any} RecurrenceRule
  */
 function dateToRecurrenceRule(eventDate: Date, todaysDate: Date): RecurrenceRule {
+  /**
+   * Create new RecurrenceRule.
+   */
   const rule = new RecurrenceRule()
+
+  /**
+   * If eventdate is not defined, set seconds, minutes and hour to 0, so notification will be sent at midnight.
+   */
   rule.second = typeof eventDate === 'undefined' ? 0 : eventDate.getSeconds()
   rule.minute = typeof eventDate === 'undefined' ? 0 : eventDate.getMinutes()
   rule.hour = typeof eventDate === 'undefined' ? 0 : eventDate.getHours()
+
+  /**
+   * Set date to current day to ensure notifications are not scheduled for the wrong day.
+   */
   rule.date = todaysDate.getDate()
   rule.month = todaysDate.getMonth()
   rule.year = todaysDate.getFullYear()
+
+  /**
+   * Set timezone to Europe/Berlin (locale timezone of Bot-instance).
+   */
   rule.tz = 'Europe/Berlin'
+
+  /**
+   * Return RecurrenceRule.
+   */
   return rule
 }
 
@@ -433,12 +631,25 @@ function dynamicEmbed(
   link: string,
   location: string,
 ): MessageEmbed {
+  /**
+   * Color of {@link role}.
+   */
   const roleColor: ColorResolvable =
     client.guilds.resolve(client.config.ids.serverID).roles.cache.get(role)?.color ?? 'DEFAULT'
+
+  /**
+   * Type of course.
+   */
   let courseType = 'Vorlesung'
 
-  if (subject.includes('(ü)') || subject.includes('(Ü)')) courseType = 'Übung'
+  /**
+   * Change {@link courseType} if it is an exercise.
+   */
+  if (subject.toLowerCase().includes('(ü)')) courseType = 'Übung'
 
+  /**
+   * Dynamic embed with information about {@link event}.
+   */
   const embedDynamic = new MessageEmbed()
   try {
     embedDynamic
@@ -456,18 +667,34 @@ function dynamicEmbed(
           .user.avatarURL(),
       )
   } catch (e) {
-    const embed = 'There was an error creating the embed'
-    const channel = client.channels.cache.find(_channel => _channel.id === '852530207336169523') as TextChannel
     /**
-     * Send embed embed to channel.
+     * Error Message.
      */
-    channel.send(`${embed}\n${e}`)
+    const errorMessage = `There was an error creating the embed\n${e.toString()}`
+
+    /**
+     * Fetch channel to send {@link errorMessage} to.
+     */
+    const channel = client.channels.cache.find(
+      _channel => _channel.id === client.config.ids.channelIDs.dev.botTestLobby,
+    ) as TextChannel
+
+    /**
+     * Send {@link errorMessage} embed to {@link channel}.
+     */
+    channel.send(errorMessage)
   }
 
+  /**
+   * Add url to embed if existant.
+   */
   if (link) {
     embedDynamic.setURL(link)
   }
 
+  /**
+   * Add link to google maps if existant.
+   */
   if (location) {
     embedDynamic.addField(
       'Location:',
@@ -476,6 +703,9 @@ function dynamicEmbed(
     )
   }
 
+  /**
+   * Return {@link MessageEmbed}.
+   */
   return embedDynamic
 }
 
@@ -492,28 +722,47 @@ function dynamicEmbed(
  * @throws Error in debug channel
  */
 function findChannel(subject: string, client: DiscordClient): Snowflake {
-  const REGEX_TO_REMOVE_EMOJIS = /\p{Emoji}/gu
-
   /**
    * Remove leading and trailing space.
    */
   subject = subject.trim()
+
   /**
    * Remove all content in, and brackets.
    */
   subject = subject.replace(/ *\([^)]*\) */g, '')
+
   /**
    * Replace all spaces with "-".
    */
   subject = subject.replace(/\s+/g, '-')
+
+  /**
+   * Make sure subject is lowercase.
+   */
   subject = subject.toLowerCase()
+
+  /**
+   * Guild to fetch channelID from.
+   */
   const guild = client.guilds.cache.get(client.config.ids.serverID) as Guild
+
+  /**
+   * Channel to get ID from.
+   */
   const channel = guild.channels.cache.find(
-    _channel => _channel.name.replace(REGEX_TO_REMOVE_EMOJIS, '').toLowerCase() === subject.toLowerCase(),
+    _channel => _channel.name.replace(/\p{Emoji}/gu, '').toLowerCase() === subject.toLowerCase(),
   ) as TextChannel
 
+  /**
+   * Channel id.
+   * If {@link channel} is undefined, default back to botTestLobby.
+   */
   const channelID = channel?.id ? channel.id : client.config.ids.channelIDs.dev.botTestLobby
 
+  /**
+   * Return {@link channelID}.
+   */
   return channelID
 }
 
@@ -528,12 +777,25 @@ function findRole(subject: string, client: DiscordClient): Snowflake {
    * Remove leading and trailing space.
    */
   subject = subject.trim()
+
   /**
    * Remove all content in, and brackets.
    */
   subject = subject.replace(/ *\([^)]*\) */g, '')
+
+  /**
+   * Guild to find role from.
+   */
   const guild = client.guilds.cache.get(client.config.ids.serverID)
+
+  /**
+   * Role from {@link guild}.
+   */
   const role = guild.roles.cache.find(_role => subject.toLowerCase() === _role.name.toLowerCase())?.id ?? null
+
+  /**
+   * Return {@link role}.
+   */
   return role
 }
 
@@ -567,18 +829,40 @@ function createCron(
   embed: MessageEmbed,
   client: DiscordClient,
 ): void {
+  /**
+   * Channel to send notification to.
+   */
   const channel = client.channels.cache.find(Channel => Channel.id === _channel) as TextChannel
+
+  /**
+   * Name of {@link channel}.
+   */
   const channelName = channel.name
 
+  /**
+   * Schedule notification.
+   */
   scheduleJob(recurrenceRule, () => {
+    /**
+     * Log that notification has been sent.
+     */
     console.log(`Sent notification to ${channelName}`)
-    const notificationChannel = client.channels.cache.find(Channel => Channel === channel) as TextChannel
-    notificationChannel?.send({ content: role || null, embeds: [embed.setTimestamp()] }).then(msg => {
+
+    /**
+     * Send message to channel.
+     */
+    channel?.send({ content: role || null, embeds: [embed.setTimestamp()] }).then(msg => {
       setTimeout(() => {
         try {
+          /**
+           * Delete message after timeperiod specified in {@link DELETE_NOTIFICATIONS_OFFSET}.
+           */
           msg.delete()
           console.log(`Deleted notification in ${channelName}`)
         } catch (error) {
+          /**
+           * Error handling.
+           */
           console.log(`There was a problem deleting the notification in ${channelName}\n${error}`)
         }
       }, DELETE_NOTIFICATIONS_OFFSET * MS_PER_MINUTE)
