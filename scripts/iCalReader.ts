@@ -13,7 +13,7 @@ const MS_PER_MINUTE = 60000
  * Both Time consts are minutes.
  */
 const SEND_NOTIFICATION_OFFSET = 20
-const DELETE_NOTIFICATIONS_OFFSET = 90
+const DELETE_NOTIFICATIONS_OFFSET = 115
 
 exports.run = async (client: DiscordClient) => {
   await fetchAndSend(client)
