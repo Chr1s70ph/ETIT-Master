@@ -5,7 +5,7 @@ exports.run = async client => {
   const embed = await getCommands(client)
   await postSlashCommand(client)
 
-  client.ws.on('INTERACTION_CREATE', async (interaction: Interaction) => {
+  client.on('interactionCreate', async (interaction: Interaction) => {
     if (!interaction.isCommand()) return
     const COMMAND = interaction.commandName
     if (COMMAND !== 'help') return
