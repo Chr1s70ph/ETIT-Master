@@ -1,19 +1,34 @@
 /* eslint-disable max-len */
-import { MessageEmbed } from 'discord.js'
-import { GuildMember } from 'discord.js/typings/index.js'
+import { MessageEmbed, GuildMember } from 'discord.js'
 import { DiscordClient } from '../types/customTypes'
 
 exports.run = (client: DiscordClient, oldMember: GuildMember, newMember: GuildMember) => {
+  /**
+   * Fetch roleIDs of member.
+   */
   const { newRoleIDs, oldRoleIDs } = getRoleIDs(oldMember, newMember)
-  // Check if the newRoleIDs had one more role, which means it added a new role
-  if (newRoleIDs.length > oldRoleIDs.length) {
-    const { IDNum, memberCourseOfStudies, memberClassificationchannel, memberClassificationLink } = getUserInfo(
-      newRoleIDs,
+
+  /**
+   * Get id of newly added role.
+   */
+  const addedRole = getDifference(newRoleIDs, oldRoleIDs)
+
+  /**
+   * Check if member has new roles.
+   */
+  if (addedRole[0] === client.config.ids.roleIDs.Ophase) {
+    const { memberCourseOfStudies, memberClassificationchannel, memberClassificationLink } = getUserInfo(
       newMember,
       client,
     )
 
-    if (IDNum === client.config.ids.roleIDs.Ophase && memberCourseOfStudies !== undefined) {
+    /**
+     * Check if member has a course of studies selected.
+     */
+    if (memberCourseOfStudies !== undefined) {
+      /**
+       * Personalized Embed.
+       */
       const ophaseInfo = new MessageEmbed()
         .setTitle(`🗲 Personalisierung 🗲`)
         .setColor('#FFDA00')
@@ -25,9 +40,15 @@ exports.run = (client: DiscordClient, oldMember: GuildMember, newMember: GuildMe
         )
 
       try {
+        /**
+         * Send personalized embed to member.
+         */
         console.log(`Sent ${newMember.user.username} personalization message`)
         return newMember.send({ embeds: [ophaseInfo] })
       } catch (error) {
+        /**
+         * Handle Errors.
+         */
         throw new Error(error)
       }
     } else {
@@ -38,6 +59,14 @@ exports.run = (client: DiscordClient, oldMember: GuildMember, newMember: GuildMe
   }
 }
 
+/**
+ * Get two arrays with Role-IDs.
+ * {@link newRoleIDs} are the Role-IDs after the member has been updated.
+ * {@link oldRoleIDs} are the Role-IDs after the member has been updated.
+ * @param  {GuildMember} oldMember GuildMember before user has been updated
+ * @param  {GuildMember} newMember GuildMember after user has been updated
+ * @returns {any[]}
+ */
 function getRoleIDs(oldMember: GuildMember, newMember: GuildMember): { newRoleIDs: any[]; oldRoleIDs: any[] } {
   const oldRoleIDs = []
   oldMember.roles.cache.each(role => {
@@ -50,39 +79,55 @@ function getRoleIDs(oldMember: GuildMember, newMember: GuildMember): { newRoleID
   return { newRoleIDs, oldRoleIDs }
 }
 
-function getUserInfo(
-  newRoleIDs: any[],
-  newMember: GuildMember,
-  client: DiscordClient,
-): { IDNum: any; memberCourseOfStudies: string; memberClassificationchannel: any; memberClassificationLink: any } {
-  const onlyRole = newRoleIDs.filter(filterOutOld)
-  const IDNum = onlyRole[0]
-  const memberCourseOfStudies = newMember.roles.cache.has(client.config.ids.roleIDs['ETIT Bachelorstudent'])
+/**
+ * Get difference of 2 Arrays.
+ * @param {string[]} newRoleIDs GuildMember before user has been updated
+ * @param {string[]} oldRoleIDs GuildMember after user has been updated
+ * @returns {string[]}
+ */
+function getDifference(newRoleIDs: any[], oldRoleIDs: any[]): string[] {
+  return newRoleIDs.filter(item => oldRoleIDs.indexOf(item) < 0)
+}
+
+/**
+ *
+ * @param {GuildMember} member GuildMember of whom to get information about
+ * @param {DiscordClient} client Bot-Client
+ * @returns {userInfo}
+ */
+function getUserInfo(member: GuildMember, client: DiscordClient): userInfo {
+  const memberCourseOfStudies = member.roles.cache.has(client.config.ids.roleIDs['ETIT Bachelorstudent'])
     ? 'ETIT Bachelorstudent'
-    : newMember.roles.cache.has(client.config.ids.roleIDs['MIT Bachelorstudent'])
+    : member.roles.cache.has(client.config.ids.roleIDs['MIT Bachelorstudent'])
     ? 'MIT Bachelorstudent'
     : undefined
 
-  // Get right classification channel based on role
-  const memberClassificationchannel = newMember.roles.cache.has(client.config.ids.roleIDs['ETIT Bachelorstudent'])
+  /**
+   * Get right classification channel based on role.
+   */
+  const memberClassificationchannel = member.roles.cache.has(client.config.ids.roleIDs['ETIT Bachelorstudent'])
     ? client.config.ids.channelIDs.ETITPersonalization
-    : newMember.roles.cache.has(client.config.ids.roleIDs['MIT Bachelorstudent'])
+    : member.roles.cache.has(client.config.ids.roleIDs['MIT Bachelorstudent'])
     ? client.config.ids.channelIDs.MITPersonalization
     : undefined
-  // Get link to message in memberClassificationchannel
-  const memberClassificationLink = newMember.roles.cache.has(client.config.ids.roleIDs['ETIT Bachelorstudent'])
+
+  /**
+   * Get link to message in memberClassificationchannel.
+   */
+  const memberClassificationLink = member.roles.cache.has(client.config.ids.roleIDs['ETIT Bachelorstudent'])
     ? client.config.ids.einteilung.ETITersti
-    : newMember.roles.cache.has(client.config.ids.roleIDs['MIT Bachelorstudent'])
+    : member.roles.cache.has(client.config.ids.roleIDs['MIT Bachelorstudent'])
     ? client.config.ids.einteilung.MITersti
     : undefined
-  return { IDNum, memberCourseOfStudies, memberClassificationchannel, memberClassificationLink }
+
+  return { memberCourseOfStudies, memberClassificationchannel, memberClassificationLink }
 }
 
-function filterOutOld(id, oldRoleIDs): boolean {
-  for (let i = 0; i < oldRoleIDs.length; i++) {
-    if (id === oldRoleIDs[i]) {
-      return false
-    }
-  }
-  return true
+/**
+ * Interface for userInfo object.
+ */
+interface userInfo {
+  memberCourseOfStudies: any
+  memberClassificationchannel: any
+  memberClassificationLink: any
 }

@@ -9,4 +9,7 @@ exports.usage = 'zoom'
 exports.aliases = ['loading']
 
 exports.run = (client: DiscordClient, message: Message) =>
+  /**
+   * Send back emoji relevant to zoom.
+   */
   client.send(message, { content: '<a:loading:783688114509578271>' })

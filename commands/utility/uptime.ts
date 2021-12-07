@@ -8,8 +8,14 @@ exports.description = 'Wie lange ist der Bot schon online'
 exports.usage = 'uptime'
 
 exports.run = (client: DiscordClient, message: Message) => {
+  /**
+   * Uptime in days, hours, minutes and seconds.
+   */
   const uptime = getUptime()
 
+  /**
+   * Send back reply with uptime.
+   */
   return client.reply(message, {
     embeds: [
       new MessageEmbed()
@@ -23,7 +29,11 @@ exports.run = (client: DiscordClient, message: Message) => {
   })
 }
 
-function getUptime(): { days: any; hours: any; minutes: any; seconds: any } {
+/**
+ *
+ * @returns {uptime} uptime
+ */
+function getUptime(): uptime {
   const uptime = {
     days: null,
     hours: null,
@@ -31,8 +41,10 @@ function getUptime(): { days: any; hours: any; minutes: any; seconds: any } {
     seconds: null,
   }
 
-  // https://stackoverflow.com/a/36099084/10926046
-  uptime.seconds = process.uptime().toString().split('.')[0]
+  /**
+   * https://stackoverflow.com/a/36099084/10926046
+   */
+  uptime.seconds = parseInt(process.uptime().toString().split('.')[0])
 
   uptime.days = Math.floor(uptime.seconds / (3600 * 24))
   uptime.seconds -= uptime.days * 3600 * 24
@@ -41,4 +53,14 @@ function getUptime(): { days: any; hours: any; minutes: any; seconds: any } {
   uptime.minutes = Math.floor(uptime.seconds / 60)
   uptime.seconds -= uptime.minutes * 60
   return uptime
+}
+
+/**
+ * Interface for the uptime object.
+ */
+interface uptime {
+  days: number
+  hours: number
+  minutes: number
+  seconds: number
 }
