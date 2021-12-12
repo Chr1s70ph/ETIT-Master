@@ -1,5 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Client, Message, TextChannel, MessageOptions, Collection } from 'discord.js'
+import i18next from 'i18next'
 
 /**
  * Extended version of the default {@link Client} with addidtional functions and properties.
@@ -92,6 +93,16 @@ export class DiscordClient extends Client {
         },
       )
     })
+  }
+
+  /**
+   * Translates {@link key} using {@link i18next.t}
+   * @param {string} key Key to look translation for
+   * @param {Object} options Options
+   * @returns {string}
+   */
+  public translate(key: string, options?: object): string {
+    return i18next.t(key, options)
   }
 }
 
