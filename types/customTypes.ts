@@ -101,7 +101,7 @@ export class DiscordClient extends Client {
    * @param {Object} options Options
    * @returns {string}
    */
-  public translate(key: string, options?: object): string {
+  public translate(key: string | string[], options?: object | string): string {
     return i18next.t(key, options)
   }
 }
