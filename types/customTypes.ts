@@ -96,14 +96,25 @@ export class DiscordClient extends Client {
   }
 
   /**
-   * Translates {@link key} using {@link i18next.t}
-   * @param {string} key Key to look translation for
-   * @param {Object} options Options
+   * Translate {@link trans.key} using {@link trans.lng} or alternatively {@link trans.options}.
+   * @param  {trans} args Arguments to use to translate
    * @returns {string}
    */
-  public translate(key: string | string[], options?: object | string): string {
-    return i18next.t(key, options)
+  public translate(args: trans): string {
+    const options = args.options ?? args.lng ? { lng: args.lng } : null
+    return i18next.t(args.key, options)
   }
+}
+
+/**
+ * Interface for translation parameters
+ * @readonly
+ * @private
+ */
+interface trans {
+  key: string | string[]
+  lng?: string
+  options?: object | string
 }
 
 /**
