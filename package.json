@@ -19,6 +19,7 @@
         "fs": "^0.0.1-security",
         "github-create-issue": "^1.0.1",
         "i18next": "^21.5.6",
+        "i18next-fs-backend": "^1.1.4",
         "luxon": "^2.1.1",
         "moment": "^2.29.1",
         "moment-timezone": "^0.5.34",

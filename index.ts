@@ -1,8 +1,27 @@
 import * as fs from 'fs'
 import { Collection, Intents } from 'discord.js'
+import i18next from 'i18next'
+import Backend from 'i18next-fs-backend'
 import config from './private/config.json'
 
 import { DiscordClient } from './types/customTypes'
+
+const backend = new Backend({
+  loadPath: '/locales/{{lng}}/{{ns}}.json',
+})
+
+i18next.use(backend).init({
+  lng: 'en',
+  fallbackLng: 'en',
+  preload: ['en', 'de'],
+  ns: ['translation'],
+  defaultNS: 'translation',
+  debug: true,
+  backend: {
+    loadPath: './locales/{{lng}}.json',
+  },
+  initImmediate: false,
+})
 
 /**
  * Folder that contains all commands.
