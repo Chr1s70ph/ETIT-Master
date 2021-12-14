@@ -225,7 +225,6 @@ exports.run = async client => {
   await postSlashCommand(client)
 
   client.on('interactionCreate', async (interaction: Interaction) => {
-    console.log(interaction)
     if (!interaction.isCommand()) return
     const COMMAND = interaction.commandName
     if (COMMAND !== 'wochenplan') return
