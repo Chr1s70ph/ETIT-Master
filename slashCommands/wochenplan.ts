@@ -54,7 +54,11 @@ function _shortenSummary(pEventSummary) {
 }
 
 async function wochenplan(pClient: DiscordClient, pMessageOrInteraction, pNow, pCourseAndSemester) {
-  const data = await async.fromURL(pClient.config.calendars[pCourseAndSemester])
+  let data = {}
+  for (const entry in pClient.config.calendars) {
+    // eslint-disable-next-line no-await-in-loop
+    data = { ...data, ...(await async.fromURL(pClient.config.calendars[entry])) }
+  }
 
   const relevantEvents = []
   const curWeekday = pNow.getDay() === 0 ? 6 : pNow.getDay() - 1
@@ -105,14 +109,11 @@ async function wochenplan(pClient: DiscordClient, pMessageOrInteraction, pNow, p
     let value = ''
 
     for (const weekdayEvent of weekdayItem) {
-      value += `\`${moment(weekdayEvent.start).format('HH:mm')} - ${moment(weekdayEvent.end).format(
-        'HH:mm',
-      )}\` ${_shortenSummary(weekdayEvent.summary)} [[Maps](https://www.google.com/maps/search/KIT+${encodeURIComponent(
-        weekdayEvent.location,
-      )}/)]`
+      value += `\`${moment(weekdayEvent.start).format('HH:mm')} - ${moment(weekdayEvent.end).format('HH:mm')}\` ${
+        weekdayEvent.summary
+      } [[Maps](https://www.google.com/maps/search/KIT+${encodeURIComponent(weekdayEvent.location)}/)]`
       if (weekdayEvent.description.indexOf('https://kit-lecture.zoom.us') !== -1) {
-        const link_splitter = weekdayEvent.description.split('">')
-        value += ` [[Zoom](${link_splitter[link_splitter.length - 1].replace('</a>', '').replaceAll('&nbsp;', '')})]`
+        value += ` [[Zoom](${extractZoomLinks(weekdayEvent.description)})]`
       }
       value += '\n'
     }
@@ -167,12 +168,7 @@ function secondFIlter(
 ) {
   if (typeof event.rrule === 'undefined') {
     if (startDate.isBetween(rangeStart, rangeEnd)) {
-      if (pCourseAndSemester === 'all') {
-        const roleNames = pMessageOrInteraction.member.roles.cache.map(obj => obj.name)
-        if (roleNames.indexOf(title.split(' - ')[1].split(' (')[0]) !== -1) relevantEvents.push(event)
-      } else {
-        relevantEvents.push(event)
-      }
+      pushToWeeksEvents(pMessageOrInteraction, event, relevantEvents)
     }
   } else {
     const dates = event.rrule.between(rangeStart.toDate(), rangeEnd.toDate(), true)
@@ -209,56 +205,88 @@ function secondFIlter(
       }
 
       if (relevantRecurrence === true) {
-        if (pCourseAndSemester === 'all') {
-          const roleNames = pMessageOrInteraction.member.roles.cache.map(obj => obj.name)
-          // In case someone fucked up naming-scheme
-          if (roleNames.indexOf(title.split('- ')[1].split(' (')[0]) !== -1) {
-            relevantEvents.push(curEvent)
-          }
-        } else {
-          relevantEvents.push(curEvent)
-        }
+        pushToWeeksEvents(pMessageOrInteraction, event, relevantEvents)
       }
     }
   }
-  return { startDate, endDate }
+}
+
+function pushToWeeksEvents(interaction, event, relevantEvents) {
+  const roles = interaction.member.roles.cache.map(role => role)
+  for (const role in roles) {
+    const searchQuery = event.summary.split('-')[1].split('(')[0].toLowerCase()
+    if (roles[role].name.toLowerCase().trim() === searchQuery.toLowerCase().trim()) {
+      relevantEvents.push(event)
+    }
+  }
 }
 
 exports.run = async client => {
   await postSlashCommand(client)
 
   client.on('interactionCreate', async (interaction: Interaction) => {
+    console.log(interaction)
     if (!interaction.isCommand()) return
     const COMMAND = interaction.commandName
-    if (COMMAND !== 'vorschlag') return
+    if (COMMAND !== 'wochenplan') return
     await respond(interaction, COMMAND, client)
   })
 }
 
 async function postSlashCommand(client: any): Promise<void> {
-  await client.api.applications(client.user.id).commands.post({
-    data: {
-      name: 'wochenplan',
-      description: 'Zeigt den Wochenplan an.',
-      options: [
-        {
-          name: 'datum',
-          description: 'Das Datum, das angezeigt werden soll. Format: TT.MM.YYYY',
-          type: 3,
-          required: false,
-        },
-      ],
-    },
-  })
+  await client.api
+    .applications(client.user.id)
+    .guilds('757981349402378331')
+    .commands.post({
+      data: {
+        name: 'wochenplan',
+        description: 'Zeigt den Wochenplan an.',
+        options: [
+          {
+            name: 'datum',
+            description: 'Das Datum, das angezeigt werden soll. Format: TT.MM.YYYY',
+            type: 3,
+            required: false,
+          },
+        ],
+      },
+    })
 }
 
 async function respond(interaction, COMMAND: string, client: any): Promise<void> {
   console.log(`User ${interaction.user.username} issued /${COMMAND}`)
-  const now = moment()
+  const now = new Date()
   const embed = wochenplan(client, interaction, now, 'all')
 
   await interaction.reply({
-    embeds: [embed],
+    embeds: [await embed],
     ephemeral: true,
   })
+}
+
+/**
+ * Extracts the zoom Links from HTML tag
+ * if the HTML tag contains "#success" it cuts the string before that string, to make the link automatically open zoom
+ * @param {string} eventLinkString string to extract link from
+ * @returns {string} well formed url
+ */
+function extractZoomLinks(eventLinkString: string): string {
+  if (eventLinkString.length === 0) return undefined
+
+  /**
+   * Extract link from href tag.
+   */
+  eventLinkString = eventLinkString.includes('<a href=')
+    ? eventLinkString.split('<a href=')[1].split('>')[0]
+    : eventLinkString
+
+  /**
+   * Strip all html tags and encode as URI.
+   */
+  const link = eventLinkString.replace(/(<.*?>)/g, '')
+
+  /**
+   * Remove "#success" string, to automatically open zoom.
+   */
+  return link.includes('#success') ? link.split('#success')[0] : link.includes('id=') ? link.split('id=')[0] : link
 }

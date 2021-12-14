@@ -21,13 +21,6 @@ async function postSlashCommand(client: any): Promise<void> {
 }
 
 async function respond(client: any, interaction: any): Promise<void> {
-  await client.api.interactions(interaction.id, interaction.token).callback.post({
-    data: {
-      type: 4,
-      data: {
-        content: 'pong',
-        flags: 64,
-      },
-    },
-  })
+  console.log(`User ${interaction.user.username} issued /ping`)
+  await interaction.reply({ content: 'pong', ephemeral: true })
 }
