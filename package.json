@@ -12,7 +12,7 @@
     "author": "Christoph Bluem",
     "dependencies": {
         "discord-api-types": "^0.25.2",
-        "discord.js": "^13.4.0-dev.1639353941.2ce244b",
+        "discord.js": "^13.4.0-dev.1639526739.a0fe0ac",
         "eslint-config-prettier": "^8.3.0",
         "eslint-plugin-import": "^2.25.3",
         "eslint-plugin-prettier": "^4.0.0",
@@ -20,7 +20,7 @@
         "github-create-issue": "^1.0.1",
         "i18next": "^21.6.0",
         "i18next-fs-backend": "^1.1.4",
-        "luxon": "^2.1.1",
+        "luxon": "^2.2.0",
         "moment": "^2.29.1",
         "moment-timezone": "^0.5.34",
         "node-ical": "^0.14.1",
@@ -32,8 +32,8 @@
         "valid-url": "^1.0.9"
     },
     "devDependencies": {
-        "@typescript-eslint/eslint-plugin": "^5.5.0",
-        "@typescript-eslint/parser": "^5.5.0",
-        "eslint": "^8.4.0"
+        "@typescript-eslint/eslint-plugin": "^5.7.0",
+        "@typescript-eslint/parser": "^5.7.0",
+        "eslint": "^8.4.1"
     }
 }
