@@ -44,19 +44,32 @@ async function respond(interaction, COMMAND: string, client: any): Promise<void>
     body: interaction.options.getString('vorschlag'),
   }
 
-  createIssue(
-    REPOSITORY,
-    `${interaction.user.username}'s Vorschlag${
-      interaction.options.getString('titel') ? `: ${interaction.options.getString('titel')}` : ''
-    }`,
-    options,
-    clbk,
-  )
+  try {
+    createIssue(
+      REPOSITORY,
+      `${interaction.user.username}'s Vorschlag${
+        interaction.options.getString('titel') ? `: ${interaction.options.getString('titel')}` : ''
+      }`,
+      options,
+      clbk,
+    )
 
-  await interaction.reply({
-    embeds: [new MessageEmbed().setTitle('Vorschlag angekommen!').setDescription('Vielen Dank für deinen Vorschlag!')],
-    ephemeral: true,
-  })
+    await interaction.reply({
+      embeds: [
+        new MessageEmbed().setTitle('Vorschlag angekommen!').setDescription('Vielen Dank für deinen Vorschlag!'),
+      ],
+      ephemeral: true,
+    })
+  } catch (error) {
+    await interaction.reply({
+      embeds: [
+        new MessageEmbed()
+          .setTitle('⚠Fehler')
+          .setDescription('Es ist ein Fehler aufgetreten. Bitte versuche es später erneut.'),
+      ],
+    })
+    throw new Error(error)
+  }
 }
 
 function clbk(error: Error, issue: object, info): void {
