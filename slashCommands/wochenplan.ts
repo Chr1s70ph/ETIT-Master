@@ -1,4 +1,4 @@
-import { Interaction, Message, MessageEmbed } from 'discord.js'
+import { Interaction, MessageEmbed } from 'discord.js'
 import moment from 'moment-timezone'
 import { async } from 'node-ical'
 import { DiscordClient } from '../types/customTypes'
