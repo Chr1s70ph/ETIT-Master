@@ -12,13 +12,13 @@
     "author": "Christoph Bluem",
     "dependencies": {
         "discord-api-types": "^0.25.2",
-        "discord.js": "^13.4.0-dev.1639526739.a0fe0ac",
+        "discord.js": "^13.4.0-dev.1639656190.b9b60a3",
         "eslint-config-prettier": "^8.3.0",
         "eslint-plugin-import": "^2.25.3",
         "eslint-plugin-prettier": "^4.0.0",
         "fs": "^0.0.1-security",
         "github-create-issue": "^1.0.1",
-        "i18next": "^21.6.0",
+        "i18next": "^21.6.2",
         "i18next-fs-backend": "^1.1.4",
         "luxon": "^2.2.0",
         "moment": "^2.29.1",
@@ -34,6 +34,6 @@
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^5.7.0",
         "@typescript-eslint/parser": "^5.7.0",
-        "eslint": "^8.4.1"
+        "eslint": "^8.5.0"
     }
 }
