@@ -16,7 +16,7 @@ exports.description = 'Displays some information about the channel and its users
 
 exports.usage = 'channelinfo {#channel}'
 
-exports.run = async (client: DiscordClient, message: Message, args: string[]) => {
+exports.run = async (client: DiscordClient, message: Message, language: string, args: string[]) => {
   /**
    * Channel to display information about.
    */
