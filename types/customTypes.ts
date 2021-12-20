@@ -1,3 +1,4 @@
+import { readdirSync } from 'fs'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Client, Message, TextChannel, MessageOptions, Collection } from 'discord.js'
 import i18next from 'i18next'
@@ -96,11 +97,44 @@ export class DiscordClient extends Client {
   }
 
   /**
-   * Translate {@link trans.key} using {@link trans.lng} or alternatively {@link trans.options}.
-   * @param  {trans} args Arguments to use to translate
+   * Get user language.
+   * @param  {Message} message Message sent by user
    * @returns {string}
    */
-  public translate(args: trans): string {
+  public getLanguage(message: Message): string {
+    /**
+     * List of all defined languages in './locales/'.
+     */
+    const files = readdirSync('./locales/')
+
+    /**
+     * Loop through all languages.
+     */
+    for (const file of files) {
+      /**
+       * Remove '.json' filetype from file name
+       */
+      const language = file.split('.')[0]
+
+      /**
+       * Return language if match is found.
+       */
+      if (message.member.roles.cache.some(role => role.name === language)) return language
+    }
+
+    /**
+     * Return null if no language match is found.
+     */
+    return null
+  }
+
+  /**
+   * Translate {@link translation_options.key} using {@link translation_options.lng}
+   * or alternatively {@link translation_options.options}.
+   * @param  {translation_options} args Arguments to use to translate
+   * @returns {string}
+   */
+  public translate(args: translation_options): string {
     const options = args.options ?? args.lng ? { lng: args.lng } : null
     return i18next.t(args.key, options)
   }
@@ -111,7 +145,7 @@ export class DiscordClient extends Client {
  * @readonly
  * @private
  */
-interface trans {
+interface translation_options {
   key: string | string[]
   lng?: string
   options?: object | string
