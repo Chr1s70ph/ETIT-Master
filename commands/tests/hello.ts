@@ -2,11 +2,11 @@ import { Message } from 'discord.js'
 
 import { DiscordClient } from '../../types/customTypes'
 
-exports.name = 'devtest'
+exports.name = 'hello'
 
-exports.description = 'Testfunktion von neuen Features'
+exports.description = 'Hallo welt!'
 
-exports.usage = 'devtest'
+exports.usage = 'hello'
 
 exports.aliases = ['hallo']
 
