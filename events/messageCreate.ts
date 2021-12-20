@@ -38,9 +38,14 @@ exports.run = (client: DiscordClient, message: Message) => {
     if (commandfile === undefined) return
 
     /**
+     * Get language for user.
+     */
+    const userLanguage: string = client.getLanguage(message) ?? client.config.defaultLanguage
+
+    /**
      * Run the command.
      */
-    executeCommand(message, commandfile, client, args, commandName)
+    executeCommand(message, commandfile, client, args, commandName, userLanguage)
   }
 }
 
@@ -146,6 +151,7 @@ function getCommandData(
  * @param {DiscordClient} client Bot-Client
  * @param {string[]} args Arguments used by the user
  * @param {string} commandName Name of the selected command
+ * @param {string} language Language for user
  * @returns {void}
  */
 function executeCommand(
@@ -154,6 +160,7 @@ function executeCommand(
   client: DiscordClient,
   args: string[],
   commandName: string,
+  language: string,
 ): void {
   try {
     /**
@@ -165,7 +172,7 @@ function executeCommand(
      * Runs the selected command.
      * Delete the message issuing the command after it replied successfully.
      */
-    commandfile.run(client, message, args)?.then(msg => msg?.delete())
+    commandfile.run(client, message, language, args)?.then(msg => msg?.delete())
 
     /**
      * Increment the counter of issued commands since last restart.
