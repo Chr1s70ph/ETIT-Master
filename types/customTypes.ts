@@ -123,9 +123,9 @@ export class DiscordClient extends Client {
     }
 
     /**
-     * Return null if no language match is found.
+     * Return undefined if no language match is found.
      */
-    return null
+    return undefined
   }
 
   /**
