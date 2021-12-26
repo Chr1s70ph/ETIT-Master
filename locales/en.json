@@ -1,5 +1,46 @@
 {
-    "devtest": {
-        "welcome": "hello world"
+    "commands": {
+        "admin": {
+            "missingPermission": "You do not have permission to perform that command.",
+            "devtest": {},
+            "restart": {
+                "feedback": "🤖Restarting..."
+            },
+            "say": {},
+            "status": {
+                "feedback": "👥Presence has been updated!"
+            }
+        },
+        "fun": {
+            "fact": {},
+            "komedi": {},
+            "tenor": {}
+        },
+        "tests": {
+            "hello": {
+                "welcome": "hello world"
+            }
+        },
+        "utility": {
+            "antwortaufalles": {},
+            "channelinfo": {},
+            "command": {},
+            "countdown": {},
+            "git": {},
+            "liftoff": {},
+            "onlinecount": {},
+            "ping": {},
+            "start": {},
+            "test": {},
+            "uptime": {},
+            "userprofile": {},
+            "zoom": {}
+        }
+    },
+    "slashCommands": {
+        "help": {},
+        "issue": {},
+        "ping": {},
+        "wochenplan": {}
     }
 }
