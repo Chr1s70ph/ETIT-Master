@@ -1,5 +1,5 @@
 import { Message, PresenceData as setPresenceData, PresenceStatusData } from 'discord.js'
-import { DiscordClient } from '../../types/customTypes'
+import { DiscordClient, DiscordMessage } from '../../types/customTypes'
 exports.name = 'status'
 
 exports.description = 'Setzt den Status des Bottes'
@@ -24,12 +24,14 @@ const presence: setPresenceData = {
 
 exports.presence = presence
 
-exports.run = (client: DiscordClient, message: Message) => {
+exports.run = (client: DiscordClient, message: DiscordMessage) => {
   /**
    * Check if user has the correct rights to execute the command.
    */
   if (!Object.values(client.config.ids.acceptedAdmins).includes(message.author.id)) {
-    return client.reply(message, { content: 'You do not have the permissions to perform that command.' })
+    return client.reply(message, {
+      content: client.translate({ key: 'commands.admin.missingPermission', lng: message.author.language }),
+    })
   }
 
   /**
@@ -37,7 +39,7 @@ exports.run = (client: DiscordClient, message: Message) => {
    */
   let messageContent: string = message.content
 
-  messageContent = messageContent.split('.status')[1]
+  messageContent = messageContent.split(`${client.config.prefix}status`)[1]
 
   /**
    * Set activity name.
@@ -84,12 +86,18 @@ function getPresenceStatusData(messageContent: string): PresenceStatusData {
 }
 
 /**
- *
  * @param {DiscordClient} client {@link DiscordClient}
- * @param {Message} message Command {@link Message}
+ * @param {DiscordMessage} message Command {@link Message}
  * @param {setPresenceData} _presence {@link setPresenceData}
+ * @returns {Promise<Message<boolean>>}
  */
-function setPresenceData(client: DiscordClient, message: Message, _presence: setPresenceData): void {
+function setPresenceData(
+  client: DiscordClient,
+  message: DiscordMessage,
+  _presence: setPresenceData,
+): Promise<Message<boolean>> {
   client.user.setPresence(_presence)
-  message.channel.send('👥Präsenz wurde geupdated!')
+  return client.send(message, {
+    content: client.translate({ key: 'commands.admin.status.feedback', lng: message.author.language }),
+  })
 }

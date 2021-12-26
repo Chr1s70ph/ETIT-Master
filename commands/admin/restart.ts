@@ -1,5 +1,5 @@
-import { Message } from 'discord.js'
-import { DiscordClient } from '../../types/customTypes'
+import { DiscordClient, DiscordMessage } from '../../types/customTypes'
+
 /**
  * Const required, otherwise pm2 throws an error.
  */
@@ -11,16 +11,20 @@ exports.description = ''
 
 exports.usage = 'restart'
 
-exports.run = (client: DiscordClient, message: Message) => {
+exports.run = (client: DiscordClient, message: DiscordMessage) => {
   /**
    * Check if user has the correct rights to execute the command.
    */
   if (!Object.values(client.config.ids.acceptedAdmins).includes(message.author.id)) {
-    return client.reply(message, { content: 'You do not have the permissions to perform that command.' })
+    return client.reply(message, {
+      content: client.translate({ key: 'commands.admin.missingPermission', lng: message.author.language }),
+    })
   }
 
   pm2Handle()
-  return client.send(message, { content: '🤖Restarting...' })
+  return client.send(message, {
+    content: client.translate({ key: 'commands.admin.restart.feedback', lng: message.author.language }),
+  })
 }
 
 /**
