@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { MessageEmbed, Message, MessageMentions, UserMention, MessageEmbedFooter } from 'discord.js'
-import { DiscordClient } from '../../types/customTypes'
+import { DiscordClient, DiscordMessage } from '../../types/customTypes'
 
 exports.name = 'tenor'
 
@@ -10,7 +10,7 @@ exports.usage = `tenor <searchQuery>`
 
 exports.aliases = ['gif']
 
-exports.run = (client: DiscordClient, message: Message, language: string, args: string[]) => {
+exports.run = (client: DiscordClient, message: DiscordMessage, language: string, args: string[]) => {
   /**
    * Get {@link UserMention} from message.
    * @type {string}
@@ -26,7 +26,9 @@ exports.run = (client: DiscordClient, message: Message, language: string, args: 
    * Send reply.
    */
   return searchQuery.length === 0
-    ? client.send(message, { content: 'Bitte gebe einen suchwort an!' })
+    ? client.send(message, {
+        content: client.translate({ key: 'commands.fun.tenor.ErrorMissingSearchQuery', lng: message.author.language }),
+      })
     : queryTenorAndReply(client, searchQuery, message, userPing)
 }
 
@@ -49,14 +51,14 @@ function removeMatching(originalArray: string[], regex: RegExp): string[] {
  * Query the Tenor-API and send a reply with a random GIF.
  * @param {DiscordClient} client Bot-Client.
  * @param {string} searchQuery Query to search for with the tenor api
- * @param {Message<boolean>} message Command-message to respond to
+ * @param {DiscordMessage} message Command-message to respond to
  * @param {string} userPing User to mention
  * @returns {any}
  */
 function queryTenorAndReply(
   client: DiscordClient,
   searchQuery: string,
-  message: Message<boolean>,
+  message: DiscordMessage,
   userPing: string,
 ): any {
   /**
@@ -81,9 +83,15 @@ function queryTenorAndReply(
      * Set image of embed if Tenor query returned any.
      * If no results have been returned, set Description to tell user that nothing has been found.
      */
+    // ? embed.setDescription(`<@${message.author.id}> Es konnten keine Gifs gefunden werden für: '${searchQuery}'`)
     embed =
       Results.length === 0
-        ? embed.setDescription(`<@${message.author.id}> Es konnten keine Gifs gefunden werden für: '${searchQuery}'`)
+        ? embed.setDescription(
+            client.translate({
+              key: 'commands.fun.tenor.ErrorNoGifsFound',
+              options: { userID: message.author.id, searchQuery: searchQuery, lng: message.author.language },
+            }),
+          )
         : embed.setImage(Results[0].media.find(element => Object.prototype.hasOwnProperty.call(element, 'gif')).gif.url)
 
     /**

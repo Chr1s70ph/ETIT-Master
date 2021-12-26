@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs'
-import { Message, MessageEmbed } from 'discord.js'
-import { DiscordClient } from '../../types/customTypes'
+import { MessageEmbed } from 'discord.js'
+import { DiscordClient, DiscordMessage } from '../../types/customTypes'
 
 const FACTS_FILE = './data/facts.txt'
 
@@ -10,7 +10,7 @@ exports.description = 'Willst du Fakten? Dann bist du hier genau richtig.'
 
 exports.usage = 'fact'
 
-exports.run = (client: DiscordClient, message: Message) => {
+exports.run = (client: DiscordClient, message: DiscordMessage) => {
   /**
    * Read data from facts file.
    * @type {string}
@@ -29,7 +29,7 @@ exports.run = (client: DiscordClient, message: Message) => {
   return client.send(message, {
     embeds: [
       new MessageEmbed()
-        .setTitle('🧠Fact')
+        .setTitle(client.translate({ key: 'commands.fun.fact.feedback', lng: message.author.language }))
         .setDescription(fact)
         .setFooter(message.author.tag, message.author.avatarURL({ dynamic: true })),
     ],

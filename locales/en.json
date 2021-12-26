@@ -12,9 +12,14 @@
             }
         },
         "fun": {
-            "fact": {},
+            "fact": {
+                "feedback": "🧠Fact"
+            },
             "komedi": {},
-            "tenor": {}
+            "tenor": {
+                "ErrorMissingSearchQuery": "Please enter a search query!",
+                "ErrorNoGifsFound": "<@{{userID}}> No Gifs have been found for : '{{searchQuery}}'"
+            }
         },
         "tests": {
             "hello": {
