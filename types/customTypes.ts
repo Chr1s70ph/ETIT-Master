@@ -1,6 +1,6 @@
 import { readdirSync } from 'fs'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Client, Message, TextChannel, MessageOptions, Collection } from 'discord.js'
+import { Client, Message, TextChannel, MessageOptions, Collection, User } from 'discord.js'
 import i18next from 'i18next'
 
 /**
@@ -101,7 +101,7 @@ export class DiscordClient extends Client {
    * @param  {Message} message Message sent by user
    * @returns {string}
    */
-  public getLanguage(message: Message): string {
+  public getLanguage(message: DiscordMessage): string {
     /**
      * List of all defined languages in './locales/'.
      */
@@ -119,13 +119,15 @@ export class DiscordClient extends Client {
       /**
        * Return language if match is found.
        */
-      if (message.member.roles.cache.some(role => role.name === language)) return language
+      if (message.member.roles.cache.some(role => role.name === language)) {
+        return (message.author.language = language)
+      }
     }
 
     /**
-     * Return undefined if no language match is found.
+     * Return default language if no language match is found.
      */
-    return undefined
+    return (message.author.language = 'en')
   }
 
   /**
@@ -138,6 +140,20 @@ export class DiscordClient extends Client {
     const options = args.options ?? args.lng ? { lng: args.lng } : null
     return i18next.t(args.key, options)
   }
+}
+
+/**
+ * Extended Message to hold DiscordUser.
+ */
+export interface DiscordMessage extends Message {
+  author: DiscordUser
+}
+
+/**
+ * Extended User to hold language.
+ */
+class DiscordUser extends User {
+  language: string
 }
 
 /**
