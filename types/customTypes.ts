@@ -137,7 +137,7 @@ export class DiscordClient extends Client {
    * @returns {string}
    */
   public translate(args: translation_options): string {
-    const options = args.options ?? args.lng ? { lng: args.lng } : null
+    const options = args.options ?? { lng: args.lng ?? 'en' }
     return i18next.t(args.key, options)
   }
 }
