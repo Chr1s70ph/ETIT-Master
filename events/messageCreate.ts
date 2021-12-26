@@ -1,6 +1,5 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Message, MessageEmbed, MessagePayload } from 'discord.js'
-import { DiscordClient } from '../types/customTypes'
+import { MessageEmbed } from 'discord.js'
+import { DiscordClient, DiscordMessage } from '../types/customTypes'
 const tx2 = require('tx2')
 
 /**
@@ -10,7 +9,7 @@ const commandsCounter = tx2.counter({
   name: 'Commands used',
 })
 
-exports.run = (client: DiscordClient, message: Message) => {
+exports.run = (client: DiscordClient, message: DiscordMessage) => {
   /**
    * Only respond to messages sent by users.
    */
@@ -40,12 +39,12 @@ exports.run = (client: DiscordClient, message: Message) => {
     /**
      * Get language for user.
      */
-    const userLanguage: string = client.getLanguage(message) ?? client.config.defaultLanguage
+    client.getLanguage(message)
 
     /**
      * Run the command.
      */
-    executeCommand(message, commandfile, client, args, commandName, userLanguage)
+    executeCommand(message, commandfile, client, args, commandName)
   }
 }
 
@@ -54,7 +53,7 @@ exports.run = (client: DiscordClient, message: Message) => {
  * @param {Message<boolean>} message Message sent by user
  * @param {DiscordClient} client Bot-Client
  */
-function dmForwarding(message: Message<boolean>, client: DiscordClient): void {
+function dmForwarding(message: DiscordMessage, client: DiscordClient): void {
   /**
    * Payload containing info about the user and the message he sent.
    */
@@ -93,7 +92,7 @@ function dmForwarding(message: Message<boolean>, client: DiscordClient): void {
  * @param {any} messagePayload {@link messagePayload}
  * @returns {MessageEmbed}
  */
-function userMessageEmbed(message: Message<boolean>, messagePayload: any): MessageEmbed {
+function userMessageEmbed(message: DiscordMessage, messagePayload: any): MessageEmbed {
   /**
    * Return {@link MessageEmbed} with information about the user and what he sent.
    */
@@ -115,7 +114,7 @@ function userMessageEmbed(message: Message<boolean>, messagePayload: any): Messa
  * @returns {string}
  */
 function getCommandData(
-  message: Message<boolean>,
+  message: DiscordMessage,
   client: DiscordClient,
 ): { commandfile: any; args: string[]; commandName: string } {
   /**
@@ -146,7 +145,7 @@ function getCommandData(
 }
 
 /**
- * @param {Message<boolean>} message Message sent by the user
+ * @param {DiscordMessage} message Message sent by the user
  * @param {any} commandfile Selected command
  * @param {DiscordClient} client Bot-Client
  * @param {string[]} args Arguments used by the user
@@ -155,12 +154,11 @@ function getCommandData(
  * @returns {void}
  */
 function executeCommand(
-  message: Message<boolean>,
+  message: DiscordMessage,
   commandfile: any,
   client: DiscordClient,
   args: string[],
   commandName: string,
-  language: string,
 ): void {
   try {
     /**
@@ -172,7 +170,7 @@ function executeCommand(
      * Runs the selected command.
      * Delete the message issuing the command after it replied successfully.
      */
-    commandfile.run(client, message, language, args)?.then(msg => msg?.delete())
+    commandfile.run(client, message, message.author.language, args)?.then(msg => msg?.delete())
 
     /**
      * Increment the counter of issued commands since last restart.
