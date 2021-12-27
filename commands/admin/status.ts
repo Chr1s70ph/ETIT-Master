@@ -98,6 +98,6 @@ function setPresenceData(
 ): Promise<Message<boolean>> {
   client.user.setPresence(_presence)
   return client.send(message, {
-    content: client.translate({ key: 'commands.admin.status.feedback', lng: message.author.language }),
+    content: client.translate({ key: 'commands.admin.status', lng: message.author.language }),
   })
 }

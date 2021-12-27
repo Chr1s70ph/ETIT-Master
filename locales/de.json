@@ -3,18 +3,12 @@
         "admin": {
             "missingPermission": "Du bist nicht berechtigt, diesen Befehl auszuführen.",
             "devtest": {},
-            "restart": {
-                "feedback": "🤖Starte neu..."
-            },
+            "restart": "🤖Starte neu...",
             "say": {},
-            "status": {
-                "feedback": "👥Präsenz wurde geändert!"
-            }
+            "status": "👥Präsenz wurde geändert!"
         },
         "fun": {
-            "fact": {
-                "feedback": "🧠Fakt"
-            },
+            "fact": "🧠Fakt",
             "komedi": {},
             "tenor": {
                 "ErrorMissingSearchQuery": "Bitte gebe ein suchwort an!",
@@ -27,8 +21,10 @@
             }
         },
         "utility": {
-            "antwortaufalles": {},
-            "channelinfo": {},
+            "antwortaufalles": "Die Antwort auf die Frage nach dem Leben, dem Universum und dem ganzen Rest ist :four::two:",
+            "channelinfo": {
+                "ErrorNotAvailable": "Kanalinformationen sind in diesem Kanal nicht verfügbar. Versuche es mit einem anderen Kanal."
+            },
             "command": {},
             "countdown": {},
             "git": {},

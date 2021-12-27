@@ -23,7 +23,7 @@ exports.run = (client: DiscordClient, message: DiscordMessage) => {
 
   pm2Handle()
   return client.send(message, {
-    content: client.translate({ key: 'commands.admin.restart.feedback', lng: message.author.language }),
+    content: client.translate({ key: 'commands.admin.restart', lng: message.author.language }),
   })
 }
 

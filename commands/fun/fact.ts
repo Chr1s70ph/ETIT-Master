@@ -29,7 +29,7 @@ exports.run = (client: DiscordClient, message: DiscordMessage) => {
   return client.send(message, {
     embeds: [
       new MessageEmbed()
-        .setTitle(client.translate({ key: 'commands.fun.fact.feedback', lng: message.author.language }))
+        .setTitle(client.translate({ key: 'commands.fun.fact', lng: message.author.language }))
         .setDescription(fact)
         .setFooter(message.author.tag, message.author.avatarURL({ dynamic: true })),
     ],

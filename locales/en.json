@@ -3,18 +3,12 @@
         "admin": {
             "missingPermission": "You do not have permission to perform that command.",
             "devtest": {},
-            "restart": {
-                "feedback": "🤖Restarting..."
-            },
+            "restart": "🤖Restarting...",
             "say": {},
-            "status": {
-                "feedback": "👥Presence has been updated!"
-            }
+            "status": "👥Presence has been updated!"
         },
         "fun": {
-            "fact": {
-                "feedback": "🧠Fact"
-            },
+            "fact": "🧠Fact",
             "komedi": {},
             "tenor": {
                 "ErrorMissingSearchQuery": "Please enter a search query!",
@@ -27,8 +21,10 @@
             }
         },
         "utility": {
-            "antwortaufalles": {},
-            "channelinfo": {},
+            "antwortaufalles": "The answer to the question about life, the universe, and all the rest is :four: :two:",
+            "channelinfo": {
+                "ErrorNotAvailable": "Channel info is not available in this channel. Try a different channel."
+            },
             "command": {},
             "countdown": {},
             "git": {},
