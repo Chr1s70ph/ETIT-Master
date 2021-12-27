@@ -23,6 +23,7 @@
         "utility": {
             "antwortaufalles": "The answer to the question about life, the universe, and all the rest is :four: :two:",
             "channelinfo": {
+                "Answer": "Number of channel members: {{memberNumber}}\nin {{channelName}}.",
                 "ErrorNotAvailable": "Channel info is not available in this channel. Try a different channel."
             },
             "command": {},

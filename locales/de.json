@@ -23,6 +23,7 @@
         "utility": {
             "antwortaufalles": "Die Antwort auf die Frage nach dem Leben, dem Universum und dem ganzen Rest ist :four::two:",
             "channelinfo": {
+                "Answer": "Anzahl an Kanalmitgliedern in: {{memberNumber}}\nin {{channelName}}.",
                 "ErrorNotAvailable": "Kanalinformationen sind in diesem Kanal nicht verfügbar. Versuche es mit einem anderen Kanal."
             },
             "command": {},

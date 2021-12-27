@@ -15,7 +15,7 @@ exports.description = 'Displays some information about the channel and its users
 
 exports.usage = 'channelinfo {#channel}'
 
-exports.run = async (client: DiscordClient, message: DiscordMessage, language: string, args: string[]) => {
+exports.run = async (client: DiscordClient, message: DiscordMessage, args: string[]) => {
   /**
    * Channel to display information about.
    */
@@ -43,7 +43,16 @@ exports.run = async (client: DiscordClient, message: DiscordMessage, language: s
       embeds: [
         new MessageEmbed()
           .setAuthor({ name: client.user.tag, iconURL: client.user.avatarURL() })
-          .setTitle(`Anzahl an Kanalmitgliedern: ${CHANNEL.members.size.toString()}\nin ${CHANNEL.name}`)
+          .setTitle(
+            client.translate({
+              key: 'commands.utility.channelinfo.Answer',
+              options: {
+                memberNumber: CHANNEL.members.size.toString(),
+                channelName: CHANNEL.name,
+                lng: message.author.language,
+              },
+            }),
+          )
           .setColor('BLURPLE')
           .setDescription(cutUserList),
       ],
