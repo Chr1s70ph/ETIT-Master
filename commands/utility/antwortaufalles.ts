@@ -1,5 +1,5 @@
-import { Message, MessageEmbed } from 'discord.js'
-import { DiscordClient } from '../../types/customTypes'
+import { MessageEmbed } from 'discord.js'
+import { DiscordClient, DiscordMessage } from '../../types/customTypes'
 
 exports.name = 'antwortaufalles'
 
@@ -7,14 +7,14 @@ exports.description = 'Was ist die Antwort auf alles?'
 
 exports.usage = 'antwortaufalles'
 
-exports.run = (client: DiscordClient, message: Message) =>
+exports.run = (client: DiscordClient, message: DiscordMessage) =>
   /**
    * Reply with the anwer to everything.
    */
   client.reply(message, {
     embeds: [
       new MessageEmbed().setDescription(
-        'Die Antwort auf die Frage nach dem Leben, dem Universum und dem ganzen Rest ist :four::two:',
+        client.translate({ key: 'commands.utility.antwortaufalles', lng: message.author.language }),
       ),
     ],
   })
