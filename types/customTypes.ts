@@ -119,7 +119,7 @@ export class DiscordClient extends Client {
       /**
        * Return language if match is found.
        */
-      if (message.member.roles.cache.some(role => role.name === language)) {
+      if (message.member?.roles?.cache.some(role => role.name === language)) {
         return (message.author.language = language)
       }
     }
