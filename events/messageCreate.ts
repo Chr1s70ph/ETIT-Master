@@ -170,7 +170,9 @@ function executeCommand(
      * Runs the selected command.
      * Delete the message issuing the command after it replied successfully.
      */
-    commandfile.run(client, message, message.author.language, args)?.then(msg => msg?.delete())
+    commandfile.run(client, message, args)?.then(msg => {
+      if (msg?.deletable) msg?.delete()
+    })
 
     /**
      * Increment the counter of issued commands since last restart.
