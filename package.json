@@ -12,7 +12,7 @@
     "author": "Christoph Bluem",
     "dependencies": {
         "discord-api-types": "^0.26.0",
-        "discord.js": "^13.5.0-dev.1640520180.f1d35e3",
+        "discord.js": "^13.5.0-dev.1640563809.d0c3961",
         "eslint-config-prettier": "^8.3.0",
         "eslint-plugin-import": "^2.25.3",
         "eslint-plugin-prettier": "^4.0.0",
@@ -32,8 +32,8 @@
         "valid-url": "^1.0.9"
     },
     "devDependencies": {
-        "@typescript-eslint/eslint-plugin": "^5.8.0",
-        "@typescript-eslint/parser": "^5.8.0",
+        "@typescript-eslint/eslint-plugin": "^5.8.1",
+        "@typescript-eslint/parser": "^5.8.1",
         "eslint": "^8.5.0"
     }
 }
