@@ -26,7 +26,13 @@
                 "Answer": "Anzahl an Kanalmitgliedern in: {{memberNumber}}\nin {{channelName}}.",
                 "ErrorNotAvailable": "Kanalinformationen sind in diesem Kanal nicht verfügbar. Versuche es mit einem anderen Kanal."
             },
-            "command": {},
+            "command": {
+                "ErrorNoCommandName": "Bitte gebe einen Befehlsnamen an.",
+                "CommandHelp": "Befehlshilfe",
+                "Description": "Beschreibung",
+                "Usage": "Benutzung",
+                "Aliases": "Aliase"
+            },
             "countdown": {},
             "git": {},
             "liftoff": {},

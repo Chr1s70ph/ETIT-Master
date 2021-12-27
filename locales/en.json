@@ -26,7 +26,13 @@
                 "Answer": "Number of channel members: {{memberNumber}}\nin {{channelName}}.",
                 "ErrorNotAvailable": "Channel info is not available in this channel. Try a different channel."
             },
-            "command": {},
+            "command": {
+                "ErrorNoCommandName": "Please provide a command name.",
+                "CommandHelp": "Command assistance",
+                "Description": "Description",
+                "Usage": "Usage",
+                "Aliases": "Aliases"
+            },
             "countdown": {},
             "git": {},
             "liftoff": {},
