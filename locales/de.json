@@ -38,7 +38,11 @@
                 "Departure": "Abfluuuug",
                 "Liftoff": "🚀Abgehoben🚀"
             },
-            "git": {},
+            "git": {
+                "Title": "[🌐] GIT Wiki",
+                "Gitlab": "[Link]({{gitlab}}) zur Gitlab Startseite",
+                "Github": "Github [Repository]({{github}}) von <@{{userID}}>"
+            },
             "liftoff": {},
             "onlinecount": {},
             "ping": {},
