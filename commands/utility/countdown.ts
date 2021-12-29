@@ -58,7 +58,7 @@ function editEmbed(msg: DiscordMessage, msgEmbed: MessageEmbed, client: DiscordC
           msg.edit({
             embeds: [
               msgEmbed
-                .setTitle('Abfluuug')
+                .setTitle(client.translate({ key: 'commands.utility.countdown.Departure', lng: msg.author.language }))
                 .setDescription(
                   client.translate({ key: 'commands.utility.countdown.Liftoff', lng: msg.author.language }),
                 ),
