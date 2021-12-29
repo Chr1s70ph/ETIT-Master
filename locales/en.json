@@ -33,7 +33,11 @@
                 "Usage": "Usage",
                 "Aliases": "Aliases"
             },
-            "countdown": {},
+            "countdown": {
+                "Countdown": "Liftoff in:",
+                "Departure": "Departuuuure",
+                "Liftoff": "🚀Departed🚀"
+            },
             "git": {},
             "liftoff": {},
             "onlinecount": {},

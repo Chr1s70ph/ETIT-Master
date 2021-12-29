@@ -33,7 +33,11 @@
                 "Usage": "Benutzung",
                 "Aliases": "Aliase"
             },
-            "countdown": {},
+            "countdown": {
+                "Countdown": "Fahrstuhl aus in:",
+                "Departure": "Abfluuuug",
+                "Liftoff": "🚀Abgehoben🚀"
+            },
             "git": {},
             "liftoff": {},
             "onlinecount": {},
