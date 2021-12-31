@@ -1,5 +1,4 @@
 import { MessageEmbed } from 'discord.js'
-import { updateLocale } from 'moment'
 import { DiscordClient, DiscordMessage } from '../../types/customTypes'
 
 exports.name = 'uptime'
