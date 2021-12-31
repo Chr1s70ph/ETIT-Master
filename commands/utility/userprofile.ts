@@ -44,7 +44,7 @@ exports.run = async (client: DiscordClient, message: Message) => {
           true,
         )
         .setImage(forceFetchedUser.bannerURL({ size: 4096, dynamic: true }))
-        .setFooter(message.author.tag, message.author.avatarURL({ dynamic: true })),
+        .setFooter({ text: message.author.tag, iconURL: message.author.avatarURL({ dynamic: true }) }),
     ],
   })
 }
