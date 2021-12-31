@@ -49,7 +49,7 @@
                 "Idle": "🟡Abwesend",
                 "DND": "🔴Nicht stören"
             },
-            "ping": {},
+            "ping": "🏓Die Latenz beträgt {{latency}}ms. API - Latenz ist {{api_latency}}",
             "start": {},
             "test": {},
             "uptime": {},

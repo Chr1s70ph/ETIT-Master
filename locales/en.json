@@ -49,7 +49,7 @@
                 "Idle": "🟡Idle",
                 "DND": "🔴DND"
             },
-            "ping": {},
+            "ping": "🏓Latency is {{latency}}ms. API Latency is {{api_latency}}ms",
             "start": {},
             "test": {},
             "uptime": {},
