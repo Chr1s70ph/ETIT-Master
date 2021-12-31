@@ -31,6 +31,7 @@ exports.respond = async (client: DiscordClient, interaction: DiscordInteraction)
         new MessageEmbed()
           .setTitle(client.translate({ key: 'slashCommands.issue.Recieved', lng: interaction.user.language }))
           .setDescription(client.translate({ key: 'slashCommands.issue.Thanks', lng: interaction.user.language })),
+
       ],
       ephemeral: true,
     })
@@ -40,6 +41,7 @@ exports.respond = async (client: DiscordClient, interaction: DiscordInteraction)
         new MessageEmbed()
           .setTitle(client.translate({ key: 'slashCommands.issue.Error', lng: interaction.user.language }))
           .setDescription(client.translate({ key: 'slashCommands.issue.TryAgain', lng: interaction.user.language })),
+
       ],
     })
     throw new Error(error)
