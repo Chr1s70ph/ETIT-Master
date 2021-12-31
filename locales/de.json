@@ -70,7 +70,7 @@
         }
     },
     "slashCommands": {
-        "help": {},
+        "help": "Hilfe",
         "issue": {},
         "ping": {},
         "wochenplan": {}

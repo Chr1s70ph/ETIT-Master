@@ -1,6 +1,15 @@
 import { readdirSync } from 'fs'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Client, Message, TextChannel, MessageOptions, Collection, User } from 'discord.js'
+import {
+  Client,
+  Message,
+  TextChannel,
+  MessageOptions,
+  Collection,
+  User,
+  GuildMemberRoleManager,
+  MessageComponentInteraction,
+} from 'discord.js'
 import i18next from 'i18next'
 
 /**
@@ -13,6 +22,12 @@ export class DiscordClient extends Client {
    * @type {Collection<string, Command>}
    */
   public commands: Collection<string, Command>
+
+  /**
+   * Collection of all slashCommands to use
+   * @type {Collection<string, SlashCommand>}
+   */
+  public slashCommands: Collection<string, SlashCommand>
 
   /**
    * Config file imported into the DiscordClient for global access
@@ -99,9 +114,15 @@ export class DiscordClient extends Client {
   /**
    * Get user language.
    * @param  {Message} message Message sent by user
+   * @param {DiscordInteraction} interaction Interaction used by user
    * @returns {string}
    */
-  public getLanguage(message: DiscordMessage): string {
+  public getLanguage(message?: DiscordMessage, interaction?: DiscordInteraction): string {
+    /**
+     * Object of {@link DiscordUser}
+     */
+    const user = message ? message.author : interaction.user
+
     /**
      * List of all defined languages in './locales/'.
      */
@@ -119,15 +140,22 @@ export class DiscordClient extends Client {
       /**
        * Return language if match is found.
        */
-      if (message.member?.roles?.cache.some(role => role.name === language)) {
-        return (message.author.language = language)
+      if (message) {
+        if (message.member?.roles?.cache.some(role => role.name === language)) {
+          return (user.language = language)
+        }
+      } else if (interaction) {
+        const userRoles = interaction.member.roles as GuildMemberRoleManager
+        if (userRoles.cache.some(role => role.name === language)) {
+          return (user.language = language)
+        }
       }
     }
 
     /**
      * Return default language if no language match is found.
      */
-    return (message.author.language = 'en')
+    return (user.language = 'en')
   }
 
   /**
@@ -143,23 +171,28 @@ export class DiscordClient extends Client {
 }
 
 /**
- * Extended Message to hold DiscordUser.
+ * Extended Message to hold {@link DiscordUser}.
  */
 export interface DiscordMessage extends Message {
   author: DiscordUser
 }
 
 /**
+ * Extended Interaction to hold {@link DiscordUser}
+ */
+export interface DiscordInteraction extends MessageComponentInteraction {
+  user: DiscordUser
+}
+
+/**
  * Extended User to hold language.
  */
-class DiscordUser extends User {
+export interface DiscordUser extends User {
   language: string
 }
 
 /**
  * Interface for translation parameters
- * @readonly
- * @private
  */
 interface translation_options {
   key: string | string[]
@@ -169,8 +202,6 @@ interface translation_options {
 
 /**
  * Interface of Command structure
- * @readonly
- * @private
  */
 interface Command extends Object {
   name: string
@@ -178,4 +209,11 @@ interface Command extends Object {
   usage: string
   example: string
   aliases: string[]
+}
+
+interface SlashCommand extends Object {
+  name: string
+  description: string
+  usage: string
+  respond: any
 }

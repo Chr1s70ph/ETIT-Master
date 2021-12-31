@@ -1,28 +1,11 @@
-import { Interaction, MessageEmbed } from 'discord.js'
+import { SlashCommandBuilder } from '@discordjs/builders'
+import { MessageEmbed } from 'discord.js'
 const fs = require('fs')
 
-exports.run = async client => {
+export const data = new SlashCommandBuilder().setName('help').setDescription('hilfe ist hier')
+
+exports.respond = async (client, interaction: any): Promise<void> => {
   const embed = await getCommands(client)
-  await postSlashCommand(client)
-
-  client.on('interactionCreate', async (interaction: Interaction) => {
-    if (!interaction.isCommand()) return
-    const COMMAND = interaction.commandName
-    if (COMMAND !== 'help') return
-    await respond(interaction, embed)
-  })
-}
-
-async function postSlashCommand(client: any): Promise<void> {
-  await client.api.applications(client.user.id).commands.post({
-    data: {
-      name: 'help',
-      description: 'hilfe ist hier',
-    },
-  })
-}
-
-async function respond(interaction: any, embed: any): Promise<void> {
   console.log(`User ${interaction.user.username} issued /help`)
   await interaction.reply({ embeds: [embed.setTimestamp()], ephemeral: true })
 }
