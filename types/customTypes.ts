@@ -8,7 +8,7 @@ import {
   Collection,
   User,
   GuildMemberRoleManager,
-  MessageComponentInteraction,
+  CommandInteraction,
 } from 'discord.js'
 import i18next from 'i18next'
 
@@ -180,7 +180,7 @@ export interface DiscordMessage extends Message {
 /**
  * Extended Interaction to hold {@link DiscordUser}
  */
-export interface DiscordInteraction extends MessageComponentInteraction {
+export interface DiscordInteraction extends CommandInteraction {
   user: DiscordUser
 }
 
