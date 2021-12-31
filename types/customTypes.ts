@@ -1,8 +1,8 @@
 import { readdirSync } from 'fs'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {
   Client,
   Message,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   TextChannel,
   MessageOptions,
   Collection,
