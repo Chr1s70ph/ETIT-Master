@@ -1,19 +1,23 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
 import { MessageEmbed } from 'discord.js'
+import { DiscordClient, DiscordInteraction } from '../types/customTypes'
 const fs = require('fs')
 
 export const data = new SlashCommandBuilder().setName('help').setDescription('hilfe ist hier')
 
-exports.respond = async (client, interaction: any): Promise<void> => {
-  const embed = await getCommands(client)
+exports.respond = async (client: DiscordClient, interaction: DiscordInteraction): Promise<void> => {
+  const embed = await getCommands(client, interaction)
   console.log(`User ${interaction.user.username} issued /help`)
   await interaction.reply({ embeds: [embed.setTimestamp()], ephemeral: true })
 }
 
-async function getCommands(client): Promise<any> {
+async function getCommands(client: DiscordClient, interaction: DiscordInteraction): Promise<any> {
   const commandsEmbed = new MessageEmbed()
     .setColor('#ffa500')
-    .setAuthor({ name: 'Help', iconURL: 'https://bit.ly/3CJU0lf' })
+    .setAuthor({
+      name: client.translate({ key: 'slashCommands.help', lng: interaction.user.language }),
+      iconURL: 'https://bit.ly/3CJU0lf',
+    })
     .setTimestamp()
     .setFooter({
       text: `[ID] ${client.config.ids.userID.botUserID} \nstarted`,
@@ -32,7 +36,7 @@ async function getCommands(client): Promise<any> {
   return commandsEmbed
 }
 
-async function addCommandsFromSubFolder(_commandsEmbed, file): Promise<void> {
+async function addCommandsFromSubFolder(embed: MessageEmbed, file: string): Promise<void> {
   const sub_directory = `./commands/${file}/`
   try {
     const files = await fs.promises.readdir(sub_directory)
@@ -41,7 +45,7 @@ async function addCommandsFromSubFolder(_commandsEmbed, file): Promise<void> {
       const slicedFileName = command.split('.ts')[0]
       commandsInSubfolder += `${slicedFileName}\n`
     }
-    _commandsEmbed.addFields({
+    embed.addFields({
       name: file,
       value: commandsInSubfolder,
       inline: true,
