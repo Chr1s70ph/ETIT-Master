@@ -1,10 +1,10 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
+import { DiscordClient, DiscordInteraction } from '../types/customTypes'
 
 export const data = new SlashCommandBuilder()
   .setName('ping')
   .setDescription('Prüft, ob der Bot ordnungsgemäß antwortet')
 
-exports.respond = async (client: any, interaction: any): Promise<void> => {
-  console.log(`User ${interaction.user.username} issued /ping`)
+exports.respond = async (client: DiscordClient, interaction: DiscordInteraction): Promise<void> => {
   await interaction.reply({ content: 'pong', ephemeral: true })
 }
