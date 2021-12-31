@@ -1,7 +1,7 @@
 import { readdir } from 'fs/promises'
 import { SlashCommandBuilder } from '@discordjs/builders'
 import { MessageActionRow, MessageSelectMenu } from 'discord.js'
-import { DiscordClient, DiscordInteraction } from '../types/customTypes'
+import { DiscordClient, DiscordContextMenuInteraction, DiscordInteraction } from '../types/customTypes'
 
 export const data = new SlashCommandBuilder().setName('language').setDescription('Choose your language')
 
@@ -53,7 +53,7 @@ exports.respond = async (client: DiscordClient, interaction: DiscordInteraction)
      * Add {@link MessageSelectMenu}
      */
     new MessageSelectMenu()
-      .setCustomId('languageSelector')
+      .setCustomId('language')
       .setPlaceholder(client.translate({ key: 'slashCommands.language.DefaultSelect', lng: interaction.user.language }))
       .addOptions(options),
   )
@@ -65,4 +65,11 @@ exports.respond = async (client: DiscordClient, interaction: DiscordInteraction)
     content: client.translate({ key: 'slashCommands.language.Select', lng: interaction.user.language }),
     components: [row],
   })
+}
+
+exports.selectMenuResponse = (client: DiscordClient, interaction: DiscordContextMenuInteraction) => {
+  /**
+   * TODO reply to select menu
+   */
+  console.log('HERE')
 }

@@ -7,7 +7,6 @@ export const data = new SlashCommandBuilder().setName('help').setDescription('hi
 
 exports.respond = async (client: DiscordClient, interaction: DiscordInteraction): Promise<void> => {
   const embed = await getCommands(client, interaction)
-  console.log(`User ${interaction.user.username} issued /help`)
   await interaction.reply({ embeds: [embed.setTimestamp()], ephemeral: true })
 }
 

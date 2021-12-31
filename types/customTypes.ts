@@ -9,6 +9,7 @@ import {
   User,
   GuildMemberRoleManager,
   CommandInteraction,
+  ContextMenuInteraction,
 } from 'discord.js'
 import i18next from 'i18next'
 
@@ -184,6 +185,10 @@ export interface DiscordInteraction extends CommandInteraction {
   user: DiscordUser
 }
 
+export interface DiscordContextMenuInteraction extends ContextMenuInteraction {
+  user: DiscordUser
+}
+
 /**
  * Extended User to hold language.
  */
@@ -216,4 +221,5 @@ interface SlashCommand extends Object {
   description: string
   usage: string
   respond: any
+  selectMenuResponse?: any
 }
