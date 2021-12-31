@@ -71,7 +71,12 @@
     },
     "slashCommands": {
         "help": "Hilfe",
-        "issue": {},
+        "issue": {
+            "Recieved": "Vorschlag angekommen!",
+            "Thanks": "Vielen Dank für deinen Vorschlag!",
+            "Error": "⚠Fehler",
+            "TryAgain": "Es ist ein Fehler aufgetreten. Bitte versuche es später erneut."
+        },
         "ping": {},
         "wochenplan": {}
     }

@@ -71,7 +71,12 @@
     },
     "slashCommands": {
         "help": "Help",
-        "issue": {},
+        "issue": {
+            "Recieved": "Issue recieved!",
+            "Thanks": "Thank you for submitting your issue!",
+            "Error": "⚠Error",
+            "TryAgain": "An error occured. Please try again later."
+        },
         "ping": {},
         "wochenplan": {}
     }

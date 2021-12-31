@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
 import { MessageEmbed } from 'discord.js'
-import { DiscordClient } from '../types/customTypes'
+import { DiscordClient, DiscordInteraction } from '../types/customTypes'
 const createIssue = require('github-create-issue')
 const REPOSITORY = 'Chr1s70ph/ETIT-Master'
 
@@ -10,9 +10,7 @@ export const data = new SlashCommandBuilder()
   .addStringOption(option => option.setName('vorschlag').setDescription('Mein Vorschlag').setRequired(true))
   .addStringOption(option => option.setName('titel').setDescription('Titel meines Vorschlages'))
 
-exports.respond = async (client: DiscordClient, interaction): Promise<void> => {
-  console.log(`User ${interaction.user.username} issued /${interaction.commandName}`)
-
+exports.respond = async (client: DiscordClient, interaction: DiscordInteraction): Promise<void> => {
   const options = {
     token: client.config.github_token,
     body: interaction.options.getString('vorschlag'),
@@ -30,7 +28,9 @@ exports.respond = async (client: DiscordClient, interaction): Promise<void> => {
 
     await interaction.reply({
       embeds: [
-        new MessageEmbed().setTitle('Vorschlag angekommen!').setDescription('Vielen Dank für deinen Vorschlag!'),
+        new MessageEmbed()
+          .setTitle(client.translate({ key: 'slashCommands.issue.Recieved', lng: interaction.user.language }))
+          .setDescription(client.translate({ key: 'slashCommands.issue.Thanks', lng: interaction.user.language })),
       ],
       ephemeral: true,
     })
@@ -38,8 +38,8 @@ exports.respond = async (client: DiscordClient, interaction): Promise<void> => {
     await interaction.reply({
       embeds: [
         new MessageEmbed()
-          .setTitle('⚠Fehler')
-          .setDescription('Es ist ein Fehler aufgetreten. Bitte versuche es später erneut.'),
+          .setTitle(client.translate({ key: 'slashCommands.issue.Error', lng: interaction.user.language }))
+          .setDescription(client.translate({ key: 'slashCommands.issue.TryAgain', lng: interaction.user.language })),
       ],
     })
     throw new Error(error)
