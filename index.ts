@@ -135,6 +135,6 @@ export async function loadScripts(_client: DiscordClient) {
        */
       throw new Error(e)
     }
-    console.log(`Successfully executed startupScript ${file}`)
+    console.log(`Successfully started script ${file}`)
   })
 }
