@@ -1,6 +1,6 @@
-import { Message, User, MessageEmbed } from 'discord.js'
+import { User, MessageEmbed } from 'discord.js'
 import { GuildMember } from 'discord.js/typings/index.js'
-import { DiscordClient } from '../../types/customTypes'
+import { DiscordClient, DiscordMessage } from '../../types/customTypes'
 
 exports.name = 'userprofile'
 
@@ -10,7 +10,7 @@ exports.usage = 'userprofile {optional: @mentionedUser}'
 
 exports.aliases = ['profile']
 
-exports.run = async (client: DiscordClient, message: Message) => {
+exports.run = async (client: DiscordClient, message: DiscordMessage) => {
   /**
    * Set the user to fetch information about.
    */
@@ -33,14 +33,24 @@ exports.run = async (client: DiscordClient, message: Message) => {
   return client.reply(message, {
     embeds: [
       new MessageEmbed()
-        .setAuthor({ name: '👤UserProfile' })
+        .setAuthor({
+          name: client.translate({ key: 'commands.utility.userprofile.UserProfile', lng: message.author.language }),
+        })
         .setTitle(forceFetchedUser.tag)
         .setColor(messageUser.displayColor)
-        .setThumbnail(messageUser.displayAvatarURL({ dynamic: true }))
-        .addField('Joined:', `<t:${userJoinedTimestamp}:D>`, true)
+        .setThumbnail(messageUser.displayAvatarURL({ size: 4096, dynamic: true }))
+        .addField(
+          client.translate({ key: 'commands.utility.userprofile.Joined', lng: message.author.language }),
+          `<t:${userJoinedTimestamp}:D>`,
+          true,
+        )
         .addField(
           'Nitro:',
-          `${userPremiumSinceTimestamp ? `<t:${userPremiumSinceTimestamp}:D>` : 'Not currently subscribed'}`,
+          `${
+            userPremiumSinceTimestamp
+              ? `<t:${userPremiumSinceTimestamp}:D>`
+              : client.translate({ key: 'commands.utility.userprofile.NoNitroStatus', lng: message.author.language })
+          }`,
           true,
         )
         .setImage(forceFetchedUser.bannerURL({ size: 4096, dynamic: true }))
@@ -51,13 +61,13 @@ exports.run = async (client: DiscordClient, message: Message) => {
 
 /**
  *
- * @param {Message} message Message sent by the user
+ * @param {DiscordMessage} message Message sent by the user
  * @param {GuildMember} user User to fetch information about
  * @param {DiscordClient} client Bot-Client
  * @returns {{User, GuildMember, string, string}}
  */
 async function getUserInfo(
-  message: Message<boolean>,
+  message: DiscordMessage,
   user: GuildMember,
   client: DiscordClient,
 ): Promise<{

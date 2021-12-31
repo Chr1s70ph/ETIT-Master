@@ -61,7 +61,11 @@
                 "Time": "Time since last restart:",
                 "Info": "{{days}} Days, {{hours}} Hours, {{minutes}} Minutes, {{seconds}} Seconds"
             },
-            "userprofile": {},
+            "userprofile": {
+                "UserProfile": "👤Userprofile",
+                "Joined": "Joined:",
+                "NoNitroStatus": "Not currently subscribed"
+            },
             "zoom": {}
         }
     },
