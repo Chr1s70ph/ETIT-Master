@@ -1,6 +1,6 @@
-import { Message, MessageEmbed } from 'discord.js'
+import { MessageEmbed } from 'discord.js'
 import fetch from 'node-fetch'
-import { DiscordClient } from '../../types/customTypes'
+import { DiscordClient, DiscordMessage } from '../../types/customTypes'
 /**
  * NOTE:
  * This code is heavily inspired by the discord-together package
@@ -30,12 +30,12 @@ const defaultApplications = {
 }
 exports.name = 'start'
 
-exports.description = `Trickst die API aus um Discord-Spiele freizuschalten. 
+exports.description = `Trickst die API aus um Discord-Spiele freizuschalten.
 	**NOTIZ**: Nicht alle Spiele sind vollends implementiert`
 
 exports.usage = `start \`${Object.keys(defaultApplications)}\``
 
-exports.run = async (client: DiscordClient, message: Message, args: any, applications = defaultApplications) => {
+exports.run = async (client: DiscordClient, message: DiscordMessage, args: any, applications = defaultApplications) => {
   /**
    * Throw an error, if the user is not in a voiceChannel.
    */
@@ -43,8 +43,7 @@ exports.run = async (client: DiscordClient, message: Message, args: any, applica
     return client.reply(message, {
       embeds: [
         new MessageEmbed().setDescription(
-          `⚠️ You are not in a Voice-Channel.
-						Please join a Voice-Channel to use this function`,
+          client.translate({ key: 'commands.utility.start.ErrorNoVoice', lng: message.author.language }),
         ),
       ],
     })
@@ -85,7 +84,11 @@ exports.run = async (client: DiscordClient, message: Message, args: any, applica
      * Send reply telling the user, that the application they selected does not exist.
      */
     return client.reply(message, {
-      embeds: [new MessageEmbed().setDescription(`⚠️ Invalid option!`)],
+      embeds: [
+        new MessageEmbed().setDescription(
+          client.translate({ key: 'commands.utility.start.ErrorInvalidOption', lng: message.author.language }),
+        ),
+      ],
     })
   }
 
@@ -96,7 +99,10 @@ exports.run = async (client: DiscordClient, message: Message, args: any, applica
     content: returnData.code,
     embeds: [
       new MessageEmbed().setDescription(
-        `❔ If you can't join the activity **create it** by clicking the **[link](${returnData.code})** above.`,
+        client.translate({
+          key: 'commands.utility.start.Info',
+          options: { invite: returnData.code, lng: message.author.language },
+        }),
       ),
     ],
   })

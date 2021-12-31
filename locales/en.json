@@ -40,8 +40,8 @@
             },
             "git": {
                 "Title": "[🌐] GIT Wiki",
-                "Gitlab": "[Link]({{gitlab}}) to Gitlab Homepage",
-                "Github": "Github [Repository]({{github}}) of <@{{userID}}>"
+                "Gitlab": "[Link]({{- gitlab}}) to Gitlab Homepage",
+                "Github": "Github [Repository]({{- github}}) of <@{{userID}}>"
             },
             "onlinecount": {
                 "OnlineCounter": "[🌐] Online Counter",
@@ -50,7 +50,11 @@
                 "DND": "🔴DND"
             },
             "ping": "🏓Latency is {{latency}}ms. API Latency is {{api_latency}}ms",
-            "start": {},
+            "start": {
+                "ErrorNoVoice": "⚠️ You are not in a Voice-Channel.\nPlease join a Voice-Channel to use this command.",
+                "ErrorInvalidOption": "⚠️ Invalid option!",
+                "Info": "❔ If you can't join the activity **create it** by clicking the **[Link]({{- invite}})** above."
+            },
             "test": {},
             "uptime": {},
             "userprofile": {},
