@@ -56,7 +56,11 @@
                 "Info": "❔ Wenn du der Aktivität nicht beitreten kannst, **erstelle ** sie, indem du oben auf den **[Link]({{- invite}})** klickst."
             },
             "test": "🌐Dieser Bot funktioniert einwandfrei!",
-            "uptime": {},
+            "uptime": {
+                "Title": "⏰Betriebszeit",
+                "Time": "Zeit seit dem letzten neustart:",
+                "Info": "{{days}} Tage, {{hours}} Stunden, {{minutes}} Minuten, {{seconds}} Sekunden"
+            },
             "userprofile": {},
             "zoom": {}
         }

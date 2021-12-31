@@ -1,5 +1,6 @@
-import { Message, MessageEmbed } from 'discord.js'
-import { DiscordClient } from '../../types/customTypes'
+import { MessageEmbed } from 'discord.js'
+import { updateLocale } from 'moment'
+import { DiscordClient, DiscordMessage } from '../../types/customTypes'
 
 exports.name = 'uptime'
 
@@ -7,7 +8,7 @@ exports.description = 'Wie lange ist der Bot schon online'
 
 exports.usage = 'uptime'
 
-exports.run = (client: DiscordClient, message: Message) => {
+exports.run = (client: DiscordClient, message: DiscordMessage) => {
   /**
    * Uptime in days, hours, minutes and seconds.
    */
@@ -19,10 +20,19 @@ exports.run = (client: DiscordClient, message: Message) => {
   return client.reply(message, {
     embeds: [
       new MessageEmbed()
-        .setTitle('⏰Uptime')
+        .setTitle(client.translate({ key: 'commands.utility.uptime.Title', lng: message.author.language }))
         .addField(
-          'Time since last restart:',
-          `${uptime.days} Days, ${uptime.hours} Hours, ${uptime.minutes} Minutes, ${uptime.seconds} Seconds`,
+          client.translate({ key: 'commands.utility.uptime.Time', lng: message.author.language }),
+          client.translate({
+            key: 'commands.utility.uptime.Info',
+            options: {
+              days: uptime.days,
+              hours: uptime.hours,
+              minutes: uptime.minutes,
+              seconds: uptime.seconds,
+              lng: message.author.language,
+            },
+          }),
         )
         .setColor('#FF4040'),
     ],
