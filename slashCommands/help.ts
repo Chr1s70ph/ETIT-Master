@@ -32,10 +32,10 @@ async function getCommands(client): Promise<any> {
     .setColor('#ffa500')
     .setAuthor({ name: 'Help', iconURL: 'https://bit.ly/3CJU0lf' })
     .setTimestamp()
-    .setFooter(
-      `[ID] ${client.config.ids.userID.botUserID} \nstarted`,
-      'https://image.flaticon.com/icons/png/512/888/888879.png',
-    )
+    .setFooter({
+      text: `[ID] ${client.config.ids.userID.botUserID} \nstarted`,
+      iconURL: 'https://image.flaticon.com/icons/png/512/888/888879.png',
+    })
 
   const commandFiles = await fs.promises.readdir('./commands/', null)
 
