@@ -15,6 +15,6 @@ exports.run = (client: DiscordClient, message: Message) =>
     embeds: [
       new MessageEmbed()
         .setTitle('🌐 This Bot is working as intended!')
-        .setFooter(message.author.tag, message.author.avatarURL({ dynamic: true })),
+        .setFooter({ text: message.author.tag, iconURL: message.author.avatarURL({ dynamic: true }) }),
     ],
   })
