@@ -124,7 +124,6 @@ async function postSlashCommands(client, slashCommandData) {
   try {
     console.log('Started refreshing application (/) commands.')
 
-    console.log(slashCommandData)
     await rest.put(Routes.applicationGuildCommands(client.config.ids.userID.botUserID, '757981349402378331'), {
       body: slashCommandData,
     })
