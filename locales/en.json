@@ -43,8 +43,12 @@
                 "Gitlab": "[Link]({{gitlab}}) to Gitlab Homepage",
                 "Github": "Github [Repository]({{github}}) of <@{{userID}}>"
             },
-            "liftoff": {},
-            "onlinecount": {},
+            "onlinecount": {
+                "OnlineCounter": "[🌐] Online Counter",
+                "Online": "🟢Online",
+                "Idle": "🟡Idle",
+                "DND": "🔴DND"
+            },
             "ping": {},
             "start": {},
             "test": {},
