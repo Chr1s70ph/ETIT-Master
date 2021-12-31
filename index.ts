@@ -61,8 +61,8 @@ client.config = config
  */
 client.login(client.config.botToken)
 
-const foo = require('./scripts/addCommands')
-foo.run(client)
+const LoadCommands = require('./scripts/addCommands')
+LoadCommands.run(client)
 
 /**
  * Load and run events.
