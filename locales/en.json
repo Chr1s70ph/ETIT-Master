@@ -1,4 +1,6 @@
 {
+    "language": "English",
+    "flag": "🇺🇸",
     "commands": {
         "admin": {
             "missingPermission": "You do not have permission to perform that command.",
@@ -81,6 +83,10 @@
         "wochenplan": {
             "Schedule": "🗓️ Weekly schedule for {{user}}",
             "Week": "Week of {{date}}"
+        },
+        "language": {
+            "Select": "Select your desired language",
+            "DefaultSelect": "Nothing Selected"
         }
     }
 }

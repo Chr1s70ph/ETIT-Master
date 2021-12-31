@@ -1,4 +1,6 @@
 {
+    "language": "Deutsch",
+    "flag": "🇩🇪",
     "commands": {
         "admin": {
             "missingPermission": "Du bist nicht berechtigt, diesen Befehl auszuführen.",
@@ -81,6 +83,10 @@
         "wochenplan": {
             "Schedule": "🗓️ Wochenplan für {{user}}",
             "Week": "Woche vom {{date}}"
+        },
+        "language": {
+            "Select": "Wähle deine bevorzugte Sprache",
+            "DefaultSelect": "Nichts ausgewählt"
         }
     }
 }
