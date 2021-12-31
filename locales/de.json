@@ -55,7 +55,7 @@
                 "ErrorInvalidOption": "⚠️ Nicht zulässige Option!",
                 "Info": "❔ Wenn du der Aktivität nicht beitreten kannst, **erstelle ** sie, indem du oben auf den **[Link]({{- invite}})** klickst."
             },
-            "test": {},
+            "test": "🌐Dieser Bot funktioniert einwandfrei!",
             "uptime": {},
             "userprofile": {},
             "zoom": {}

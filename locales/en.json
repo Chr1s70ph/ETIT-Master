@@ -55,7 +55,7 @@
                 "ErrorInvalidOption": "⚠️ Invalid option!",
                 "Info": "❔ If you can't join the activity **create it** by clicking the **[Link]({{- invite}})** above."
             },
-            "test": {},
+            "test": "🌐 This Bot is working as intended!",
             "uptime": {},
             "userprofile": {},
             "zoom": {}
