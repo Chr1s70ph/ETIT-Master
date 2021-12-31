@@ -61,11 +61,11 @@ function _shortenSummary(pEventSummary) {
   return pEventSummary
 }
 
-async function wochenplan(pClient: DiscordClient, pMessageOrInteraction, pNow, pCourseAndSemester) {
+async function wochenplan(client: DiscordClient, interaction: DiscordInteraction, pNow, pCourseAndSemester) {
   let returnData = {}
-  for (const entry in pClient.config.calendars) {
+  for (const entry in client.config.calendars) {
     // eslint-disable-next-line no-await-in-loop
-    returnData = { ...returnData, ...(await async.fromURL(pClient.config.calendars[entry])) }
+    returnData = { ...returnData, ...(await async.fromURL(client.config.calendars[entry])) }
   }
 
   const relevantEvents = []
@@ -76,11 +76,24 @@ async function wochenplan(pClient: DiscordClient, pMessageOrInteraction, pNow, p
   const rangeStart = moment(startOfWeek)
   const rangeEnd = rangeStart.clone().add(7, 'days')
 
-  filterEvents(returnData, rangeStart, rangeEnd, pCourseAndSemester, pMessageOrInteraction, relevantEvents)
+  filterEvents(returnData, rangeStart, rangeEnd, pCourseAndSemester, interaction, relevantEvents)
 
   const embed = new MessageEmbed()
-    .setAuthor({ name: `🗓️ Wochenplan für ${pMessageOrInteraction.member.user.username}` })
-    .setDescription(`Woche vom ${moment(startOfWeek).format('DD.MM.yyyy')}`)
+    .setAuthor({
+      name: client.translate({
+        key: 'slashCommands.wochenplan.Schedule',
+        options: {
+          user: interaction.user.username,
+          lng: interaction.user.language,
+        },
+      }),
+    })
+    .setDescription(
+      client.translate({
+        key: 'slashCommands.wochenplan.Week',
+        options: { date: moment(startOfWeek).format('DD.MM.yyyy'), lng: interaction.user.language },
+      }),
+    )
 
   const weekdayItems = {}
 

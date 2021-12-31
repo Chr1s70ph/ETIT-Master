@@ -78,6 +78,9 @@
             "TryAgain": "An error occured. Please try again later."
         },
         "ping": {},
-        "wochenplan": {}
+        "wochenplan": {
+            "Schedule": "🗓️ Weekly schedule for {{user}}",
+            "Week": "Week of {{date}}"
+        }
     }
 }

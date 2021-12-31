@@ -78,6 +78,9 @@
             "TryAgain": "Es ist ein Fehler aufgetreten. Bitte versuche es später erneut."
         },
         "ping": {},
-        "wochenplan": {}
+        "wochenplan": {
+            "Schedule": "🗓️ Wochenplan für {{user}}",
+            "Week": "Woche vom {{date}}"
+        }
     }
 }
