@@ -1,7 +1,7 @@
 import { readdir } from 'fs/promises'
 import { SlashCommandBuilder } from '@discordjs/builders'
-import { MessageActionRow, MessageSelectMenu } from 'discord.js'
-import { DiscordClient, DiscordCommandInteraction, DiscordSelectMenuInteraction } from '../types/customTypes'
+import { MessageActionRow, MessageEmbed, MessageSelectMenu, SelectMenuInteraction } from 'discord.js'
+import { DiscordClient, DiscordCommandInteraction } from '../types/customTypes'
 
 export const data = new SlashCommandBuilder().setName('language').setDescription('Choose your language')
 
@@ -64,12 +64,56 @@ exports.Command = async (client: DiscordClient, interaction: DiscordCommandInter
   await interaction.reply({
     content: client.translate({ key: 'slashCommands.language.Select', lng: interaction.user.language }),
     components: [row],
+    ephemeral: true,
   })
 }
 
-exports.SelectMenu = (client: DiscordClient, interaction: DiscordSelectMenuInteraction) => {
+exports.SelectMenu = async (client: DiscordClient, interaction: SelectMenuInteraction) => {
+  const interactionUser = await interaction.guild.members.fetch(interaction.user.id)
+  const userRoles = interactionUser.roles.cache.map(role => role)
+
   /**
-   * TODO reply to select menu
+   * Remove all language roles
    */
-  console.log('HERE')
+  await interactionUser.roles.remove(userRoles.filter(role => role.name.length === 2))
+  if (interaction.values[0] !== 'en') {
+    /**
+     * Fetch language Role
+     */
+    const languageRole = await interaction.guild.roles.cache.find(role => role.name === interaction.values[0])
+    /**
+     * Give user language Role
+     */
+    interactionUser.roles.add(languageRole)
+    console.log(`Gave ${interactionUser.displayName} languageRole: ${languageRole}`)
+  }
+  /**
+   * Flag of selected language
+   */
+  const flag = client.translate({ key: 'flag', lng: interaction.values[0] })
+
+  /**
+   * Name of selected language
+   */
+  const language = client.translate({ key: 'language', lng: interaction.values[0] })
+
+  /**
+   * Notify user, that language has been updated
+   */
+  interaction.update({
+    embeds: [
+      new MessageEmbed()
+        .setTitle(
+          client.translate({
+            key: 'slashCommands.language.LanguageUpdated',
+            options: {
+              language: `${flag} ${language}`,
+              lng: interaction.values[0],
+            },
+          }),
+        )
+        .setFooter({ text: client.user.username, iconURL: client.user.avatarURL() }),
+    ],
+    components: [],
+  })
 }

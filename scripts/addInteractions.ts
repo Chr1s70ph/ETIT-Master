@@ -12,7 +12,7 @@ const commandsFolder = './commands/'
 /**
  * Folder that contains all slashCommands.
  */
-const slashCommandsFolder = './slashCommands/'
+const slashCommandsFolder = './interactions/'
 
 exports.run = (client: DiscordClient) => {
   Commands(client)

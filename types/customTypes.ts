@@ -15,6 +15,7 @@ import {
   MessageContextMenuInteraction,
   SelectMenuInteraction,
   UserContextMenuInteraction,
+  ApplicationCommand,
 } from 'discord.js'
 import i18next from 'i18next'
 
@@ -262,4 +263,11 @@ interface InteractionCommands extends Object {
   MessageContextMenu?: any
   SelectMenu?: any
   UserContextMenu?: any
+}
+
+/**
+ * Extended {@link ApplicationCommand} to hold {@link DiscordUser}
+ */
+export interface DiscordApplicationCommand extends ApplicationCommand {
+  user: DiscordUser
 }

@@ -86,7 +86,8 @@
         },
         "language": {
             "Select": "Select your desired language",
-            "DefaultSelect": "Nothing Selected"
+            "DefaultSelect": "Nothing Selected",
+            "LanguageUpdated": "Language has been successfully updated to {{language}}."
         }
     }
 }

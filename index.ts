@@ -13,7 +13,7 @@ const backend = new Backend({
 i18next.use(backend).init({
   lng: 'en',
   fallbackLng: 'en',
-  preload: ['en', 'de'],
+  preload: ['en', 'de', 'fr'],
   ns: ['translation'],
   defaultNS: 'translation',
   debug: true,
