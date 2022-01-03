@@ -61,9 +61,6 @@ client.config = config
  */
 client.login(client.config.botToken)
 
-const LoadCommands = require('./scripts/addInteractions')
-LoadCommands.run(client)
-
 /**
  * Load and run events.
  */
@@ -95,46 +92,3 @@ fs.readdir('./events/', (err, files) => {
     client.on(eventName, (...args) => eventFunc.run(client, ...args))
   })
 })
-
-/**
- * Load and run all scripts.
- * @param  {DiscordClient} _client Bot-Client
- */
-export async function loadScripts(_client: DiscordClient) {
-  /**
-   * Object with all files of scripts directory.
-   */
-  let files
-
-  try {
-    /**
-     * Read directory.
-     */
-    files = await fs.promises.readdir('./scripts/')
-  } catch (e) {
-    /**
-     * Error handling.
-     */
-    throw new Error(e)
-  }
-
-  files.forEach(file => {
-    /**
-     * Path of script.
-     */
-    const script = require(`./scripts/${file}`)
-
-    try {
-      /**
-       * Run scripts.
-       */
-      script.run(_client)
-    } catch (e) {
-      /**
-       * Error handling.
-       */
-      throw new Error(e)
-    }
-    console.log(`Successfully started script ${file}`)
-  })
-}
