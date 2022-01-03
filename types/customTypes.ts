@@ -220,12 +220,9 @@ interface Interaction extends Object {
   name: string
   description: string
   usage: string
-  ApplicationCommand?: any
   Autocomplete?: any
   Button?: any
   Command?: any
-  ContextMenu?: any
-  MessageComponent?: any
   MessageContextMenu?: any
   SelectMenu?: any
   UserContextMenu?: any

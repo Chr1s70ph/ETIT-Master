@@ -17,13 +17,18 @@ exports.run = (client: DiscordClient, interaction: any) => {
   client.getLanguage(undefined, interaction)
 
   console.log(`${interaction.member.user.username} used ${commandName}`)
-  if (interaction.isCommand()) {
+
+  if (interaction.isAutocomplete()) {
+    commandfile.Autocomplete(client, interaction)
+  } else if (interaction.isButton()) {
+    commandfile.Button(client, interaction)
+  } else if (interaction.isCommand()) {
     commandfile.Command(client, interaction)
+  } else if (interaction.isMessageContextMenu()) {
+    commandfile.MessageContextMenu(client, interaction)
   } else if (interaction.isSelectMenu()) {
-    try {
-      commandfile.SelectMenu(client, interaction)
-    } catch (error) {
-      console.log(error)
-    }
+    commandfile.SelectMenu(client, interaction)
+  } else if (interaction.isUserContextMenu()) {
+    commandfile.UserContextMenu(client, interaction)
   }
 }
