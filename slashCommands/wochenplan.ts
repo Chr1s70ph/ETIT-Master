@@ -2,7 +2,7 @@ import { SlashCommandBuilder } from '@discordjs/builders'
 import { MessageEmbed } from 'discord.js'
 import moment from 'moment-timezone'
 import { async } from 'node-ical'
-import { DiscordClient, DiscordInteraction } from '../types/customTypes'
+import { DiscordClient, DiscordCommandInteraction } from '../types/customTypes'
 
 exports.name = 'wochenplan'
 
@@ -61,7 +61,7 @@ function _shortenSummary(pEventSummary) {
   return pEventSummary
 }
 
-async function wochenplan(client: DiscordClient, interaction: DiscordInteraction, pNow, pCourseAndSemester) {
+async function wochenplan(client: DiscordClient, interaction: DiscordCommandInteraction, pNow, pCourseAndSemester) {
   let returnData = {}
   for (const entry in client.config.calendars) {
     // eslint-disable-next-line no-await-in-loop
@@ -242,7 +242,7 @@ function pushToWeeksEvents(interaction, event, relevantEvents) {
   }
 }
 
-exports.Command = async (client: DiscordClient, interaction: DiscordInteraction): Promise<void> => {
+exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
   const now = new Date()
   const embed = wochenplan(client, interaction, now, 'all')
 

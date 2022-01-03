@@ -4,12 +4,17 @@ import {
   Message,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   TextChannel,
+  Interaction,
   MessageOptions,
   Collection,
   User,
   GuildMemberRoleManager,
   CommandInteraction,
-  ContextMenuInteraction,
+  AutocompleteInteraction,
+  ButtonInteraction,
+  MessageContextMenuInteraction,
+  SelectMenuInteraction,
+  UserContextMenuInteraction,
 } from 'discord.js'
 import i18next from 'i18next'
 
@@ -26,9 +31,9 @@ export class DiscordClient extends Client {
 
   /**
    * Collection of all interactions to use
-   * @type {Collection<string, Interaction>}
+   * @type {Collection<string, InteractionCommands>}
    */
-  public interactions: Collection<string, Interaction>
+  public interactions: Collection<string, InteractionCommands>
 
   /**
    * Config file imported into the DiscordClient for global access
@@ -118,11 +123,11 @@ export class DiscordClient extends Client {
    * @param {DiscordInteraction} interaction Interaction used by user
    * @returns {string}
    */
-  public getLanguage(message?: DiscordMessage, interaction?: DiscordInteraction): string {
+  public getLanguage(message?: DiscordMessage, interaction?: Interaction): string {
     /**
      * Object of {@link DiscordUser}
      */
-    const user = message ? message.author : interaction.user
+    const user = message ? message.author : (interaction.user as DiscordUser)
 
     /**
      * List of all defined languages in './locales/'.
@@ -179,13 +184,44 @@ export interface DiscordMessage extends Message {
 }
 
 /**
- * Extended Interaction to hold {@link DiscordUser}
+ * Extended {@link AutocompleteInteraction} to hold {@link DiscordUser}
  */
-export interface DiscordInteraction extends CommandInteraction {
+export interface DiscordAutocompleteInteraction extends AutocompleteInteraction {
   user: DiscordUser
 }
 
-export interface DiscordContextMenuInteraction extends ContextMenuInteraction {
+/**
+ * Extended {@link ButtonInteraction} to hold {@link DiscordUser}
+ */
+export interface DiscordButtonInteraction extends ButtonInteraction {
+  user: DiscordUser
+}
+
+/**
+ * Extended {@link CommandInteraction} to hold {@link DiscordUser}
+ */
+export interface DiscordCommandInteraction extends CommandInteraction {
+  user: DiscordUser
+}
+
+/**
+ * Extended {@link MessageContextMenuInteraction} to hold {@link DiscordUser}
+ */
+export interface DiscordMessageContextMenuInteraction extends MessageContextMenuInteraction {
+  user: DiscordUser
+}
+
+/**
+ * Extended {@link SelectMenuInteraction} to hold {@link DiscordUser}
+ */
+export interface DiscordSelectMenuInteraction extends SelectMenuInteraction {
+  user: DiscordUser
+}
+
+/**
+ * Extended {@link UserContextMenuInteraction} to hold {@link DiscordUser}
+ */
+export interface DiscordUserContextMenuInteraction extends UserContextMenuInteraction {
   user: DiscordUser
 }
 
@@ -216,7 +252,7 @@ interface Command extends Object {
   aliases: string[]
 }
 
-interface Interaction extends Object {
+interface InteractionCommands extends Object {
   name: string
   description: string
   usage: string

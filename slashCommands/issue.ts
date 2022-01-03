@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
 import { MessageEmbed } from 'discord.js'
-import { DiscordClient, DiscordInteraction } from '../types/customTypes'
+import { DiscordClient, DiscordCommandInteraction } from '../types/customTypes'
 const createIssue = require('github-create-issue')
 const REPOSITORY = 'Chr1s70ph/ETIT-Master'
 
@@ -10,7 +10,7 @@ export const data = new SlashCommandBuilder()
   .addStringOption(option => option.setName('vorschlag').setDescription('Mein Vorschlag').setRequired(true))
   .addStringOption(option => option.setName('titel').setDescription('Titel meines Vorschlages'))
 
-exports.Command = async (client: DiscordClient, interaction: DiscordInteraction): Promise<void> => {
+exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
   const options = {
     token: client.config.github_token,
     body: interaction.options.getString('vorschlag'),

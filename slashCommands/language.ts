@@ -1,11 +1,11 @@
 import { readdir } from 'fs/promises'
 import { SlashCommandBuilder } from '@discordjs/builders'
 import { MessageActionRow, MessageSelectMenu } from 'discord.js'
-import { DiscordClient, DiscordContextMenuInteraction, DiscordInteraction } from '../types/customTypes'
+import { DiscordClient, DiscordCommandInteraction, DiscordSelectMenuInteraction } from '../types/customTypes'
 
 export const data = new SlashCommandBuilder().setName('language').setDescription('Choose your language')
 
-exports.Command = async (client: DiscordClient, interaction: DiscordInteraction) => {
+exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction) => {
   /**
    * Array containing names of all language files
    */
@@ -67,7 +67,7 @@ exports.Command = async (client: DiscordClient, interaction: DiscordInteraction)
   })
 }
 
-exports.SelectMenu = (client: DiscordClient, interaction: DiscordContextMenuInteraction) => {
+exports.SelectMenu = (client: DiscordClient, interaction: DiscordSelectMenuInteraction) => {
   /**
    * TODO reply to select menu
    */

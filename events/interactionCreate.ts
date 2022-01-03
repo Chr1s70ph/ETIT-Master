@@ -1,4 +1,12 @@
-import { DiscordClient } from '../types/customTypes'
+import {
+  DiscordAutocompleteInteraction,
+  DiscordButtonInteraction,
+  DiscordClient,
+  DiscordCommandInteraction,
+  DiscordMessageContextMenuInteraction,
+  DiscordSelectMenuInteraction,
+  DiscordUserContextMenuInteraction,
+} from '../types/customTypes'
 
 exports.run = (client: DiscordClient, interaction: any) => {
   /**
@@ -19,16 +27,22 @@ exports.run = (client: DiscordClient, interaction: any) => {
   console.log(`${interaction.member.user.username} used ${commandName}`)
 
   if (interaction.isAutocomplete()) {
-    commandfile.Autocomplete(client, interaction)
+    const DiscordInteraction = interaction as DiscordAutocompleteInteraction
+    commandfile.Autocomplete(client, DiscordInteraction)
   } else if (interaction.isButton()) {
-    commandfile.Button(client, interaction)
+    const DiscordInteraction = interaction as DiscordButtonInteraction
+    commandfile.Button(client, DiscordInteraction)
   } else if (interaction.isCommand()) {
-    commandfile.Command(client, interaction)
+    const DiscordInteraction = interaction as DiscordCommandInteraction
+    commandfile.Command(client, DiscordInteraction)
   } else if (interaction.isMessageContextMenu()) {
-    commandfile.MessageContextMenu(client, interaction)
+    const DiscordInteraction = interaction as DiscordMessageContextMenuInteraction
+    commandfile.MessageContextMenu(client, DiscordInteraction)
   } else if (interaction.isSelectMenu()) {
-    commandfile.SelectMenu(client, interaction)
+    const DiscordInteraction = interaction as DiscordSelectMenuInteraction
+    commandfile.SelectMenu(client, DiscordInteraction)
   } else if (interaction.isUserContextMenu()) {
-    commandfile.UserContextMenu(client, interaction)
+    const DiscordInteraction = interaction as DiscordUserContextMenuInteraction
+    commandfile.UserContextMenu(client, DiscordInteraction)
   }
 }

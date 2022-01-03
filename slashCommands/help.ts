@@ -1,16 +1,16 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
 import { MessageEmbed } from 'discord.js'
-import { DiscordClient, DiscordInteraction } from '../types/customTypes'
+import { DiscordClient, DiscordCommandInteraction } from '../types/customTypes'
 const fs = require('fs')
 
 export const data = new SlashCommandBuilder().setName('help').setDescription('hilfe ist hier')
 
-exports.Command = async (client: DiscordClient, interaction: DiscordInteraction): Promise<void> => {
+exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
   const embed = await getCommands(client, interaction)
   await interaction.reply({ embeds: [embed.setTimestamp()], ephemeral: true })
 }
 
-async function getCommands(client: DiscordClient, interaction: DiscordInteraction): Promise<any> {
+async function getCommands(client: DiscordClient, interaction: DiscordCommandInteraction): Promise<any> {
   const commandsEmbed = new MessageEmbed()
     .setColor('#ffa500')
     .setAuthor({
