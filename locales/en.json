@@ -1,0 +1,93 @@
+{
+    "language": "English",
+    "flag": "🇺🇸",
+    "commands": {
+        "admin": {
+            "missingPermission": "You do not have permission to perform that command.",
+            "devtest": {},
+            "restart": "🤖Restarting...",
+            "say": {},
+            "status": "👥Presence has been updated!"
+        },
+        "fun": {
+            "fact": "🧠Fact",
+            "komedi": {},
+            "tenor": {
+                "ErrorMissingSearchQuery": "Please enter a search query!",
+                "ErrorNoGifsFound": "<@{{userID}}> No Gifs have been found for : '{{searchQuery}}'"
+            }
+        },
+        "tests": {
+            "hello": {
+                "welcome": "hello world"
+            }
+        },
+        "utility": {
+            "antwortaufalles": "The answer to the question about life, the universe, and all the rest is :four: :two:",
+            "channelinfo": {
+                "Answer": "Number of channel members: {{memberNumber}}\nin {{channelName}}.",
+                "ErrorNotAvailable": "Channel info is not available in this channel. Try a different channel."
+            },
+            "command": {
+                "ErrorNoCommandName": "Please provide a command name.",
+                "CommandHelp": "Command assistance",
+                "Description": "Description",
+                "Usage": "Usage",
+                "Aliases": "Aliases"
+            },
+            "countdown": {
+                "Countdown": "Liftoff in:",
+                "Departure": "Departuuuure",
+                "Liftoff": "🚀Departed🚀"
+            },
+            "git": {
+                "Title": "[🌐] GIT Wiki",
+                "Gitlab": "[Link]({{- gitlab}}) to Gitlab Homepage",
+                "Github": "Github [Repository]({{- github}}) of <@{{userID}}>"
+            },
+            "onlinecount": {
+                "OnlineCounter": "[🌐] Online Counter",
+                "Online": "🟢Online",
+                "Idle": "🟡Idle",
+                "DND": "🔴DND"
+            },
+            "ping": "🏓Latency is {{latency}}ms. API Latency is {{api_latency}}ms",
+            "start": {
+                "ErrorNoVoice": "⚠️ You are not in a Voice-Channel.\nPlease join a Voice-Channel to use this command.",
+                "ErrorInvalidOption": "⚠️ Invalid option!",
+                "Info": "❔ If you can't join the activity **create it** by clicking the **[Link]({{- invite}})** above."
+            },
+            "test": "🌐 This Bot is working as intended!",
+            "uptime": {
+                "Title": "⏰Uptime",
+                "Time": "Time since last restart:",
+                "Info": "{{days}} Days, {{hours}} Hours, {{minutes}} Minutes, {{seconds}} Seconds"
+            },
+            "userprofile": {
+                "UserProfile": "👤Userprofile",
+                "Joined": "Joined:",
+                "NoNitroStatus": "Not currently subscribed"
+            },
+            "zoom": {}
+        }
+    },
+    "slashCommands": {
+        "help": "Help",
+        "issue": {
+            "Recieved": "Issue recieved!",
+            "Thanks": "Thank you for submitting your issue!",
+            "Error": "⚠Error",
+            "TryAgain": "An error occured. Please try again later."
+        },
+        "ping": {},
+        "wochenplan": {
+            "Schedule": "🗓️ Weekly schedule for {{user}}",
+            "Week": "Week of {{date}}"
+        },
+        "language": {
+            "Select": "Select your desired language",
+            "DefaultSelect": "Nothing Selected",
+            "LanguageUpdated": "Language has been successfully updated to {{language}}."
+        }
+    }
+}

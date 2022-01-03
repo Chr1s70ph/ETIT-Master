@@ -1,12 +1,12 @@
-import { Message, MessageEmbed } from 'discord.js'
-import { DiscordClient } from '../../types/customTypes'
+import { MessageEmbed } from 'discord.js'
+import { DiscordClient, DiscordMessage } from '../../types/customTypes'
 exports.name = 'onlinecount'
 
 exports.description = 'Zeigt an, wie viele Leute online, idle und auf dnd sind.'
 
 exports.usage = 'onlinecount'
 
-exports.run = async (client: DiscordClient, message: Message) => {
+exports.run = async (client: DiscordClient, message: DiscordMessage) => {
   /**
    * Numbers of online, idle and dnd members.
    */
@@ -15,7 +15,7 @@ exports.run = async (client: DiscordClient, message: Message) => {
   /**
    * Embed with number of online, idle and dnd members
    */
-  const onlineCountEmbed = createEmbed(client, online, idle, dnd)
+  const onlineCountEmbed = createEmbed(client, online, idle, dnd, message)
 
   return client.reply(message, { embeds: [onlineCountEmbed.setTimestamp()] })
 }
@@ -52,26 +52,36 @@ async function fetchMemberStates(client: DiscordClient): Promise<{ online: numbe
  * @param {number} online Number of online members
  * @param {number} idle Number of idle members
  * @param {number} dnd Number of dnd members
+ * @param {DiscordMessage} message Message set by user
  * @returns {MessageEmbed}
  */
-function createEmbed(client: DiscordClient, online: number, idle: number, dnd: number): MessageEmbed {
+function createEmbed(
+  client: DiscordClient,
+  online: number,
+  idle: number,
+  dnd: number,
+  message: DiscordMessage,
+): MessageEmbed {
   return new MessageEmbed()
     .setColor('#aaa540')
-    .setTitle('[🌐] Online Counter')
-    .setFooter(`[ID] ${client.config.ids.userID.botUserID}`, 'https://image.flaticon.com/icons/png/512/888/888879.png')
+    .setTitle(client.translate({ key: 'commands.utility.onlinecount.OnlineCounter', lng: message.author.language }))
+    .setFooter({
+      text: `[ID] ${client.config.ids.userID.botUserID}`,
+      iconURL: 'https://image.flaticon.com/icons/png/512/888/888879.png',
+    })
     .addFields(
       {
-        name: '🟢Online:',
+        name: client.translate({ key: 'commands.utility.onlinecount.Online', lng: message.author.language }),
         value: `${online}`,
         inline: false,
       },
       {
-        name: '🟡Idle:',
+        name: client.translate({ key: 'commands.utility.onlinecount.Idle', lng: message.author.language }),
         value: `${idle}`,
         inline: false,
       },
       {
-        name: '🔴DND:',
+        name: client.translate({ key: 'commands.utility.onlinecount.DND', lng: message.author.language }),
         value: `${dnd}`,
         inline: false,
       },

@@ -1,5 +1,5 @@
-import { MessageEmbed, Message } from 'discord.js'
-import { DiscordClient } from '../../types/customTypes'
+import { MessageEmbed } from 'discord.js'
+import { DiscordClient, DiscordMessage } from '../../types/customTypes'
 
 const gitlab = 'https://git.scc.kit.edu'
 const github = 'https://git.io/J3Vao'
@@ -10,11 +10,11 @@ exports.description = 'Link zum KIT Gitlab und zur Repository'
 
 exports.usage = 'git'
 
-exports.run = (client: DiscordClient, message: Message) => {
+exports.run = (client: DiscordClient, message: DiscordMessage) => {
   /**
    * Embed containing information about git.
    */
-  const gitEmbed = createEmbed(client)
+  const gitEmbed = createEmbed(client, message)
 
   return client.reply(message, { embeds: [gitEmbed.setTimestamp()] })
 }
@@ -24,24 +24,31 @@ exports.run = (client: DiscordClient, message: Message) => {
  * URL of the embed leads to the git-documentation.
  * Seperate links to the repository of the bot and to the university gitlab.
  * @param {DiscordClient} client Bot-Client
+ * @param {DiscordMessage} message Message sent by user
  * @returns {MessageEmbed}
  */
-function createEmbed(client: DiscordClient): MessageEmbed {
+function createEmbed(client: DiscordClient, message: DiscordMessage): MessageEmbed {
   return new MessageEmbed()
     .setColor('#ffa500')
     .setAuthor({ name: client.user.tag, iconURL: 'https://git-scm.com/images/logos/downloads/Git-Icon-1788C.png' })
     .setThumbnail('https://git-scm.com/images/logos/downloads/Git-Icon-1788C.png')
-    .setTitle('[🌐] GIT Wiki')
+    .setTitle(client.translate({ key: 'commands.utility.git.Title', lng: message.author.language }))
     .setURL('https://git-scm.com/book/en/v2')
     .addFields(
       {
         name: 'Gitlab:',
-        value: `[Link](${gitlab}) zur Gitlab Startseite`,
+        value: client.translate({
+          key: 'commands.utility.git.Gitlab',
+          options: { gitlab: gitlab, lng: message.author.language },
+        }),
         inline: false,
       },
       {
         name: `Github:`,
-        value: `Github [Repository](${github}) von <@${client.config.ids.userID.botUserID}>`,
+        value: client.translate({
+          key: 'commands.utility.git.Github',
+          options: { github: github, userID: client.user.id, lng: message.author.language },
+        }),
         inline: false,
       },
       {
@@ -49,8 +56,8 @@ function createEmbed(client: DiscordClient): MessageEmbed {
         value: '\u200B',
       },
     )
-    .setFooter(
-      `[ID] ${client.config.ids.userID.botUserID} \n`,
-      'https://about.gitlab.com/images/press/logo/png/gitlab-icon-rgb.png',
-    )
+    .setFooter({
+      text: `[ID] ${client.user.id} \n`,
+      iconURL: 'https://about.gitlab.com/images/press/logo/png/gitlab-icon-rgb.png',
+    })
 }

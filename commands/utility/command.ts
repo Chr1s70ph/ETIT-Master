@@ -1,5 +1,5 @@
-import { Message, MessageEmbed } from 'discord.js'
-import { DiscordClient } from '../../types/customTypes'
+import { MessageEmbed } from 'discord.js'
+import { DiscordClient, DiscordMessage } from '../../types/customTypes'
 
 exports.name = 'command'
 
@@ -11,35 +11,45 @@ exports.example = 'command test'
 
 exports.aliases = ['commandinfo']
 
-exports.run = (client: DiscordClient, message: Message, args: any): any => {
+exports.run = (client: DiscordClient, message: DiscordMessage, args: any): any => {
   /**
    * Check if user provided a command name.
    */
-  if (args.length === 0) return client.send(message, { content: 'Please provide arguments!' })
+  if (args.length === 0) {
+    return client.send(message, {
+      content: client.translate({ key: 'commands.utility.command.ErrorNoCommandName', lng: message.author.language }),
+    })
+  }
 
   for (const [key, value] of client.commands.entries()) {
     if (key === args[0].toLowerCase() || findAliases(value.aliases, args)) {
-      const commandHelpEmbed = createEmbed(value, client)
+      const commandHelpEmbed = createEmbed(value, client, message)
       return client.reply(message, { embeds: [commandHelpEmbed] })
     }
   }
 
-  return client.send(message, { content: 'Bitte verwende einen Commandnamen.' })
+  return client.send(message, {
+    content: client.translate({ key: 'commands.utility.command.ErrorNoCommandName', lng: message.author.language }),
+  })
 }
 
 /**
  * Creates an Embed with the provided information.
  * @param {any} value Information about the command
  * @param {DiscordClient} client Bot-Client
+ * @param {DiscordMessage} message Message sent by user
  * @returns {MessageEmbed}
  */
-function createEmbed(value: any, client: DiscordClient): MessageEmbed {
+function createEmbed(value: any, client: DiscordClient, message: DiscordMessage): MessageEmbed {
   /**
    * Embed with command information.
    */
   const embed = new MessageEmbed()
     .setColor('#7289ea')
-    .setAuthor({ name: 'Befehlshilfe', iconURL: 'https://bit.ly/30ZO6jh' })
+    .setAuthor({
+      name: client.translate({ key: 'commands.utility.command.CommandHelp', lng: message.author.language }),
+      iconURL: 'https://bit.ly/30ZO6jh',
+    })
     .setThumbnail(client.user.avatarURL())
     .setTitle(`‎${value.name}\n ‎`)
 
@@ -47,7 +57,7 @@ function createEmbed(value: any, client: DiscordClient): MessageEmbed {
    * Loop through all aliases of the command and add them to the Embed.
    */
   if (value.aliases && value.aliases.length > 0) {
-    addAliasesToEmbed(value.aliases, embed)
+    addAliasesToEmbed(value.aliases, embed, client, message)
   }
 
   /**
@@ -55,12 +65,12 @@ function createEmbed(value: any, client: DiscordClient): MessageEmbed {
    */
   embed.addFields(
     {
-      name: 'Beschreibung',
+      name: client.translate({ key: 'commands.utility.command.Description', lng: message.author.language }),
       value: `${value.description}\n‎ ‎`,
       inline: false,
     },
     {
-      name: 'Benutzung:',
+      name: client.translate({ key: 'commands.utility.command.Usage', lng: message.author.language }),
       value: `${client.config.prefix}${value.usage}\n ‎`,
       inline: false,
     },
@@ -87,10 +97,16 @@ function findAliases(aliasesArray: any, args: any): boolean {
  *
  * @param {Array} aliasesArray array of aliases exported
  * @param {Object} embed command embed
- * @param {Array} args arguments of issued command
+ * @param {DiscordClient} client Bot-Client
+ * @param {DiscordMessage} message Message sent by user
  * @returns {MessageEmbed} commandHelpEmbed with added aliases
  */
-function addAliasesToEmbed(aliasesArray: any, embed: any): MessageEmbed {
+function addAliasesToEmbed(
+  aliasesArray: any,
+  embed: any,
+  client: DiscordClient,
+  message: DiscordMessage,
+): MessageEmbed {
   /**
    * String of aliases seperated by commas.
    */
@@ -100,7 +116,7 @@ function addAliasesToEmbed(aliasesArray: any, embed: any): MessageEmbed {
    * Add the string of aliases to {@link embed}
    */
   embed.addFields({
-    name: 'Aliase',
+    name: client.translate({ key: 'commands.utility.command.Aliases', lng: message.author.language }),
     value: `${aliasesString}\n `,
     inline: false,
   })

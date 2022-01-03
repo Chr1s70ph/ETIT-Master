@@ -1,0 +1,93 @@
+{
+    "language": "Deutsch",
+    "flag": "🇩🇪",
+    "commands": {
+        "admin": {
+            "missingPermission": "Du bist nicht berechtigt, diesen Befehl auszuführen.",
+            "devtest": {},
+            "restart": "🤖Starte neu...",
+            "say": {},
+            "status": "👥Präsenz wurde geändert!"
+        },
+        "fun": {
+            "fact": "🧠Fakt",
+            "komedi": {},
+            "tenor": {
+                "ErrorMissingSearchQuery": "Bitte gebe ein suchwort an!",
+                "ErrorNoGifsFound": "<@{{userID}}> Es konnten keine Gifs gefunden werden für : '{{searchQuery}}'"
+            }
+        },
+        "tests": {
+            "hello": {
+                "welcome": "hallo welt"
+            }
+        },
+        "utility": {
+            "antwortaufalles": "Die Antwort auf die Frage nach dem Leben, dem Universum und dem ganzen Rest ist :four::two:",
+            "channelinfo": {
+                "Answer": "Anzahl an Kanalmitgliedern in: {{memberNumber}}\nin {{channelName}}.",
+                "ErrorNotAvailable": "Kanalinformationen sind in diesem Kanal nicht verfügbar. Versuche es mit einem anderen Kanal."
+            },
+            "command": {
+                "ErrorNoCommandName": "Bitte gebe einen Befehlsnamen an.",
+                "CommandHelp": "Befehlshilfe",
+                "Description": "Beschreibung",
+                "Usage": "Benutzung",
+                "Aliases": "Aliase"
+            },
+            "countdown": {
+                "Countdown": "Fahrstuhl aus in:",
+                "Departure": "Abfluuuug",
+                "Liftoff": "🚀Abgehoben🚀"
+            },
+            "git": {
+                "Title": "[🌐] GIT Wiki",
+                "Gitlab": "[Link]({{- gitlab}}) zur Gitlab Startseite",
+                "Github": "Github [Repository]({{- github}}) von <@{{userID}}>"
+            },
+            "onlinecount": {
+                "OnlineCounter": "[🌐] Online Zähler",
+                "Online": "🟢Online",
+                "Idle": "🟡Abwesend",
+                "DND": "🔴Nicht stören"
+            },
+            "ping": "🏓Die Latenz beträgt {{latency}}ms. API - Latenz ist {{api_latency}}",
+            "start": {
+                "ErrorNoVoice": "⚠️ Du bist nicht in einem Sprach-Kanal.\nBitte trete einenm Sprach-Kanal bei, um diesen Befehl nutzen zu können.",
+                "ErrorInvalidOption": "⚠️ Nicht zulässige Option!",
+                "Info": "❔ Wenn du der Aktivität nicht beitreten kannst, **erstelle ** sie, indem du oben auf den **[Link]({{- invite}})** klickst."
+            },
+            "test": "🌐Dieser Bot funktioniert einwandfrei!",
+            "uptime": {
+                "Title": "⏰Betriebszeit",
+                "Time": "Zeit seit dem letzten neustart:",
+                "Info": "{{days}} Tage, {{hours}} Stunden, {{minutes}} Minuten, {{seconds}} Sekunden"
+            },
+            "userprofile": {
+                "UserProfile": "👤Benutzerprofil",
+                "Joined": "Beigetreten",
+                "NoNitroStatus": "Zurzeit nicht abboniert"
+            },
+            "zoom": {}
+        }
+    },
+    "slashCommands": {
+        "help": "Hilfe",
+        "issue": {
+            "Recieved": "Vorschlag angekommen!",
+            "Thanks": "Vielen Dank für deinen Vorschlag!",
+            "Error": "⚠Fehler",
+            "TryAgain": "Es ist ein Fehler aufgetreten. Bitte versuche es später erneut."
+        },
+        "ping": {},
+        "wochenplan": {
+            "Schedule": "🗓️ Wochenplan für {{user}}",
+            "Week": "Woche vom {{date}}"
+        },
+        "language": {
+            "Select": "Wähle deine bevorzugte Sprache",
+            "DefaultSelect": "Nichts ausgewählt",
+            "LanguageUpdated": "Sprache wurde erfolgreich zu {{language}} geändert."
+        }
+    }
+}

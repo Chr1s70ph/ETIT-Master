@@ -1,13 +1,21 @@
-import { Interaction, Message, MessageEmbed } from 'discord.js'
+import { SlashCommandBuilder } from '@discordjs/builders'
+import { MessageEmbed } from 'discord.js'
 import moment from 'moment-timezone'
 import { async } from 'node-ical'
-import { DiscordClient } from '../types/customTypes'
+import { DiscordClient, DiscordCommandInteraction } from '../types/customTypes'
 
 exports.name = 'wochenplan'
 
 exports.description = '️Zeigt den Wochenplan an.'
 
 exports.usage = `wochenplan {TAG}`
+
+export const data = new SlashCommandBuilder()
+  .setName('wochenplan')
+  .setDescription('Zeigt deinen Wochenplan an.')
+  .addStringOption(option =>
+    option.setName('datum').setDescription('Das Datum, das angezeigt werden soll. Format: TT.MM.YYYY'),
+  )
 
 class Abbreviation {
   constructor(pEmoji, pValue) {
@@ -53,11 +61,11 @@ function _shortenSummary(pEventSummary) {
   return pEventSummary
 }
 
-async function wochenplan(pClient: DiscordClient, pMessageOrInteraction, pNow, pCourseAndSemester) {
-  let data = {}
-  for (const entry in pClient.config.calendars) {
+async function wochenplan(client: DiscordClient, interaction: DiscordCommandInteraction, pNow, pCourseAndSemester) {
+  let returnData = {}
+  for (const entry in client.config.calendars) {
     // eslint-disable-next-line no-await-in-loop
-    data = { ...data, ...(await async.fromURL(pClient.config.calendars[entry])) }
+    returnData = { ...returnData, ...(await async.fromURL(client.config.calendars[entry])) }
   }
 
   const relevantEvents = []
@@ -68,11 +76,24 @@ async function wochenplan(pClient: DiscordClient, pMessageOrInteraction, pNow, p
   const rangeStart = moment(startOfWeek)
   const rangeEnd = rangeStart.clone().add(7, 'days')
 
-  filterEvents(data, rangeStart, rangeEnd, pCourseAndSemester, pMessageOrInteraction, relevantEvents)
+  filterEvents(returnData, rangeStart, rangeEnd, pCourseAndSemester, interaction, relevantEvents)
 
   const embed = new MessageEmbed()
-    .setAuthor(`🗓️ Wochenplan für ${pMessageOrInteraction.member.user.username}`)
-    .setDescription(`Woche vom ${moment(startOfWeek).format('DD.MM.yyyy')}`)
+    .setAuthor({
+      name: client.translate({
+        key: 'slashCommands.wochenplan.Schedule',
+        options: {
+          user: interaction.user.username,
+          lng: interaction.user.language,
+        },
+      }),
+    })
+    .setDescription(
+      client.translate({
+        key: 'slashCommands.wochenplan.Week',
+        options: { date: moment(startOfWeek).format('DD.MM.yyyy'), lng: interaction.user.language },
+      }),
+    )
 
   const weekdayItems = {}
 
@@ -124,16 +145,16 @@ async function wochenplan(pClient: DiscordClient, pMessageOrInteraction, pNow, p
 }
 
 function filterEvents(
-  data: any,
+  returnData: any,
   rangeStart: moment.Moment,
   rangeEnd: moment.Moment,
   pCourseAndSemester: any,
   pMessageOrInteraction: any,
   relevantEvents: any[],
 ) {
-  for (const i in data) {
-    const event = data[i]
-    if (data[i].type === 'VEVENT') {
+  for (const i in returnData) {
+    const event = returnData[i]
+    if (returnData[i].type === 'VEVENT') {
       const title = event.summary
       const startDate = moment(event.start)
       const endDate = moment(event.end)
@@ -221,39 +242,7 @@ function pushToWeeksEvents(interaction, event, relevantEvents) {
   }
 }
 
-exports.run = async client => {
-  await postSlashCommand(client)
-
-  client.on('interactionCreate', async (interaction: Interaction) => {
-    if (!interaction.isCommand()) return
-    const COMMAND = interaction.commandName
-    if (COMMAND !== 'wochenplan') return
-    await respond(interaction, COMMAND, client)
-  })
-}
-
-async function postSlashCommand(client: any): Promise<void> {
-  await client.api
-    .applications(client.user.id)
-    .guilds('757981349402378331')
-    .commands.post({
-      data: {
-        name: 'wochenplan',
-        description: 'Zeigt den Wochenplan an.',
-        options: [
-          {
-            name: 'datum',
-            description: 'Das Datum, das angezeigt werden soll. Format: TT.MM.YYYY',
-            type: 3,
-            required: false,
-          },
-        ],
-      },
-    })
-}
-
-async function respond(interaction, COMMAND: string, client: any): Promise<void> {
-  console.log(`User ${interaction.user.username} issued /${COMMAND}`)
+exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
   const now = new Date()
   const embed = wochenplan(client, interaction, now, 'all')
 
