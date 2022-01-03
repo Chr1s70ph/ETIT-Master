@@ -113,7 +113,7 @@ export async function loadSlashCommands(client: DiscordClient) {
 
     const commandName = file.split('.')[0]
 
-    client.slashCommands.set(commandName, slashCommand)
+    client.interactions.set(commandName, slashCommand)
     console.log(`Successfully posted slashCommand ${file}`)
   })
   postSlashCommands(client, slashCommandData)

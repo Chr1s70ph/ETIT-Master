@@ -5,7 +5,7 @@ const fs = require('fs')
 
 export const data = new SlashCommandBuilder().setName('help').setDescription('hilfe ist hier')
 
-exports.respond = async (client: DiscordClient, interaction: DiscordInteraction): Promise<void> => {
+exports.Command = async (client: DiscordClient, interaction: DiscordInteraction): Promise<void> => {
   const embed = await getCommands(client, interaction)
   await interaction.reply({ embeds: [embed.setTimestamp()], ephemeral: true })
 }

@@ -10,7 +10,7 @@ export const data = new SlashCommandBuilder()
   .addStringOption(option => option.setName('vorschlag').setDescription('Mein Vorschlag').setRequired(true))
   .addStringOption(option => option.setName('titel').setDescription('Titel meines Vorschlages'))
 
-exports.respond = async (client: DiscordClient, interaction: DiscordInteraction): Promise<void> => {
+exports.Command = async (client: DiscordClient, interaction: DiscordInteraction): Promise<void> => {
   const options = {
     token: client.config.github_token,
     body: interaction.options.getString('vorschlag'),
@@ -31,7 +31,6 @@ exports.respond = async (client: DiscordClient, interaction: DiscordInteraction)
         new MessageEmbed()
           .setTitle(client.translate({ key: 'slashCommands.issue.Recieved', lng: interaction.user.language }))
           .setDescription(client.translate({ key: 'slashCommands.issue.Thanks', lng: interaction.user.language })),
-
       ],
       ephemeral: true,
     })
@@ -41,7 +40,6 @@ exports.respond = async (client: DiscordClient, interaction: DiscordInteraction)
         new MessageEmbed()
           .setTitle(client.translate({ key: 'slashCommands.issue.Error', lng: interaction.user.language }))
           .setDescription(client.translate({ key: 'slashCommands.issue.TryAgain', lng: interaction.user.language })),
-
       ],
     })
     throw new Error(error)

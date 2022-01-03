@@ -242,7 +242,7 @@ function pushToWeeksEvents(interaction, event, relevantEvents) {
   }
 }
 
-exports.respond = async (client: DiscordClient, interaction: DiscordInteraction): Promise<void> => {
+exports.Command = async (client: DiscordClient, interaction: DiscordInteraction): Promise<void> => {
   const now = new Date()
   const embed = wochenplan(client, interaction, now, 'all')
 

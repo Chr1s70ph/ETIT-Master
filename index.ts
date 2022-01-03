@@ -47,9 +47,9 @@ const client: DiscordClient = new DiscordClient({
 client.commands = new Collection()
 
 /**
- * Set {@link DiscordClient} slashCommands to new {@link Collection}
+ * Set {@link DiscordClient} interactions to new {@link Collection}
  */
-client.slashCommands = new Collection()
+client.interactions = new Collection()
 
 /**
  * Set config.
@@ -61,7 +61,7 @@ client.config = config
  */
 client.login(client.config.botToken)
 
-const LoadCommands = require('./scripts/addCommands')
+const LoadCommands = require('./scripts/addInteractions')
 LoadCommands.run(client)
 
 /**

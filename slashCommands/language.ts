@@ -5,7 +5,7 @@ import { DiscordClient, DiscordContextMenuInteraction, DiscordInteraction } from
 
 export const data = new SlashCommandBuilder().setName('language').setDescription('Choose your language')
 
-exports.respond = async (client: DiscordClient, interaction: DiscordInteraction) => {
+exports.Command = async (client: DiscordClient, interaction: DiscordInteraction) => {
   /**
    * Array containing names of all language files
    */
@@ -67,7 +67,7 @@ exports.respond = async (client: DiscordClient, interaction: DiscordInteraction)
   })
 }
 
-exports.selectMenuResponse = (client: DiscordClient, interaction: DiscordContextMenuInteraction) => {
+exports.SelectMenu = (client: DiscordClient, interaction: DiscordContextMenuInteraction) => {
   /**
    * TODO reply to select menu
    */

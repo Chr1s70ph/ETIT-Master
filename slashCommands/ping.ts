@@ -5,6 +5,6 @@ export const data = new SlashCommandBuilder()
   .setName('ping')
   .setDescription('Prüft, ob der Bot ordnungsgemäß antwortet')
 
-exports.respond = async (client: DiscordClient, interaction: DiscordInteraction): Promise<void> => {
+exports.Command = async (client: DiscordClient, interaction: DiscordInteraction): Promise<void> => {
   await interaction.reply({ content: 'pong', ephemeral: true })
 }

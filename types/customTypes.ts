@@ -25,10 +25,10 @@ export class DiscordClient extends Client {
   public commands: Collection<string, Command>
 
   /**
-   * Collection of all slashCommands to use
-   * @type {Collection<string, SlashCommand>}
+   * Collection of all interactions to use
+   * @type {Collection<string, Interaction>}
    */
-  public slashCommands: Collection<string, SlashCommand>
+  public interactions: Collection<string, Interaction>
 
   /**
    * Config file imported into the DiscordClient for global access
@@ -216,10 +216,17 @@ interface Command extends Object {
   aliases: string[]
 }
 
-interface SlashCommand extends Object {
+interface Interaction extends Object {
   name: string
   description: string
   usage: string
-  respond: any
-  selectMenuResponse?: any
+  ApplicationCommand?: any
+  Autocomplete?: any
+  Button?: any
+  Command?: any
+  ContextMenu?: any
+  MessageComponent?: any
+  MessageContextMenu?: any
+  SelectMenu?: any
+  UserContextMenu?: any
 }
