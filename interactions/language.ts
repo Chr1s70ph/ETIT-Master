@@ -85,7 +85,7 @@ exports.SelectMenu = async (client: DiscordClient, interaction: SelectMenuIntera
      * Give user language Role
      */
     interactionUser.roles.add(languageRole)
-    console.log(`Gave ${interactionUser.displayName} languageRole: ${languageRole}`)
+    console.log(`Gave ${interactionUser.displayName} languageRole: ${languageRole.name}`)
   }
   /**
    * Flag of selected language
@@ -101,6 +101,7 @@ exports.SelectMenu = async (client: DiscordClient, interaction: SelectMenuIntera
    * Notify user, that language has been updated
    */
   interaction.update({
+    content: null,
     embeds: [
       new MessageEmbed()
         .setTitle(
