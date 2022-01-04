@@ -110,7 +110,7 @@ async function wochenplan(client: DiscordClient, interaction: DiscordCommandInte
     weekdayItems[moment(relevantEvent.start).days()].push(relevantEvent)
   }
 
-  moment.locale('de')
+  moment.locale(interaction.user.language)
 
   for (const weekdayKey of Object.keys(weekdayItems)) {
     let weekdayItem = weekdayItems[weekdayKey]
