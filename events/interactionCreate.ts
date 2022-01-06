@@ -19,6 +19,8 @@ exports.run = (client: DiscordClient, interaction: any) => {
    */
   const commandfile = client.interactions.get(commandName)
 
+  if (commandfile === undefined) return
+
   /**
    * Set language for user
    */
