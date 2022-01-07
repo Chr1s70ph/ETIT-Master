@@ -10,7 +10,7 @@ exports.usage = `tenor <searchQuery>`
 
 exports.aliases = ['gif']
 
-exports.run = (client: DiscordClient, message: DiscordMessage, language: string, args: string[]) => {
+exports.run = (client: DiscordClient, message: DiscordMessage, args: string[]) => {
   /**
    * Get {@link UserMention} from message.
    * @type {string}
