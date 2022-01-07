@@ -4,18 +4,20 @@ import { DiscordClient, DiscordCommandInteraction } from '../types/customTypes'
 export const data = new SlashCommandBuilder()
   .setName('studiengang')
   .setDescription('Wähle deinen studiengang aus.')
-  .addStringOption(option =>
+  .addSubcommandGroup(option =>
     option
-      .setName('studiengang')
-      .setDescription('Dein jetziger studiengang')
-      .addChoices([
-        ['etit-bachelor', 'etit-bachelor'],
-        ['mit-bachelor', 'mit-bachelor'],
-        ['etit-master', 'etit-master'],
-        ['mit-master', 'mit-master'],
-      ]),
+      .setName('subsection')
+      .setDescription('Section description')
+      .addSubcommand(suboption => suboption.setName('subcommand_shit').setDescription('sub sub section description'))
+      .addSubcommand(suboption => suboption.setName('secondsubsection').setDescription('sum sum summ macht die biene')),
+  )
+  .addSubcommandGroup(option =>
+    option
+      .setName('subsection2')
+      .setDescription('Even more subsections')
+      .addSubcommand(suboption => suboption.setName('subsub_option').setDescription("'sup")),
   )
 
 exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
-  await interaction.reply({ content: 'pong', ephemeral: true })
+  await interaction.reply({ content: `${interaction.options.data[0].value}` })
 }
