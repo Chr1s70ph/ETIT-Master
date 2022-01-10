@@ -659,13 +659,13 @@ function dynamicEmbed(
       .setDescription(`Die ${courseType} fängt in ${lessonsOffset} Minuten an`)
       .setThumbnail('https://pics.freeicons.io/uploads/icons/png/6029094171580282643-512.png')
       .addField('Dozent', professor, false)
-      .setFooter(
-        'Viel Spaß und Erfolg wünscht euch euer ETIT-Master',
-        client.guilds
+      .setFooter({
+        text: 'Viel Spaß und Erfolg wünscht euch euer ETIT-Master',
+        iconURL: client.guilds
           .resolve(client.config.ids.serverID)
           .members.resolve(client.config.ids.userID.botUserID)
           .user.avatarURL(),
-      )
+      })
   } catch (e) {
     /**
      * Error Message.

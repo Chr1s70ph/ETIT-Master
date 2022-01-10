@@ -15,6 +15,6 @@ exports.run = (client: DiscordClient, message: Message) =>
     embeds: [
       new MessageEmbed()
         .setImage('https://cdn.discordapp.com/attachments/768117219812835378/818145599894847488/eqmmb89gml941.png')
-        .setFooter(message.author.tag, message.author.avatarURL({ dynamic: true })),
+        .setFooter({ text: message.author.tag, iconURL: message.author.avatarURL({ dynamic: true }) }),
     ],
   })
