@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
-import { DiscordClient, DiscordCommandInteraction } from '../types/customTypes'
+import { DiscordClient, DiscordChatInputCommandInteraction } from '../types/customTypes'
 
 const DEGREE_COURSE = 'studiengang'
 const DEGREE_CHOICES: [string, string][] = [
@@ -31,7 +31,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand(subcommand => subcommand.setName(COURSES).setDescription('Wähle deine Fächer'))
   .addSubcommand(subcommand => subcommand.setName(FREETIME).setDescription('Wähle deine Freizeit Rollen'))
 
-exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
+exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCommandInteraction): Promise<void> => {
   const subCommand = interaction.options.getSubcommand()
   switch (subCommand) {
     case DEGREE_COURSE:

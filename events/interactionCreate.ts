@@ -2,10 +2,10 @@ import {
   DiscordAutocompleteInteraction,
   DiscordButtonInteraction,
   DiscordClient,
-  DiscordCommandInteraction,
-  DiscordMessageContextMenuInteraction,
+  DiscordChatInputCommandInteraction,
+  DiscordMessageContextMenuCommandInteraction,
   DiscordSelectMenuInteraction,
-  DiscordUserContextMenuInteraction,
+  DiscordUserContextMenuCommandInteraction,
 } from '../types/customTypes'
 
 exports.run = (client: DiscordClient, interaction: any) => {
@@ -35,16 +35,16 @@ exports.run = (client: DiscordClient, interaction: any) => {
     const DiscordInteraction = interaction as DiscordButtonInteraction
     commandfile.Button(client, DiscordInteraction)
   } else if (interaction.isCommand()) {
-    const DiscordInteraction = interaction as DiscordCommandInteraction
+    const DiscordInteraction = interaction as DiscordChatInputCommandInteraction
     commandfile.Command(client, DiscordInteraction)
   } else if (interaction.isMessageContextMenu()) {
-    const DiscordInteraction = interaction as DiscordMessageContextMenuInteraction
+    const DiscordInteraction = interaction as DiscordMessageContextMenuCommandInteraction
     commandfile.MessageContextMenu(client, DiscordInteraction)
   } else if (interaction.isSelectMenu()) {
     const DiscordInteraction = interaction as DiscordSelectMenuInteraction
     commandfile.SelectMenu(client, DiscordInteraction)
   } else if (interaction.isUserContextMenu()) {
-    const DiscordInteraction = interaction as DiscordUserContextMenuInteraction
+    const DiscordInteraction = interaction as DiscordUserContextMenuCommandInteraction
     commandfile.UserContextMenu(client, DiscordInteraction)
   }
 }
