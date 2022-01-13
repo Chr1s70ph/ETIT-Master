@@ -31,7 +31,7 @@ exports.run = (client: DiscordClient, message: DiscordMessage) => {
       new MessageEmbed()
         .setTitle(client.translate({ key: 'commands.fun.fact', lng: message.author.language }))
         .setDescription(fact)
-        .setFooter(message.author.tag, message.author.avatarURL({ dynamic: true })),
+        .setFooter({ text: message.author.tag, iconURL: message.author.avatarURL({ dynamic: true }) }),
     ],
   })
 }

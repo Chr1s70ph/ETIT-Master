@@ -1,11 +1,11 @@
 import { readdir } from 'fs/promises'
 import { SlashCommandBuilder } from '@discordjs/builders'
 import { MessageActionRow, MessageEmbed, MessageSelectMenu, SelectMenuInteraction } from 'discord.js'
-import { DiscordClient, DiscordCommandInteraction } from '../types/customTypes'
+import { DiscordClient, DiscordChatInputCommandInteraction } from '../types/customTypes'
 
 export const data = new SlashCommandBuilder().setName('language').setDescription('Choose your language')
 
-exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction) => {
+exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCommandInteraction) => {
   /**
    * Array containing names of all language files
    */
@@ -34,9 +34,10 @@ exports.Command = async (client: DiscordClient, interaction: DiscordCommandInter
      * Option for {@link MessageActionRow}
      */
     const option = {
-      label: `${client.translate({ key: 'flag', lng: lang })} ${languageName}`,
+      label: languageName,
       description: languageName,
       value: lang,
+      emoji: client.translate({ key: 'flag', lng: lang }),
     }
 
     /**

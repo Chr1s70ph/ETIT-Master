@@ -9,12 +9,12 @@ import {
   Collection,
   User,
   GuildMemberRoleManager,
-  CommandInteraction,
+  ChatInputCommandInteraction,
   AutocompleteInteraction,
   ButtonInteraction,
-  MessageContextMenuInteraction,
+  MessageContextMenuCommandInteraction,
   SelectMenuInteraction,
-  UserContextMenuInteraction,
+  UserContextMenuCommandInteraction,
   ApplicationCommand,
 } from 'discord.js'
 import i18next from 'i18next'
@@ -201,14 +201,14 @@ export interface DiscordButtonInteraction extends ButtonInteraction {
 /**
  * Extended {@link CommandInteraction} to hold {@link DiscordUser}
  */
-export interface DiscordCommandInteraction extends CommandInteraction {
+export interface DiscordChatInputCommandInteraction extends ChatInputCommandInteraction {
   user: DiscordUser
 }
 
 /**
  * Extended {@link MessageContextMenuInteraction} to hold {@link DiscordUser}
  */
-export interface DiscordMessageContextMenuInteraction extends MessageContextMenuInteraction {
+export interface DiscordMessageContextMenuCommandInteraction extends MessageContextMenuCommandInteraction {
   user: DiscordUser
 }
 
@@ -222,7 +222,7 @@ export interface DiscordSelectMenuInteraction extends SelectMenuInteraction {
 /**
  * Extended {@link UserContextMenuInteraction} to hold {@link DiscordUser}
  */
-export interface DiscordUserContextMenuInteraction extends UserContextMenuInteraction {
+export interface DiscordUserContextMenuCommandInteraction extends UserContextMenuCommandInteraction {
   user: DiscordUser
 }
 
