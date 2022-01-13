@@ -1,14 +1,16 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
-import { DiscordClient, DiscordChatInputCommandInteraction } from '../types/customTypes'
+import { MessageActionRow, MessageSelectMenu, MessageSelectOptionData } from 'discord.js'
+import { DiscordClient, DiscordChatInputCommandInteraction, DiscordSelectMenuInteraction } from '../types/customTypes'
 
 const DEGREE_COURSE = 'studiengang'
-const DEGREE_CHOICES: [string, string][] = [
-  ['ETIT Bachelor', 'etit-bachelor'],
-  ['ETIT Master', 'etit-master'],
-  ['MIT Bachelor', 'mit-bachelor'],
-  ['MIT Master', 'mit-master'],
-  ['KIT Bachelor', 'kit-bachelor'],
-  ['KIT Master', 'kit-master'],
+const DEGREE_CHOICES = [
+  { label: 'ETIT-Bachelor', description: 'ETIT-bachelor', value: 'etit-bachelor' },
+  { label: 'ETIT-Master', description: 'ETIT-Master', value: 'etit-master' },
+  { label: 'MIT-Bachelor', description: 'MIT-bachelor', value: 'mit-bachelor' },
+  { label: 'MIT-Master', description: 'MIT-Master', value: 'mit-master' },
+  { label: 'KIT-Bachelor', description: 'KIT-Bachelor', value: 'kit-bachelor' },
+  { label: 'KIT-Master', description: 'KIT-Master', value: 'kit-master' },
+  { label: 'Gast', description: 'Gast', value: 'gast' },
 ]
 const COURSES = 'fächer'
 const FREETIME = 'freizeit'
@@ -16,18 +18,7 @@ const FREETIME = 'freizeit'
 export const data = new SlashCommandBuilder()
   .setName('rollenauswahl')
   .setDescription('Wähle deine Rollen')
-  .addSubcommand(subcommand =>
-    subcommand
-      .setName(DEGREE_COURSE)
-      .setDescription('Wähle deinen Studiengang')
-      .addStringOption(option =>
-        option
-          .setDescription('Wähle deinen Studiengang')
-          .setRequired(true)
-          .setName(DEGREE_COURSE)
-          .setChoices(DEGREE_CHOICES),
-      ),
-  )
+  .addSubcommand(subcommand => subcommand.setName(DEGREE_COURSE).setDescription('Wähle deinen Studiengang'))
   .addSubcommand(subcommand => subcommand.setName(COURSES).setDescription('Wähle deine Fächer'))
   .addSubcommand(subcommand => subcommand.setName(FREETIME).setDescription('Wähle deine Freizeit Rollen'))
 
@@ -35,24 +26,33 @@ exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCom
   const subCommand = interaction.options.getSubcommand()
   switch (subCommand) {
     case DEGREE_COURSE:
-      degreeCourse()
+      degreeCourse(client, interaction)
       break
     case COURSES:
-      courses()
+      courses(client, interaction)
       break
     case FREETIME:
-      freetime()
+      freetime(client, interaction)
       break
 
     default:
       break
   }
   console.log(interaction)
-  await interaction.reply({ content: `${interaction.options.getSubcommand()}` })
 }
 
-function degreeCourse() {}
+function degreeCourse(client: DiscordClient, interaction: DiscordChatInputCommandInteraction) {
+  const row = new MessageActionRow().addComponents(
+    new MessageSelectMenu().setCustomId('rollenauswahl.degreeCourse').addOptions(DEGREE_CHOICES),
+  )
 
-function courses() {}
+  interaction.reply({ content: 'Studiengänge', components: [row] })
+}
 
-function freetime() {}
+function courses(client: DiscordClient, interaction: DiscordChatInputCommandInteraction) {}
+
+function freetime(client: DiscordClient, interaction: DiscordChatInputCommandInteraction) {}
+
+exports.SelectMenu = async (client: DiscordClient, interaction: DiscordSelectMenuInteraction) => {
+  interaction.reply({ content: 'nice' })
+}
