@@ -34,9 +34,10 @@ exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCom
      * Option for {@link MessageActionRow}
      */
     const option = {
-      label: `${client.translate({ key: 'flag', lng: lang })} ${languageName}`,
+      label: languageName,
       description: languageName,
       value: lang,
+      emoji: client.translate({ key: 'flag', lng: lang }),
     }
 
     /**
