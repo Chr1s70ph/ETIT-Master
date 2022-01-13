@@ -37,13 +37,13 @@ exports.run = (client: DiscordClient, interaction: any) => {
   } else if (interaction.isCommand()) {
     const DiscordInteraction = interaction as DiscordChatInputCommandInteraction
     commandfile.Command(client, DiscordInteraction)
-  } else if (interaction.isMessageContextMenu()) {
+  } else if (interaction.isMessageContextMenuCommand()) {
     const DiscordInteraction = interaction as DiscordMessageContextMenuCommandInteraction
     commandfile.MessageContextMenu(client, DiscordInteraction)
   } else if (interaction.isSelectMenu()) {
     const DiscordInteraction = interaction as DiscordSelectMenuInteraction
     commandfile.SelectMenu(client, DiscordInteraction)
-  } else if (interaction.isUserContextMenu()) {
+  } else if (interaction.isUserContextMenuCommand()) {
     const DiscordInteraction = interaction as DiscordUserContextMenuCommandInteraction
     commandfile.UserContextMenu(client, DiscordInteraction)
   }
