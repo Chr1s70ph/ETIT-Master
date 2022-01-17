@@ -2,7 +2,11 @@ import {
   DiscordAutocompleteInteraction,
   DiscordButtonInteraction,
   DiscordClient,
+<<<<<<< HEAD
   DiscordChatInputCommandInteraction,
+=======
+  DiscordCommandInteraction,
+>>>>>>> a56b737 (add user join and leave messages)
   DiscordMessageContextMenuCommandInteraction,
   DiscordSelectMenuInteraction,
   DiscordUserContextMenuCommandInteraction,
@@ -38,6 +42,7 @@ exports.run = (client: DiscordClient, interaction: any) => {
     const DiscordInteraction = interaction as DiscordChatInputCommandInteraction
     commandfile.Command(client, DiscordInteraction)
   } else if (interaction.isMessageContextMenuCommand()) {
+
     const DiscordInteraction = interaction as DiscordMessageContextMenuCommandInteraction
     commandfile.MessageContextMenu(client, DiscordInteraction)
   } else if (interaction.isSelectMenu()) {
