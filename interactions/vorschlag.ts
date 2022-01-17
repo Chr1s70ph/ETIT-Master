@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
-
 import { CommandInteractionOptionResolver, MessageEmbed } from 'discord.js'
 import { DiscordClient, DiscordChatInputCommandInteraction } from '../types/customTypes'
+
 const createIssue = require('github-create-issue')
 const REPOSITORY = 'Chr1s70ph/ETIT-Master'
 
@@ -13,6 +13,7 @@ export const data = new SlashCommandBuilder()
 
 exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCommandInteraction): Promise<void> => {
   const interactionOptions = interaction.options as CommandInteractionOptionResolver
+
   const options = {
     token: client.config.github_token,
     body: interactionOptions.getString('vorschlag'),
