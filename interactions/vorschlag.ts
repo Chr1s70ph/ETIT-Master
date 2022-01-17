@@ -1,7 +1,10 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
 import { CommandInteractionOptionResolver, MessageEmbed } from 'discord.js'
 import { DiscordClient, DiscordChatInputCommandInteraction } from '../types/customTypes'
+<<<<<<< HEAD
 
+=======
+>>>>>>> ccb94d5 (Add welcome Messages)
 const createIssue = require('github-create-issue')
 const REPOSITORY = 'Chr1s70ph/ETIT-Master'
 

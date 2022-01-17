@@ -13,8 +13,8 @@ import {
   AutocompleteInteraction,
   ButtonInteraction,
   MessageContextMenuCommandInteraction,
-  UserContextMenuCommandInteraction,
   SelectMenuInteraction,
+  UserContextMenuCommandInteraction,
   ApplicationCommand,
 } from 'discord.js'
 import i18next from 'i18next'
