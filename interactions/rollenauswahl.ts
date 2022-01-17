@@ -1,10 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
-<<<<<<< HEAD
-import { MessageActionRow, MessageSelectMenu, MessageSelectOptionData } from 'discord.js'
+import { MessageActionRow, MessageSelectMenu } from 'discord.js'
 import { DiscordClient, DiscordChatInputCommandInteraction, DiscordSelectMenuInteraction } from '../types/customTypes'
-=======
-import { DiscordClient, DiscordChatInputCommandInteraction } from '../types/customTypes'
->>>>>>> ccb94d5 (Add welcome Messages)
 
 const DEGREE_COURSE = 'studiengang'
 const DEGREE_CHOICES = [
