@@ -13,7 +13,7 @@
     "dependencies": {
         "@discordjs/rest": "^0.2.0-canary.0",
         "discord-api-types": "^0.26.0",
-        "discord.js": "^14.0.0-dev.1640779371.9cdc448",
+        "discord.js": "^14.0.0-dev.1641945998.1479e40",
         "eslint-config-prettier": "^8.3.0",
         "eslint-plugin-import": "^2.25.3",
         "eslint-plugin-prettier": "^4.0.0",
