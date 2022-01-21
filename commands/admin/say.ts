@@ -22,6 +22,9 @@ exports.run = (client: DiscordClient, message: DiscordMessage) => {
    */
   const embed = createEmbed(message, client)
 
+  /**
+   * Send reply based on message type.
+   */
   return message.type === 'REPLY'
     ? client.reply(message, { embeds: [embed] })
     : client.send(message, { embeds: [embed] })
