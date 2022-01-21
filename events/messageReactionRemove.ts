@@ -1,14 +1,21 @@
 import { GuildMember, MessageReaction, TextChannel } from 'discord.js'
+import { colors } from '../types/colors'
 import { DiscordClient } from '../types/customTypes'
 
 /**
  * Channel ID of Coursedegree selection and Freetime Role selection
  */
-const COURSEDEGREE_FREETIME_SELECTION = ['830837597587767306', '783449991355170836']
+const EMOJI_MATCHING_CHANNELS = ['783449991355170836']
 /**
  * All four course module selection channels
  */
-const COURSE_SELECTIONS = ['830884627051839488', '831572233301524501', '831636138808311878', '833349893963776030']
+const ROLE_REACTION_CHANNELS = [
+  '830837597587767306',
+  '830884627051839488',
+  '831572233301524501',
+  '831636138808311878',
+  '833349893963776030',
+]
 /**
  * Channel to send message to, if course module role does not yet exist
  */
@@ -19,7 +26,7 @@ exports.run = async (client: DiscordClient, reaction: MessageReaction, user: Gui
   /**
    * Bachelor selection
    */
-  if (COURSEDEGREE_FREETIME_SELECTION.indexOf(reaction.message.channel.id) > -1) {
+  if (EMOJI_MATCHING_CHANNELS.indexOf(reaction.message.channel.id) > -1) {
     /**
      * Message on wich a reaction was added
      */
@@ -59,11 +66,14 @@ exports.run = async (client: DiscordClient, reaction: MessageReaction, user: Gui
           /**
            * Send message, that role could not be found
            */
-          console.log(`Role(${reaction.emoji.name}) selected by ${USER.displayName} can not be found `)
+          console.log(
+            // eslint-disable-next-line max-len
+            `${colors.fg.Red}Role(${reaction.emoji.name}) selected by ${USER.displayName} can not be found${colors.special.Reset}`,
+          )
         }
       }
     }
-  } else if (COURSE_SELECTIONS.indexOf(reaction.message.channel.id) > -1) {
+  } else if (ROLE_REACTION_CHANNELS.indexOf(reaction.message.channel.id) > -1) {
     try {
       /**
        * Message on wich a reaction was added
@@ -86,7 +96,10 @@ exports.run = async (client: DiscordClient, reaction: MessageReaction, user: Gui
          * If user does have the role selected, remove it
          */
         await USER.roles.remove(role, 'Requested by user.')
-        console.log(`Removed Role:${role.name} from ${USER.displayName}`)
+        console.log(
+          // eslint-disable-next-line max-len
+          `User update: ${colors.fg.Red}Removed${colors.special.Reset} role ${colors.special.Bright}${role.name}${colors.special.Reset} from ${USER.displayName}`,
+        )
       }
     } catch (error) {
       /**
