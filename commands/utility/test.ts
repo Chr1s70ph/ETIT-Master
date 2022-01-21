@@ -15,6 +15,6 @@ exports.run = (client: DiscordClient, message: DiscordMessage) =>
     embeds: [
       new MessageEmbed()
         .setTitle(client.translate({ key: 'commands.utility.test', lng: message.author.language }))
-        .setFooter({ text: message.author.tag, iconURL: message.author.avatarURL({ forceStatic: true }) }),
+        .setFooter({ text: message.author.tag, iconURL: message.author.avatarURL({ dynamic: true }) }),
     ],
   })

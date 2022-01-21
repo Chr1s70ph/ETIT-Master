@@ -38,7 +38,7 @@ exports.run = async (client: DiscordClient, message: DiscordMessage) => {
         })
         .setTitle(forceFetchedUser.tag)
         .setColor(messageUser.displayColor)
-        .setThumbnail(messageUser.displayAvatarURL({ size: 4096, forceStatic: true }))
+        .setThumbnail(messageUser.displayAvatarURL({ size: 4096, dynamic: true }))
         .addField(
           client.translate({ key: 'commands.utility.userprofile.Joined', lng: message.author.language }),
           `<t:${userJoinedTimestamp}:D>`,
@@ -53,8 +53,8 @@ exports.run = async (client: DiscordClient, message: DiscordMessage) => {
           }`,
           true,
         )
-        .setImage(forceFetchedUser.bannerURL({ size: 4096, forceStatic: true }))
-        .setFooter({ text: message.author.tag, iconURL: message.author.avatarURL({ forceStatic: true }) }),
+        .setImage(forceFetchedUser.bannerURL({ size: 4096, dynamic: true }))
+        .setFooter({ text: message.author.tag, iconURL: message.author.avatarURL({ dynamic: true }) }),
     ],
   })
 }

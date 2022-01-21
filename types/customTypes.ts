@@ -14,8 +14,7 @@ import {
   ButtonInteraction,
   SelectMenuInteraction,
   ApplicationCommand,
-  MessageContextMenuCommandInteraction,
-  UserContextMenuCommandInteraction,
+  MessageContextMenuInteraction,
 } from 'discord.js'
 import i18next from 'i18next'
 
@@ -91,10 +90,7 @@ export class DiscordClient extends Client {
    */
   public reply(message: Message, returnData: MessageOptions): Promise<Message<boolean>> {
     return new Promise<Message>((resolve, reject) => {
-      /**
-       * 19 represents reply type
-       */
-      if (message.type === 19) {
+      if (message.type === 'REPLY') {
         return message.channel.messages
           .fetch(message.reference.messageId)
           .then(_message => {
@@ -211,7 +207,7 @@ export interface DiscordCommandInteraction extends CommandInteraction {
 /**
  * Extended {@link MessageContextMenuInteraction} to hold {@link DiscordUser}
  */
-export interface DiscordMessageContextMenuCommandInteraction extends MessageContextMenuCommandInteraction {
+export interface DiscordMessageContextMenuInteraction extends MessageContextMenuInteraction {
   user: DiscordUser
 }
 
@@ -222,12 +218,12 @@ export interface DiscordSelectMenuInteraction extends SelectMenuInteraction {
   user: DiscordUser
 }
 
-/**
- * Extended {@link UserContextMenuInteraction} to hold {@link DiscordUser}
- */
-export interface DiscordUserContextMenuCommandInteraction extends UserContextMenuCommandInteraction {
-  user: DiscordUser
-}
+// /**
+//  * Extended {@link UserContextMenuInteraction} to hold {@link DiscordUser}
+//  */
+// export interface DiscordUserContextMenuCommandInteraction extends UserContextMenuCommandInteraction {
+//   user: DiscordUser
+// }
 
 /**
  * Extended User to hold language.

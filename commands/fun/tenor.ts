@@ -77,7 +77,7 @@ function queryTenorAndReply(
      */
     let embed = new MessageEmbed()
       .setColor('RANDOM')
-      .setFooter(message.author.tag, message.author.avatarURL({ forceStatic: true }))
+      .setFooter(message.author.tag, message.author.avatarURL({ dynamic: true }))
 
     /**
      * Set image of embed if Tenor query returned any.
