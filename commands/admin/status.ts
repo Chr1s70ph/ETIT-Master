@@ -16,7 +16,10 @@ const presence: setPresenceData = {
   activities: [
     {
       name: '',
-      type: 'PLAYING',
+      /**
+       * 0 represents playing a game
+       */
+      type: 0,
     },
   ],
   status: 'online',

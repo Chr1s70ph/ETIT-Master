@@ -24,10 +24,9 @@ exports.run = (client: DiscordClient, message: DiscordMessage) => {
 
   /**
    * Send reply based on message type.
+   * Type 9 represents reply
    */
-  return message.type === 'REPLY'
-    ? client.reply(message, { embeds: [embed] })
-    : client.send(message, { embeds: [embed] })
+  return message.type === 9 ? client.reply(message, { embeds: [embed] }) : client.send(message, { embeds: [embed] })
 }
 
 /**

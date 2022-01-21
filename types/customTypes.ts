@@ -91,7 +91,10 @@ export class DiscordClient extends Client {
    */
   public reply(message: Message, returnData: MessageOptions): Promise<Message<boolean>> {
     return new Promise<Message>((resolve, reject) => {
-      if (message.type === 'REPLY') {
+      /**
+       * 19 represents reply type
+       */
+      if (message.type === 19) {
         return message.channel.messages
           .fetch(message.reference.messageId)
           .then(_message => {
