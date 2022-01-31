@@ -84,6 +84,9 @@
             "Schedule": "🗓️ Weekly schedule for {{user}}",
             "Week": "Week of {{date}}"
         },
+        "klausuren": {
+            "Exams": "🗓️ Exams for {{user}}"
+        },
         "language": {
             "Select": "Select your desired language",
             "DefaultSelect": "Nothing Selected",
