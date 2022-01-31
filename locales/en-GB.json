@@ -1,53 +1,51 @@
 {
-"language": "English",
-"flag": "🇺k",
-"commands": {
-    "admin": {
-        "missingPermission": "Ooops! Seems like your cuppa isn't hot enough to perform that command. Soz.",
-        "devtest": {},
-        "restart": "🤖Restarting...",
-        "say": {},
-        "status": "👥Presence has been updated!"
-    },
-    "tests": {
-        "hello": {
-            "welcome": "Hiya world"
+    "language": "English",
+    "flag": "🇬🇧",
+    "commands": {
+        "admin": {
+            "missingPermission": "Ooops! Seems like your cuppa isn't hot enough to perform that command. Soz.",
+            "devtest": {},
+            "restart": "🤖Restarting...",
+            "say": {},
+            "status": "👥Presence has been updated!"
+        },
+        "tests": {
+            "hello": {
+                "welcome": "Hiya world"
+            }
+        },
+        "utility": {
+            "antwortaufalles": "The answer to the question about life, the universe, and all the rest is tea and cricket, innit? What else could it be.",
+            "channelinfo": {
+                "Answer": "Number of channel members: {{memberNumber}}\nin {{channelName}}.",
+                "ErrorNotAvailable": "Channel info is not available in this channel. Try a different channel."
+            },
+            "command": {
+                "ErrorNoCommandName": "Please provide a command name.",
+                "CommandHelp": "Command assistance",
+                "Description": "Description",
+                "Usage": "Usage",
+                "Aliases": "nicks"
+            }
         }
     },
-    "utility": {
-        "antwortaufalles": "The answer to the question about life, the universe, and all the rest is tea and cricket, innit? What else could it be.",
-        "channelinfo": {
-            "Answer": "Number of channel members: {{memberNumber}}\nin {{channelName}}.",
-            "ErrorNotAvailable": "Channel info is not available in this channel. Try a different channel."
+    "slashCommands": {
+        "help": "Help",
+        "issue": {
+            "Recieved": "Issue recieved!",
+            "Thanks": "Thank you for submitting your issue!",
+            "Error": "⚠Error",
+            "TryAgain": "An error came about. Please try again later."
         },
-        "command": {
-            "ErrorNoCommandName": "Please provide a command name.",
-            "CommandHelp": "Command assistance",
-            "Description": "Description",
-            "Usage": "Usage",
-            "Aliases": "nicks"
+        "ping": {},
+        "wochenplan": {
+            "Schedule": "🗓️ Weekly schedule for {{user}}",
+            "Week": "Week of {{date}}"
         },
-                   
-        
+        "language": {
+            "Select": "Select your desired language",
+            "DefaultSelect": "Nowt Selected",
+            "LanguageUpdated": "Language has been successfully updated to {{language}}."
+        }
     }
-},
-"slashCommands": {
-    "help": "Help",
-    "issue": {
-        "Recieved": "Issue recieved!",
-        "Thanks": "Thank you for submitting your issue!",
-        "Error": "⚠Error",
-        "TryAgain": "An error came about. Please try again later."
-    },
-    "ping": {},
-    "wochenplan": {
-        "Schedule": "🗓️ Weekly schedule for {{user}}",
-        "Week": "Week of {{date}}"
-    },
-    "language": {
-        "Select": "Select your desired language",
-        "DefaultSelect": "Nowt Selected",
-        "LanguageUpdated": "Language has been successfully updated to {{language}}."
-    }
-}
 }
