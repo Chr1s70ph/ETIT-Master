@@ -774,9 +774,10 @@ function findChannel(subject: string, client: DiscordClient): Snowflake {
  */
 function findRole(subject: string, client: DiscordClient): Snowflake {
   /**
+   * Remove multiple spaces, and replace them with a single space.
    * Remove leading and trailing space.
    */
-  subject = subject.trim()
+  subject = subject.replace(/  +/g, ' ').trim()
 
   /**
    * Remove all content in, and brackets.
