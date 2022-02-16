@@ -30,6 +30,13 @@ Clone the repository, `cd` into it and run `npm install`.
 
 ---
 
+> # OUTDATED
+> This whole README is outdated, but I dont want to update it :)
+>
+> The code is documented in such a way, that everything (should) be self explainatory.
+
+---
+
 ## Configuration
 
 Rename `EXAMPLE_config.json` to `config.json`.
