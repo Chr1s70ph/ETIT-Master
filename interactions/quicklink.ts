@@ -2,6 +2,9 @@ import { SlashCommandBuilder } from '@discordjs/builders'
 import { MessageEmbed } from 'discord.js'
 import { DiscordClient, DiscordCommandInteraction } from '../types/customTypes'
 
+/**
+ * Available Quicklinks
+ */
 const links = {
   dontask: {
     link: 'https://dontasktoask.com/',
@@ -40,23 +43,42 @@ const links = {
   },
 }
 
+/**
+ * Array with all choices
+ * Declared with [null, null], because otherwise TS throws undefined errors (ノ°Д°）ノ︵ ┻━┻
+ */
+const choices: [string, string][] = new Array([null, null])
+
+/**
+ * Add choices to Array
+ */
+for (const entry in links) {
+  const choice: [string, string] = [entry, entry]
+  choices.push(choice)
+}
+
+/**
+ * Shift Array to remove null values from the beginning
+ */
+choices.shift()
+
+/**
+ * Interactiondata
+ */
 export const data = new SlashCommandBuilder()
   .setName('quicklink')
   .setDescription('Links quick')
   .addStringOption(option =>
-    option
-      .setName('quicklinks')
-      .setDescription('Choose your Quicklink')
-      .addChoice('dontask', 'dontask')
-      .addChoice('exmatrikulation', 'exmatrikulation')
-      .addChoice('kw', 'kw')
-      .addChoice('duden', 'duden')
-      .addChoice('stackoverflow', 'stackoverflow')
-      .addChoice('reddit', 'reddit')
-      .setRequired(true),
+    // eslint-disable-next-line newline-per-chained-call
+    option.setName('quicklinks').setDescription('Choose your Quicklink').setChoices(choices).setRequired(true),
   )
   .addUserOption(option => option.setName('userping').setDescription('Who do you want to annoy?'))
 
+/**
+ * Reply to interactiopn
+ * @param {DiscordClient} client Bot-Client
+ * @param {DiscordCommandInteraction} interaction Interaction triggered
+ */
 exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
   const choice = interaction.options.getString('quicklinks')
   const ping = interaction.options.getUser('userping') ?? null
