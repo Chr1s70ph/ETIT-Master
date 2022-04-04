@@ -20,6 +20,7 @@
         "eslint-plugin-prettier": "^4.0.0",
         "fs": "^0.0.1-security",
         "github-create-issue": "^1.0.1",
+        "https": "^1.0.0",
         "i18next": "^21.6.14",
         "i18next-fs-backend": "^1.1.4",
         "luxon": "^2.3.1",
