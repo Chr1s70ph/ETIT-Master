@@ -220,11 +220,6 @@ function _updateJson(client: DiscordClient, interaction: DiscordCommandInteracti
   })
 }
 
-/**
- * TODO:
- * - Sort and format API response
- */
-
 async function mensa(client, interaction, req_weekday, req_mensa) {
   /**
    * Mensa embed
@@ -382,90 +377,3 @@ async function mensa(client, interaction, req_weekday, req_mensa) {
 
   interaction.reply({ embeds: [embed] })
 }
-
-// async function daily_mensa(pClient) {
-//   const msg = new Discord.Message(pClient, {
-//     channel_id: id.channelId.MENSA,
-//     guild_id: id.serverId.ETIT_KIT,
-//     id: '123456789101112',
-//     content: `${settings.prefix}mensa`,
-//     author: { id: pClient.user.id },
-//     channel: pClient.channels.cache.get(id.channelId.MENSA),
-//   })
-
-//   mensa_switcher(pClient, msg)
-//   setInterval(() => {
-//     mensa_switcher(pClient, msg)
-//   }, 86400000) // 86400000 milliseconds are in a day
-// }
-
-// async function mensa_switcher(pClient, pMessageOrInteraction) {
-//   let msg = null
-
-//   if (pMessageOrInteraction instanceof Discord.Message) {
-//     let requestedWeekday = null
-//     let requestedMensa = 'adenauerring'
-//     const params = pMessageOrInteraction.content.split(' ').map(elem => elem.toLowerCase())
-
-//     for (const weekday in weekdayOptions) {
-//       if (params.indexOf(weekday) != -1) {
-//         requestedWeekday = weekday
-//         const requestedWeekdayIndex = weekdayOptions[weekday].index
-//         if (requestedWeekdayIndex > weekdayOptions.fr.index) {
-//           sendErrorMessageHelper.sendErrorMessage(
-//             pClient,
-//             pMessageOrInteraction,
-//             `Error: Ungültiger Wert für {TAG}`,
-//             `Der Mensaplan kann nur für Werktage angezeigt werden.`,
-//           )
-//           return
-//         }
-//       }
-//     }
-
-//     for (const mensaKey in mensaOptions) {
-//       if (params.indexOf(mensaKey) !== -1) {
-//         requestedMensa = mensaKey
-//       }
-//     }
-
-//     const embed = await mensa(pClient, pMessageOrInteraction, requestedWeekday, requestedMensa)
-
-//     msg = await pMessageOrInteraction.channel.send({
-//       embeds: [embed],
-//     })
-//   } else {
-//     let requestedWeekday = null
-//     let requestedMensa = 'adenauerring'
-//     switch (pMessageOrInteraction.options._hoistedOptions.length) {
-//       case 1:
-//         if (pMessageOrInteraction.options.data[0].name === 'wochentag') {
-//           requestedWeekday = pMessageOrInteraction.options.data[0].value
-//         } else {
-//           requestedMensa = pMessageOrInteraction.options.data[0].value
-//         }
-//         break
-//       case 2:
-//         if (pMessageOrInteraction.options.data[0].name === 'wochentag') {
-//           requestedWeekday = pMessageOrInteraction.options.data[0].value
-//           requestedMensa = pMessageOrInteraction.options.data[1].value
-//         } else {
-//           requestedMensa = pMessageOrInteraction.options.data[1].value
-//           requestedMensa = pMessageOrInteraction.options.data[0].value
-//         }
-//         break
-//     }
-
-//     const embed = await mensa(pClient, pMessageOrInteraction, requestedWeekday, requestedMensa)
-
-//     msg = await pMessageOrInteraction.reply({
-//       embeds: [embed],
-//       ephemeral: true,
-//     })
-//   }
-
-//   if (msg.channel.type === 'GUILD_NEWS') {
-//     console.log('news')
-//     await msg.crosspost()
-//   }
-// }
