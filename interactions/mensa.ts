@@ -1,8 +1,9 @@
 import * as fs from 'fs'
 import * as https from 'https'
-import { SlashCommandBuilder } from '@discordjs/builders'
+import { SlashCommandBuilder, time } from '@discordjs/builders'
 import { DataResolver, Message, MessageEmbed } from 'discord.js'
 import { DiscordClient, DiscordCommandInteraction } from '../types/customTypes'
+const { DateTime } = require('luxon')
 
 const weekdays = {
   montag: {
@@ -225,23 +226,31 @@ function _updateJson(client: DiscordClient, interaction: DiscordCommandInteracti
  */
 
 async function mensa(client, interaction, req_weekday, req_mensa) {
+  /**
+   * Mensa embed
+   */
   const embed = new MessageEmbed().setColor('#FAD51B').setAuthor({ name: '🍽️ Mensaplan' })
 
   let raw_mensa, mensa_json
   if ((await fs.promises.readFile(`data/mensa.json`)).toString().length === 0) {
+    /**
+     * Fetch new mensa plan if none found
+     */
     const buffer = await _updateJson(client, interaction)
     if (buffer) mensa_json = JSON.parse(buffer)
   } else {
+    /**
+     * Read mensa plan if found
+     */
     raw_mensa = (await fs.promises.readFile(`data/mensa.json`)).toString()
     mensa_json = JSON.parse(raw_mensa)
   }
 
-  let requestedWeekdayIndex = null
-  let requestedDifference = null
-
+  const requestedWeekdayIndex = weekdayOptions[req_weekday].index
   const currentWeekday = new Date().getDay() - 1
 
-  requestedWeekdayIndex = weekdayOptions[req_weekday].index
+  let requestedDifference = null
+
   if (requestedWeekdayIndex - currentWeekday <= 0) {
     /**
      * If in past, search next week :)
@@ -251,11 +260,8 @@ async function mensa(client, interaction, req_weekday, req_mensa) {
     requestedDifference = requestedWeekdayIndex - currentWeekday
   }
 
-  /**
-   * Date without milliseconds.
-   */
-  const currentDate = Math.round(Date.now() / 1000)
-  const lastDate: number = +Object.keys(mensa_json.adenauerring)[Object.keys(mensa_json.adenauerring).length - 1]
+  const currentDate = Date.now()
+  const lastDate: number = +Object.keys(mensa_json.adenauerring)[Object.keys(mensa_json.adenauerring).length - 1] * 1000
 
   if (currentDate + 7 * 86400 > lastDate) {
     // 7 * 86400 : number of seconds in one week
@@ -269,7 +275,6 @@ async function mensa(client, interaction, req_weekday, req_mensa) {
     if (buffer) mensa_json = JSON.parse(buffer)
 
     mensa_json = await fs.promises.readFile(`data/mensa.json`)
-    console.log(mensa_json)
   }
 
   if (Object.keys(mensa_json).indexOf(req_mensa) === -1) {
@@ -285,11 +290,17 @@ async function mensa(client, interaction, req_weekday, req_mensa) {
   for (const timestampKey in Object.keys(mensa_json[req_mensa])) {
     const timestamp: number = +Object.keys(mensa_json[req_mensa])[timestampKey]
 
-    if (timestamp > currentDate - 2 * 86400 + 86400 * requestedDifference) {
-      // # 86400 number of seconds in one day
+    if (timestamp * 1000 > currentDate - 86400000 + 86400000 * requestedDifference) {
+      // # 86400000 number of miliseconds in one day
 
-      const date = new Date(timestamp * 1000)
-      date.setDate(date.getDate() + 1)
+      /**
+       * Fight with JS Date format
+       * It works, don't touch it
+       */
+      const tempDay = DateTime.fromMillis(timestamp * 1000).toString()
+      tempDay.toLocaleString('en-US', { timezone: 'Berlin/Europe' })
+      const dayString = `${tempDay.slice(0, -10)}Z`
+      const date = new Date(dayString)
 
       embed
         .setTitle(`Mensa ${mensaOptions[req_mensa].name}`)
