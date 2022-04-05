@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import * as https from 'https'
 import { SlashCommandBuilder } from '@discordjs/builders'
-import { Message, MessageEmbed } from 'discord.js'
+import { DataResolver, Message, MessageEmbed } from 'discord.js'
 import { DiscordClient, DiscordCommandInteraction } from '../types/customTypes'
 
 const weekdays = {
@@ -33,7 +33,7 @@ const weekday_choices: [string, string][] = new Array([null, null])
  * Add choices to Array
  */
 for (const entry in weekdays) {
-  const choice: [string, string] = [entry, entry]
+  const choice: [string, string] = [weekdays[entry].name, weekdays[entry].value]
   weekday_choices.push(choice)
 }
 weekday_choices.shift()
@@ -67,7 +67,7 @@ const line_choices: [string, string][] = new Array([null, null])
  * Add choices to Array
  */
 for (const entry in lines) {
-  const choice: [string, string] = [entry, entry]
+  const choice: [string, string] = [lines[entry].name, lines[entry].value]
   line_choices.push(choice)
 }
 line_choices.shift()
@@ -84,7 +84,7 @@ export const data = new SlashCommandBuilder()
   )
   .addStringOption(option =>
     option
-      .setName('orte')
+      .setName('ort')
       .setDescription('Die Mensa, die angezeigt werden soll.')
       .addChoices(line_choices)
       .setRequired(true),
@@ -92,15 +92,7 @@ export const data = new SlashCommandBuilder()
 
 exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
   // await _updateJson(client, interaction)
-  await mensa(client, interaction, 'mo', 'adenauerring')
-  // await interaction.reply({
-  //   content: 'Work in Progress',
-  //   embeds: [
-  //     new MessageEmbed()
-  //       .setAuthor({ name: 'Shush' })
-  //       .setDescription('Feddes schnidsel mit Rahmensoße und grünen Erbsen'),
-  //   ],
-  // })
+  await mensa(client, interaction, interaction.options.getString('wochentag'), interaction.options.getString('ort'))
 }
 
 class FoodLine {
@@ -177,56 +169,54 @@ const weekdayOptions = {
   so: new Weekday('Sonntag', 6),
 }
 
-async function _updateJson(client: DiscordClient, interaction: DiscordCommandInteraction) {
-  /**
-   * Fancy API stuff and user credential hashing
-   */
-  const options = {
-    host: client.config.mensa.base_url,
-    port: 443,
-    path: client.config.mensa.api,
-    headers: {
-      Authorization: `Basic ${Buffer.from(`${client.config.mensa.user}:${client.config.mensa.password}`).toString(
-        'base64',
-      )}`,
-    },
-  }
-
-  /**
-   * Work with API response
-   */
-  await https.get(options, res => {
+function _updateJson(client: DiscordClient, interaction: DiscordCommandInteraction): Promise<string> {
+  return new Promise((resolve, reject) => {
     /**
-     * Body of the API-Response
+     * Fancy API stuff and user credential hashing
      */
+    const options = {
+      host: client.config.mensa.base_url,
+      port: 443,
+      path: client.config.mensa.api,
+      headers: {
+        Authorization: `Basic ${Buffer.from(`${client.config.mensa.user}:${client.config.mensa.password}`).toString(
+          'base64',
+        )}`,
+      },
+    }
+
     let body = ''
-    res.on('data', return_data => {
-      body += return_data
-    })
-    res.on('end', () => {
-      /**
-       * Write to file to restrict unnecessary API calls.
-       */
-      fs.writeFile(`data/mensa.json`, body, { flag: 'w+' }, err => {
-        if (err) {
-          /**
-           * TODO: valid error handling
-           */
-          interaction.followUp('Sadface')
-          return false
-        } else {
-          return true
-        }
+    /**
+     * Work with API response
+     */
+    https.get(options, res => {
+      res.on('data', return_data => {
+        body += return_data
+      })
+      res.on('error', error => {
+        /**
+         * TODO: valid error handling
+         */
+        interaction.reply(`Error, sadface\n${error}`)
+        reject(error)
+      })
+      res.on('end', () => {
+        /**
+         * Write to file to restrict unnecessary API calls.
+         */
+        fs.writeFile(`data/mensa.json`, body, { flag: 'w+' }, err => {
+          if (err) {
+            /**
+             * TODO: valid error handling
+             */
+            interaction.followUp('Sadface')
+            reject(err)
+          }
+          resolve(body)
+        })
       })
     })
-    res.on('error', error => {
-      /**
-       * TODO: valid error handling
-       */
-      interaction.reply(`Error, sadface\n${error}`)
-    })
   })
-  return true
 }
 
 /**
@@ -234,42 +224,31 @@ async function _updateJson(client: DiscordClient, interaction: DiscordCommandInt
  * - Sort and format API response
  */
 
-async function mensa(client, interaction, req_weekday, req_mensa): Promise<MessageEmbed> {
+async function mensa(client, interaction, req_weekday, req_mensa) {
   const embed = new MessageEmbed().setColor('#FAD51B').setAuthor({ name: '🍽️ Mensaplan' })
 
-  let raw_mensa = await (await fs.promises.readFile(`data/mensa.json`)).toString()
-  let mensa_json = JSON.parse(raw_mensa)
+  let raw_mensa, mensa_json
+  if ((await fs.promises.readFile(`data/mensa.json`)).toString().length === 0) {
+    const buffer = await _updateJson(client, interaction)
+    if (buffer) mensa_json = JSON.parse(buffer)
+  } else {
+    raw_mensa = (await fs.promises.readFile(`data/mensa.json`)).toString()
+    mensa_json = JSON.parse(raw_mensa)
+  }
 
   let requestedWeekdayIndex = null
   let requestedDifference = null
 
   const currentWeekday = new Date().getDay() - 1
 
-  if (!req_weekday) {
-    if (currentWeekday > 4) {
-      req_weekday = 'mo'
-      requestedWeekdayIndex = 0
-      requestedDifference = 0
-    } else {
-      const modifyDate = new Date().getHours() >= 15 ? 1 : 0
-      for (const weekday in weekdayOptions) {
-        if (weekdayOptions[weekday].index === currentWeekday + modifyDate) {
-          req_weekday = weekday
-          requestedWeekdayIndex = currentWeekday + modifyDate
-          requestedDifference = modifyDate
-        }
-      }
-    }
+  requestedWeekdayIndex = weekdayOptions[req_weekday].index
+  if (requestedWeekdayIndex - currentWeekday <= 0) {
+    /**
+     * If in past, search next week :)
+     */
+    requestedDifference = Object.keys(weekdayOptions).length - currentWeekday + requestedWeekdayIndex
   } else {
-    requestedWeekdayIndex = weekdayOptions[req_weekday].index
-    if (requestedWeekdayIndex - currentWeekday <= 0) {
-      /**
-       * If in past, search next week :)
-       */
-      requestedDifference = Object.keys(weekdayOptions).length - currentWeekday + requestedWeekdayIndex
-    } else {
-      requestedDifference = requestedWeekdayIndex - currentWeekday
-    }
+    requestedDifference = requestedWeekdayIndex - currentWeekday
   }
 
   /**
@@ -286,12 +265,11 @@ async function mensa(client, interaction, req_weekday, req_mensa): Promise<Messa
       embeds: [embed],
     })
 
-    if (!(await _updateJson(client, interaction))) {
-      return
-    }
+    const buffer = await _updateJson(client, interaction)
+    if (buffer) mensa_json = JSON.parse(buffer)
 
-    raw_mensa = await (await fs.promises.readFile(`data/mensa.json`)).toString()
-    mensa_json = JSON.parse(raw_mensa)
+    mensa_json = await fs.promises.readFile(`data/mensa.json`)
+    console.log(mensa_json)
   }
 
   if (Object.keys(mensa_json).indexOf(req_mensa) === -1) {
@@ -299,7 +277,7 @@ async function mensa(client, interaction, req_weekday, req_mensa): Promise<Messa
       .setTitle(`Mensa ${mensaOptions[req_mensa].name}`)
       .setDescription('Diese Mensa hat am angeforderten Tag leider geschlossen.')
 
-    interaction.channel.send({
+    interaction.reply({
       embeds: [embed],
     })
   }
@@ -307,7 +285,7 @@ async function mensa(client, interaction, req_weekday, req_mensa): Promise<Messa
   for (const timestampKey in Object.keys(mensa_json[req_mensa])) {
     const timestamp: number = +Object.keys(mensa_json[req_mensa])[timestampKey]
 
-    if (timestamp > currentDate - 86400 + 86400 * requestedDifference) {
+    if (timestamp > currentDate - 2 * 86400 + 86400 * requestedDifference) {
       // # 86400 number of seconds in one day
 
       const date = new Date(timestamp * 1000)
