@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import * as https from 'https'
 import { SlashCommandBuilder } from '@discordjs/builders'
-import { MessageEmbed } from 'discord.js'
+import { Message, MessageEmbed } from 'discord.js'
 import { DiscordClient, DiscordCommandInteraction } from '../types/customTypes'
 
 const weekdays = {
@@ -91,22 +91,17 @@ export const data = new SlashCommandBuilder()
   )
 
 exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
-  await _updateJson(client, interaction)
-  await interaction.reply({
-    content: 'Work in Progress',
-    embeds: [
-      new MessageEmbed()
-        .setAuthor({ name: 'Shush' })
-        .setDescription('Feddes schnidsel mit Rahmensoße und grünen Erbsen'),
-    ],
-  })
+  // await _updateJson(client, interaction)
+  await mensa(client, interaction, 'mo', 'adenauerring')
+  // await interaction.reply({
+  //   content: 'Work in Progress',
+  //   embeds: [
+  //     new MessageEmbed()
+  //       .setAuthor({ name: 'Shush' })
+  //       .setDescription('Feddes schnidsel mit Rahmensoße und grünen Erbsen'),
+  //   ],
+  // })
 }
-
-/**
- * TODO:
- * - Fix classes
- * - Understand Buffer things in @link{_updateJson}
- */
 
 class FoodLine {
   constructor(pName, pValue) {
@@ -234,168 +229,170 @@ async function _updateJson(client: DiscordClient, interaction: DiscordCommandInt
   return true
 }
 
-// async function _loadJSON() {
-//   const data = await fs.promises.readFile(`${settings.path}private/cache/mensa.txt`)
-//   return JSON.parse(data)
-// }
+/**
+ * TODO:
+ * - Sort and format API response
+ */
 
-// async function mensa(pClient, pMessage, pRequestedWeekday, pRequestedMensa): Promise<MessageEmbed> {
-//   const embed = embedHelper.constructDefaultEmbed(pClient).setColor('#FAD51B').setAuthor('🍽️ Mensaplan')
+async function mensa(client, interaction, req_weekday, req_mensa): Promise<MessageEmbed> {
+  const embed = new MessageEmbed().setColor('#FAD51B').setAuthor({ name: '🍽️ Mensaplan' })
 
-//   let jsonData = await _loadJSON()
+  let raw_mensa = await (await fs.promises.readFile(`data/mensa.json`)).toString()
+  let mensa_json = JSON.parse(raw_mensa)
 
-//   let requestedWeekdayIndex = null
-//   let requestedDifference = null
+  let requestedWeekdayIndex = null
+  let requestedDifference = null
 
-//   const currentWeekday = new Date().getDay() - 1
+  const currentWeekday = new Date().getDay() - 1
 
-//   if (!pRequestedWeekday) {
-//     if (currentWeekday > 4) {
-//       pRequestedWeekday = 'mo'
-//       requestedWeekdayIndex = 0
-//       requestedDifference = 0
-//     } else {
-//       const modifyDate = new Date().getHours() >= 15 ? 1 : 0
-//       for (const weekday in weekdayOptions) {
-//         if (weekdayOptions[weekday].index === currentWeekday + modifyDate) {
-//           pRequestedWeekday = weekday
-//           requestedWeekdayIndex = currentWeekday + modifyDate
-//           requestedDifference = modifyDate
-//         }
-//       }
-//     }
-//   } else {
-//     requestedWeekdayIndex = weekdayOptions[pRequestedWeekday].index
-//     if (requestedWeekdayIndex - currentWeekday <= 0) {
-//       /**
-//        * If in past, search next week :)
-//        */
-//       requestedDifference = Object.keys(weekdayOptions).length - currentWeekday + requestedWeekdayIndex
-//     } else {
-//       requestedDifference = requestedWeekdayIndex - currentWeekday
-//     }
-//   }
+  if (!req_weekday) {
+    if (currentWeekday > 4) {
+      req_weekday = 'mo'
+      requestedWeekdayIndex = 0
+      requestedDifference = 0
+    } else {
+      const modifyDate = new Date().getHours() >= 15 ? 1 : 0
+      for (const weekday in weekdayOptions) {
+        if (weekdayOptions[weekday].index === currentWeekday + modifyDate) {
+          req_weekday = weekday
+          requestedWeekdayIndex = currentWeekday + modifyDate
+          requestedDifference = modifyDate
+        }
+      }
+    }
+  } else {
+    requestedWeekdayIndex = weekdayOptions[req_weekday].index
+    if (requestedWeekdayIndex - currentWeekday <= 0) {
+      /**
+       * If in past, search next week :)
+       */
+      requestedDifference = Object.keys(weekdayOptions).length - currentWeekday + requestedWeekdayIndex
+    } else {
+      requestedDifference = requestedWeekdayIndex - currentWeekday
+    }
+  }
 
-//   /**
-//    * Date without milliseconds.
-//    */
-//   const currentDate = Math.round(Date.now() / 1000)
-//   const lastDate: number = +Object.keys(jsonData.adenauerring)[Object.keys(jsonData.adenauerring).length - 1]
+  /**
+   * Date without milliseconds.
+   */
+  const currentDate = Math.round(Date.now() / 1000)
+  const lastDate: number = +Object.keys(mensa_json.adenauerring)[Object.keys(mensa_json.adenauerring).length - 1]
 
-//   if (currentDate + 7 * 86400 > lastDate) {
-//     // 7 * 86400 : number of seconds in one week
-//     embed.setDescription(':fork_knife_plate: Aktualisiere JSON...')
+  if (currentDate + 7 * 86400 > lastDate) {
+    // 7 * 86400 : number of seconds in one week
+    embed.setDescription(':fork_knife_plate: Aktualisiere JSON...')
 
-//     pMessage.channel.send({
-//       embeds: [embed],
-//     })
+    interaction.channel.send({
+      embeds: [embed],
+    })
 
-//     if (!(await _updateJson(pClient, pMessage))) {
-//       return
-//     }
+    if (!(await _updateJson(client, interaction))) {
+      return
+    }
 
-//     jsonData = await _loadJSON()
-//   }
+    raw_mensa = await (await fs.promises.readFile(`data/mensa.json`)).toString()
+    mensa_json = JSON.parse(raw_mensa)
+  }
 
-//   if (Object.keys(jsonData).indexOf(pRequestedMensa) === -1) {
-//     embed
-//       .setTitle(`Mensa ${mensaOptions[pRequestedMensa].name}`)
-//       .setDescription('Diese Mensa hat am angeforderten Tag leider geschlossen.')
+  if (Object.keys(mensa_json).indexOf(req_mensa) === -1) {
+    embed
+      .setTitle(`Mensa ${mensaOptions[req_mensa].name}`)
+      .setDescription('Diese Mensa hat am angeforderten Tag leider geschlossen.')
 
-//     pMessage.channel.send({
-//       embeds: [embed],
-//     })
+    interaction.channel.send({
+      embeds: [embed],
+    })
+  }
 
-//     return null
-//   }
+  for (const timestampKey in Object.keys(mensa_json[req_mensa])) {
+    const timestamp: number = +Object.keys(mensa_json[req_mensa])[timestampKey]
 
-//   for (const timestampKey in Object.keys(jsonData[pRequestedMensa])) {
-//     const timestamp: number = +Object.keys(jsonData[pRequestedMensa])[timestampKey]
+    if (timestamp > currentDate - 86400 + 86400 * requestedDifference) {
+      // # 86400 number of seconds in one day
 
-//     if (timestamp > currentDate - 86400 + 86400 * requestedDifference) {
-//       // # 86400 number of seconds in one day
+      const date = new Date(timestamp * 1000)
+      date.setDate(date.getDate() + 1)
 
-//       const date = new Date(timestamp * 1000)
-//       date.setDate(date.getDate() + 1)
+      embed
+        .setTitle(`Mensa ${mensaOptions[req_mensa].name}`)
+        .setDescription(
+          `${date.toLocaleDateString('de-DE', { weekday: 'long', year: 'numeric', month: 'numeric', day: 'numeric' })}`,
+        )
 
-//       embed
-//         .setTitle(`Mensa ${mensaOptions[pRequestedMensa].name}`)
-//         .setDescription(
-//           `${date.toLocaleDateString('de-DE', { weekday: 'long', year: 'numeric', month: 'numeric', day: 'numeric' })}`,
-//         )
+      for (const foodLineIndex in mensaOptions[req_mensa].foodLines) {
+        const foodLine = mensaOptions[req_mensa].foodLines[foodLineIndex].name
+        let mealValues = ''
 
-//       for (const foodLineIndex in mensaOptions[pRequestedMensa].foodLines) {
-//         const foodLine = mensaOptions[pRequestedMensa].foodLines[foodLineIndex].name
-//         let mealValues = ''
+        for (const foodLineDataIndex in mensa_json[req_mensa][timestamp][foodLine]) {
+          const foodLineData = mensa_json[req_mensa][timestamp][foodLine][foodLineDataIndex]
 
-//         for (const foodLineDataIndex in jsonData[pRequestedMensa][timestamp][foodLine]) {
-//           const foodLineData = jsonData[pRequestedMensa][timestamp][foodLine][foodLineDataIndex]
+          // eslint-disable-next-line max-depth
+          if (foodLineData.nodata) {
+            mealValues = '__Leider gibt es für diesen Tag hier keine Informationen!__'
+            break
+          }
 
-//           // eslint-disable-next-line max-depth
-//           if (foodLineData.nodata) {
-//             mealValues = '__Leider gibt es für diesen Tag hier keine Informationen!__'
-//             break
-//           }
+          // eslint-disable-next-line max-depth
+          if (foodLineData.closing_start) {
+            mealValues = `__Leider ist hier heute geschlossen. Grund: ${foodLineData.closing_text}__`
+            break
+          }
 
-//           // eslint-disable-next-line max-depth
-//           if (foodLineData.closing_start) {
-//             mealValues = `__Leider ist hier heute geschlossen. Grund: ${foodLineData.closing_text}__`
-//             break
-//           }
+          const price = ` (${foodLineData.price_1 === 0 ? '0.00' : foodLineData.price_1.toFixed(2)}€)`
+          const meal = `__${foodLineData.meal} ${price}__\n`
+          const dish = foodLineData.dish
 
-//           const price = ` (${foodLineData.price_1 === 0 ? '0.00' : foodLineData.price_1.toFixed(2)}€)`
-//           const meal = `__${foodLineData.meal} ${price}__\n`
-//           const dish = foodLineData.dish
+          mealValues += ['', '.'].indexOf(dish) === -1 ? `${meal}${dish}\n` : meal
 
-//           mealValues += ['', '.'].indexOf(dish) === -1 ? `${meal}${dish}\n` : meal
+          const allAdditions = foodLineData.add.join(', ')
 
-//           const allAdditions = foodLineData.add.join(', ')
+          mealValues += allAdditions !== '' ? `_Zusatz: [${allAdditions}]_` : '_Keine Zusätze_'
 
-//           mealValues += allAdditions !== '' ? `_Zusatz: [${allAdditions}]_` : '_Keine Zusätze_'
+          const foodContainsStringToEmoji = {
+            bio: ':earth_africa:',
+            fish: ':fish:',
+            pork: ':pig2:',
+            pork_aw: ':pig:',
+            cow: ':cow2:',
+            cow_aw: ':cow:',
+            vegan: ':broccoli:',
+            veg: ':salad:',
+            mensa_vit: 'Mensa Vital',
+          }
 
-//           const foodContainsStringToEmoji = {
-//             bio: ':earth_africa:',
-//             fish: ':fish:',
-//             pork: ':pig2:',
-//             pork_aw: ':pig:',
-//             cow: ':cow2:',
-//             cow_aw: ':cow:',
-//             vegan: ':broccoli:',
-//             veg: ':salad:',
-//             mensa_vit: 'Mensa Vital',
-//           }
+          // eslint-disable-next-line max-depth
+          for (const [foodContainsKey, foodContainsVal] of Object.entries(foodContainsStringToEmoji)) {
+            // eslint-disable-next-line max-depth
+            if (foodLineData[foodContainsKey]) {
+              mealValues += ` ${foodContainsVal}`
+            }
+          }
 
-//           // eslint-disable-next-line max-depth
-//           for (const [foodContainsKey, foodContainsVal] of Object.entries(foodContainsStringToEmoji)) {
-//             // eslint-disable-next-line max-depth
-//             if (foodLineData[foodContainsKey]) {
-//               mealValues += ` ${foodContainsVal}`
-//             }
-//           }
+          mealValues += '\n\n'
+        }
 
-//           mealValues += '\n\n'
-//         }
+        if (mealValues) {
+          embed.addFields({
+            name: `⠀\n:arrow_forward: ${mensaOptions[req_mensa].foodLines[foodLineIndex].value} :arrow_backward:`,
+            value: `${mealValues}\n`,
+            inline: true,
+          })
+        }
+      }
+      break
+    }
+  }
 
-//         if (mealValues) {
-//           embed.addFields({
-//             name: `⠀\n:arrow_forward: ${mensaOptions[pRequestedMensa].foodLines[foodLineIndex].value} :arrow_backward:`,
-//             value: `${mealValues}\n`,
-//             inline: true,
-//           })
-//         }
-//       }
-//       break
-//     }
-//   }
+  embed.addFields({
+    name: '⠀',
+    value: `Eine Liste aller Zusätze findest du [hier](${
+      client.config.mensa.base_url + client.config.mensa.additional_info
+    }).`,
+    inline: false,
+  })
 
-//   embed.addFields({
-//     name: '⠀',
-//     value: `Eine Liste aller Zusätze findest du [hier](${url.MENSA.ADD_URL_NO_DOWNLOAD}).`,
-//     inline: false,
-//   })
-
-//   return embed
-// }
+  interaction.reply({ embeds: [embed] })
+}
 
 // async function daily_mensa(pClient) {
 //   const msg = new Discord.Message(pClient, {
@@ -483,7 +480,3 @@ async function _updateJson(client: DiscordClient, interaction: DiscordCommandInt
 //     await msg.crosspost()
 //   }
 // }
-
-// module.exports.run = mensa_switcher
-// module.exports.slash = mensa_switcher
-// module.exports.daily_mensa = daily_mensa
