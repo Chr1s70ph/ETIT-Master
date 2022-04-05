@@ -84,13 +84,14 @@ export const data = new SlashCommandBuilder()
   )
   .addStringOption(option =>
     option
-      .setName('linie')
+      .setName('orte')
       .setDescription('Die Mensa, die angezeigt werden soll.')
       .addChoices(line_choices)
       .setRequired(true),
   )
 
 exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
+  await _updateJson(client, interaction)
   await interaction.reply({
     content: 'Work in Progress',
     embeds: [
@@ -112,6 +113,8 @@ class FoodLine {
     this.name = pName
     this.value = pValue
   }
+  name
+  value
 }
 
 class Weekday {
@@ -119,6 +122,8 @@ class Weekday {
     this.name = pName
     this.index = pIndex
   }
+  name
+  index
 }
 
 const mensaOptions = {
@@ -177,296 +182,308 @@ const weekdayOptions = {
   so: new Weekday('Sonntag', 6),
 }
 
-async function _updateJson(pClient, pMessage) {
-  const channel = pMessage ? pMessage.channel : pClient.channels.cache.get(id.channelId.BOT_TEST_LOBBY)
-
+async function _updateJson(client: DiscordClient, interaction: DiscordCommandInteraction) {
+  /**
+   * Fancy API stuff and user credential hashing
+   */
   const options = {
-    host: url.MENSA.API_HOST,
+    host: client.config.mensa.base_url,
     port: 443,
-    path: url.MENSA.API_PATH,
+    path: client.config.mensa.api,
     headers: {
-      Authorization: `Basic ${new Buffer.from(`${loginData.MENSA.USER}:${loginData.MENSA.PWD}`).toString('base64')}`,
+      Authorization: `Basic ${Buffer.from(`${client.config.mensa.user}:${client.config.mensa.password}`).toString(
+        'base64',
+      )}`,
     },
   }
 
+  /**
+   * Work with API response
+   */
   await https.get(options, res => {
+    /**
+     * Body of the API-Response
+     */
     let body = ''
-    res.on('data', data => {
-      body += data
+    res.on('data', return_data => {
+      body += return_data
     })
     res.on('end', () => {
-      fs.writeFile(`${settings.path}private/cache/mensa.txt`, body, { flag: 'w+' }, err => {
+      /**
+       * Write to file to restrict unnecessary API calls.
+       */
+      fs.writeFile(`data/mensa.json`, body, { flag: 'w+' }, err => {
         if (err) {
-          sendErrorMessageHelper.sendErrorMessageToChannel(
-            pClient,
-            channel,
-            `Error: \`_updateJson()\`: Datei konnte nicht gespeichert werden.`,
-            `${mdHelper.withStyle('js', err)}`,
-          )
+          /**
+           * TODO: valid error handling
+           */
+          interaction.followUp('Sadface')
           return false
+        } else {
+          return true
         }
       })
     })
-    res.on('error', e => {
-      sendErrorMessageHelper.sendErrorMessageToChannel(
-        pClient,
-        channel,
-        `Error: \`_updateJson()\`: Fehler beim API-Aufruf.`,
-        `${mdHelper.withStyle('js', e.message)}`,
-      )
-      return false
+    res.on('error', error => {
+      /**
+       * TODO: valid error handling
+       */
+      interaction.reply(`Error, sadface\n${error}`)
     })
   })
   return true
 }
 
-async function _loadJSON() {
-  const data = await fs.promises.readFile(`${settings.path}private/cache/mensa.txt`)
-  return JSON.parse(data)
-}
+// async function _loadJSON() {
+//   const data = await fs.promises.readFile(`${settings.path}private/cache/mensa.txt`)
+//   return JSON.parse(data)
+// }
 
-async function mensa(pClient, pMessage, pRequestedWeekday, pRequestedMensa): Promise<MessageEmbed> {
-  const embed = embedHelper.constructDefaultEmbed(pClient).setColor('#FAD51B').setAuthor('🍽️ Mensaplan')
+// async function mensa(pClient, pMessage, pRequestedWeekday, pRequestedMensa): Promise<MessageEmbed> {
+//   const embed = embedHelper.constructDefaultEmbed(pClient).setColor('#FAD51B').setAuthor('🍽️ Mensaplan')
 
-  let jsonData = await _loadJSON()
+//   let jsonData = await _loadJSON()
 
-  let requestedWeekdayIndex = null
-  let requestedDifference = null
+//   let requestedWeekdayIndex = null
+//   let requestedDifference = null
 
-  const currentWeekday = new Date().getDay() - 1
+//   const currentWeekday = new Date().getDay() - 1
 
-  if (!pRequestedWeekday) {
-    if (currentWeekday > 4) {
-      pRequestedWeekday = 'mo'
-      requestedWeekdayIndex = 0
-      requestedDifference = 0
-    } else {
-      const modifyDate = new Date().getHours() >= 15 ? 1 : 0
-      for (const weekday in weekdayOptions) {
-        if (weekdayOptions[weekday].index === currentWeekday + modifyDate) {
-          pRequestedWeekday = weekday
-          requestedWeekdayIndex = currentWeekday + modifyDate
-          requestedDifference = modifyDate
-        }
-      }
-    }
-  } else {
-    requestedWeekdayIndex = weekdayOptions[pRequestedWeekday].index
-    if (requestedWeekdayIndex - currentWeekday <= 0) {
-      requestedDifference = Object.keys(weekdayOptions).length - currentWeekday + requestedWeekdayIndex
-    } else {
-      requestedDifference = requestedWeekdayIndex - currentWeekday
-    }
-  }
+//   if (!pRequestedWeekday) {
+//     if (currentWeekday > 4) {
+//       pRequestedWeekday = 'mo'
+//       requestedWeekdayIndex = 0
+//       requestedDifference = 0
+//     } else {
+//       const modifyDate = new Date().getHours() >= 15 ? 1 : 0
+//       for (const weekday in weekdayOptions) {
+//         if (weekdayOptions[weekday].index === currentWeekday + modifyDate) {
+//           pRequestedWeekday = weekday
+//           requestedWeekdayIndex = currentWeekday + modifyDate
+//           requestedDifference = modifyDate
+//         }
+//       }
+//     }
+//   } else {
+//     requestedWeekdayIndex = weekdayOptions[pRequestedWeekday].index
+//     if (requestedWeekdayIndex - currentWeekday <= 0) {
+//       /**
+//        * If in past, search next week :)
+//        */
+//       requestedDifference = Object.keys(weekdayOptions).length - currentWeekday + requestedWeekdayIndex
+//     } else {
+//       requestedDifference = requestedWeekdayIndex - currentWeekday
+//     }
+//   }
 
-  /**
-   * Date without milliseconds.
-   */
-  const currentDate = Math.round(Date.now() / 1000)
-  const lastDate: number = +Object.keys(jsonData.adenauerring)[Object.keys(jsonData.adenauerring).length - 1]
+//   /**
+//    * Date without milliseconds.
+//    */
+//   const currentDate = Math.round(Date.now() / 1000)
+//   const lastDate: number = +Object.keys(jsonData.adenauerring)[Object.keys(jsonData.adenauerring).length - 1]
 
-  if (currentDate + 7 * 86400 > lastDate) {
-    // 7 * 86400 : number of seconds in one week
-    embed.setDescription(':fork_knife_plate: Aktualisiere JSON...')
+//   if (currentDate + 7 * 86400 > lastDate) {
+//     // 7 * 86400 : number of seconds in one week
+//     embed.setDescription(':fork_knife_plate: Aktualisiere JSON...')
 
-    pMessage.channel.send({
-      embeds: [embed],
-    })
+//     pMessage.channel.send({
+//       embeds: [embed],
+//     })
 
-    if (!(await _updateJson(pClient, pMessage))) {
-      return
-    }
+//     if (!(await _updateJson(pClient, pMessage))) {
+//       return
+//     }
 
-    jsonData = await _loadJSON()
-  }
+//     jsonData = await _loadJSON()
+//   }
 
-  if (Object.keys(jsonData).indexOf(pRequestedMensa) === -1) {
-    embed
-      .setTitle(`Mensa ${mensaOptions[pRequestedMensa].name}`)
-      .setDescription('Diese Mensa hat am angeforderten Tag leider geschlossen.')
+//   if (Object.keys(jsonData).indexOf(pRequestedMensa) === -1) {
+//     embed
+//       .setTitle(`Mensa ${mensaOptions[pRequestedMensa].name}`)
+//       .setDescription('Diese Mensa hat am angeforderten Tag leider geschlossen.')
 
-    pMessage.channel.send({
-      embeds: [embed],
-    })
+//     pMessage.channel.send({
+//       embeds: [embed],
+//     })
 
-    return null
-  }
+//     return null
+//   }
 
-  for (const timestampKey in Object.keys(jsonData[pRequestedMensa])) {
-    const timestamp: number = +Object.keys(jsonData[pRequestedMensa])[timestampKey]
+//   for (const timestampKey in Object.keys(jsonData[pRequestedMensa])) {
+//     const timestamp: number = +Object.keys(jsonData[pRequestedMensa])[timestampKey]
 
-    if (timestamp > currentDate - 86400 + 86400 * requestedDifference) {
-      // # 86400 number of seconds in one day
+//     if (timestamp > currentDate - 86400 + 86400 * requestedDifference) {
+//       // # 86400 number of seconds in one day
 
-      const date = new Date(timestamp * 1000)
-      date.setDate(date.getDate() + 1)
+//       const date = new Date(timestamp * 1000)
+//       date.setDate(date.getDate() + 1)
 
-      embed
-        .setTitle(`Mensa ${mensaOptions[pRequestedMensa].name}`)
-        .setDescription(
-          `${date.toLocaleDateString('de-DE', { weekday: 'long', year: 'numeric', month: 'numeric', day: 'numeric' })}`,
-        )
+//       embed
+//         .setTitle(`Mensa ${mensaOptions[pRequestedMensa].name}`)
+//         .setDescription(
+//           `${date.toLocaleDateString('de-DE', { weekday: 'long', year: 'numeric', month: 'numeric', day: 'numeric' })}`,
+//         )
 
-      for (const foodLineIndex in mensaOptions[pRequestedMensa].foodLines) {
-        const foodLine = mensaOptions[pRequestedMensa].foodLines[foodLineIndex].name
-        let mealValues = ''
+//       for (const foodLineIndex in mensaOptions[pRequestedMensa].foodLines) {
+//         const foodLine = mensaOptions[pRequestedMensa].foodLines[foodLineIndex].name
+//         let mealValues = ''
 
-        for (const foodLineDataIndex in jsonData[pRequestedMensa][timestamp][foodLine]) {
-          const foodLineData = jsonData[pRequestedMensa][timestamp][foodLine][foodLineDataIndex]
+//         for (const foodLineDataIndex in jsonData[pRequestedMensa][timestamp][foodLine]) {
+//           const foodLineData = jsonData[pRequestedMensa][timestamp][foodLine][foodLineDataIndex]
 
-          // eslint-disable-next-line max-depth
-          if (foodLineData.nodata) {
-            mealValues = '__Leider gibt es für diesen Tag hier keine Informationen!__'
-            break
-          }
+//           // eslint-disable-next-line max-depth
+//           if (foodLineData.nodata) {
+//             mealValues = '__Leider gibt es für diesen Tag hier keine Informationen!__'
+//             break
+//           }
 
-          // eslint-disable-next-line max-depth
-          if (foodLineData.closing_start) {
-            mealValues = `__Leider ist hier heute geschlossen. Grund: ${foodLineData.closing_text}__`
-            break
-          }
+//           // eslint-disable-next-line max-depth
+//           if (foodLineData.closing_start) {
+//             mealValues = `__Leider ist hier heute geschlossen. Grund: ${foodLineData.closing_text}__`
+//             break
+//           }
 
-          const price = ` (${foodLineData.price_1 === 0 ? '0.00' : foodLineData.price_1.toFixed(2)}€)`
-          const meal = `__${foodLineData.meal} ${price}__\n`
-          const dish = foodLineData.dish
+//           const price = ` (${foodLineData.price_1 === 0 ? '0.00' : foodLineData.price_1.toFixed(2)}€)`
+//           const meal = `__${foodLineData.meal} ${price}__\n`
+//           const dish = foodLineData.dish
 
-          mealValues += ['', '.'].indexOf(dish) === -1 ? `${meal}${dish}\n` : meal
+//           mealValues += ['', '.'].indexOf(dish) === -1 ? `${meal}${dish}\n` : meal
 
-          const allAdditions = foodLineData.add.join(', ')
+//           const allAdditions = foodLineData.add.join(', ')
 
-          mealValues += allAdditions !== '' ? `_Zusatz: [${allAdditions}]_` : '_Keine Zusätze_'
+//           mealValues += allAdditions !== '' ? `_Zusatz: [${allAdditions}]_` : '_Keine Zusätze_'
 
-          const foodContainsStringToEmoji = {
-            bio: ':earth_africa:',
-            fish: ':fish:',
-            pork: ':pig2:',
-            pork_aw: ':pig:',
-            cow: ':cow2:',
-            cow_aw: ':cow:',
-            vegan: ':broccoli:',
-            veg: ':salad:',
-            mensa_vit: 'Mensa Vital',
-          }
+//           const foodContainsStringToEmoji = {
+//             bio: ':earth_africa:',
+//             fish: ':fish:',
+//             pork: ':pig2:',
+//             pork_aw: ':pig:',
+//             cow: ':cow2:',
+//             cow_aw: ':cow:',
+//             vegan: ':broccoli:',
+//             veg: ':salad:',
+//             mensa_vit: 'Mensa Vital',
+//           }
 
-          // eslint-disable-next-line max-depth
-          for (const [foodContainsKey, foodContainsVal] of Object.entries(foodContainsStringToEmoji)) {
-            // eslint-disable-next-line max-depth
-            if (foodLineData[foodContainsKey]) {
-              mealValues += ` ${foodContainsVal}`
-            }
-          }
+//           // eslint-disable-next-line max-depth
+//           for (const [foodContainsKey, foodContainsVal] of Object.entries(foodContainsStringToEmoji)) {
+//             // eslint-disable-next-line max-depth
+//             if (foodLineData[foodContainsKey]) {
+//               mealValues += ` ${foodContainsVal}`
+//             }
+//           }
 
-          mealValues += '\n\n'
-        }
+//           mealValues += '\n\n'
+//         }
 
-        if (mealValues) {
-          embed.addFields({
-            name: `⠀\n:arrow_forward: ${mensaOptions[pRequestedMensa].foodLines[foodLineIndex].value} :arrow_backward:`,
-            value: `${mealValues}\n`,
-            inline: true,
-          })
-        }
-      }
-      break
-    }
-  }
+//         if (mealValues) {
+//           embed.addFields({
+//             name: `⠀\n:arrow_forward: ${mensaOptions[pRequestedMensa].foodLines[foodLineIndex].value} :arrow_backward:`,
+//             value: `${mealValues}\n`,
+//             inline: true,
+//           })
+//         }
+//       }
+//       break
+//     }
+//   }
 
-  embed.addFields({
-    name: '⠀',
-    value: `Eine Liste aller Zusätze findest du [hier](${url.MENSA.ADD_URL_NO_DOWNLOAD}).`,
-    inline: false,
-  })
+//   embed.addFields({
+//     name: '⠀',
+//     value: `Eine Liste aller Zusätze findest du [hier](${url.MENSA.ADD_URL_NO_DOWNLOAD}).`,
+//     inline: false,
+//   })
 
-  return embed
-}
+//   return embed
+// }
 
-async function daily_mensa(pClient) {
-  const msg = new Discord.Message(pClient, {
-    channel_id: id.channelId.MENSA,
-    guild_id: id.serverId.ETIT_KIT,
-    id: '123456789101112',
-    content: `${settings.prefix}mensa`,
-    author: { id: pClient.user.id },
-    channel: pClient.channels.cache.get(id.channelId.MENSA),
-  })
+// async function daily_mensa(pClient) {
+//   const msg = new Discord.Message(pClient, {
+//     channel_id: id.channelId.MENSA,
+//     guild_id: id.serverId.ETIT_KIT,
+//     id: '123456789101112',
+//     content: `${settings.prefix}mensa`,
+//     author: { id: pClient.user.id },
+//     channel: pClient.channels.cache.get(id.channelId.MENSA),
+//   })
 
-  mensa_switcher(pClient, msg)
-  setInterval(() => {
-    mensa_switcher(pClient, msg)
-  }, 86400000) // 86400000 milliseconds are in a day
-}
+//   mensa_switcher(pClient, msg)
+//   setInterval(() => {
+//     mensa_switcher(pClient, msg)
+//   }, 86400000) // 86400000 milliseconds are in a day
+// }
 
-async function mensa_switcher(pClient, pMessageOrInteraction) {
-  let msg = null
+// async function mensa_switcher(pClient, pMessageOrInteraction) {
+//   let msg = null
 
-  if (pMessageOrInteraction instanceof Discord.Message) {
-    let requestedWeekday = null
-    let requestedMensa = 'adenauerring'
-    const params = pMessageOrInteraction.content.split(' ').map(elem => elem.toLowerCase())
+//   if (pMessageOrInteraction instanceof Discord.Message) {
+//     let requestedWeekday = null
+//     let requestedMensa = 'adenauerring'
+//     const params = pMessageOrInteraction.content.split(' ').map(elem => elem.toLowerCase())
 
-    for (const weekday in weekdayOptions) {
-      if (params.indexOf(weekday) != -1) {
-        requestedWeekday = weekday
-        const requestedWeekdayIndex = weekdayOptions[weekday].index
-        if (requestedWeekdayIndex > weekdayOptions.fr.index) {
-          sendErrorMessageHelper.sendErrorMessage(
-            pClient,
-            pMessageOrInteraction,
-            `Error: Ungültiger Wert für {TAG}`,
-            `Der Mensaplan kann nur für Werktage angezeigt werden.`,
-          )
-          return
-        }
-      }
-    }
+//     for (const weekday in weekdayOptions) {
+//       if (params.indexOf(weekday) != -1) {
+//         requestedWeekday = weekday
+//         const requestedWeekdayIndex = weekdayOptions[weekday].index
+//         if (requestedWeekdayIndex > weekdayOptions.fr.index) {
+//           sendErrorMessageHelper.sendErrorMessage(
+//             pClient,
+//             pMessageOrInteraction,
+//             `Error: Ungültiger Wert für {TAG}`,
+//             `Der Mensaplan kann nur für Werktage angezeigt werden.`,
+//           )
+//           return
+//         }
+//       }
+//     }
 
-    for (const mensaKey in mensaOptions) {
-      if (params.indexOf(mensaKey) !== -1) {
-        requestedMensa = mensaKey
-      }
-    }
+//     for (const mensaKey in mensaOptions) {
+//       if (params.indexOf(mensaKey) !== -1) {
+//         requestedMensa = mensaKey
+//       }
+//     }
 
-    const embed = await mensa(pClient, pMessageOrInteraction, requestedWeekday, requestedMensa)
+//     const embed = await mensa(pClient, pMessageOrInteraction, requestedWeekday, requestedMensa)
 
-    msg = await pMessageOrInteraction.channel.send({
-      embeds: [embed],
-    })
-  } else {
-    let requestedWeekday = null
-    let requestedMensa = 'adenauerring'
-    switch (pMessageOrInteraction.options._hoistedOptions.length) {
-      case 1:
-        if (pMessageOrInteraction.options.data[0].name === 'wochentag') {
-          requestedWeekday = pMessageOrInteraction.options.data[0].value
-        } else {
-          requestedMensa = pMessageOrInteraction.options.data[0].value
-        }
-        break
-      case 2:
-        if (pMessageOrInteraction.options.data[0].name === 'wochentag') {
-          requestedWeekday = pMessageOrInteraction.options.data[0].value
-          requestedMensa = pMessageOrInteraction.options.data[1].value
-        } else {
-          requestedMensa = pMessageOrInteraction.options.data[1].value
-          requestedMensa = pMessageOrInteraction.options.data[0].value
-        }
-        break
-    }
+//     msg = await pMessageOrInteraction.channel.send({
+//       embeds: [embed],
+//     })
+//   } else {
+//     let requestedWeekday = null
+//     let requestedMensa = 'adenauerring'
+//     switch (pMessageOrInteraction.options._hoistedOptions.length) {
+//       case 1:
+//         if (pMessageOrInteraction.options.data[0].name === 'wochentag') {
+//           requestedWeekday = pMessageOrInteraction.options.data[0].value
+//         } else {
+//           requestedMensa = pMessageOrInteraction.options.data[0].value
+//         }
+//         break
+//       case 2:
+//         if (pMessageOrInteraction.options.data[0].name === 'wochentag') {
+//           requestedWeekday = pMessageOrInteraction.options.data[0].value
+//           requestedMensa = pMessageOrInteraction.options.data[1].value
+//         } else {
+//           requestedMensa = pMessageOrInteraction.options.data[1].value
+//           requestedMensa = pMessageOrInteraction.options.data[0].value
+//         }
+//         break
+//     }
 
-    const embed = await mensa(pClient, pMessageOrInteraction, requestedWeekday, requestedMensa)
+//     const embed = await mensa(pClient, pMessageOrInteraction, requestedWeekday, requestedMensa)
 
-    msg = await pMessageOrInteraction.reply({
-      embeds: [embed],
-      ephemeral: true,
-    })
-  }
+//     msg = await pMessageOrInteraction.reply({
+//       embeds: [embed],
+//       ephemeral: true,
+//     })
+//   }
 
-  if (msg.channel.type === 'GUILD_NEWS') {
-    console.log('news')
-    await msg.crosspost()
-  }
-}
+//   if (msg.channel.type === 'GUILD_NEWS') {
+//     console.log('news')
+//     await msg.crosspost()
+//   }
+// }
 
-module.exports.run = mensa_switcher
-module.exports.slash = mensa_switcher
-module.exports.daily_mensa = daily_mensa
+// module.exports.run = mensa_switcher
+// module.exports.slash = mensa_switcher
+// module.exports.daily_mensa = daily_mensa
