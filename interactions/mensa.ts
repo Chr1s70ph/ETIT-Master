@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import * as https from 'https'
-import { SlashCommandBuilder, time } from '@discordjs/builders'
-import { DataResolver, Message, MessageEmbed } from 'discord.js'
+import { SlashCommandBuilder } from '@discordjs/builders'
+import { MessageEmbed } from 'discord.js'
 import { DiscordClient, DiscordCommandInteraction } from '../types/customTypes'
 const { DateTime } = require('luxon')
 
@@ -92,7 +92,6 @@ export const data = new SlashCommandBuilder()
   )
 
 exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
-  // await _updateJson(client, interaction)
   await mensa(client, interaction, interaction.options.getString('wochentag'), interaction.options.getString('ort'))
 }
 
@@ -258,7 +257,7 @@ async function mensa(client, interaction, req_weekday, req_mensa) {
   const currentDate = Date.now()
   const lastDate: number = +Object.keys(mensa_json.adenauerring)[Object.keys(mensa_json.adenauerring).length - 1] * 1000
 
-  if (currentDate + 7 * 86400 > lastDate) {
+  if (currentDate + 7 * 86400000 > lastDate) {
     // 7 * 86400 : number of seconds in one week
     embed.setDescription(':fork_knife_plate: Aktualisiere JSON...')
 
