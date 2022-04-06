@@ -151,10 +151,7 @@ export class DiscordClient extends Client {
           return (user.language = language)
         }
       } else if (interaction) {
-        const userRoles = interaction.member.roles as GuildMemberRoleManager
-        if (userRoles.cache.some(role => role.name === language)) {
-          return (user.language = language)
-        }
+        if (interaction.locale === language) return language
       }
     }
 
