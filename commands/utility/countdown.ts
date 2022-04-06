@@ -13,7 +13,10 @@ exports.run = async (client: DiscordClient, message: DiscordMessage) => {
    */
   const msgEmbed = new MessageEmbed()
     .setTitle(client.translate({ key: 'commands.utility.countdown.Countdown', lng: message.author.language }))
-    .setFooter(message.author.tag, message.author.avatarURL({ dynamic: true }))
+    .setFooter({
+      text: message.author.tag,
+      iconURL: message.author.avatarURL({ dynamic: true }),
+    })
     .setThumbnail('https://upload.wikimedia.org/wikipedia/commons/3/33/Cartoon_space_rocket.png')
 
   /**

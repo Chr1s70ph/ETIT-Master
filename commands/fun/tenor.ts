@@ -75,9 +75,10 @@ function queryTenorAndReply(
      *
      * {@link MessageEmbedFooter} is set to the user's tag and avatar who issued the command.
      */
-    let embed = new MessageEmbed()
-      .setColor('RANDOM')
-      .setFooter(message.author.tag, message.author.avatarURL({ dynamic: true }))
+    let embed = new MessageEmbed().setColor('RANDOM').setFooter({
+      text: message.author.tag,
+      iconURL: message.author.avatarURL({ dynamic: true }),
+    })
 
     /**
      * Set image of embed if Tenor query returned any.
