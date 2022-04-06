@@ -11,9 +11,9 @@ const backend = new Backend({
 })
 
 i18next.use(backend).init({
-  lng: 'en',
-  fallbackLng: 'en',
-  preload: ['en', 'de'],
+  lng: 'en-US',
+  fallbackLng: 'en-US',
+  preload: ['en-US', 'de'],
   ns: ['translation'],
   defaultNS: 'translation',
   debug: true,
