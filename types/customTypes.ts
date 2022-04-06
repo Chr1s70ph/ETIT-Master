@@ -8,7 +8,6 @@ import {
   MessageOptions,
   Collection,
   User,
-  GuildMemberRoleManager,
   CommandInteraction,
   AutocompleteInteraction,
   ButtonInteraction,
