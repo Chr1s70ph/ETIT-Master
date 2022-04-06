@@ -219,7 +219,7 @@ function _updateJson(client: DiscordClient, interaction: DiscordCommandInteracti
   })
 }
 
-async function mensa(client, interaction, req_weekday, req_mensa) {
+async function mensa(client: DiscordClient, interaction: DiscordCommandInteraction, req_weekday, req_mensa) {
   /**
    * Mensa embed
    */
@@ -259,7 +259,7 @@ async function mensa(client, interaction, req_weekday, req_mensa) {
 
   if (currentDate + 7 * 86400000 > lastDate) {
     // 7 * 86400 : number of seconds in one week
-    embed.setDescription(':fork_knife_plate: Aktualisiere JSON...')
+    embed.setDescription(client.translate({ key: 'interactions.mensa.refreshJSON', lng: interaction.user.language }))
 
     interaction.channel.send({
       embeds: [embed],
@@ -273,8 +273,12 @@ async function mensa(client, interaction, req_weekday, req_mensa) {
 
   if (Object.keys(mensa_json).indexOf(req_mensa) === -1) {
     embed
-      .setTitle(`Mensa ${mensaOptions[req_mensa].name}`)
-      .setDescription('Diese Mensa hat am angeforderten Tag leider geschlossen.')
+      .setTitle(
+        `${client.translate({ key: 'interactions.mensa.cafeteria', lng: interaction.user.language })} ${
+          mensaOptions[req_mensa].name
+        }`,
+      )
+      .setDescription(client.translate({ key: 'interactions.mensa.lineClosed', lng: interaction.user.language }))
 
     interaction.reply({
       embeds: [embed],
@@ -297,7 +301,11 @@ async function mensa(client, interaction, req_weekday, req_mensa) {
       const date = new Date(dayString)
 
       embed
-        .setTitle(`Mensa ${mensaOptions[req_mensa].name}`)
+        .setTitle(
+          `${client.translate({ key: 'interactions.mensa.cafeteria', lng: interaction.user.language })} ${
+            mensaOptions[req_mensa].name
+          }`,
+        )
         .setDescription(
           `${date.toLocaleDateString('de-DE', { weekday: 'long', year: 'numeric', month: 'numeric', day: 'numeric' })}`,
         )
@@ -311,13 +319,16 @@ async function mensa(client, interaction, req_weekday, req_mensa) {
 
           // eslint-disable-next-line max-depth
           if (foodLineData.nodata) {
-            mealValues = '__Leider gibt es für diesen Tag hier keine Informationen!__'
+            mealValues = client.translate({ key: 'interactions.mensa.noInformation', lng: interaction.user.language })
             break
           }
 
           // eslint-disable-next-line max-depth
           if (foodLineData.closing_start) {
-            mealValues = `__Leider ist hier heute geschlossen. Grund: ${foodLineData.closing_text}__`
+            mealValues = client.translate({
+              key: 'interactions.mensa.closed',
+              options: { reason: foodLineData.closing_text, lng: interaction.user.language },
+            })
             break
           }
 
@@ -327,9 +338,15 @@ async function mensa(client, interaction, req_weekday, req_mensa) {
 
           mealValues += ['', '.'].indexOf(dish) === -1 ? `${meal}${dish}\n` : meal
 
-          const allAdditions = foodLineData.add.join(', ')
+          const allAdditives = foodLineData.add.join(', ')
 
-          mealValues += allAdditions !== '' ? `_Zusatz: [${allAdditions}]_` : '_Keine Zusätze_'
+          mealValues +=
+            allAdditives !== ''
+              ? client.translate({
+                  key: 'interactions.mensa.foodAdditives',
+                  options: { additives: allAdditives, lng: interaction.user.language },
+                })
+              : client.translate({ key: 'interactions.mensa.noFoodAdditives', lng: interaction.user.language })
 
           const foodContainsStringToEmoji = {
             bio: ':earth_africa:',
@@ -368,9 +385,13 @@ async function mensa(client, interaction, req_weekday, req_mensa) {
 
   embed.addFields({
     name: '⠀',
-    value: `Eine Liste aller Zusätze findest du [hier](${
-      client.config.mensa.base_url + client.config.mensa.additional_info
-    }).`,
+    value: client.translate({
+      key: 'interactions.mensa.allAdditivesList',
+      options: {
+        link: client.config.mensa.base_url + client.config.mensa.additional_info,
+        lng: interaction.user.language,
+      },
+    }),
     inline: false,
   })
 
