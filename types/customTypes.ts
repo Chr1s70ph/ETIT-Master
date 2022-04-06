@@ -150,7 +150,7 @@ export class DiscordClient extends Client {
           return (user.language = language)
         }
       } else if (interaction) {
-        if (interaction.locale === language) return language
+        if (interaction.locale === language) return (user.language = language)
       }
     }
 
