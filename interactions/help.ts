@@ -14,7 +14,7 @@ async function getCommands(client: DiscordClient, interaction: DiscordCommandInt
   const commandsEmbed = new MessageEmbed()
     .setColor('#ffa500')
     .setAuthor({
-      name: client.translate({ key: 'slashCommands.help', lng: interaction.user.language }),
+      name: client.translate({ key: 'interactions.help', lng: interaction.user.language }),
       iconURL: 'https://bit.ly/3CJU0lf',
     })
     .setTimestamp()

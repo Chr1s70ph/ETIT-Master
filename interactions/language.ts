@@ -54,7 +54,7 @@ exports.Command = async (client: DiscordClient, interaction: DiscordCommandInter
      */
     new MessageSelectMenu()
       .setCustomId('language')
-      .setPlaceholder(client.translate({ key: 'slashCommands.language.DefaultSelect', lng: interaction.user.language }))
+      .setPlaceholder(client.translate({ key: 'interactions.language.DefaultSelect', lng: interaction.user.language }))
       .addOptions(options),
   )
 
@@ -62,7 +62,7 @@ exports.Command = async (client: DiscordClient, interaction: DiscordCommandInter
    * Reply with {@link row} to interaction
    */
   await interaction.reply({
-    content: client.translate({ key: 'slashCommands.language.Select', lng: interaction.user.language }),
+    content: client.translate({ key: 'interactions.language.Select', lng: interaction.user.language }),
     components: [row],
     ephemeral: true,
   })
@@ -106,7 +106,7 @@ exports.SelectMenu = async (client: DiscordClient, interaction: SelectMenuIntera
       new MessageEmbed()
         .setTitle(
           client.translate({
-            key: 'slashCommands.language.LanguageUpdated',
+            key: 'interactions.language.LanguageUpdated',
             options: {
               language: `${flag} ${language}`,
               lng: interaction.values[0],
