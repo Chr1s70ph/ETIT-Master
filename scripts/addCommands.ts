@@ -152,6 +152,7 @@ async function mensa_automation(client: DiscordClient) {
       _channel => _channel.id === client.config.ids.channelIDs.mensa,
     ) as TextChannel
 
-    channel.send({ embeds: [await mensa(client, weekday, 'adenauerring', null)] })
+    const message = channel.send({ embeds: [await mensa(client, weekday, 'adenauerring', null)] })
+    ;(await message).crosspost()
   })
 }
