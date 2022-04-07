@@ -31,8 +31,8 @@ exports.Command = async (client: DiscordClient, interaction: DiscordCommandInter
     await interaction.reply({
       embeds: [
         new MessageEmbed()
-          .setTitle(client.translate({ key: 'slashCommands.issue.Recieved', lng: interaction.user.language }))
-          .setDescription(client.translate({ key: 'slashCommands.issue.Thanks', lng: interaction.user.language })),
+          .setTitle(client.translate({ key: 'interactions.issue.Recieved', lng: interaction.user.language }))
+          .setDescription(client.translate({ key: 'interactions.issue.Thanks', lng: interaction.user.language })),
       ],
       ephemeral: true,
     })
@@ -40,8 +40,8 @@ exports.Command = async (client: DiscordClient, interaction: DiscordCommandInter
     await interaction.reply({
       embeds: [
         new MessageEmbed()
-          .setTitle(client.translate({ key: 'slashCommands.issue.Error', lng: interaction.user.language }))
-          .setDescription(client.translate({ key: 'slashCommands.issue.TryAgain', lng: interaction.user.language })),
+          .setTitle(client.translate({ key: 'interactions.issue.Error', lng: interaction.user.language }))
+          .setDescription(client.translate({ key: 'interactions.issue.TryAgain', lng: interaction.user.language })),
       ],
     })
     throw new Error(error)

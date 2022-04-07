@@ -33,7 +33,7 @@ async function klausuren(client: DiscordClient, interaction: DiscordCommandInter
 
   const embed = new MessageEmbed().setAuthor({
     name: client.translate({
-      key: 'slashCommands.klausuren.Exams',
+      key: 'interactions.klausuren.Exams',
       options: {
         user: interaction.user.username,
         lng: interaction.user.language,

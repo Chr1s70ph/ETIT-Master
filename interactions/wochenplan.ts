@@ -81,7 +81,7 @@ async function wochenplan(client: DiscordClient, interaction: DiscordCommandInte
   const embed = new MessageEmbed()
     .setAuthor({
       name: client.translate({
-        key: 'slashCommands.wochenplan.Schedule',
+        key: 'interactions.wochenplan.Schedule',
         options: {
           user: interaction.user.username,
           lng: interaction.user.language,
@@ -90,7 +90,7 @@ async function wochenplan(client: DiscordClient, interaction: DiscordCommandInte
     })
     .setDescription(
       client.translate({
-        key: 'slashCommands.wochenplan.Week',
+        key: 'interactions.wochenplan.Week',
         options: { date: moment(startOfWeek).format('DD.MM.yyyy'), lng: interaction.user.language },
       }),
     )

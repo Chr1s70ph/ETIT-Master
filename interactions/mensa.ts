@@ -77,22 +77,48 @@ export const data = new SlashCommandBuilder()
   .setName('mensa')
   .setDescription('Was es wohl heute zu Essen gibt?')
   .addStringOption(option =>
-    option
-      .setName('wochentag')
-      .setDescription('Der Wochentag, der angezeigt werden soll.')
-      .addChoices(weekday_choices)
-      .setRequired(true),
+    option.setName('wochentag').setDescription('Der Wochentag, der angezeigt werden soll.').addChoices(weekday_choices),
   )
   .addStringOption(option =>
-    option
-      .setName('ort')
-      .setDescription('Die Mensa, die angezeigt werden soll.')
-      .addChoices(line_choices)
-      .setRequired(true),
+    option.setName('ort').setDescription('Die Mensa, die angezeigt werden soll.').addChoices(line_choices),
   )
 
 exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
-  await mensa(client, interaction, interaction.options.getString('wochentag'), interaction.options.getString('ort'))
+  const today = new Date()
+  const weekday = interaction.options.getString('wochentag')
+    ? interaction.options.getString('wochentag')
+    : today.getHours() >= 16
+    ? getWeekday(today.getDay())
+    : getWeekday(today.getDay() - 1)
+
+  const line = interaction.options.getString('ort') ? interaction.options.getString('ort') : 'adenauerring'
+  interaction.reply({ embeds: [await mensa(client, weekday, line, interaction)] })
+}
+
+/**
+ * Returns the correct shortend weekday based on {@link index}
+ * @param {number} index index of Weekday
+ * @returns {string} weekday
+ */
+export function getWeekday(index: number): string {
+  switch (index) {
+    case 0:
+      return 'mo'
+    case 1:
+      return 'di'
+    case 2:
+      return 'mi'
+    case 3:
+      return 'do'
+    case 4:
+      return 'fr'
+    case 5:
+      return 'sa'
+    case 6:
+      return 'so'
+    default:
+      return 'mo'
+  }
 }
 
 class FoodLine {
@@ -169,7 +195,7 @@ const weekdayOptions = {
   so: new Weekday('Sonntag', 6),
 }
 
-function _updateJson(client: DiscordClient, interaction: DiscordCommandInteraction): Promise<string> {
+function _updateJson(client: DiscordClient): Promise<string> {
   return new Promise((resolve, reject) => {
     /**
      * Fancy API stuff and user credential hashing
@@ -197,7 +223,6 @@ function _updateJson(client: DiscordClient, interaction: DiscordCommandInteracti
         /**
          * TODO: valid error handling
          */
-        interaction.reply(`Error, sadface\n${error}`)
         reject(error)
       })
       res.on('end', () => {
@@ -209,7 +234,6 @@ function _updateJson(client: DiscordClient, interaction: DiscordCommandInteracti
             /**
              * TODO: valid error handling
              */
-            interaction.followUp('Sadface')
             reject(err)
           }
           resolve(body)
@@ -219,18 +243,25 @@ function _updateJson(client: DiscordClient, interaction: DiscordCommandInteracti
   })
 }
 
-async function mensa(client, interaction, req_weekday, req_mensa) {
+export async function mensa(
+  client: DiscordClient,
+  req_weekday,
+  req_mensa,
+  interaction: DiscordCommandInteraction | null,
+): Promise<MessageEmbed> {
   /**
    * Mensa embed
    */
   const embed = new MessageEmbed().setColor('#FAD51B').setAuthor({ name: '🍽️ Mensaplan' })
+
+  const embed_language = interaction?.user?.language ?? 'de'
 
   let raw_mensa, mensa_json
   if ((await fs.promises.readFile(`data/mensa.json`)).toString().length === 0) {
     /**
      * Fetch new mensa plan if none found
      */
-    const buffer = await _updateJson(client, interaction)
+    const buffer = await _updateJson(client)
     if (buffer) mensa_json = JSON.parse(buffer)
   } else {
     /**
@@ -259,13 +290,14 @@ async function mensa(client, interaction, req_weekday, req_mensa) {
 
   if (currentDate + 7 * 86400000 > lastDate) {
     // 7 * 86400 : number of seconds in one week
-    embed.setDescription(':fork_knife_plate: Aktualisiere JSON...')
+    embed.setDescription(
+      client.translate({
+        key: 'interactions.mensa.refreshJSON',
+        lng: embed_language,
+      }),
+    )
 
-    interaction.channel.send({
-      embeds: [embed],
-    })
-
-    const buffer = await _updateJson(client, interaction)
+    const buffer = await _updateJson(client)
     if (buffer) mensa_json = JSON.parse(buffer)
 
     mensa_json = await fs.promises.readFile(`data/mensa.json`)
@@ -273,12 +305,14 @@ async function mensa(client, interaction, req_weekday, req_mensa) {
 
   if (Object.keys(mensa_json).indexOf(req_mensa) === -1) {
     embed
-      .setTitle(`Mensa ${mensaOptions[req_mensa].name}`)
-      .setDescription('Diese Mensa hat am angeforderten Tag leider geschlossen.')
+      .setTitle(
+        `${client.translate({ key: 'interactions.mensa.cafeteria', lng: embed_language })} ${
+          mensaOptions[req_mensa].name
+        }`,
+      )
+      .setDescription(client.translate({ key: 'interactions.mensa.lineClosed', lng: embed_language }))
 
-    interaction.reply({
-      embeds: [embed],
-    })
+    return embed
   }
 
   for (const timestampKey in Object.keys(mensa_json[req_mensa])) {
@@ -297,7 +331,11 @@ async function mensa(client, interaction, req_weekday, req_mensa) {
       const date = new Date(dayString)
 
       embed
-        .setTitle(`Mensa ${mensaOptions[req_mensa].name}`)
+        .setTitle(
+          `${client.translate({ key: 'interactions.mensa.cafeteria', lng: embed_language })} ${
+            mensaOptions[req_mensa].name
+          }`,
+        )
         .setDescription(
           `${date.toLocaleDateString('de-DE', { weekday: 'long', year: 'numeric', month: 'numeric', day: 'numeric' })}`,
         )
@@ -311,13 +349,16 @@ async function mensa(client, interaction, req_weekday, req_mensa) {
 
           // eslint-disable-next-line max-depth
           if (foodLineData.nodata) {
-            mealValues = '__Leider gibt es für diesen Tag hier keine Informationen!__'
+            mealValues = client.translate({ key: 'interactions.mensa.noInformation', lng: embed_language })
             break
           }
 
           // eslint-disable-next-line max-depth
           if (foodLineData.closing_start) {
-            mealValues = `__Leider ist hier heute geschlossen. Grund: ${foodLineData.closing_text}__`
+            mealValues = client.translate({
+              key: 'interactions.mensa.closed',
+              options: { reason: foodLineData.closing_text, lng: embed_language },
+            })
             break
           }
 
@@ -327,9 +368,15 @@ async function mensa(client, interaction, req_weekday, req_mensa) {
 
           mealValues += ['', '.'].indexOf(dish) === -1 ? `${meal}${dish}\n` : meal
 
-          const allAdditions = foodLineData.add.join(', ')
+          const allAdditives = foodLineData.add.join(', ')
 
-          mealValues += allAdditions !== '' ? `_Zusatz: [${allAdditions}]_` : '_Keine Zusätze_'
+          mealValues +=
+            allAdditives !== ''
+              ? client.translate({
+                  key: 'interactions.mensa.foodAdditives',
+                  options: { additives: allAdditives, lng: embed_language },
+                })
+              : client.translate({ key: 'interactions.mensa.noFoodAdditives', lng: embed_language })
 
           const foodContainsStringToEmoji = {
             bio: ':earth_africa:',
@@ -368,11 +415,15 @@ async function mensa(client, interaction, req_weekday, req_mensa) {
 
   embed.addFields({
     name: '⠀',
-    value: `Eine Liste aller Zusätze findest du [hier](${
-      client.config.mensa.base_url + client.config.mensa.additional_info
-    }).`,
+    value: client.translate({
+      key: 'interactions.mensa.allAdditivesList',
+      options: {
+        link: client.config.mensa.base_url + client.config.mensa.additional_info,
+        lng: embed_language,
+      },
+    }),
     inline: false,
   })
 
-  interaction.reply({ embeds: [embed] })
+  return embed
 }

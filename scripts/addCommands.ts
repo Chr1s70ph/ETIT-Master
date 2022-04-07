@@ -1,7 +1,11 @@
 import { readdir, statSync } from 'fs'
 import { readdir as promiseReaddir } from 'fs/promises'
 import { REST } from '@discordjs/rest'
+import { TextChannel } from 'discord.js'
+import { scheduleJob } from 'node-schedule'
+import { mensa, getWeekday } from '../interactions/mensa'
 import { DiscordClient } from '../types/customTypes'
+
 const { Routes } = require('discord-api-types/v9')
 
 /**
@@ -17,6 +21,7 @@ const slashCommandsFolder = './interactions/'
 exports.run = (client: DiscordClient) => {
   Commands(client)
   loadSlashCommands(client)
+  mensa_automation(client)
 }
 
 function Commands(client) {
@@ -132,4 +137,22 @@ async function postSlashCommands(client, slashCommandData) {
   } catch (error) {
     console.error(error)
   }
+}
+
+/**
+ * Send Periodic Updates on whats new in the cafetaria.
+ * @param {DiscordClient} client Bot-Client
+ */
+async function mensa_automation(client: DiscordClient) {
+  await scheduleJob('0 5 * * 1-5', async () => {
+    const today = new Date()
+    const weekday = today.getHours() >= 16 ? getWeekday(today.getDay()) : getWeekday(today.getDay() - 1)
+
+    const channel = client.channels.cache.find(
+      _channel => _channel.id === client.config.ids.channelIDs.mensa,
+    ) as TextChannel
+
+    const message = channel.send({ embeds: [await mensa(client, weekday, 'adenauerring', null)] })
+    ;(await message).crosspost()
+  })
 }
