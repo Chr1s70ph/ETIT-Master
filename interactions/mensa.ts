@@ -280,7 +280,8 @@ export async function mensa(
     /**
      * If in past, search next week :)
      */
-    requestedDifference = Object.keys(weekdayOptions).length - currentWeekday + requestedWeekdayIndex
+    requestedDifference =
+      new Date().getHours() >= 16 ? Object.keys(weekdayOptions).length - currentWeekday + requestedWeekdayIndex : 0
   } else {
     requestedDifference = requestedWeekdayIndex - currentWeekday
   }
@@ -337,7 +338,12 @@ export async function mensa(
           }`,
         )
         .setDescription(
-          `${date.toLocaleDateString('de-DE', { weekday: 'long', year: 'numeric', month: 'numeric', day: 'numeric' })}`,
+          `${date.toLocaleDateString(embed_language, {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+          })}`,
         )
 
       for (const foodLineIndex in mensaOptions[req_mensa].foodLines) {
