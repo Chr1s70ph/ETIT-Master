@@ -276,12 +276,17 @@ export async function mensa(
 
   let requestedDifference = null
 
-  if (requestedWeekdayIndex - currentWeekday <= 0) {
+  if (requestedWeekdayIndex - currentWeekday === 0) {
     /**
-     * If in past, search next week :)
+     * If today after 4pm, search next week.
      */
     requestedDifference =
       new Date().getHours() >= 16 ? Object.keys(weekdayOptions).length - currentWeekday + requestedWeekdayIndex : 0
+  } else if (requestedWeekdayIndex - currentWeekday < 0) {
+    /**
+     * If in past, search next week.
+     */
+    requestedDifference = Object.keys(weekdayOptions).length - currentWeekday + requestedWeekdayIndex
   } else {
     requestedDifference = requestedWeekdayIndex - currentWeekday
   }
