@@ -37,6 +37,7 @@
         "semi": false
       }
     ],
+    "linebreak-style": ["error", "unix"],
     "strict": ["error", "global"],
     "no-await-in-loop": "warn",
     "no-compare-neg-zero": "error",
