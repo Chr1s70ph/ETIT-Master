@@ -14,6 +14,7 @@
   },
   "ignorePatterns": ["built/*", ".github/*", "node_modules/*"],
   "rules": {
+    "linebreak-style": 0,
     "@typescript-eslint/no-var-requires": 0,
     "@typescript-eslint/no-explicit-any": 0,
     "import/order": [
@@ -37,7 +38,6 @@
         "semi": false
       }
     ],
-    "linebreak-style": ["error", "unix"],
     "strict": ["error", "global"],
     "no-await-in-loop": "warn",
     "no-compare-neg-zero": "error",
