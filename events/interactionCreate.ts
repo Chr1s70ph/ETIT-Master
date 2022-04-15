@@ -43,7 +43,7 @@ exports.run = (client: DiscordClient, interaction: any) => {
     const DiscordInteraction = interaction as DiscordSelectMenuInteraction
     commandfile.SelectMenu(client, DiscordInteraction)
   } else if (interaction.isUserContextMenu()) {
-    // const DiscordInteraction = interaction as DiscordUserContextMenuCommandInteraction
+    // Const DiscordInteraction = interaction as DiscordUserContextMenuCommandInteraction
     // commandfile.UserContextMenu(client, DiscordInteraction)
   }
 }
