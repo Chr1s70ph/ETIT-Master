@@ -122,21 +122,21 @@ export function getWeekday(index: number): string {
 }
 
 class FoodLine {
-  constructor(pName, pValue) {
+  constructor(pName: string, pValue: string) {
     this.name = pName
     this.value = pValue
   }
-  name
-  value
+  name: string
+  value: string
 }
 
 class Weekday {
-  constructor(pName, pIndex) {
+  constructor(pName: string, pIndex: number) {
     this.name = pName
     this.index = pIndex
   }
-  name
-  index
+  name: string
+  index: number
 }
 
 const mensaOptions = {
@@ -245,8 +245,8 @@ function _updateJson(client: DiscordClient): Promise<string> {
 
 export async function mensa(
   client: DiscordClient,
-  req_weekday,
-  req_mensa,
+  req_weekday: string,
+  req_mensa: string,
   interaction: DiscordCommandInteraction | null,
 ): Promise<MessageEmbed> {
   /**
