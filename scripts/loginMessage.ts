@@ -80,8 +80,8 @@ function createEmbed(client: DiscordClient, commands: any[], slashCount: string[
         inline: true,
       },
       {
-        name: 'Scheduler:',
-        value: 'geladen',
+        name: 'Latest git Commit:',
+        value: require('child_process').execSync('git rev-parse HEAD').toString().substring(0, 7),
         inline: true,
       },
     )
