@@ -157,7 +157,7 @@ export class DiscordClient extends Client {
     /**
      * Return default language if no language match is found.
      */
-    return (user.language = 'en')
+    return (user.language = 'en-US')
   }
 
   /**
@@ -167,7 +167,7 @@ export class DiscordClient extends Client {
    * @returns {string}
    */
   public translate(args: translation_options): string {
-    const options = args.options ?? { lng: args.lng ?? 'en' }
+    const options = args.options ?? { lng: args.lng ?? 'en-US' }
     return i18next.t(args.key, options)
   }
 }
