@@ -13,7 +13,7 @@ exports.usage = `wochenplan {TAG}`
 export const data = new SlashCommandBuilder()
   .setName('wochenplan')
   .setDescription('Zeigt deinen Wochenplan an.')
-  .addStringOption(option =>
+  .addStringOption((option) =>
     option.setName('datum').setDescription('Das Datum, das angezeigt werden soll. Format: TT.MM.YYYY'),
   )
 
@@ -116,7 +116,7 @@ async function wochenplan(client: DiscordClient, interaction: DiscordCommandInte
     let weekdayItem = weekdayItems[weekdayKey]
     weekdayItem = weekdayItem.sort((a, b) => moment(a.start).hours() - moment(b.start).hours())
 
-    const name = moment(
+    const courseDate = moment(
       new Date(
         `${startOfWeek.getFullYear()}-${(startOfWeek.getMonth() + 1).toString().padStart(2, '0')}-${(
           startOfWeek.getDate() +
@@ -127,18 +127,39 @@ async function wochenplan(client: DiscordClient, interaction: DiscordCommandInte
           .padStart(2, '0')}T00:00:00`,
       ),
     ).format('DD.MM.yyyy (dddd)')
-    let value = ''
+    let body = ''
 
     for (const weekdayEvent of weekdayItem) {
-      value += `\`${moment(weekdayEvent.start).format('HH:mm')} - ${moment(weekdayEvent.end).format('HH:mm')}\` ${
+      /**
+       * Add Time and name of Course
+       */
+      body += `\`${moment(weekdayEvent.start).format('HH:mm')} - ${moment(weekdayEvent.end).format('HH:mm')}\` ${
         weekdayEvent.summary
-      } [[Maps](https://www.google.com/maps/search/KIT+${encodeURIComponent(weekdayEvent.location)}/)]`
-      if (weekdayEvent.description.indexOf('https://kit-lecture.zoom.us') !== -1) {
-        value += ` [[Zoom](${extractZoomLinks(weekdayEvent.description)})]`
+      } `
+
+      /**
+       * Add Google Maps link if available
+       */
+      if (weekdayEvent.location) {
+        /**
+         * Regex replaceAll needed, otherwise on mobile hyperlinks would have half the link bare and not hyperlinked
+         */
+        body += `__[Maps](https://www.google.com/maps/search/KIT+${encodeURIComponent(
+          weekdayEvent.location.replaceAll(/\(.*?\)/g, ''),
+        )})__`
       }
-      value += '\n'
+
+      if (weekdayEvent.description.indexOf('https://kit-lecture.zoom.us') !== -1) {
+        /**
+         * Add zoom hyperlink if available
+         */
+        body += `, __[Zoom](${extractZoomLinks(weekdayEvent.description)})__`
+      }
+
+      body += '\n'
     }
-    embed.addFields({ name: name, value: value, inline: false })
+
+    embed.addFields({ name: courseDate, value: body, inline: false })
   }
 
   return embed
@@ -233,7 +254,7 @@ function secondFIlter(
 }
 
 function pushToWeeksEvents(interaction, event, relevantEvents) {
-  const roles = interaction.member.roles.cache.map(role => role)
+  const roles = interaction.member.roles.cache.map((role) => role)
   for (const role in roles) {
     const searchQuery = event.summary.split('-')[1].split('(')[0].toLowerCase()
     if (roles[role].name.toLowerCase().trim() === searchQuery.toLowerCase().trim()) {
