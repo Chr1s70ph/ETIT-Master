@@ -70,7 +70,18 @@ export const data = new SlashCommandBuilder()
   .setDescription('Links quick')
   .addStringOption(option =>
     // eslint-disable-next-line newline-per-chained-call
-    option.setName('quicklinks').setDescription('Choose your Quicklink').setChoices(choices).setRequired(true),
+    option
+      .setName('quicklinks')
+      .setDescription('Choose your Quicklink')
+      .setChoices(
+        { name: 'dontask', value: 'dontask' },
+        { name: 'exmatrikulation', value: 'exmatrikulation' },
+        { name: 'kw', value: 'kw' },
+        { name: 'duden', value: 'duden' },
+        { name: 'stackoverflow', value: 'stackoverflow' },
+        { name: 'reddit', value: 'reddit' },
+      )
+      .setRequired(true),
   )
   .addUserOption(option => option.setName('userping').setDescription('Who do you want to annoy?'))
 
