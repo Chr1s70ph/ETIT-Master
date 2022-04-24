@@ -210,7 +210,7 @@ function secondFIlter(
 }
 
 function pushToWeeksEvents(interaction, event, relevantEvents) {
-  const roles = interaction.member.roles.cache.map((role) => role)
+  const roles = interaction.member.roles.cache.map(role => role)
   for (const role in roles) {
     const searchQuery = event.summary.split('-')[1].split('(')[0].toLowerCase()
     if (roles[role].name.toLowerCase().trim() === searchQuery.toLowerCase().trim()) {
