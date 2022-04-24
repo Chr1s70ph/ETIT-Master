@@ -13,53 +13,9 @@ exports.usage = `wochenplan {TAG}`
 export const data = new SlashCommandBuilder()
   .setName('wochenplan')
   .setDescription('Zeigt deinen Wochenplan an.')
-  .addStringOption((option) =>
+  .addStringOption(option =>
     option.setName('datum').setDescription('Das Datum, das angezeigt werden soll. Format: TT.MM.YYYY'),
   )
-
-class Abbreviation {
-  constructor(pEmoji, pValue) {
-    const emoji = pEmoji
-    const value = pValue
-  }
-}
-
-const replacementDict = {
-  'Höhere Mathematik': new Abbreviation(':chart_with_upwards_trend:', 'HM'),
-  'Hoehere Mathematik': new Abbreviation(':chart_with_upwards_trend:', 'HM'),
-  'Inverted Classroom': new Abbreviation('', 'IC'),
-  'Elektronische Schaltungen': new Abbreviation(':radio:', 'ES'),
-  'Elektromagnetische Felder': new Abbreviation(':magnet:', 'EMF'),
-  'Elektromagnetische Wellen': new Abbreviation(':magnet:', 'EMW'),
-  'Komplexe Analysis und Integraltransformationen': new Abbreviation(':triangular_ruler:', 'KAI'),
-  Informationstechnik: new Abbreviation(':computer:', 'IT'),
-  'Optik und Festkörperelektronik': new Abbreviation(':eyes:', 'OFE'),
-  'Optik und Festkoerperelektronik': new Abbreviation(':eyes:', 'OFE'),
-  'Grundlagen der Hochfrequenztechnik': new Abbreviation(':satellite:', 'GHF'),
-  Maschinenkonstruktionslehre: new Abbreviation(':gear:', 'MKL'),
-  'Technische Mechanik': new Abbreviation(':wrench:', 'TM'),
-  Elektroenergiesysteme: new Abbreviation(':battery:', 'EES'),
-  'Signale und Systeme': new Abbreviation(':signal_strength:', 'SUS'),
-  Wahrscheinlichkeitstheorie: new Abbreviation(':game_die:', 'WT'),
-  'Elektrische Maschinen und Stromrichter': new Abbreviation(':zap:', 'EMS'),
-  Nachrichtentechnik: new Abbreviation(':satellite:', 'NT'),
-  'Systemdynamik und Regelungstechnik': new Abbreviation(':chart_with_downwards_trend:', 'SRT'),
-  'Bauelemente der Elektrotechnik': new Abbreviation(':electric_plug:', 'BE'),
-  Halbleiterbauelemente: new Abbreviation(':electric_plug:', 'HBE'),
-  'Passive Bauelemente': new Abbreviation(':electric_plug:', 'PE'),
-}
-
-function _shortenSummary(pEventSummary) {
-  for (const replaceCheck of Object.keys(replacementDict)) {
-    if (pEventSummary.indexOf(replaceCheck) !== -1) {
-      return `${replacementDict[replaceCheck].emoji} ${pEventSummary.replace(
-        replaceCheck,
-        replacementDict[replaceCheck].value,
-      )}`.replace('Vorlesung', 'VL')
-    }
-  }
-  return pEventSummary
-}
 
 async function wochenplan(client: DiscordClient, interaction: DiscordCommandInteraction, pNow, pCourseAndSemester) {
   let returnData = {}
@@ -265,11 +221,11 @@ function pushToWeeksEvents(interaction, event, relevantEvents) {
 
 exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
   const now = new Date()
+  interaction.deferReply({ ephemeral: true })
   const embed = wochenplan(client, interaction, now, 'all')
 
-  await interaction.reply({
+  await interaction.editReply({
     embeds: [await embed],
-    ephemeral: true,
   })
 }
 
