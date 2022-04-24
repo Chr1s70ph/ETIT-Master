@@ -14,6 +14,7 @@ i18next.use(backend).init({
   lng: 'en-US',
   fallbackLng: 'en-US',
   preload: ['en-US', 'de'],
+  load: 'currentOnly',
   ns: ['translation'],
   defaultNS: 'translation',
   debug: true,
