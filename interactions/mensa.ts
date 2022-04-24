@@ -5,82 +5,32 @@ import { MessageEmbed } from 'discord.js'
 import { DiscordClient, DiscordCommandInteraction } from '../types/customTypes'
 const { DateTime } = require('luxon')
 
-const weekdays = {
-  montag: {
-    name: 'montag',
-    value: 'mo',
-  },
-  dienstag: {
-    name: 'dienstag',
-    value: 'di',
-  },
-  mittwoch: {
-    name: 'mittwoch',
-    value: 'mi',
-  },
-  donnerstag: {
-    name: 'donnerstag',
-    value: 'do',
-  },
-  freitag: {
-    name: 'freitag',
-    value: 'fr',
-  },
-}
-
-const weekday_choices: [string, string][] = new Array([null, null])
-
-/**
- * Add choices to Array
- */
-for (const entry in weekdays) {
-  const choice: [string, string] = [weekdays[entry].name, weekdays[entry].value]
-  weekday_choices.push(choice)
-}
-weekday_choices.shift()
-
-const lines = {
-  adenauer: {
-    name: 'am adenauerring',
-    value: 'adenauerring',
-  },
-  erzberg: {
-    name: 'erzbergstraße',
-    value: 'erzberger',
-  },
-  schloss: {
-    name: 'achloss gottesaue',
-    value: 'gottesaue',
-  },
-  tiefbronner: {
-    name: 'tiefbronner straße',
-    value: 'tiefenbronner',
-  },
-  cafetaria: {
-    name: 'caféteria moltkestraße 30',
-    value: 'x1moltkestrasse',
-  },
-}
-
-const line_choices: [string, string][] = new Array([null, null])
-
-/**
- * Add choices to Array
- */
-for (const entry in lines) {
-  const choice: [string, string] = [lines[entry].name, lines[entry].value]
-  line_choices.push(choice)
-}
-line_choices.shift()
-
 export const data = new SlashCommandBuilder()
   .setName('mensa')
   .setDescription('Was es wohl heute zu Essen gibt?')
   .addStringOption(option =>
-    option.setName('wochentag').setDescription('Der Wochentag, der angezeigt werden soll.').addChoices(weekday_choices),
+    option
+      .setName('wochentag')
+      .setDescription('Der Wochentag, der angezeigt werden soll.')
+      .setChoices(
+        { name: 'montag', value: 'mo' },
+        { name: 'dienstag', value: 'di' },
+        { name: 'mittwoch', value: 'mi' },
+        { name: 'donnerstag', value: 'do' },
+        { name: 'freitag', value: 'fr' },
+      ),
   )
   .addStringOption(option =>
-    option.setName('ort').setDescription('Die Mensa, die angezeigt werden soll.').addChoices(line_choices),
+    option
+      .setName('ort')
+      .setDescription('Die Mensa, die angezeigt werden soll.')
+      .addChoices(
+        { name: 'am adenauerring', value: 'adenauerring' },
+        { name: 'erzbergstraße', value: 'erzberger' },
+        { name: 'achloss gottesaue', value: 'gottesaue' },
+        { name: 'tiefbronner straße', value: 'tiefenbronner' },
+        { name: 'caféteria moltkestraße 30', value: 'x1moltkestrasse' },
+      ),
   )
 
 exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
