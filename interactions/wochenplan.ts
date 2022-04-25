@@ -13,7 +13,7 @@ exports.usage = `wochenplan {TAG}`
 export const data = new SlashCommandBuilder()
   .setName('wochenplan')
   .setDescription('Zeigt deinen Wochenplan an.')
-  .addStringOption(option =>
+  .addStringOption((option) =>
     option.setName('datum').setDescription('Das Datum, das angezeigt werden soll. Format: TT.MM.YYYY'),
   )
 
@@ -210,9 +210,15 @@ function secondFIlter(
 }
 
 function pushToWeeksEvents(interaction, event, relevantEvents) {
-  const roles = interaction.member.roles.cache.map(role => role)
+  const roles = interaction.member.roles.cache.map((role) => role)
   for (const role in roles) {
-    const searchQuery = event.summary.split('-')[1].split('(')[0].toLowerCase()
+    console.log(event.summary)
+    let searchQuery = ''
+    if (event.summary.indexOf('-') !== -1) {
+      searchQuery = event.summary.split('-')[1].split('(')[0].toLowerCase()
+    } else {
+      searchQuery = event.summary.toString()
+    }
     if (roles[role].name.toLowerCase().trim() === searchQuery.toLowerCase().trim()) {
       relevantEvents.push(event)
     }
