@@ -224,6 +224,9 @@ function secondFIlter(
 }
 
 function pushToWeeksEvents(interaction, event, relevantEvents) {
+  if (doubleEntry(relevantEvents, event)) {
+    return
+  }
   const roles = interaction.member.roles.cache.map(role => role)
   for (const role in roles) {
     let searchQuery = ''
@@ -236,6 +239,34 @@ function pushToWeeksEvents(interaction, event, relevantEvents) {
       relevantEvents.push(event)
     }
   }
+}
+
+/**
+ * Check if the new element added to @link{array} creates a duplicate
+ * @param {any[]} array array to check
+ * @param  {any} new_element new element on which to check if duplicate
+ * @returns {boolean}
+ */
+function doubleEntry(array: any[], new_element: any): boolean {
+  /**
+   * Always return false, if array has no entry
+   * There are no possible duplicates if there is nothing in the array
+   */
+  if (array.length < 1) {
+    return false
+  }
+
+  /**
+   * Check if any of the already added elements is the same as @link{new_element}
+   */
+  for (const entry in array) {
+    if (array[entry].start === new_element.start && array[entry].summary === new_element.summary) return true
+  }
+
+  /**
+   * If no duplicates have been found, return false
+   */
+  return false
 }
 
 exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
