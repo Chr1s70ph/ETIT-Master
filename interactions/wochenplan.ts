@@ -260,7 +260,14 @@ function doubleEntry(array: any[], new_element: any): boolean {
    * Check if any of the already added elements is the same as @link{new_element}
    */
   for (const entry in array) {
-    if (array[entry].start === new_element.start && array[entry].summary === new_element.summary) return true
+    if (
+      array[entry].start === new_element.start &&
+      array[entry].summary === new_element.summary &&
+      array[entry].start.getDay() === new_element.start.getDay()
+    ) {
+      console.log(new_element.start.getDay())
+      return true
+    }
   }
 
   /**
