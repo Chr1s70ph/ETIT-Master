@@ -82,7 +82,11 @@
     "ping": {},
     "wochenplan": {
       "Schedule": "🗓️ Wochenplan für {{user}}",
-      "Week": "Woche vom {{date}}"
+      "Week": "Woche vom {{date}}",
+      "too_long": {
+        "name": "⚠️ Bemerkung: Du hast zu viele Fächer ausgewählt!",
+        "value": "Weil du zu viele Fächer ausgewählt hast, kann es sein, dass dein Wochenplan nicht wie gewollt aussieht."
+      }
     },
     "language": {
       "Select": "Wähle deine bevorzugte Sprache",

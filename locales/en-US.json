@@ -82,7 +82,11 @@
     "ping": {},
     "wochenplan": {
       "Schedule": "🗓️ Weekly schedule for {{user}}",
-      "Week": "Week of {{date}}"
+      "Week": "Week of {{date}}",
+      "too_long": {
+        "name": "⚠️ Note: You have selected too many courses!",
+        "value": "Since you have selected too many courses, your weekplan may look not as intended."
+      }
     },
     "klausuren": {
       "Exams": "🗓️ Exams for {{user}}"

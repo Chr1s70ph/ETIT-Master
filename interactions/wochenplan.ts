@@ -67,6 +67,7 @@ async function wochenplan(client: DiscordClient, interaction: DiscordCommandInte
   }
 
   moment.locale(interaction.user.language)
+  let embed_too_long = false
 
   for (const weekdayKey of Object.keys(weekdayItems)) {
     let weekdayItem = weekdayItems[weekdayKey]
@@ -115,7 +116,20 @@ async function wochenplan(client: DiscordClient, interaction: DiscordCommandInte
       body += '\n'
     }
 
+    const MAX_EMBED_VALUE_LENGTH = 1024
+    if (body.length > MAX_EMBED_VALUE_LENGTH) {
+      body = `${body.substring(0, MAX_EMBED_VALUE_LENGTH - 3)}...`
+      embed_too_long = true
+    }
     embed.addFields({ name: courseDate, value: body, inline: false })
+  }
+
+  if (embed_too_long) {
+    embed.addFields({
+      name: `${client.translate({ key: 'interactions.wochenplan.too_long.name', lng: interaction.locale })}`,
+      value: `${client.translate({ key: 'interactions.wochenplan.too_long.value', lng: interaction.locale })}`,
+      inline: false,
+    })
   }
 
   return embed
@@ -212,7 +226,6 @@ function secondFIlter(
 function pushToWeeksEvents(interaction, event, relevantEvents) {
   const roles = interaction.member.roles.cache.map(role => role)
   for (const role in roles) {
-    console.log(event.summary)
     let searchQuery = ''
     if (event.summary.indexOf('-') !== -1) {
       searchQuery = event.summary.split('-')[1].split('(')[0].toLowerCase()
