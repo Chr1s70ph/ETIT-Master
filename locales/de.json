@@ -86,6 +86,10 @@
       "too_long": {
         "name": "⚠️ Bemerkung: Du hast zu viele Fächer ausgewählt!",
         "value": "Weil du zu viele Fächer ausgewählt hast, kann es sein, dass dein Wochenplan nicht wie gewollt aussieht."
+      },
+      "invalid_Date": {
+        "name": "⚠️ Bemerkung: Das angegebene Datum existiert nicht.",
+        "value": "Bitte benutze das Format `DD.MM.YYYY` wenn du ein datum spezifizieren willst."
       }
     },
     "language": {

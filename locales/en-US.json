@@ -86,6 +86,10 @@
       "too_long": {
         "name": "⚠️ Note: You have selected too many courses!",
         "value": "Since you have selected too many courses, your weekplan may look not as intended."
+      },
+      "invalid_Date": {
+        "name": "⚠️ Note: The date you entered is not a valid Date.",
+        "value": "Please use the `DD.MM.YYY` format to specify a date."
       }
     },
     "klausuren": {

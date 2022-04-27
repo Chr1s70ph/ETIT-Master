@@ -14,7 +14,7 @@ export const data = new SlashCommandBuilder()
   .setName('wochenplan')
   .setDescription('Zeigt deinen Wochenplan an.')
   .addStringOption(option =>
-    option.setName('datum').setDescription('Das Datum, das angezeigt werden soll. Format: TT.MM.YYYY'),
+    option.setName('datum').setDescription('Das Datum, das angezeigt werden soll. Format: DD.MM.YYYY'),
   )
 
 async function wochenplan(client: DiscordClient, interaction: DiscordCommandInteraction, pNow, pCourseAndSemester) {
@@ -239,12 +239,23 @@ function pushToWeeksEvents(interaction, event, relevantEvents) {
 }
 
 exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
-  const now = new Date()
-  interaction.deferReply({ ephemeral: true })
-  const embed = wochenplan(client, interaction, now, 'all')
+  const option = interaction.options.getString('datum')?.split('.')
+  const option_date = new Date(`${option[2]}-${option[1]}-${option[0]}T00:00:00`)
+  const valid_date = option_date.toString() !== 'Invalid Date'
+  const date = JSON.stringify(option_date) === 'null' ? new Date() : option_date
 
+  interaction.deferReply({ ephemeral: true })
+  const embed = await wochenplan(client, interaction, date, 'all')
+
+  if (!valid_date) {
+    embed.addFields({
+      name: `${client.translate({ key: 'interactions.wochenplan.invalid_Date.name', lng: interaction.locale })}`,
+      value: `${client.translate({ key: 'interactions.wochenplan.invalid_Date.value', lng: interaction.locale })}`,
+      inline: false,
+    })
+  }
   await interaction.editReply({
-    embeds: [await embed],
+    embeds: [embed],
   })
 }
 
