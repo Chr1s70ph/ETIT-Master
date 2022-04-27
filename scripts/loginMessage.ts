@@ -4,6 +4,8 @@ import { MessageEmbed, TextChannel } from 'discord.js'
 import project from '../package.json'
 import { DiscordClient } from '../types/customTypes'
 const os = require('os')
+const newLocal = 'child_process'
+const latest_commit = require(newLocal).execSync('git rev-parse HEAD').toString().substring(0, 7)
 
 exports.run = async (client: DiscordClient) => {
   /**
@@ -81,7 +83,7 @@ function createEmbed(client: DiscordClient, commands: any[], slashCount: string[
       },
       {
         name: 'Latest git Commit:',
-        value: require('child_process').execSync('git rev-parse HEAD').toString().substring(0, 7),
+        value: `[\`${latest_commit}\`](https://github.com/Chr1s70ph/ETIT-Master/commit/${latest_commit})`,
         inline: true,
       },
     )
