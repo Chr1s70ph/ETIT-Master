@@ -240,7 +240,7 @@ function pushToWeeksEvents(interaction, event, relevantEvents) {
 
 exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
   const option = interaction.options.getString('datum')?.split('.')
-  const option_date = new Date(`${option[2]}-${option[1]}-${option[0]}T00:00:00`)
+  const option_date = option ? new Date(`${option[2]}-${option[1]}-${option[0]}T00:00:00`) : new Date()
   const valid_date = option_date.toString() !== 'Invalid Date'
   const date = JSON.stringify(option_date) === 'null' ? new Date() : option_date
 
