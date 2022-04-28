@@ -433,6 +433,7 @@ function addEntryToTodaysEvents(
   description: string,
   location: string,
 ): object {
+  if (summary.indexOf('Lemmer') !== -1) console.log(summary, start)
   /**
    * Protection against double events.
    * Only add event if it is one of a kind.
