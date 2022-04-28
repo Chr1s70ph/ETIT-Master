@@ -1,4 +1,4 @@
-import counter from 'txt2'
+import tx2 from 'tx2'
 import {
   DiscordAutocompleteInteraction,
   DiscordButtonInteraction,
@@ -11,7 +11,7 @@ import {
 /**
  * Custom PM2 metric.
  */
-const InteractionCounter = counter({
+const InteractionCounter = tx2.counter({
   name: 'Interactions issued',
 })
 

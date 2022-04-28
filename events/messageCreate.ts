@@ -1,6 +1,6 @@
 import { MessageEmbed } from 'discord.js'
+import tx2 from 'tx2'
 import { DiscordClient, DiscordMessage } from '../types/customTypes'
-const tx2 = require('tx2')
 
 /**
  * Custom PM2 metric.
