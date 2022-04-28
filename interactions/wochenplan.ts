@@ -223,6 +223,8 @@ function secondFIlter(
   }
 }
 
+// TODO: Weekplan still not recocnizing all events (e.g. 28.04.2022 OFE is missing)
+
 function pushToWeeksEvents(interaction, event, relevantEvents) {
   if (doubleEntry(relevantEvents, event)) {
     return

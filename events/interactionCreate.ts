@@ -1,3 +1,4 @@
+import counter from 'txt2'
 import {
   DiscordAutocompleteInteraction,
   DiscordButtonInteraction,
@@ -6,6 +7,13 @@ import {
   DiscordSelectMenuInteraction,
   DiscordMessageContextMenuInteraction,
 } from '../types/customTypes'
+
+/**
+ * Custom PM2 metric.
+ */
+const InteractionCounter = counter({
+  name: 'Interactions issued',
+})
 
 exports.run = (client: DiscordClient, interaction: any) => {
   /**
@@ -27,6 +35,11 @@ exports.run = (client: DiscordClient, interaction: any) => {
 
   console.log(`${interaction.member.user.username} used ${commandName}`)
 
+  /**
+   * Increment the counter of issued interactions since last restart.
+   */
+  InteractionCounter.inc()
+
   if (interaction.isAutocomplete()) {
     const DiscordInteraction = interaction as DiscordAutocompleteInteraction
     commandfile.Autocomplete(client, DiscordInteraction)
@@ -44,6 +57,6 @@ exports.run = (client: DiscordClient, interaction: any) => {
     commandfile.SelectMenu(client, DiscordInteraction)
   } else if (interaction.isUserContextMenu()) {
     // Const DiscordInteraction = interaction as DiscordUserContextMenuCommandInteraction
-    // commandfile.UserContextMenu(client, DiscordInteraction)
+    // commandfile.UserContextMenu(client,  DiscordInteraction)
   }
 }
