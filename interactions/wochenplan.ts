@@ -18,7 +18,7 @@ export const data = new SlashCommandBuilder()
     option.setName('datum').setDescription('Das Datum, das angezeigt werden soll. Format: DD.MM.YYYY'),
   )
 
-async function wochenplan(client: DiscordClient, interaction: DiscordCommandInteraction, pNow, pCourseAndSemester) {
+async function wochenplan(client: DiscordClient, interaction: DiscordCommandInteraction, date, pCourseAndSemester) {
   let returnData = {}
   for (const entry in client.config.calendars) {
     // eslint-disable-next-line no-await-in-loop
@@ -26,8 +26,8 @@ async function wochenplan(client: DiscordClient, interaction: DiscordCommandInte
   }
 
   const relevantEvents = []
-  const curWeekday = pNow.getDay() === 0 ? 6 : pNow.getDay() - 1
-  const startOfWeek = new Date(pNow.setDate(pNow.getDate() - curWeekday))
+  const curWeekday = date.getDay() === 0 ? 6 : date.getDay() - 1
+  const startOfWeek = new Date(date.setDate(date.getDate() - curWeekday))
   startOfWeek.setHours(0, 0, 0)
 
   const rangeStart = moment(startOfWeek)
@@ -239,11 +239,17 @@ function pushToWeeksEvents(interaction, event, event_start, event_end, relevantE
       searchQuery = event.summary.toString()
     }
     if (roles[role].name.toLowerCase().trim() === searchQuery.toLowerCase().trim()) {
-      console.log(event.summary, event_start)
-      relevantEvents.push(event)
       /**
-       * TODO: now OFE of 28th of april is added, but not GHF from 29th of April, and also not yet displayed correctly in the weekplanner
+       * Add entry with new key.
+       * Key increments by one (determined by length).
        */
+      relevantEvents[Object.keys(relevantEvents).length] = {
+        start: event_start,
+        end: event_end,
+        summary: event.summary,
+        description: event.description,
+        location: event.location,
+      }
     }
   }
 }
@@ -252,9 +258,11 @@ function pushToWeeksEvents(interaction, event, event_start, event_end, relevantE
  * Check if the new element added to @link{array} creates a duplicate
  * @param {any[]} array array to check
  * @param  {any} new_element new element on which to check if duplicate
+ * @param {Date} start_date end date of event
+ * @param {Date} end_date start date of event
  * @returns {boolean}
  */
-function doubleEntry(array: any[], new_element: any, start_date, end_date): boolean {
+function doubleEntry(array: any[], new_element: any, start_date: Date, end_date: Date): boolean {
   /**
    * Always return false, if array has no entry
    * There are no possible duplicates if there is nothing in the array
