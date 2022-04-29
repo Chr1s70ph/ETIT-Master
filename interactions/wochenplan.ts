@@ -2,6 +2,7 @@ import { SlashCommandBuilder } from '@discordjs/builders'
 import { MessageEmbed } from 'discord.js'
 import moment from 'moment-timezone'
 import { async } from 'node-ical'
+import { start } from 'pm2'
 import { DiscordClient, DiscordCommandInteraction } from '../types/customTypes'
 
 exports.name = 'wochenplan'
@@ -17,7 +18,7 @@ export const data = new SlashCommandBuilder()
     option.setName('datum').setDescription('Das Datum, das angezeigt werden soll. Format: DD.MM.YYYY'),
   )
 
-async function wochenplan(client: DiscordClient, interaction: DiscordCommandInteraction, pNow, pCourseAndSemester) {
+async function wochenplan(client: DiscordClient, interaction: DiscordCommandInteraction, date, pCourseAndSemester) {
   let returnData = {}
   for (const entry in client.config.calendars) {
     // eslint-disable-next-line no-await-in-loop
@@ -25,14 +26,14 @@ async function wochenplan(client: DiscordClient, interaction: DiscordCommandInte
   }
 
   const relevantEvents = []
-  const curWeekday = pNow.getDay() === 0 ? 6 : pNow.getDay() - 1
-  const startOfWeek = new Date(pNow.setDate(pNow.getDate() - curWeekday))
+  const curWeekday = date.getDay() === 0 ? 6 : date.getDay() - 1
+  const startOfWeek = new Date(date.setDate(date.getDate() - curWeekday))
   startOfWeek.setHours(0, 0, 0)
 
   const rangeStart = moment(startOfWeek)
   const rangeEnd = rangeStart.clone().add(7, 'days')
 
-  filterEvents(returnData, rangeStart, rangeEnd, pCourseAndSemester, interaction, relevantEvents)
+  filterEvents(returnData, rangeStart, rangeEnd, interaction, relevantEvents)
 
   const embed = new MessageEmbed()
     .setAuthor({
@@ -139,29 +140,16 @@ function filterEvents(
   returnData: any,
   rangeStart: moment.Moment,
   rangeEnd: moment.Moment,
-  pCourseAndSemester: any,
   pMessageOrInteraction: any,
   relevantEvents: any[],
 ) {
   for (const i in returnData) {
     const event = returnData[i]
     if (returnData[i].type === 'VEVENT') {
-      const title = event.summary
       const startDate = moment(event.start)
       const endDate = moment(event.end)
-      const duration = parseInt(endDate.format('x')) - parseInt(startDate.format('x'))
-      secondFIlter(
-        event,
-        startDate,
-        rangeStart,
-        rangeEnd,
-        pCourseAndSemester,
-        pMessageOrInteraction,
-        title,
-        relevantEvents,
-        duration,
-        endDate,
-      )
+      const duration = Number.parseInt(endDate.format('x'), 10) - Number.parseInt(startDate.format('x'), 10)
+      secondFIlter(event, startDate, rangeStart, rangeEnd, pMessageOrInteraction, relevantEvents, duration, endDate)
     }
   }
 }
@@ -171,62 +159,75 @@ function secondFIlter(
   startDate: any,
   rangeStart: moment.Moment,
   rangeEnd: moment.Moment,
-  pCourseAndSemester: any,
   pMessageOrInteraction: any,
-  title: any,
   relevantEvents: any[],
   duration: number,
   endDate: any,
 ) {
   if (typeof event.rrule === 'undefined') {
     if (startDate.isBetween(rangeStart, rangeEnd)) {
-      pushToWeeksEvents(pMessageOrInteraction, event, relevantEvents)
+      pushToWeeksEvents(pMessageOrInteraction, event, relevantEvents, event.start, event.end)
     }
   } else {
-    const dates = event.rrule.between(rangeStart.toDate(), rangeEnd.toDate(), true)
+    /**
+     * Complicated case - if an RRULE exists, handle multiple recurrences of the event.
+     *  For recurring events, get the set of event start dates that fall within the range
+     *  of dates we're looking for.
+     */
+    const dates = event.rrule.between(rangeStart.toDate(), rangeEnd.toDate(), true, () => true)
 
+    /**
+     * The "dates" array contains the set of dates within our desired date range range that are valid
+     * for the recurrence rule.  *However*, it's possible for us to have a specific recurrence that
+     * had its date changed from outside the range to inside the range.  One way to handle this is
+     * to add *all* recurrence override entries into the set of dates that we check, and then later
+     * filter out any recurrences that don't actually belong within our range.
+     */
     if (event.recurrences !== undefined) {
       for (const recurrence in event.recurrences) {
+        /**
+         * Only add dates that weren't already in the range we added from the rrule so that
+         * we don't double-add those events.
+         */
         if (moment(new Date(recurrence)).isBetween(rangeStart, rangeEnd) !== true) {
           dates.push(new Date(recurrence))
         }
       }
     }
 
-    for (const date of dates) {
+    for (const i in dates) {
+      /**
+       * Reccurence date.
+       */
+      const date = dates[i]
       let curEvent = event
       let relevantRecurrence = true
-      let curDuration = duration
 
       startDate = moment(date)
+      endDate = startDate.clone().add(moment.duration(moment(curEvent.end).diff(curEvent.start)).asHours(), 'hours')
 
       const dateLookupKey = date.toISOString().substring(0, 10)
-
       if (curEvent.recurrences !== undefined && curEvent.recurrences[dateLookupKey] !== undefined) {
         curEvent = curEvent.recurrences[dateLookupKey]
         startDate = moment(curEvent.start)
-        curDuration = parseInt(moment(curEvent.end).format('x')) - parseInt(startDate.format('x'))
+        endDate = startDate.clone().add(moment.duration(moment(curEvent.end).diff(curEvent.start)).asHours(), 'hours')
       } else if (curEvent.exdate !== undefined && curEvent.exdate[dateLookupKey] !== undefined) {
         relevantRecurrence = false
       }
-
-      endDate = moment(parseInt(startDate.format('x')) + curDuration, 'x')
 
       if (endDate.isBefore(rangeStart) || startDate.isAfter(rangeEnd)) {
         relevantRecurrence = false
       }
 
       if (relevantRecurrence === true) {
-        pushToWeeksEvents(pMessageOrInteraction, event, relevantEvents)
+        pushToWeeksEvents(pMessageOrInteraction, curEvent, startDate, endDate, relevantEvents)
       }
     }
   }
 }
 
-// TODO: Weekplan still not recocnizing all events (e.g. 28.04.2022 OFE is missing)
-
-function pushToWeeksEvents(interaction, event, relevantEvents) {
-  if (doubleEntry(relevantEvents, event)) {
+function pushToWeeksEvents(interaction, event, event_start, event_end, relevantEvents) {
+  if (doubleEntry(relevantEvents, event, event_start, event_end)) {
     return
   }
   const roles = interaction.member.roles.cache.map(role => role)
@@ -238,7 +239,17 @@ function pushToWeeksEvents(interaction, event, relevantEvents) {
       searchQuery = event.summary.toString()
     }
     if (roles[role].name.toLowerCase().trim() === searchQuery.toLowerCase().trim()) {
-      relevantEvents.push(event)
+      /**
+       * Add entry with new key.
+       * Key increments by one (determined by length).
+       */
+      relevantEvents[Object.keys(relevantEvents).length] = {
+        start: event_start,
+        end: event_end,
+        summary: event.summary,
+        description: event.description,
+        location: event.location,
+      }
     }
   }
 }
@@ -247,9 +258,11 @@ function pushToWeeksEvents(interaction, event, relevantEvents) {
  * Check if the new element added to @link{array} creates a duplicate
  * @param {any[]} array array to check
  * @param  {any} new_element new element on which to check if duplicate
+ * @param {Date} start_date end date of event
+ * @param {Date} end_date start date of event
  * @returns {boolean}
  */
-function doubleEntry(array: any[], new_element: any): boolean {
+function doubleEntry(array: any[], new_element: any, start_date: Date, end_date: Date): boolean {
   /**
    * Always return false, if array has no entry
    * There are no possible duplicates if there is nothing in the array
@@ -265,9 +278,9 @@ function doubleEntry(array: any[], new_element: any): boolean {
     if (
       array[entry].start === new_element.start &&
       array[entry].summary === new_element.summary &&
-      array[entry].start.getDay() === new_element.start.getDay()
+      array[entry].start.getDay() === start_date &&
+      array[entry].end.getDay() === end_date
     ) {
-      console.log(new_element.start.getDay())
       return true
     }
   }
