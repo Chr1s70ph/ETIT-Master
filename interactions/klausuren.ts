@@ -180,11 +180,11 @@ function pushToWeeksEvents(interaction, event, relevantEvents) {
 
 exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
   const now = new Date()
-  const embed = klausuren(client, interaction, now, 'all')
+  const embed = await klausuren(client, interaction, now, 'all')
 
-  await interaction.reply({
-    embeds: [await embed],
-    ephemeral: true,
+  interaction.deferReply()
+  await interaction.editReply({
+    embeds: [embed],
   })
 }
 
