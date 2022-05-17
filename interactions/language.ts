@@ -1,6 +1,13 @@
 import { readdir } from 'fs/promises'
 import { SlashCommandBuilder } from '@discordjs/builders'
-import { MessageActionRow, MessageEmbed, MessageSelectMenu, SelectMenuInteraction } from 'discord.js'
+import {
+  MessageActionRow,
+  MessageEmbed,
+  MessageSelectMenu,
+  SelectMenuInteraction,
+  Modal,
+  ModalActionRowComponent,
+} from 'discord.js'
 import { DiscordClient, DiscordCommandInteraction } from '../types/customTypes'
 
 export const data = new SlashCommandBuilder().setName('language').setDescription('Choose your language')
@@ -48,7 +55,7 @@ exports.Command = async (client: DiscordClient, interaction: DiscordCommandInter
   /**
    * Create new {@link MessageActionRow}
    */
-  const row = new MessageActionRow().addComponents(
+  const row = new MessageActionRow().setComponents(
     /**
      * Add {@link MessageSelectMenu}
      */
