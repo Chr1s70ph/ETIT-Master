@@ -60,10 +60,6 @@ exports.run = (client: DiscordClient, interaction: any) => {
   } else if (interaction.isContextMenu()) {
     const DiscordInteraction = interaction as DiscordContextMenuInteraction
     commandfile.ContextMenu(client, DiscordInteraction)
-    // Reply to mesasge componentes
-  } else if (interaction.isMessageComponent()) {
-    const DiscordInteraction = interaction as DiscordMessageComponentInteraction
-    commandfile.MessageComponent(client, DiscordInteraction)
     // Reply to message context menus
   } else if (interaction.isMessageContextMenu()) {
     const DiscordInteraction = interaction as DiscordMessageContextMenuInteraction

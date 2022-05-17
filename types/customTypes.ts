@@ -281,7 +281,6 @@ interface InteractionCommands extends Object {
   Button?: any
   Command?: any
   ContextMenu?: any
-  MessageComponent?: any
   MessageContextMenu?: any
   Modal?: any
   SelectMenu?: any
