@@ -14,6 +14,7 @@ import {
   SelectMenuInteraction,
   ApplicationCommand,
   MessageContextMenuInteraction,
+  ModalSubmitInteraction,
 } from 'discord.js'
 import i18next from 'i18next'
 
@@ -214,12 +215,12 @@ export interface DiscordSelectMenuInteraction extends SelectMenuInteraction {
   user: DiscordUser
 }
 
-// /**
-//  * Extended {@link UserContextMenuInteraction} to hold {@link DiscordUser}
-//  */
-// export interface DiscordUserContextMenuCommandInteraction extends UserContextMenuCommandInteraction {
-//   user: DiscordUser
-// }
+/**
+ * Extended {@link ModalSubmitInteraction} to hold {@link DiscordUser}
+ */
+export interface DiscordModalSubmitInteraction extends ModalSubmitInteraction {
+  user: DiscordUser
+}
 
 /**
  * Extended User to hold language.
@@ -258,6 +259,7 @@ interface InteractionCommands extends Object {
   MessageContextMenu?: any
   SelectMenu?: any
   UserContextMenu?: any
+  Modal?: any
 }
 
 /**

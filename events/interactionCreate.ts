@@ -6,6 +6,7 @@ import {
   DiscordCommandInteraction,
   DiscordSelectMenuInteraction,
   DiscordMessageContextMenuInteraction,
+  DiscordModalSubmitInteraction,
 } from '../types/customTypes'
 
 /**
@@ -55,8 +56,8 @@ exports.run = (client: DiscordClient, interaction: any) => {
   } else if (interaction.isSelectMenu()) {
     const DiscordInteraction = interaction as DiscordSelectMenuInteraction
     commandfile.SelectMenu(client, DiscordInteraction)
-  } else if (interaction.isUserContextMenu()) {
-    // Const DiscordInteraction = interaction as DiscordUserContextMenuCommandInteraction
-    // commandfile.UserContextMenu(client,  DiscordInteraction)
+  } else if (interaction.isModalSubmit()) {
+    const DiscordInteraction = interaction as DiscordModalSubmitInteraction
+    commandfile.Modal(client, DiscordInteraction)
   }
 }
