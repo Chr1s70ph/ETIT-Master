@@ -4,9 +4,12 @@ import {
   DiscordButtonInteraction,
   DiscordClient,
   DiscordCommandInteraction,
-  DiscordSelectMenuInteraction,
+  DiscordContextMenuInteraction,
+  DiscordMessageComponentInteraction,
   DiscordMessageContextMenuInteraction,
   DiscordModalSubmitInteraction,
+  DiscordSelectMenuInteraction,
+  DiscordUserContextMenuInteraction,
 } from '../types/customTypes'
 
 /**
@@ -41,23 +44,41 @@ exports.run = (client: DiscordClient, interaction: any) => {
    */
   InteractionCounter.inc()
 
+  // Reply to Autocomplete interactions
   if (interaction.isAutocomplete()) {
     const DiscordInteraction = interaction as DiscordAutocompleteInteraction
     commandfile.Autocomplete(client, DiscordInteraction)
+    // Reply to Buttons
   } else if (interaction.isButton()) {
     const DiscordInteraction = interaction as DiscordButtonInteraction
     commandfile.Button(client, DiscordInteraction)
+    // Reply to Commands
   } else if (interaction.isCommand()) {
     const DiscordInteraction = interaction as DiscordCommandInteraction
     commandfile.Command(client, DiscordInteraction)
+    // Reply to context menus
+  } else if (interaction.isContextMenu()) {
+    const DiscordInteraction = interaction as DiscordContextMenuInteraction
+    commandfile.ContextMenu(client, DiscordInteraction)
+    // Reply to mesasge componentes
+  } else if (interaction.isMessageComponent()) {
+    const DiscordInteraction = interaction as DiscordMessageComponentInteraction
+    commandfile.MessageComponent(client, DiscordInteraction)
+    // Reply to message context menus
   } else if (interaction.isMessageContextMenu()) {
     const DiscordInteraction = interaction as DiscordMessageContextMenuInteraction
     commandfile.MessageContextMenu(client, DiscordInteraction)
-  } else if (interaction.isSelectMenu()) {
-    const DiscordInteraction = interaction as DiscordSelectMenuInteraction
-    commandfile.SelectMenu(client, DiscordInteraction)
+    // Reply to Modals
   } else if (interaction.isModalSubmit()) {
     const DiscordInteraction = interaction as DiscordModalSubmitInteraction
     commandfile.Modal(client, DiscordInteraction)
+    // Reply to select menus
+  } else if (interaction.isSelectMenu()) {
+    const DiscordInteraction = interaction as DiscordSelectMenuInteraction
+    commandfile.SelectMenu(client, DiscordInteraction)
+    // Reply to user context menus
+  } else if (interaction.isUserContextMenu()) {
+    const DiscordInteraction = interaction as DiscordUserContextMenuInteraction
+    commandfile.UserContextMenu(client, DiscordInteraction)
   }
 }
