@@ -297,7 +297,7 @@ exports.Command = async (client: DiscordClient, interaction: DiscordCommandInter
   const valid_date = option_date.toString() !== 'Invalid Date'
   const date = JSON.stringify(option_date) === 'null' ? new Date() : option_date
 
-  interaction.deferReply({ ephemeral: true })
+  await interaction.deferReply({ ephemeral: true })
   const embed = await wochenplan(client, interaction, date, 'all')
 
   if (!valid_date) {

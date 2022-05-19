@@ -182,7 +182,7 @@ exports.Command = async (client: DiscordClient, interaction: DiscordCommandInter
   const now = new Date()
   const embed = await klausuren(client, interaction, now, 'all')
 
-  interaction.deferReply()
+  await interaction.deferReply({ ephemeral: true })
   await interaction.editReply({
     embeds: [embed],
   })
