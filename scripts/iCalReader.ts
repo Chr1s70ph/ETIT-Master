@@ -397,7 +397,7 @@ function rruleFilter(
       showRecurrence = false
     }
 
-    if (showRecurrence === true && datesAreOnSameDay(date, today)) {
+    if (showRecurrence === true) {
       /**
        * Add event to todays {@link events}.
        */
