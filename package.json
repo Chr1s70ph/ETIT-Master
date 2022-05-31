@@ -13,7 +13,7 @@
     "dependencies": {
         "@discordjs/builders": "^0.13.0",
         "@discordjs/rest": "^0.4.1",
-        "discord-api-types": "^0.33.0",
+        "discord-api-types": "^0.33.1",
         "discord.js": "^13.7.0",
         "eslint-config-prettier": "^8.5.0",
         "eslint-plugin-import": "^2.26.0",
@@ -21,7 +21,7 @@
         "fs": "^0.0.1-security",
         "github-create-issue": "^1.0.1",
         "https": "^1.0.0",
-        "i18next": "^21.8.2",
+        "i18next": "^21.8.5",
         "i18next-fs-backend": "^1.1.4",
         "luxon": "^2.4.0",
         "moment": "^2.29.3",
@@ -35,8 +35,8 @@
         "valid-url": "^1.0.9"
     },
     "devDependencies": {
-        "@typescript-eslint/eslint-plugin": "^5.24.0",
-        "@typescript-eslint/parser": "^5.24.0",
-        "eslint": "^8.15.0"
+        "@typescript-eslint/eslint-plugin": "^5.27.0",
+        "@typescript-eslint/parser": "^5.27.0",
+        "eslint": "^8.16.0"
     }
 }
