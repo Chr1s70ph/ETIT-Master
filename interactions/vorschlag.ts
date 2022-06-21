@@ -7,6 +7,7 @@ const REPOSITORY = 'Chr1s70ph/ETIT-Master'
 export const data = new SlashCommandBuilder().setName('vorschlag').setDescription('Schlage etwas vor!')
 
 exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
+  // TODO: Translate inputfields, cuz yeah
   /**
    * Input field for the tile
    */
