@@ -3,7 +3,7 @@ import { readdir as promiseReaddir } from 'fs/promises'
 import { REST } from '@discordjs/rest'
 import { TextChannel } from 'discord.js'
 import { scheduleJob } from 'node-schedule'
-import { mensa, getWeekday } from '../interactions/mensa'
+import { mensa, getWeekday, _updateJson } from '../interactions/mensa'
 import { DiscordClient } from '../types/customTypes'
 
 const { Routes } = require('discord-api-types/v9')
@@ -145,6 +145,11 @@ async function postSlashCommands(client, slashCommandData) {
  */
 async function mensa_automation(client: DiscordClient) {
   await scheduleJob('0 5 * * 1-5', async () => {
+    /**
+     * Fetch latest updates of mensaplan
+     */
+    _updateJson(client)
+
     const today = new Date()
     const weekday = today.getHours() >= 16 ? getWeekday(today.getDay()) : getWeekday(today.getDay() - 1)
 
