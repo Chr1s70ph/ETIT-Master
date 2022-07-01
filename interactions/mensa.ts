@@ -145,7 +145,7 @@ const weekdayOptions = {
   so: new Weekday('Sonntag', 6),
 }
 
-function _updateJson(client: DiscordClient): Promise<string> {
+export function _updateJson(client: DiscordClient): Promise<string> {
   return new Promise((resolve, reject) => {
     /**
      * Fancy API stuff and user credential hashing
