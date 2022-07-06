@@ -146,6 +146,7 @@ const weekdayOptions = {
 }
 
 export function _updateJson(client: DiscordClient): Promise<string> {
+  console.log('Updating mensa plan...')
   return new Promise((resolve, reject) => {
     /**
      * Fancy API stuff and user credential hashing
@@ -174,6 +175,7 @@ export function _updateJson(client: DiscordClient): Promise<string> {
          * TODO: valid error handling
          */
         reject(error)
+        console.error('there was abn error updating the mensa plan.', error)
       })
       res.on('end', () => {
         /**
@@ -185,8 +187,10 @@ export function _updateJson(client: DiscordClient): Promise<string> {
              * TODO: valid error handling
              */
             reject(err)
+            console.error('there was abn error updating the mensa plan.', err)
           }
           resolve(body)
+          console.log('Successfully updated mensa plan.')
         })
       })
     })

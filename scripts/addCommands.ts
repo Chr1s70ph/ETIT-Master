@@ -148,7 +148,7 @@ async function mensa_automation(client: DiscordClient) {
     /**
      * Fetch latest updates of mensaplan
      */
-    _updateJson(client)
+    await _updateJson(client)
 
     const today = new Date()
     const weekday = today.getHours() >= 16 ? getWeekday(today.getDay()) : getWeekday(today.getDay() - 1)
