@@ -23,7 +23,7 @@
         "https": "^1.0.0",
         "i18next": "^21.8.11",
         "i18next-fs-backend": "^1.1.4",
-        "luxon": "^2.4.0",
+        "luxon": "^3.0.1",
         "moment": "^2.29.3",
         "moment-timezone": "^0.5.34",
         "node-ical": "^0.15.1",
