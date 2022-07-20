@@ -1,8 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
-import { MessageEmbed } from 'discord.js'
+import { EmbedBuilder } from 'discord.js'
 import moment from 'moment-timezone'
 import { async } from 'node-ical'
-import { start } from 'pm2'
 import { DiscordClient, DiscordCommandInteraction } from '../types/customTypes'
 
 exports.name = 'wochenplan'
@@ -35,7 +34,7 @@ async function wochenplan(client: DiscordClient, interaction: DiscordCommandInte
 
   filterEvents(returnData, rangeStart, rangeEnd, interaction, relevantEvents)
 
-  const embed = new MessageEmbed()
+  const embed = new EmbedBuilder()
     .setAuthor({
       name: client.translate({
         key: 'interactions.wochenplan.Schedule',
@@ -293,7 +292,8 @@ function doubleEntry(array: any[], new_element: any, start_date: Date, end_date:
 
 exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
   await interaction.deferReply({ ephemeral: true })
-  const option = interaction.options.getString('datum')?.split('.')
+  const options: string = interaction.options.get('datum').value as string
+  const option: string[] = options?.split('.')
   const option_date = option ? new Date(`${option[2]}-${option[1]}-${option[0]}T00:00:00`) : new Date()
   const valid_date = option_date.toString() !== 'Invalid Date'
   const date = JSON.stringify(option_date) === 'null' ? new Date() : option_date

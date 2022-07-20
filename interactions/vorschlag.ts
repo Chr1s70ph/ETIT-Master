@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
-import { CommandInteractionOptionResolver, MessageEmbed } from 'discord.js'
+import { CommandInteractionOptionResolver, EmbedBuilder } from 'discord.js'
 import { DiscordClient, DiscordCommandInteraction } from '../types/customTypes'
 const createIssue = require('github-create-issue')
 const REPOSITORY = 'Chr1s70ph/ETIT-Master'
@@ -30,7 +30,7 @@ exports.Command = async (client: DiscordClient, interaction: DiscordCommandInter
 
     await interaction.reply({
       embeds: [
-        new MessageEmbed()
+        new EmbedBuilder()
           .setTitle(client.translate({ key: 'interactions.issue.Recieved', lng: interaction.user.language }))
           .setDescription(client.translate({ key: 'interactions.issue.Thanks', lng: interaction.user.language })),
       ],
@@ -39,7 +39,7 @@ exports.Command = async (client: DiscordClient, interaction: DiscordCommandInter
   } catch (error) {
     await interaction.reply({
       embeds: [
-        new MessageEmbed()
+        new EmbedBuilder()
           .setTitle(client.translate({ key: 'interactions.issue.Error', lng: interaction.user.language }))
           .setDescription(client.translate({ key: 'interactions.issue.TryAgain', lng: interaction.user.language })),
       ],

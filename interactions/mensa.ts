@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import * as https from 'https'
 import { SlashCommandBuilder } from '@discordjs/builders'
-import { MessageEmbed } from 'discord.js'
+import { EmbedBuilder } from 'discord.js'
 import { DiscordClient, DiscordCommandInteraction } from '../types/customTypes'
 const { DateTime } = require('luxon')
 
@@ -35,14 +35,14 @@ export const data = new SlashCommandBuilder()
 
 exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
   const today = new Date()
-  const weekday = interaction.options.getString('wochentag')
-    ? interaction.options.getString('wochentag')
+  const weekday = interaction.options.get('wochentag').value
+    ? interaction.options.get('wochentag').value
     : today.getHours() >= 16
     ? getWeekday(today.getDay())
     : getWeekday(today.getDay() - 1)
 
-  const line = interaction.options.getString('ort') ? interaction.options.getString('ort') : 'adenauerring'
-  interaction.reply({ embeds: [await mensa(client, weekday, line, interaction)] })
+  const line = interaction.options.get('ort').value ? interaction.options.get('ort').value : 'adenauerring'
+  interaction.reply({ embeds: [await mensa(client, <string>weekday, <string>line, interaction)] })
 }
 
 /**
@@ -202,11 +202,11 @@ export async function mensa(
   req_weekday: string,
   req_mensa: string,
   interaction: DiscordCommandInteraction | null,
-): Promise<MessageEmbed> {
+): Promise<EmbedBuilder> {
   /**
    * Mensa embed
    */
-  const embed = new MessageEmbed().setColor('#FAD51B').setAuthor({ name: '🍽️ Mensaplan' })
+  const embed = new EmbedBuilder().setColor('#FAD51B').setAuthor({ name: '🍽️ Mensaplan' })
 
   const embed_language = interaction?.user?.language ?? 'de'
 

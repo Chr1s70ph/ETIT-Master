@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { MessageEmbed, Message, MessageMentions, UserMention, MessageEmbedFooter } from 'discord.js'
+import { EmbedBuilder, Message, MessageMentions, UserMention } from 'discord.js'
 import { DiscordClient, DiscordMessage } from '../../types/customTypes'
 
 exports.name = 'tenor'
@@ -15,12 +15,12 @@ exports.run = (client: DiscordClient, message: DiscordMessage, args: string[]) =
    * Get {@link UserMention} from message.
    * @type {string}
    */
-  const userPing = args.find(value => MessageMentions.USERS_PATTERN.test(value))
+  const userPing = args.find(value => MessageMentions.UsersPattern.test(value))
 
   /**
    * Define search query.
    */
-  const searchQuery = removeMatching(args, MessageMentions.USERS_PATTERN).join(' ')
+  const searchQuery = removeMatching(args, MessageMentions.UsersPattern).join(' ')
 
   /**
    * Send reply.
@@ -71,13 +71,13 @@ function queryTenorAndReply(
    */
   return Tenor.Search.Random(searchQuery, '1').then(Results => {
     /**
-     * New {@link MessageEmbed} with random color.
+     * New {@link EmbedBuilder} with random color.
      *
-     * {@link MessageEmbedFooter} is set to the user's tag and avatar who issued the command.
+     * {@link EmbedBuilderFooter} is set to the user's tag and avatar who issued the command.
      */
-    let embed = new MessageEmbed().setColor('RANDOM').setFooter({
+    let embed = new EmbedBuilder().setColor('Random').setFooter({
       text: message.author.tag,
-      iconURL: message.author.avatarURL({ dynamic: true }),
+      iconURL: message.author.avatarURL(),
     })
 
     /**

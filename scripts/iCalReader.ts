@@ -1,5 +1,5 @@
 /* eslint-disable no-await-in-loop */
-import { ColorResolvable, Guild, MessageEmbed, Snowflake, TextChannel } from 'discord.js'
+import { ColorResolvable, Guild, EmbedBuilder, Snowflake, TextChannel } from 'discord.js'
 import moment from 'moment'
 import { async } from 'node-ical'
 import { RecurrenceRule, scheduleJob } from 'node-schedule'
@@ -126,7 +126,7 @@ function updatedCalendarsNotifications(client: DiscordClient): void {
   /**
    * Create embed for each new fetch.
    */
-  const updatedCalendars = new MessageEmbed()
+  const updatedCalendars = new EmbedBuilder()
     .setColor('#C7BBED')
     .setAuthor({ name: client.user.tag, iconURL: client.user.avatarURL() })
     .setDescription(`**Kalender nach Events durchgesucht**\`\`\`${markdownType}\n${calendars} \`\`\``)
@@ -620,7 +620,7 @@ function dateToRecurrenceRule(eventDate: Date, todaysDate: Date): RecurrenceRule
  * @param {number} lessonsOffset minutes ping should be sent ahead
  * @param {string} link zoom/Videoconference link
  * @param {string} location googleMaps link
- * @returns {Object}MessageEmbed
+ * @returns {Object}EmbedBuilder
  */
 function dynamicEmbed(
   client: DiscordClient,
@@ -630,12 +630,12 @@ function dynamicEmbed(
   lessonsOffset: number,
   link: string,
   location: string,
-): MessageEmbed {
+): EmbedBuilder {
   /**
    * Color of {@link role}.
    */
   const roleColor: ColorResolvable =
-    client.guilds.resolve(client.config.ids.serverID).roles.cache.get(role)?.color ?? 'DEFAULT'
+    client.guilds.resolve(client.config.ids.serverID).roles.cache.get(role)?.color ?? 'Default'
 
   /**
    * Type of course.
@@ -650,7 +650,7 @@ function dynamicEmbed(
   /**
    * Dynamic embed with information about {@link event}.
    */
-  const embedDynamic = new MessageEmbed()
+  const embedDynamic = new EmbedBuilder()
   try {
     embedDynamic
       .setColor(roleColor)
@@ -658,10 +658,10 @@ function dynamicEmbed(
       .setTitle(`${subject} Reminder`)
       .setDescription(`Die ${courseType} fängt in ${lessonsOffset} Minuten an`)
       .setThumbnail('https://pics.freeicons.io/uploads/icons/png/6029094171580282643-512.png')
-      .addField('Dozent', professor, false)
+      .addFields([{ name: 'Dozent', value: professor, inline: false }])
       .setFooter({
         text: 'Viel Spaß und Erfolg wünscht euch euer ETIT-Master',
-        iconURL: client.user.avatarURL({ dynamic: true }),
+        iconURL: client.user.avatarURL(),
       })
   } catch (e) {
     /**
@@ -693,15 +693,17 @@ function dynamicEmbed(
    * Add link to google maps if existant.
    */
   if (location) {
-    embedDynamic.addField(
-      'Location:',
-      `${location} [Maps](https://www.google.com/maps/search/KIT+${encodeURIComponent(location)})`,
-      false,
-    )
+    embedDynamic.addFields([
+      {
+        name: 'Location:',
+        value: `${location} [Maps](https://www.google.com/maps/search/KIT+${encodeURIComponent(location)})`,
+        inline: false,
+      },
+    ])
   }
 
   /**
-   * Return {@link MessageEmbed}.
+   * Return {@link EmbedBuilder}.
    */
   return embedDynamic
 }
@@ -824,7 +826,7 @@ function createCron(
   recurrenceRule: RecurrenceRule,
   _channel: string,
   role: string,
-  embed: MessageEmbed,
+  embed: EmbedBuilder,
   client: DiscordClient,
 ): void {
   /**

@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js'
+import { EmbedBuilder } from 'discord.js'
 import tx2 from 'tx2'
 import { DiscordClient, DiscordMessage } from '../types/customTypes'
 
@@ -68,7 +68,7 @@ function dmForwarding(message: DiscordMessage, client: DiscordClient): void {
   /**
    * Embed containing all the information from {@link messagePayload}.
    */
-  const userMessage = userMessageEmbed(message, messagePayload)
+  const userMessage = userEmbedBuilder(message, messagePayload)
 
   try {
     /**
@@ -90,13 +90,13 @@ function dmForwarding(message: DiscordMessage, client: DiscordClient): void {
  * Turns {@link messagePayload} in an Embed.
  * @param {Message<boolean>} message Message sent by the user
  * @param {any} messagePayload {@link messagePayload}
- * @returns {MessageEmbed}
+ * @returns {EmbedBuilder}
  */
-function userMessageEmbed(message: DiscordMessage, messagePayload: any): MessageEmbed {
+function userEmbedBuilder(message: DiscordMessage, messagePayload: any): EmbedBuilder {
   /**
-   * Return {@link MessageEmbed} with information about the user and what he sent.
+   * Return {@link EmbedBuilder} with information about the user and what he sent.
    */
-  return new MessageEmbed()
+  return new EmbedBuilder()
     .setDescription(
       message.content +
         (messagePayload.sticker !== null

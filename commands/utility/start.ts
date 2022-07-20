@@ -1,5 +1,4 @@
-import { MessageEmbed } from 'discord.js'
-import fetch from 'node-fetch'
+import { EmbedBuilder } from 'discord.js'
 import { DiscordClient, DiscordMessage } from '../../types/customTypes'
 /**
  * NOTE:
@@ -42,7 +41,7 @@ exports.run = async (client: DiscordClient, message: DiscordMessage, args: any, 
   if (!message.member.voice.channel) {
     return client.reply(message, {
       embeds: [
-        new MessageEmbed().setDescription(
+        new EmbedBuilder().setDescription(
           client.translate({ key: 'commands.utility.start.ErrorNoVoice', lng: message.author.language }),
         ),
       ],
@@ -85,7 +84,7 @@ exports.run = async (client: DiscordClient, message: DiscordMessage, args: any, 
      */
     return client.reply(message, {
       embeds: [
-        new MessageEmbed().setDescription(
+        new EmbedBuilder().setDescription(
           client.translate({ key: 'commands.utility.start.ErrorInvalidOption', lng: message.author.language }),
         ),
       ],
@@ -98,7 +97,7 @@ exports.run = async (client: DiscordClient, message: DiscordMessage, args: any, 
   return client.reply(message, {
     content: returnData.code,
     embeds: [
-      new MessageEmbed().setDescription(
+      new EmbedBuilder().setDescription(
         client.translate({
           key: 'commands.utility.start.Info',
           options: { invite: returnData.code, lng: message.author.language },

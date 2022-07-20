@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js'
+import { EmbedBuilder } from 'discord.js'
 import { DiscordClient, DiscordMessage } from '../../types/customTypes'
 
 exports.name = 'test'
@@ -13,8 +13,8 @@ exports.run = (client: DiscordClient, message: DiscordMessage) =>
    */
   client.reply(message, {
     embeds: [
-      new MessageEmbed()
+      new EmbedBuilder()
         .setTitle(client.translate({ key: 'commands.utility.test', lng: message.author.language }))
-        .setFooter({ text: message.author.tag, iconURL: message.author.avatarURL({ dynamic: true }) }),
+        .setFooter({ text: message.author.tag, iconURL: message.author.avatarURL() }),
     ],
   })

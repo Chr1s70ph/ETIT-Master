@@ -1,4 +1,4 @@
-import { User, MessageEmbed } from 'discord.js'
+import { User, EmbedBuilder } from 'discord.js'
 import { GuildMember } from 'discord.js/typings/index.js'
 import { DiscordClient, DiscordMessage } from '../../types/customTypes'
 
@@ -32,29 +32,33 @@ exports.run = async (client: DiscordClient, message: DiscordMessage) => {
    */
   return client.reply(message, {
     embeds: [
-      new MessageEmbed()
+      new EmbedBuilder()
         .setAuthor({
           name: client.translate({ key: 'commands.utility.userprofile.UserProfile', lng: message.author.language }),
         })
         .setTitle(forceFetchedUser.tag)
         .setColor(messageUser.displayColor)
-        .setThumbnail(messageUser.displayAvatarURL({ size: 4096, dynamic: true }))
-        .addField(
-          client.translate({ key: 'commands.utility.userprofile.Joined', lng: message.author.language }),
-          `<t:${userJoinedTimestamp}:D>`,
-          true,
-        )
-        .addField(
-          'Nitro:',
-          `${
-            userPremiumSinceTimestamp
-              ? `<t:${userPremiumSinceTimestamp}:D>`
-              : client.translate({ key: 'commands.utility.userprofile.NoNitroStatus', lng: message.author.language })
-          }`,
-          true,
-        )
-        .setImage(forceFetchedUser.bannerURL({ size: 4096, dynamic: true }))
-        .setFooter({ text: message.author.tag, iconURL: message.author.avatarURL({ dynamic: true }) }),
+        .setThumbnail(messageUser.displayAvatarURL({ size: 4096 }))
+        .addFields([
+          {
+            name: client.translate({ key: 'commands.utility.userprofile.Joined', lng: message.author.language }),
+            value: `<t:${userJoinedTimestamp}:D>`,
+            inline: true,
+          },
+        ])
+        .addFields([
+          {
+            name: 'Nitro:',
+            value: `${
+              userPremiumSinceTimestamp
+                ? `<t:${userPremiumSinceTimestamp}:D>`
+                : client.translate({ key: 'commands.utility.userprofile.NoNitroStatus', lng: message.author.language })
+            }`,
+            inline: true,
+          },
+        ])
+        .setImage(forceFetchedUser.bannerURL({ size: 4096 }))
+        .setFooter({ text: message.author.tag, iconURL: message.author.avatarURL() }),
     ],
   })
 }

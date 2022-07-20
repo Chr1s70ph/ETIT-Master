@@ -5,7 +5,7 @@ import {
   DiscordClient,
   DiscordCommandInteraction,
   DiscordSelectMenuInteraction,
-  DiscordMessageContextMenuInteraction,
+  // DiscordMessageContextMenuInteraction,
 } from '../types/customTypes'
 
 /**
@@ -40,6 +40,8 @@ exports.run = (client: DiscordClient, interaction: any) => {
    */
   InteractionCounter.inc()
 
+  console.log(interaction)
+
   if (interaction.isAutocomplete()) {
     const DiscordInteraction = interaction as DiscordAutocompleteInteraction
     commandfile.Autocomplete(client, DiscordInteraction)
@@ -49,9 +51,9 @@ exports.run = (client: DiscordClient, interaction: any) => {
   } else if (interaction.isCommand()) {
     const DiscordInteraction = interaction as DiscordCommandInteraction
     commandfile.Command(client, DiscordInteraction)
-  } else if (interaction.isMessageContextMenu()) {
-    const DiscordInteraction = interaction as DiscordMessageContextMenuInteraction
-    commandfile.MessageContextMenu(client, DiscordInteraction)
+    // } else if (interaction.isMessageContextMenu()) {
+    //   const DiscordInteraction = interaction as DiscordMessageContextMenuInteraction
+    //   commandfile.MessageContextMenu(client, DiscordInteraction)
   } else if (interaction.isSelectMenu()) {
     const DiscordInteraction = interaction as DiscordSelectMenuInteraction
     commandfile.SelectMenu(client, DiscordInteraction)

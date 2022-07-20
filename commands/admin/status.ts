@@ -1,4 +1,4 @@
-import { Message, PresenceData as setPresenceData, PresenceStatusData } from 'discord.js'
+import { ActivityType, Message, PresenceData as setPresenceData, PresenceStatusData } from 'discord.js'
 import { DiscordClient, DiscordMessage } from '../../types/customTypes'
 exports.name = 'status'
 
@@ -16,7 +16,7 @@ const presence: setPresenceData = {
   activities: [
     {
       name: '',
-      type: 'PLAYING',
+      type: ActivityType.Playing,
     },
   ],
   status: 'online',

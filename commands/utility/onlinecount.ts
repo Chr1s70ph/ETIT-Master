@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js'
+import { EmbedBuilder } from 'discord.js'
 import { DiscordClient, DiscordMessage } from '../../types/customTypes'
 exports.name = 'onlinecount'
 
@@ -53,7 +53,7 @@ async function fetchMemberStates(client: DiscordClient): Promise<{ online: numbe
  * @param {number} idle Number of idle members
  * @param {number} dnd Number of dnd members
  * @param {DiscordMessage} message Message set by user
- * @returns {MessageEmbed}
+ * @returns {EmbedBuilder}
  */
 function createEmbed(
   client: DiscordClient,
@@ -61,8 +61,8 @@ function createEmbed(
   idle: number,
   dnd: number,
   message: DiscordMessage,
-): MessageEmbed {
-  return new MessageEmbed()
+): EmbedBuilder {
+  return new EmbedBuilder()
     .setColor('#aaa540')
     .setTitle(client.translate({ key: 'commands.utility.onlinecount.OnlineCounter', lng: message.author.language }))
     .setFooter({

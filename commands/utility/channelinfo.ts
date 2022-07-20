@@ -1,7 +1,7 @@
 import {
   Channel,
   GuildMember,
-  MessageEmbed,
+  EmbedBuilder,
   MessageMentions,
   NewsChannel,
   PartialDMChannel,
@@ -41,7 +41,7 @@ exports.run = async (client: DiscordClient, message: DiscordMessage, args: strin
      */
     return client.reply(message, {
       embeds: [
-        new MessageEmbed()
+        new EmbedBuilder()
           .setAuthor({ name: client.user.tag, iconURL: client.user.avatarURL() })
           .setTitle(
             client.translate({
@@ -53,7 +53,7 @@ exports.run = async (client: DiscordClient, message: DiscordMessage, args: strin
               },
             }),
           )
-          .setColor('BLURPLE')
+          .setColor('Blurple')
           .setDescription(cutUserList),
       ],
     })
@@ -63,7 +63,7 @@ exports.run = async (client: DiscordClient, message: DiscordMessage, args: strin
      */
     return client.reply(message, {
       embeds: [
-        new MessageEmbed().setDescription(
+        new EmbedBuilder().setDescription(
           client.translate({ key: 'commands.utility.channelinfo.ErrorNotAvailable', lng: message.author.language }),
         ),
       ],
@@ -83,13 +83,13 @@ async function getChannel(
   client: DiscordClient,
   message: DiscordMessage,
 ): Promise<Channel | PartialDMChannel | TextChannel | NewsChannel | ThreadChannel> {
-  const _channel = args.find(value => MessageMentions.CHANNELS_PATTERN.test(value))?.slice(2, -1)
+  const _channel = args.find(value => MessageMentions.ChannelsPattern.test(value))?.slice(2, -1)
   const CHANNEL = _channel ? await client.channels.fetch(_channel) : message.channel
   return CHANNEL
 }
 
 /**
- * Retuns list of Users with maxLength of 4096 (max length of {@link MessageEmbed.setDescription()}).
+ * Retuns list of Users with maxLength of 4096 (max length of {@link EmbedBuilder.setDescription()}).
  * @param {TextChannel} channel Textchannel
  * @returns {string} List of users in that Channel
  */

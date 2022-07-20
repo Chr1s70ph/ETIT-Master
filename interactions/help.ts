@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
-import { MessageEmbed } from 'discord.js'
+import { EmbedBuilder } from 'discord.js'
 import { DiscordClient, DiscordCommandInteraction } from '../types/customTypes'
 const fs = require('fs')
 
@@ -11,7 +11,7 @@ exports.Command = async (client: DiscordClient, interaction: DiscordCommandInter
 }
 
 async function getCommands(client: DiscordClient, interaction: DiscordCommandInteraction): Promise<any> {
-  const commandsEmbed = new MessageEmbed()
+  const commandsEmbed = new EmbedBuilder()
     .setColor('#ffa500')
     .setAuthor({
       name: client.translate({ key: 'interactions.help', lng: interaction.user.language }),
@@ -35,7 +35,7 @@ async function getCommands(client: DiscordClient, interaction: DiscordCommandInt
   return commandsEmbed
 }
 
-async function addCommandsFromSubFolder(embed: MessageEmbed, file: string): Promise<void> {
+async function addCommandsFromSubFolder(embed: EmbedBuilder, file: string): Promise<void> {
   const sub_directory = `./commands/${file}/`
   try {
     const files = await fs.promises.readdir(sub_directory)

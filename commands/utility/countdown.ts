@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js'
+import { EmbedBuilder } from 'discord.js'
 import { DiscordClient, DiscordMessage } from '../../types/customTypes'
 
 exports.name = 'countdown'
@@ -11,11 +11,11 @@ exports.run = async (client: DiscordClient, message: DiscordMessage) => {
   /**
    * Embed template.
    */
-  const msgEmbed = new MessageEmbed()
+  const msgEmbed = new EmbedBuilder()
     .setTitle(client.translate({ key: 'commands.utility.countdown.Countdown', lng: message.author.language }))
     .setFooter({
       text: message.author.tag,
-      iconURL: message.author.avatarURL({ dynamic: true }),
+      iconURL: message.author.avatarURL(),
     })
     .setThumbnail('https://upload.wikimedia.org/wikipedia/commons/3/33/Cartoon_space_rocket.png')
 
@@ -40,11 +40,11 @@ exports.run = async (client: DiscordClient, message: DiscordMessage) => {
 /**
  * Edit the embed to display a countdown.
  * @param {DiscordMessage} msg Message of the reply with the embed
- * @param {MessageEmbed} msgEmbed The embed to edit and attatch
+ * @param {EmbedBuilder} msgEmbed The embed to edit and attatch
  * @param {DiscordMessage} client Bot-Client
  * @returns {void}
  */
-function editEmbed(msg: DiscordMessage, msgEmbed: MessageEmbed, client: DiscordClient): void {
+function editEmbed(msg: DiscordMessage, msgEmbed: EmbedBuilder, client: DiscordClient): void {
   /**
    * Count only 8, 6, 4, 3, 2, 1, 0 and skips 9, 7, 5 due to API limits.
    */
