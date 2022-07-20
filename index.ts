@@ -1,5 +1,5 @@
 import * as fs from 'fs'
-import { Collection, Intents } from 'discord.js'
+import { Collection, GatewayIntentBits, Partials } from 'discord.js'
 import i18next from 'i18next'
 import Backend from 'i18next-fs-backend'
 import config from './private/config.json'
@@ -29,17 +29,17 @@ i18next.use(backend).init({
  */
 const client: DiscordClient = new DiscordClient({
   intents: [
-    Intents.FLAGS.GUILDS,
-    Intents.FLAGS.GUILD_MEMBERS,
-    Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
-    Intents.FLAGS.GUILD_PRESENCES,
-    Intents.FLAGS.GUILD_MESSAGES,
-    Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-    Intents.FLAGS.GUILD_INVITES,
-    Intents.FLAGS.GUILD_VOICE_STATES,
-    Intents.FLAGS.DIRECT_MESSAGES,
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildEmojisAndStickers,
+    GatewayIntentBits.GuildPresences,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildMessageReactions,
+    GatewayIntentBits.GuildInvites,
+    GatewayIntentBits.GuildVoiceStates,
+    GatewayIntentBits.DirectMessages,
   ],
-  partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
+  partials: [Partials.Message, Partials.Channel, Partials.Reaction],
 })
 
 /**
