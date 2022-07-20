@@ -13,7 +13,7 @@ import {
   ButtonInteraction,
   SelectMenuInteraction,
   ApplicationCommand,
-  MessageContextMenuInteraction,
+  MessageType,
 } from 'discord.js'
 import i18next from 'i18next'
 
@@ -89,7 +89,7 @@ export class DiscordClient extends Client {
    */
   public reply(message: Message, returnData: MessageOptions): Promise<Message<boolean>> {
     return new Promise<Message>((resolve, reject) => {
-      if (message.type === 'REPLY') {
+      if (message.type === MessageType.Reply) {
         return message.channel.messages
           .fetch(message.reference.messageId)
           .then(_message => {
@@ -200,12 +200,12 @@ export interface DiscordCommandInteraction extends CommandInteraction {
   user: DiscordUser
 }
 
-/**
- * Extended {@link MessageContextMenuInteraction} to hold {@link DiscordUser}
- */
-export interface DiscordMessageContextMenuInteraction extends MessageContextMenuInteraction {
-  user: DiscordUser
-}
+// /**
+//  * Extended {@link MessageContextMenuInteraction} to hold {@link DiscordUser}
+//  */
+// export interface DiscordMessageContextMenuInteraction extends MessageContextMenuInteraction {
+//   user: DiscordUser
+// }
 
 /**
  * Extended {@link SelectMenuInteraction} to hold {@link DiscordUser}
