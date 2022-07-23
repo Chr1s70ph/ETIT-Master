@@ -1,7 +1,6 @@
 import * as fs from 'fs'
 import * as https from 'https'
-import { SlashCommandBuilder } from '@discordjs/builders'
-import { EmbedBuilder } from 'discord.js'
+import { EmbedBuilder, SlashCommandBuilder } from 'discord.js'
 import { DiscordClient, DiscordCommandInteraction } from '../types/customTypes'
 const { DateTime } = require('luxon')
 

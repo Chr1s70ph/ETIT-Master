@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from '@discordjs/builders'
+import { SlashCommandBuilder } from 'discord.js'
 import { DiscordClient, DiscordCommandInteraction } from '../types/customTypes'
 
 export const data = new SlashCommandBuilder()

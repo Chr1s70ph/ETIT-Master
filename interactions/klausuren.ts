@@ -1,5 +1,4 @@
-import { SlashCommandBuilder } from '@discordjs/builders'
-import { EmbedBuilder } from 'discord.js'
+import { EmbedBuilder, SlashCommandBuilder } from 'discord.js'
 import moment from 'moment-timezone'
 import { async } from 'node-ical'
 import { DiscordClient, DiscordCommandInteraction } from '../types/customTypes'
