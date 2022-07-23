@@ -35,13 +35,13 @@ export const data = new SlashCommandBuilder()
 
 exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
   const today = new Date()
-  const weekday = interaction.options.get('wochentag').value
-    ? interaction.options.get('wochentag').value
+  const weekday = interaction.options.get('wochentag')?.value
+    ? interaction.options.get('wochentag')?.value
     : today.getHours() >= 16
     ? getWeekday(today.getDay())
     : getWeekday(today.getDay() - 1)
 
-  const line = interaction.options.get('ort').value ? interaction.options.get('ort').value : 'adenauerring'
+  const line = interaction.options.get('ort')?.value ? interaction.options.get('ort')?.value : 'adenauerring'
   interaction.reply({ embeds: [await mensa(client, <string>weekday, <string>line, interaction)] })
 }
 
