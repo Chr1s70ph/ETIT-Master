@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js'
+import { EmbedBuilder, MessageType } from 'discord.js'
 import { DiscordClient, DiscordMessage } from '../../types/customTypes'
 
 exports.name = 'say'
@@ -25,7 +25,7 @@ exports.run = (client: DiscordClient, message: DiscordMessage) => {
   /**
    * Send reply based on message type.
    */
-  return message.type === 'REPLY'
+  return message.type === MessageType.Reply
     ? client.reply(message, { embeds: [embed] })
     : client.send(message, { embeds: [embed] })
 }
@@ -34,14 +34,14 @@ exports.run = (client: DiscordClient, message: DiscordMessage) => {
  *
  * @param {DiscordMessage} message command Message
  * @param {DiscordClient} client Bot-Client
- * @returns {MessageEmbed} embed with given message.content
+ * @returns {EmbedBuilder} embed with given message.content
  */
-function createEmbed(message: DiscordMessage, client: DiscordClient): MessageEmbed {
+function createEmbed(message: DiscordMessage, client: DiscordClient): EmbedBuilder {
   const messageContent = message.content.substring(message.content.indexOf(' ') + client.config.prefix.length)
 
-  const embed = new MessageEmbed()
+  const embed = new EmbedBuilder()
     .setDescription(messageContent === `${client.config.prefix}say` ? '᲼' : messageContent)
-    .setColor('RANDOM')
+    .setColor('Random')
 
   const messageAttachment = message.attachments.size > 0 ? message.attachments.first().url : null
   embed.setImage(messageAttachment)

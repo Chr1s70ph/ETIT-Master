@@ -1,5 +1,12 @@
-import { SlashCommandBuilder } from '@discordjs/builders'
-import { MessageActionRow, MessageEmbed, Modal, ModalActionRowComponent, TextInputComponent } from 'discord.js'
+import {
+  EmbedBuilder,
+  TextInputBuilder,
+  TextInputStyle,
+  ModalBuilder,
+  ModalActionRowComponentBuilder,
+  ActionRowBuilder,
+  SlashCommandBuilder,
+} from 'discord.js'
 import { DiscordClient, DiscordCommandInteraction, DiscordModalSubmitInteraction } from '../types/customTypes'
 const createIssue = require('github-create-issue')
 const REPOSITORY = 'Chr1s70ph/ETIT-Master'
@@ -11,28 +18,28 @@ exports.Command = async (client: DiscordClient, interaction: DiscordCommandInter
   /**
    * Input field for the tile
    */
-  const titleInput = new TextInputComponent()
+  const titleInput = new TextInputBuilder()
     .setCustomId('titleInput')
     .setLabel('Watt schlägste vor Minium?')
-    .setStyle('SHORT')
+    .setStyle(TextInputStyle.Short)
     .setRequired(true)
-  const firstActionRow = new MessageActionRow<ModalActionRowComponent>().setComponents(titleInput)
+  const firstActionRow = new ActionRowBuilder<ModalActionRowComponentBuilder>().setComponents(titleInput)
 
   /**
    * Input field for the body
    */
-  const bodyInput = new TextInputComponent()
+  const bodyInput = new TextInputBuilder()
     .setCustomId('bodyInput')
     .setLabel('Erzähl doch noch n bissl')
-    .setStyle('PARAGRAPH')
+    .setStyle(TextInputStyle.Paragraph)
     .setRequired(true)
-  const secondActionRow = new MessageActionRow<ModalActionRowComponent>().setComponents(bodyInput)
+  const secondActionRow = new ActionRowBuilder<ModalActionRowComponentBuilder>().setComponents(bodyInput)
 
   /**
    * Show modal
    */
   await interaction.showModal(
-    new Modal().setTitle('Vorschlag').setCustomId('vorschlag').addComponents(firstActionRow, secondActionRow),
+    new ModalBuilder().setTitle('Vorschlag').setCustomId('vorschlag').addComponents(firstActionRow, secondActionRow),
   )
 }
 
@@ -61,7 +68,7 @@ exports.Modal = async (client: DiscordClient, interaction: DiscordModalSubmitInt
     createIssue(REPOSITORY, `${interaction.user.username}'s Vorschlag ${issue_title}`, options, clbk)
     await interaction.reply({
       embeds: [
-        new MessageEmbed()
+        new EmbedBuilder()
           .setTitle(client.translate({ key: 'interactions.issue.Recieved', lng: interaction.user.language }))
           .setDescription(client.translate({ key: 'interactions.issue.Thanks', lng: interaction.user.language })),
       ],
@@ -73,7 +80,7 @@ exports.Modal = async (client: DiscordClient, interaction: DiscordModalSubmitInt
      */
     await interaction.reply({
       embeds: [
-        new MessageEmbed()
+        new EmbedBuilder()
           .setTitle(client.translate({ key: 'interactions.issue.Error', lng: interaction.user.language }))
           .setDescription(client.translate({ key: 'interactions.issue.TryAgain', lng: interaction.user.language })),
       ],

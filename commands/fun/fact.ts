@@ -1,5 +1,5 @@
 import { readFileSync } from 'fs'
-import { MessageEmbed } from 'discord.js'
+import { EmbedBuilder } from 'discord.js'
 import { DiscordClient, DiscordMessage } from '../../types/customTypes'
 
 const FACTS_FILE = './data/facts.txt'
@@ -28,12 +28,12 @@ exports.run = (client: DiscordClient, message: DiscordMessage) => {
    */
   return client.send(message, {
     embeds: [
-      new MessageEmbed()
+      new EmbedBuilder()
         .setTitle(client.translate({ key: 'commands.fun.fact', lng: message.author.language }))
         .setDescription(fact)
         .setFooter({
           text: message.author.tag,
-          iconURL: message.author.avatarURL({ dynamic: true }),
+          iconURL: message.author.avatarURL(),
         }),
     ],
   })

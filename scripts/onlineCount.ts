@@ -1,7 +1,7 @@
 import { Guild, GuildChannel, ThreadChannel } from 'discord.js/typings/index.js'
 import { scheduleJob } from 'node-schedule'
 import { DiscordClient } from '../types/customTypes'
-const online_refresh_timer = '*/15 * * * *'
+const online_refresh_timer = '*/20 * * * *'
 
 exports.run = async (client: DiscordClient) => {
   /**

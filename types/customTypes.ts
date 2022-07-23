@@ -6,18 +6,19 @@ import {
   Client,
   Collection,
   CommandInteraction,
-  ContextMenuInteraction,
+  ContextMenuCommandInteraction,
   Interaction,
   Message,
   MessageComponentInteraction,
-  MessageContextMenuInteraction,
+  MessageContextMenuCommandInteraction,
   MessageOptions,
+  MessageType,
   ModalSubmitInteraction,
   SelectMenuInteraction,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   TextChannel,
   User,
-  UserContextMenuInteraction,
+  UserContextMenuCommandInteraction,
 } from 'discord.js'
 import i18next from 'i18next'
 
@@ -93,7 +94,7 @@ export class DiscordClient extends Client {
    */
   public reply(message: Message, returnData: MessageOptions): Promise<Message<boolean>> {
     return new Promise<Message>((resolve, reject) => {
-      if (message.type === 'REPLY') {
+      if (message.type === MessageType.Reply) {
         return message.channel.messages
           .fetch(message.reference.messageId)
           .then(_message => {
@@ -205,9 +206,9 @@ export interface DiscordCommandInteraction extends CommandInteraction {
 }
 
 /**
- * Extended {@link ContextMenuInteraction} to hold {@link DiscordUser}
+ * Extended {@link ContextMenuCommandInteraction} to hold {@link DiscordUser}
  */
-export interface DiscordContextMenuInteraction extends ContextMenuInteraction {
+export interface DiscordContextMenuCommandInteraction extends ContextMenuCommandInteraction {
   user: DiscordUser
 }
 
@@ -219,9 +220,16 @@ export interface DiscordMessageComponentInteraction extends MessageComponentInte
 }
 
 /**
- * Extended {@link MessageContextMenuInteraction} to hold {@link DiscordUser}
+ * Extended {@link MessageContextMenuCommandInteraction} to hold {@link DiscordUser}
  */
-export interface DiscordMessageContextMenuInteraction extends MessageContextMenuInteraction {
+export interface DiscordMessageContextMenuCommandInteraction extends MessageContextMenuCommandInteraction {
+  user: DiscordUser
+}
+
+/**
+ * Extended {@link UserContextMenuCommandInteraction} to hold {@link DiscordUser}
+ */
+export interface DiscordUserContextMenuCommandInteraction extends UserContextMenuCommandInteraction {
   user: DiscordUser
 }
 
@@ -240,9 +248,9 @@ export interface DiscordSelectMenuInteraction extends SelectMenuInteraction {
 }
 
 /**
- * Extended {@link UserContextMenuInteraction} to hold {@link DiscordUser}
+ * Extended {@link UserContextMenuCommandInteraction} to hold {@link DiscordUser}
  */
-export interface DiscordUserContextMenuInteraction extends UserContextMenuInteraction {
+export interface DiscordUserContextMenuCommandInteraction extends UserContextMenuCommandInteraction {
   user: DiscordUser
 }
 

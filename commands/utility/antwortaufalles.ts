@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js'
+import { EmbedBuilder } from 'discord.js'
 import { DiscordClient, DiscordMessage } from '../../types/customTypes'
 
 exports.name = 'antwortaufalles'
@@ -13,7 +13,7 @@ exports.run = (client: DiscordClient, message: DiscordMessage) =>
    */
   client.reply(message, {
     embeds: [
-      new MessageEmbed().setDescription(
+      new EmbedBuilder().setDescription(
         client.translate({ key: 'commands.utility.antwortaufalles', lng: message.author.language }),
       ),
     ],

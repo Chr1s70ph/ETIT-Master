@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { MessageEmbed, GuildMember } from 'discord.js'
+import { EmbedBuilder, GuildMember } from 'discord.js'
 import { DiscordClient } from '../types/customTypes'
 
 exports.run = (client: DiscordClient, oldMember: GuildMember, newMember: GuildMember) => {
@@ -29,7 +29,7 @@ exports.run = (client: DiscordClient, oldMember: GuildMember, newMember: GuildMe
       /**
        * Personalized Embed.
        */
-      const ophaseInfo = new MessageEmbed()
+      const ophaseInfo = new EmbedBuilder()
         .setTitle(`🗲 Personalisierung 🗲`)
         .setColor('#FFDA00')
         .setAuthor({ name: client.user.tag, iconURL: newMember.guild.iconURL() })

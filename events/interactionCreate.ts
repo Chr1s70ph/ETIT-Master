@@ -1,15 +1,14 @@
+import { ApplicationCommandType, ComponentType, InteractionType } from 'discord.js'
 import tx2 from 'tx2'
 import {
   DiscordAutocompleteInteraction,
   DiscordButtonInteraction,
   DiscordClient,
   DiscordCommandInteraction,
-  DiscordContextMenuInteraction,
-  DiscordMessageComponentInteraction,
-  DiscordMessageContextMenuInteraction,
+  DiscordMessageContextMenuCommandInteraction,
   DiscordModalSubmitInteraction,
   DiscordSelectMenuInteraction,
-  DiscordUserContextMenuInteraction,
+  DiscordUserContextMenuCommandInteraction,
 } from '../types/customTypes'
 
 /**
@@ -44,37 +43,34 @@ exports.run = (client: DiscordClient, interaction: any) => {
    */
   InteractionCounter.inc()
 
-  // Reply to Autocomplete interactions
-  if (interaction.isAutocomplete()) {
+  console.log(interaction)
+
+  if (interaction.type === InteractionType.ApplicationCommandAutocomplete) {
     const DiscordInteraction = interaction as DiscordAutocompleteInteraction
     commandfile.Autocomplete(client, DiscordInteraction)
-    // Reply to Buttons
-  } else if (interaction.isButton()) {
+  } else if (
+    interaction.type === InteractionType.MessageComponent &&
+    interaction.componentType === ComponentType.Button
+  ) {
     const DiscordInteraction = interaction as DiscordButtonInteraction
     commandfile.Button(client, DiscordInteraction)
-    // Reply to Commands
-  } else if (interaction.isCommand()) {
+  } else if (interaction.type === InteractionType.ApplicationCommand) {
     const DiscordInteraction = interaction as DiscordCommandInteraction
     commandfile.Command(client, DiscordInteraction)
-    // Reply to context menus
-  } else if (interaction.isContextMenu()) {
-    const DiscordInteraction = interaction as DiscordContextMenuInteraction
-    commandfile.ContextMenu(client, DiscordInteraction)
-    // Reply to message context menus
-  } else if (interaction.isMessageContextMenu()) {
-    const DiscordInteraction = interaction as DiscordMessageContextMenuInteraction
+  } else if (interaction.isContextMenuCommand() && interaction.commandType === ApplicationCommandType.Message) {
+    const DiscordInteraction = interaction as DiscordMessageContextMenuCommandInteraction
     commandfile.MessageContextMenu(client, DiscordInteraction)
-    // Reply to Modals
-  } else if (interaction.isModalSubmit()) {
+  } else if (interaction.type === InteractionType.ModalSubmit) {
     const DiscordInteraction = interaction as DiscordModalSubmitInteraction
     commandfile.Modal(client, DiscordInteraction)
-    // Reply to select menus
-  } else if (interaction.isSelectMenu()) {
+  } else if (
+    interaction.type === InteractionType.MessageComponent &&
+    interaction.componentType === ComponentType.SelectMenu
+  ) {
     const DiscordInteraction = interaction as DiscordSelectMenuInteraction
     commandfile.SelectMenu(client, DiscordInteraction)
-    // Reply to user context menus
-  } else if (interaction.isUserContextMenu()) {
-    const DiscordInteraction = interaction as DiscordUserContextMenuInteraction
+  } else if (interaction.isContextMenuCommand() && interaction.commandType === ApplicationCommandType.User) {
+    const DiscordInteraction = interaction as DiscordUserContextMenuCommandInteraction
     commandfile.UserContextMenu(client, DiscordInteraction)
   }
 }

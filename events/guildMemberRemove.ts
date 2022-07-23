@@ -1,4 +1,4 @@
-import { GuildMember, MessageEmbed, TextChannel } from 'discord.js'
+import { GuildMember, EmbedBuilder, TextChannel } from 'discord.js'
 import { DiscordClient } from '../types/customTypes'
 
 exports.run = (client: DiscordClient, member: GuildMember) => {
@@ -26,12 +26,12 @@ exports.run = (client: DiscordClient, member: GuildMember) => {
 }
 
 async function serverGoodByeMessage(client: DiscordClient, member: GuildMember) {
-  const embed = new MessageEmbed()
+  const embed = new EmbedBuilder()
     .setColor('#FF0000')
     .setTitle(`${member.user.username}#${member.user.discriminator}`)
     .setDescription(`<@${member.user.id}> hat den Server verlassen!`)
-    .addField('Server beigetreten am', member.joinedAt.toString(), false)
-    .addField('Account erstellt am', member.user.createdAt.toString(), false)
+    .addFields([{ name: 'Server beigetreten am', value: member.joinedAt.toString(), inline: false }])
+    .addFields([{ name: 'Account erstellt am', value: member.user.createdAt.toString(), inline: false }])
     .setAuthor({ name: '😭 Mitglieder-Austritt' })
     .setThumbnail(member.user.avatarURL())
 

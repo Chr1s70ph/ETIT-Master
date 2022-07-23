@@ -1,4 +1,4 @@
-import { MessageEmbed, Message } from 'discord.js'
+import { EmbedBuilder, Message } from 'discord.js'
 import { DiscordClient } from '../../types/customTypes'
 
 exports.name = 'komedi'
@@ -13,11 +13,11 @@ exports.run = (client: DiscordClient, message: Message) =>
    */
   client.send(message, {
     embeds: [
-      new MessageEmbed()
+      new EmbedBuilder()
         .setImage('https://cdn.discordapp.com/attachments/768117219812835378/818145599894847488/eqmmb89gml941.png')
         .setFooter({
           text: message.author.tag,
-          iconURL: message.author.avatarURL({ dynamic: true }),
+          iconURL: message.author.avatarURL(),
         }),
     ],
   })
