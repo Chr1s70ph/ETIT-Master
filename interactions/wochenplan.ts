@@ -1,5 +1,4 @@
-import { SlashCommandBuilder } from '@discordjs/builders'
-import { EmbedBuilder } from 'discord.js'
+import { EmbedBuilder, SlashCommandBuilder } from 'discord.js'
 import moment from 'moment-timezone'
 import { async } from 'node-ical'
 import { DiscordClient, DiscordCommandInteraction } from '../types/customTypes'
@@ -292,7 +291,7 @@ function doubleEntry(array: any[], new_element: any, start_date: Date, end_date:
 
 exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
   await interaction.deferReply({ ephemeral: true })
-  const options: string = interaction.options.get('datum').value as string
+  const options: string = interaction.options.get('datum')?.value as string
   const option: string[] = options?.split('.')
   const option_date = option ? new Date(`${option[2]}-${option[1]}-${option[0]}T00:00:00`) : new Date()
   const valid_date = option_date.toString() !== 'Invalid Date'
