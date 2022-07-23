@@ -6,7 +6,7 @@ import { scheduleJob } from 'node-schedule'
 import { mensa, getWeekday, _updateJson } from '../interactions/mensa'
 import { DiscordClient } from '../types/customTypes'
 
-const { Routes } = require('discord-api-types/v9')
+const { Routes } = require('discord-api-types/v10')
 
 /**
  * Folder that contains all commands.
