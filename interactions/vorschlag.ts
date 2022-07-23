@@ -1,45 +1,86 @@
-import { SlashCommandBuilder } from '@discordjs/builders'
-import { CommandInteractionOptionResolver, MessageEmbed } from 'discord.js'
-import { DiscordClient, DiscordCommandInteraction } from '../types/customTypes'
+import {
+  EmbedBuilder,
+  TextInputBuilder,
+  TextInputStyle,
+  ModalBuilder,
+  ModalActionRowComponentBuilder,
+  ActionRowBuilder,
+  SlashCommandBuilder,
+} from 'discord.js'
+import { DiscordClient, DiscordCommandInteraction, DiscordModalSubmitInteraction } from '../types/customTypes'
 const createIssue = require('github-create-issue')
 const REPOSITORY = 'Chr1s70ph/ETIT-Master'
 
-export const data = new SlashCommandBuilder()
-  .setName('vorschlag')
-  .setDescription('Schlage etwas vor!')
-  .addStringOption(option => option.setName('vorschlag').setDescription('Mein Vorschlag').setRequired(true))
-  .addStringOption(option => option.setName('titel').setDescription('Titel meines Vorschlages'))
+export const data = new SlashCommandBuilder().setName('vorschlag').setDescription('Schlage etwas vor!')
 
 exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
-  const interactionOptions = interaction.options as CommandInteractionOptionResolver
+  // TODO: Translate inputfields, cuz yeah
+  /**
+   * Input field for the tile
+   */
+  const titleInput = new TextInputBuilder()
+    .setCustomId('titleInput')
+    .setLabel('Watt schlägste vor Minium?')
+    .setStyle(TextInputStyle.Short)
+    .setRequired(true)
+  const firstActionRow = new ActionRowBuilder<ModalActionRowComponentBuilder>().setComponents(titleInput)
 
+  /**
+   * Input field for the body
+   */
+  const bodyInput = new TextInputBuilder()
+    .setCustomId('bodyInput')
+    .setLabel('Erzähl doch noch n bissl')
+    .setStyle(TextInputStyle.Paragraph)
+    .setRequired(true)
+  const secondActionRow = new ActionRowBuilder<ModalActionRowComponentBuilder>().setComponents(bodyInput)
+
+  /**
+   * Show modal
+   */
+  await interaction.showModal(
+    new ModalBuilder().setTitle('Vorschlag').setCustomId('vorschlag').addComponents(firstActionRow, secondActionRow),
+  )
+}
+
+exports.Modal = async (client: DiscordClient, interaction: DiscordModalSubmitInteraction) => {
+  /**
+   * Title of the new issue
+   */
+  const issue_title = interaction.fields.getTextInputValue('titleInput')
+
+  /**
+   * Body of the new issue
+   */
+  const issue_body = interaction.fields.getTextInputValue('bodyInput')
+
+  /**
+   * Options to send to the Github-API
+   */
   const options = {
     token: client.config.github_token,
-    body: interactionOptions.getString('vorschlag'),
+    body: issue_body,
   }
-
   try {
-    createIssue(
-      REPOSITORY,
-      `${interaction.user.username}'s Vorschlag${
-        interactionOptions.getString('titel') ? `: ${interactionOptions.getString('titel')}` : ''
-      }`,
-      options,
-      clbk,
-    )
-
+    /**
+     * Create new issue with {@link issue_title} and {@link issue_body}
+     */
+    createIssue(REPOSITORY, `${interaction.user.username}'s Vorschlag ${issue_title}`, options, clbk)
     await interaction.reply({
       embeds: [
-        new MessageEmbed()
+        new EmbedBuilder()
           .setTitle(client.translate({ key: 'interactions.issue.Recieved', lng: interaction.user.language }))
           .setDescription(client.translate({ key: 'interactions.issue.Thanks', lng: interaction.user.language })),
       ],
       ephemeral: true,
     })
   } catch (error) {
+    /**
+     *  Error handling
+     */
     await interaction.reply({
       embeds: [
-        new MessageEmbed()
+        new EmbedBuilder()
           .setTitle(client.translate({ key: 'interactions.issue.Error', lng: interaction.user.language }))
           .setDescription(client.translate({ key: 'interactions.issue.TryAgain', lng: interaction.user.language })),
       ],

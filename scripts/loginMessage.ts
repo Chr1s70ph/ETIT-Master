@@ -1,6 +1,6 @@
 import { statSync, readdir } from 'fs'
 import { readdir as readdir_promise } from 'fs/promises'
-import { MessageEmbed, TextChannel } from 'discord.js'
+import { EmbedBuilder, TextChannel } from 'discord.js'
 import project from '../package.json'
 import { DiscordClient } from '../types/customTypes'
 const os = require('os')
@@ -24,7 +24,7 @@ exports.run = async (client: DiscordClient) => {
   const interactionCount = await readdir_promise('./interactions/')
 
   /**
-   * Login message {@link MessageEmbed}.
+   * Login message {@link EmbedBuilder}.
    */
   const loginMessage = createEmbed(client, commands, interactionCount)
 
@@ -45,10 +45,10 @@ exports.run = async (client: DiscordClient) => {
  * @param {DiscordClient} client Bot-Client
  * @param {any[]} commands All commands
  * @param {string[]} slashCount All slashCommands
- * @returns {MessageEmbed}
+ * @returns {EmbedBuilder}
  */
-function createEmbed(client: DiscordClient, commands: any[], slashCount: string[]): MessageEmbed {
-  return new MessageEmbed()
+function createEmbed(client: DiscordClient, commands: any[], slashCount: string[]): EmbedBuilder {
+  return new EmbedBuilder()
     .setColor('#ffa500')
     .setAuthor({ name: client.user.tag, iconURL: 'https://www.iconsdb.com/icons/preview/orange/code-xxl.png' })
     .setThumbnail(client.user.avatarURL())

@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { MessageEmbed, TextChannel } from 'discord.js'
+import { EmbedBuilder, TextChannel } from 'discord.js'
 import { GuildMember } from 'discord.js/typings/index.js'
 import { DiscordClient } from '../types/customTypes'
 
@@ -34,12 +34,12 @@ exports.run = (client: DiscordClient, member: GuildMember) => {
 }
 
 async function serverWelcomeMessage(client: DiscordClient, member: GuildMember) {
-  const embed = new MessageEmbed()
+  const embed = new EmbedBuilder()
     .setColor('#00FF00')
     .setTitle(`${member.user.username}#${member.user.discriminator}`)
     .setDescription(`<@${member.user.id}> ist dem Server beigetreten!`)
-    .addField('Server beigetreten am', member.joinedAt.toString(), false)
-    .addField('Account erstellt am', member.user.createdAt.toString(), false)
+    .addFields([{ name: 'Server beigetreten am', value: member.joinedAt.toString(), inline: false }])
+    .addFields([{ name: 'Account erstellt am', value: member.user.createdAt.toString(), inline: false }])
     .setAuthor({ name: '💎 Mitglieder-Beitritt' })
     .setThumbnail(member.user.avatarURL())
 
@@ -61,7 +61,7 @@ function sendWelcomeMessage(member: GuildMember, client: DiscordClient): void {
   /**
    * Create a welcome message.
    */
-  const welcomeMessage = new MessageEmbed()
+  const welcomeMessage = new EmbedBuilder()
     .setTitle(`🗲 Willkommen auf dem ETIT-KIT Server ${member.user.username} 🗲`)
     .setColor('#FFDA00')
     .setAuthor({ name: client.user.tag, iconURL: member.guild.iconURL() })

@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js'
+import { EmbedBuilder } from 'discord.js'
 import { DiscordClient, DiscordMessage } from '../../types/customTypes'
 
 exports.name = 'command'
@@ -38,13 +38,13 @@ exports.run = (client: DiscordClient, message: DiscordMessage, args: any): any =
  * @param {any} value Information about the command
  * @param {DiscordClient} client Bot-Client
  * @param {DiscordMessage} message Message sent by user
- * @returns {MessageEmbed}
+ * @returns {EmbedBuilder}
  */
-function createEmbed(value: any, client: DiscordClient, message: DiscordMessage): MessageEmbed {
+function createEmbed(value: any, client: DiscordClient, message: DiscordMessage): EmbedBuilder {
   /**
    * Embed with command information.
    */
-  const embed = new MessageEmbed()
+  const embed = new EmbedBuilder()
     .setColor('#7289ea')
     .setAuthor({
       name: client.translate({ key: 'commands.utility.command.CommandHelp', lng: message.author.language }),
@@ -99,14 +99,14 @@ function findAliases(aliasesArray: any, args: any): boolean {
  * @param {Object} embed command embed
  * @param {DiscordClient} client Bot-Client
  * @param {DiscordMessage} message Message sent by user
- * @returns {MessageEmbed} commandHelpEmbed with added aliases
+ * @returns {EmbedBuilder} commandHelpEmbed with added aliases
  */
 function addAliasesToEmbed(
   aliasesArray: any,
   embed: any,
   client: DiscordClient,
   message: DiscordMessage,
-): MessageEmbed {
+): EmbedBuilder {
   /**
    * String of aliases seperated by commas.
    */

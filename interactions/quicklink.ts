@@ -1,5 +1,4 @@
-import { SlashCommandBuilder } from '@discordjs/builders'
-import { MessageEmbed } from 'discord.js'
+import { EmbedBuilder, SlashCommandBuilder } from 'discord.js'
 import { DiscordClient, DiscordCommandInteraction } from '../types/customTypes'
 
 /**
@@ -91,12 +90,12 @@ export const data = new SlashCommandBuilder()
  * @param {DiscordCommandInteraction} interaction Interaction triggered
  */
 exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
-  const choice = interaction.options.getString('quicklinks')
+  const choice: string = interaction.options.get('quicklinks').value as string
   const ping = interaction.options.getUser('userping') ?? null
   await interaction.reply({
     content: ping ? `${ping}` : null,
     embeds: [
-      new MessageEmbed()
+      new EmbedBuilder()
         .setAuthor({ name: 'Quicklink' })
         .setThumbnail(links[choice].icon ?? null)
         .setTitle(links[choice].title)

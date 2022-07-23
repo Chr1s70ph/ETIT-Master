@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js'
+import { EmbedBuilder } from 'discord.js'
 import { DiscordClient, DiscordMessage } from '../../types/customTypes'
 
 exports.name = 'uptime'
@@ -18,21 +18,23 @@ exports.run = (client: DiscordClient, message: DiscordMessage) => {
    */
   return client.reply(message, {
     embeds: [
-      new MessageEmbed()
+      new EmbedBuilder()
         .setTitle(client.translate({ key: 'commands.utility.uptime.Title', lng: message.author.language }))
-        .addField(
-          client.translate({ key: 'commands.utility.uptime.Time', lng: message.author.language }),
-          client.translate({
-            key: 'commands.utility.uptime.Info',
-            options: {
-              days: uptime.days,
-              hours: uptime.hours,
-              minutes: uptime.minutes,
-              seconds: uptime.seconds,
-              lng: message.author.language,
-            },
-          }),
-        )
+        .addFields([
+          {
+            name: client.translate({ key: 'commands.utility.uptime.Time', lng: message.author.language }),
+            value: client.translate({
+              key: 'commands.utility.uptime.Info',
+              options: {
+                days: uptime.days,
+                hours: uptime.hours,
+                minutes: uptime.minutes,
+                seconds: uptime.seconds,
+                lng: message.author.language,
+              },
+            }),
+          },
+        ])
         .setColor('#FF4040'),
     ],
   })

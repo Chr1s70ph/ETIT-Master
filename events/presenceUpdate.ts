@@ -1,4 +1,4 @@
-import { MessageEmbed, TextChannel } from 'discord.js'
+import { EmbedBuilder, TextChannel } from 'discord.js'
 import { Presence } from 'discord.js/typings/index.js'
 import { connect, start, stop } from 'pm2'
 import { DiscordClient } from '../types/customTypes'
@@ -13,7 +13,7 @@ exports.run = (client: DiscordClient, oldPresence: Presence, newPresence: Presen
         /**
          * Emergency Embed in case ETIT-Chef is offline
          */
-        const emergency = new MessageEmbed()
+        const emergency = new EmbedBuilder()
           .setColor('#8B0000')
           .setTitle('Der ETIT-Chef ist Offline!!')
           .setAuthor({ name: 'Offline Detector', iconURL: client.user.avatarURL() })
@@ -50,10 +50,10 @@ exports.run = (client: DiscordClient, oldPresence: Presence, newPresence: Presen
 /**
  * Start a backup instance of [ETIT-Chef](https://github.com/itzFlubby/ETIT-Chef)
  * @param  {DiscordClient} client Bot-Client
- * @param  {MessageEmbed} emergencyEmbed Embed to send.
+ * @param  {EmbedBuilder} emergencyEmbed Embed to send.
  * @returns {void}
  */
-function offlineHandle(client: DiscordClient, emergencyEmbed: MessageEmbed): void {
+function offlineHandle(client: DiscordClient, emergencyEmbed: EmbedBuilder): void {
   /**
    * Fetch channel to send {@link emergencyEmbed} to.
    */

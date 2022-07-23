@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js'
+import { EmbedBuilder } from 'discord.js'
 import { DiscordClient, DiscordMessage } from '../../types/customTypes'
 
 const gitlab = 'https://git.scc.kit.edu'
@@ -20,15 +20,15 @@ exports.run = (client: DiscordClient, message: DiscordMessage) => {
 }
 
 /**
- * Create a {@link MessageEmbed} with git information.
+ * Create a {@link EmbedBuilder} with git information.
  * URL of the embed leads to the git-documentation.
  * Seperate links to the repository of the bot and to the university gitlab.
  * @param {DiscordClient} client Bot-Client
  * @param {DiscordMessage} message Message sent by user
- * @returns {MessageEmbed}
+ * @returns {EmbedBuilder}
  */
-function createEmbed(client: DiscordClient, message: DiscordMessage): MessageEmbed {
-  return new MessageEmbed()
+function createEmbed(client: DiscordClient, message: DiscordMessage): EmbedBuilder {
+  return new EmbedBuilder()
     .setColor('#ffa500')
     .setAuthor({ name: client.user.tag, iconURL: 'https://git-scm.com/images/logos/downloads/Git-Icon-1788C.png' })
     .setThumbnail('https://git-scm.com/images/logos/downloads/Git-Icon-1788C.png')

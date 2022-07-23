@@ -1,5 +1,4 @@
-import { SlashCommandBuilder } from '@discordjs/builders'
-import { MessageEmbed } from 'discord.js'
+import { EmbedBuilder, SlashCommandBuilder } from 'discord.js'
 import moment from 'moment-timezone'
 import { async } from 'node-ical'
 import { DiscordClient, DiscordCommandInteraction } from '../types/customTypes'
@@ -31,7 +30,7 @@ async function klausuren(client: DiscordClient, interaction: DiscordCommandInter
 
   filterEvents(returnData, rangeStart, rangeEnd, pCourseAndSemester, interaction, relevantEvents)
 
-  const embed = new MessageEmbed().setAuthor({
+  const embed = new EmbedBuilder().setAuthor({
     name: client.translate({
       key: 'interactions.klausuren.Exams',
       options: {
