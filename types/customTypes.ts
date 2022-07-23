@@ -1,19 +1,24 @@
 import { readdirSync } from 'fs'
 import {
-  Client,
-  Message,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  TextChannel,
-  Interaction,
-  MessageOptions,
-  Collection,
-  User,
-  CommandInteraction,
+  ApplicationCommand,
   AutocompleteInteraction,
   ButtonInteraction,
-  SelectMenuInteraction,
-  ApplicationCommand,
+  Client,
+  Collection,
+  CommandInteraction,
+  ContextMenuCommandInteraction,
+  Interaction,
+  Message,
+  MessageComponentInteraction,
+  MessageContextMenuCommandInteraction,
+  MessageOptions,
   MessageType,
+  ModalSubmitInteraction,
+  SelectMenuInteraction,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  TextChannel,
+  User,
+  UserContextMenuCommandInteraction,
 } from 'discord.js'
 import i18next from 'i18next'
 
@@ -200,12 +205,40 @@ export interface DiscordCommandInteraction extends CommandInteraction {
   user: DiscordUser
 }
 
-// /**
-//  * Extended {@link MessageContextMenuInteraction} to hold {@link DiscordUser}
-//  */
-// export interface DiscordMessageContextMenuInteraction extends MessageContextMenuInteraction {
-//   user: DiscordUser
-// }
+/**
+ * Extended {@link ContextMenuCommandInteraction} to hold {@link DiscordUser}
+ */
+export interface DiscordContextMenuCommandInteraction extends ContextMenuCommandInteraction {
+  user: DiscordUser
+}
+
+/**
+ * Extended {@link MessageComponentInteraction} to hold {@link DiscordUser}
+ */
+export interface DiscordMessageComponentInteraction extends MessageComponentInteraction {
+  user: DiscordUser
+}
+
+/**
+ * Extended {@link MessageContextMenuCommandInteraction} to hold {@link DiscordUser}
+ */
+export interface DiscordMessageContextMenuCommandInteraction extends MessageContextMenuCommandInteraction {
+  user: DiscordUser
+}
+
+/**
+ * Extended {@link UserContextMenuCommandInteraction} to hold {@link DiscordUser}
+ */
+export interface DiscordUserContextMenuCommandInteraction extends UserContextMenuCommandInteraction {
+  user: DiscordUser
+}
+
+/**
+ * Extended {@link ModalSubmitInteraction} to hold {@link DiscordUser}
+ */
+export interface DiscordModalSubmitInteraction extends ModalSubmitInteraction {
+  user: DiscordUser
+}
 
 /**
  * Extended {@link SelectMenuInteraction} to hold {@link DiscordUser}
@@ -214,12 +247,12 @@ export interface DiscordSelectMenuInteraction extends SelectMenuInteraction {
   user: DiscordUser
 }
 
-// /**
-//  * Extended {@link UserContextMenuInteraction} to hold {@link DiscordUser}
-//  */
-// export interface DiscordUserContextMenuCommandInteraction extends UserContextMenuCommandInteraction {
-//   user: DiscordUser
-// }
+/**
+ * Extended {@link UserContextMenuCommandInteraction} to hold {@link DiscordUser}
+ */
+export interface DiscordUserContextMenuCommandInteraction extends UserContextMenuCommandInteraction {
+  user: DiscordUser
+}
 
 /**
  * Extended User to hold language.
@@ -255,7 +288,9 @@ interface InteractionCommands extends Object {
   Autocomplete?: any
   Button?: any
   Command?: any
+  ContextMenu?: any
   MessageContextMenu?: any
+  Modal?: any
   SelectMenu?: any
   UserContextMenu?: any
 }
