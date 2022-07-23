@@ -1,11 +1,12 @@
-import { SlashCommandBuilder } from '@discordjs/builders'
 import {
-  MessageActionRow,
-  MessageEmbed,
-  Modal,
-  ModalActionRowComponent,
-  TextInputComponent,
+  ActionRowBuilder,
+  EmbedBuilder,
+  ModalActionRowComponentBuilder,
+  SlashCommandBuilder,
   TextChannel,
+  TextInputBuilder,
+  TextInputStyle,
+  ModalBuilder,
 } from 'discord.js'
 import { DiscordClient, DiscordCommandInteraction, DiscordModalSubmitInteraction } from '../types/customTypes'
 
@@ -21,28 +22,28 @@ exports.Command = async (client: DiscordClient, interaction: DiscordCommandInter
   /**
    * Input field for the tile
    */
-  const titleInput = new TextInputComponent()
+  const titleInput = new TextInputBuilder()
     .setCustomId('titleInput')
     .setLabel('Watt schlägste vor Minium?')
-    .setStyle('SHORT')
+    .setStyle(TextInputStyle.Short)
     .setRequired(true)
-  const firstActionRow = new MessageActionRow<ModalActionRowComponent>().setComponents(titleInput)
+  const firstActionRow = new ActionRowBuilder<ModalActionRowComponentBuilder>().setComponents(titleInput)
 
   /**
    * Input field for the body
    */
-  const bodyInput = new TextInputComponent()
+  const bodyInput = new TextInputBuilder()
     .setCustomId('bodyInput')
     .setLabel('Erzähl doch noch n bissl')
-    .setStyle('PARAGRAPH')
+    .setStyle(TextInputStyle.Paragraph)
     .setRequired(true)
-  const secondActionRow = new MessageActionRow<ModalActionRowComponent>().setComponents(bodyInput)
+  const secondActionRow = new ActionRowBuilder<ModalActionRowComponentBuilder>().setComponents(bodyInput)
 
   /**
    * Show modal
    */
   await interaction.showModal(
-    new Modal().setTitle('Werbung').setCustomId('werbung').addComponents(firstActionRow, secondActionRow),
+    new ModalBuilder().setTitle('Werbung').setCustomId('werbung').addComponents(firstActionRow, secondActionRow),
   )
 }
 
@@ -58,7 +59,7 @@ exports.Modal = (client: DiscordClient, interaction: DiscordModalSubmitInteracti
   channel.send({
     content: '<@&757982430182506549>',
     embeds: [
-      new MessageEmbed()
+      new EmbedBuilder()
         .setTitle('Werbeantrag')
         .setDescription(`**${advertisement_title}**\n${advertisement_body}`)
         .setAuthor({
@@ -68,5 +69,5 @@ exports.Modal = (client: DiscordClient, interaction: DiscordModalSubmitInteracti
     ],
   })
 
-  interaction.reply({ embeds: [new MessageEmbed().setTitle('Thanks')], ephemeral: true })
+  interaction.reply({ embeds: [new EmbedBuilder().setTitle('Thanks')], ephemeral: true })
 }
