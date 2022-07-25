@@ -38,8 +38,12 @@ async function serverWelcomeMessage(client: DiscordClient, member: GuildMember) 
     .setColor('#00FF00')
     .setTitle(`${member.user.username}#${member.user.discriminator}`)
     .setDescription(`<@${member.user.id}> ist dem Server beigetreten!`)
-    .addFields([{ name: 'Server beigetreten am', value: member.joinedAt.toString(), inline: false }])
-    .addFields([{ name: 'Account erstellt am', value: member.user.createdAt.toString(), inline: false }])
+    .addFields([
+      { name: 'Server beigetreten am', value: `<t:${Math.round(member.joinedTimestamp / 1000)}:D>`, inline: false },
+    ])
+    .addFields([
+      { name: 'Account erstellt am', value: `<t:${Math.round(member.user.createdTimestamp / 1000)}:D>`, inline: false },
+    ])
     .setAuthor({ name: '💎 Mitglieder-Beitritt' })
     .setThumbnail(member.user.avatarURL())
 

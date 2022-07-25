@@ -30,8 +30,12 @@ async function serverGoodByeMessage(client: DiscordClient, member: GuildMember) 
     .setColor('#FF0000')
     .setTitle(`${member.user.username}#${member.user.discriminator}`)
     .setDescription(`<@${member.user.id}> hat den Server verlassen!`)
-    .addFields([{ name: 'Server beigetreten am', value: member.joinedAt.toString(), inline: false }])
-    .addFields([{ name: 'Account erstellt am', value: member.user.createdAt.toString(), inline: false }])
+    .addFields([
+      { name: 'Server beigetreten am', value: `<t:${Math.round(member.joinedTimestamp / 1000)}:D>`, inline: false },
+    ])
+    .addFields([
+      { name: 'Account erstellt am', value: `<t:${Math.round(member.user.createdTimestamp / 1000)}:D>`, inline: false },
+    ])
     .setAuthor({ name: '😭 Mitglieder-Austritt' })
     .setThumbnail(member.user.avatarURL())
 
