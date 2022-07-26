@@ -100,6 +100,7 @@ const mensaOptions = {
       new FoodLine('schnitzelbar', 'Schnitzelbar'),
       new FoodLine('aktion', '[Kœri]werk 11-14 Uhr'),
       new FoodLine('pizza', '[pizza]werk'),
+      new FoodLine('update', '[Gnocchi]werk'),
     ],
   },
   erzberger: {
