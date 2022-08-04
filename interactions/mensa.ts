@@ -385,6 +385,7 @@ export async function mensa(
       options: {
         link: client.config.mensa.base_url + client.config.mensa.additional_info,
         lng: embed_language,
+        interpolation: { escapeValue: false },
       },
     }),
     inline: false,
