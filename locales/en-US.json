@@ -81,6 +81,8 @@
     },
     "ping": {},
     "wochenplan": {
+      "localized_name": "schedule",
+      "localized_description": "Shows your current schedule for the week.",
       "Schedule": "🗓️ Weekly schedule for {{user}}",
       "Week": "Week of {{date}}",
       "too_long": {
