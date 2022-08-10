@@ -1,5 +1,5 @@
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js'
-import { DiscordClient, DiscordCommandInteraction } from '../types/customTypes'
+import { DiscordClient, DiscordCommandInteraction, DiscordSlashCommandBuilder } from '../types/customTypes'
 
 /**
  * Available Quicklinks
@@ -64,7 +64,7 @@ choices.shift()
 /**
  * Interactiondata
  */
-export const data = new SlashCommandBuilder()
+export const data = new DiscordSlashCommandBuilder()
   .setName('quicklink')
   .setDescription('Links quick')
   .addStringOption(option =>
@@ -83,6 +83,7 @@ export const data = new SlashCommandBuilder()
       .setRequired(true),
   )
   .addUserOption(option => option.setName('userping').setDescription('Who do you want to annoy?'))
+  .setLocalizations('interactions', 'quicklink')
 
 /**
  * Reply to interactiopn
