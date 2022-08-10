@@ -19,6 +19,8 @@ import {
   TextChannel,
   User,
   UserContextMenuCommandInteraction,
+  SlashCommandBuilder,
+  LocaleString,
 } from 'discord.js'
 import i18next from 'i18next'
 
@@ -176,6 +178,79 @@ export class DiscordClient extends Client {
     return i18next.t(args.key, options)
   }
 }
+
+/**
+ * Slashcommand Localization need a name and a description.
+ * This function returns an {@link Array} of all localized names and descriptions
+ * @param {string} type  command or interaction
+ * @param {string} name  name of command or interaction
+ * @returns {Array<LocalizationTranslations>} Array with translations for all localizations
+ */
+export function getLocalizations(type: TranslationTypes, name: string): Array<LocalizationTranslations> {
+  /**
+   * Array to hold all translations
+   */
+  const returnValue: Array<LocalizationTranslations> = []
+  /**
+   * Loop through all loaded {@link i18next} fallbacklanguages
+   */
+  for (const language of i18next.languages) {
+    /**
+     * Add translations to object in Array
+     */
+    returnValue[language] = {
+      localized_language: language,
+      localized_name: i18next.t(`${type}.${name}.localized_name`, { defaultValue: null, lng: language }),
+      localized_description: i18next.t(`${type}.${name}.localized_description`, {
+        lng: language,
+        defaultValue: null,
+      }),
+    }
+  }
+  return returnValue
+}
+
+export class DiscordSlashCommandBuilder extends SlashCommandBuilder {
+  /**
+   * Adds all available localizations of name and description
+   * @param {string} type {@link TranslationTypes}
+   * @param {string} name name of command
+   * @returns {SlashCommandBuilder}
+   */
+  public setLocalizations(type: TranslationTypes, name: string): SlashCommandBuilder {
+    /**
+     * Array of all available localizations
+     */
+    const localizations: any = getLocalizations(type, name)
+    // If (localizations === []) return this
+    for (const entry in localizations) {
+      /**
+       * Object containing {@link LocaleString}, localized name and description
+       */
+      const item: LocalizationTypes = localizations[entry]
+      /**
+       * Only set localization if a localized name or description can be found
+       */
+      if (item.localized_name !== null) this.setNameLocalization(item.localized_language, item.localized_name)
+      if (item.localized_description !== null) {
+        this.setDescriptionLocalization(item.localized_language, item.localized_description)
+      }
+    }
+    return this
+  }
+}
+
+export interface LocalizationTranslations {
+  language: { LocalizationTypes }
+}
+
+declare interface LocalizationTypes {
+  localized_language: LocaleString
+  localized_name: string
+  localized_description: string
+}
+
+declare type TranslationTypes = 'interactions' | 'commands'
 
 /**
  * Extended Message to hold {@link DiscordUser}.
