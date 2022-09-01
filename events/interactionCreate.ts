@@ -43,8 +43,6 @@ exports.run = (client: DiscordClient, interaction: any) => {
    */
   InteractionCounter.inc()
 
-  console.log(interaction)
-
   if (interaction.type === InteractionType.ApplicationCommandAutocomplete) {
     const DiscordInteraction = interaction as DiscordAutocompleteInteraction
     commandfile.Autocomplete(client, DiscordInteraction)
