@@ -36,6 +36,6 @@ async function loadScripts(client) {
        */
       throw new Error(e)
     }
-    console.log(`Successfully started script ${file}`)
+    console.log(`Successfully started script ${file.split('.')[0]}`)
   })
 }

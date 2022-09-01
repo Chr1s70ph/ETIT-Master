@@ -1,7 +1,7 @@
-import { EmbedBuilder, SlashCommandBuilder } from 'discord.js'
+import { EmbedBuilder } from 'discord.js'
 import moment from 'moment-timezone'
 import { async } from 'node-ical'
-import { DiscordClient, DiscordCommandInteraction } from '../types/customTypes'
+import { DiscordClient, DiscordCommandInteraction, DiscordSlashCommandBuilder } from '../types/customTypes'
 
 exports.name = 'wochenplan'
 
@@ -9,14 +9,15 @@ exports.description = '️Zeigt den Wochenplan an.'
 
 exports.usage = `wochenplan {TAG}`
 
-export const data = new SlashCommandBuilder()
+export const data = new DiscordSlashCommandBuilder()
   .setName('wochenplan')
   .setDescription('Zeigt deinen Wochenplan an.')
   .addStringOption(option =>
     option.setName('datum').setDescription('Das Datum, das angezeigt werden soll. Format: DD.MM.YYYY'),
   )
+  .setLocalizations('wochenplan')
 
-async function wochenplan(client: DiscordClient, interaction: DiscordCommandInteraction, date, pCourseAndSemester) {
+async function wochenplan(client: DiscordClient, interaction: DiscordCommandInteraction, date) {
   let returnData = {}
   for (const entry in client.config.calendars) {
     // eslint-disable-next-line no-await-in-loop
@@ -297,7 +298,7 @@ exports.Command = async (client: DiscordClient, interaction: DiscordCommandInter
   const valid_date = option_date.toString() !== 'Invalid Date'
   const date = JSON.stringify(option_date) === 'null' ? new Date() : option_date
 
-  const embed = await wochenplan(client, interaction, date, 'all')
+  const embed = await wochenplan(client, interaction, date)
 
   if (!valid_date) {
     embed.addFields({

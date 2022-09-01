@@ -1,7 +1,7 @@
-import { EmbedBuilder, SlashCommandBuilder } from 'discord.js'
+import { EmbedBuilder } from 'discord.js'
 import moment from 'moment-timezone'
 import { async } from 'node-ical'
-import { DiscordClient, DiscordCommandInteraction } from '../types/customTypes'
+import { DiscordClient, DiscordCommandInteraction, DiscordSlashCommandBuilder } from '../types/customTypes'
 
 exports.name = 'klausuren'
 
@@ -9,9 +9,10 @@ exports.description = '️Zeigt deine anstehenden Klausuren an.'
 
 exports.usage = `klausuren`
 
-export const data = new SlashCommandBuilder()
+export const data = new DiscordSlashCommandBuilder()
   .setName('klausuren')
   .setDescription('Zeigt deine anstehenden Klausuren an.')
+  .setLocalizations('klausuren')
 
 async function klausuren(client: DiscordClient, interaction: DiscordCommandInteraction, pNow, pCourseAndSemester) {
   let returnData = {}

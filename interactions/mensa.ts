@@ -1,12 +1,12 @@
 import * as fs from 'fs'
 import * as https from 'https'
-import { EmbedBuilder, SlashCommandBuilder } from 'discord.js'
-import { DiscordClient, DiscordCommandInteraction } from '../types/customTypes'
+import { EmbedBuilder } from 'discord.js'
+import { DiscordClient, DiscordCommandInteraction, DiscordSlashCommandBuilder } from '../types/customTypes'
 const { DateTime } = require('luxon')
 
-export const data = new SlashCommandBuilder()
+export const data = new DiscordSlashCommandBuilder()
   .setName('mensa')
-  .setDescription('Was es wohl heute zu Essen gibt?')
+  .setDescription('Was es wohl heute zum Essen geben wird?')
   .addStringOption(option =>
     option
       .setName('wochentag')
@@ -31,6 +31,7 @@ export const data = new SlashCommandBuilder()
         { name: 'caféteria moltkestraße 30', value: 'x1moltkestrasse' },
       ),
   )
+  .setLocalizations('mensa')
 
 exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
   const today = new Date()

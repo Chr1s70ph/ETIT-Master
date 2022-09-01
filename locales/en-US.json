@@ -1,10 +1,8 @@
 {
-  "language": "English",
-  "flag": "🇺🇸",
   "commands": {
     "admin": {
-      "missingPermission": "You do not have permission to perform that command.",
       "devtest": {},
+      "missingPermission": "You do not have permission to perform that command.",
       "restart": "🤖Restarting...",
       "say": {},
       "status": "👥Presence has been updated!"
@@ -29,11 +27,11 @@
         "ErrorNotAvailable": "Channel info is not available in this channel. Try a different channel."
       },
       "command": {
-        "ErrorNoCommandName": "Please provide a command name.",
+        "Aliases": "Aliases",
         "CommandHelp": "Command assistance",
         "Description": "Description",
-        "Usage": "Usage",
-        "Aliases": "Aliases"
+        "ErrorNoCommandName": "Please provide a command name.",
+        "Usage": "Usage"
       },
       "countdown": {
         "Countdown": "Liftoff in:",
@@ -41,74 +39,96 @@
         "Liftoff": "🚀Departed🚀"
       },
       "git": {
-        "Title": "[🌐] GIT Wiki",
+        "Github": "Github [Repository]({{- github}}) of <@{{userID}}>",
         "Gitlab": "[Link]({{- gitlab}}) to Gitlab Homepage",
-        "Github": "Github [Repository]({{- github}}) of <@{{userID}}>"
+        "Title": "[🌐] GIT Wiki"
       },
       "onlinecount": {
-        "OnlineCounter": "[🌐] Online Counter",
-        "Online": "🟢Online",
+        "DND": "🔴DND",
         "Idle": "🟡Idle",
-        "DND": "🔴DND"
+        "Online": "🟢Online",
+        "OnlineCounter": "[🌐] Online Counter"
       },
       "ping": "🏓Latency is {{latency}}ms. API Latency is {{api_latency}}ms",
       "start": {
-        "ErrorNoVoice": "⚠️ You are not in a Voice-Channel.\nPlease join a Voice-Channel to use this command.",
         "ErrorInvalidOption": "⚠️ Invalid option!",
+        "ErrorNoVoice": "⚠️ You are not in a Voice-Channel.\nPlease join a Voice-Channel to use this command.",
         "Info": "❔ If you can't join the activity **create it** by clicking the **[Link]({{- invite}})** above."
       },
       "test": "🌐 This Bot is working as intended!",
       "uptime": {
-        "Title": "⏰Uptime",
+        "Info": "{{days}} Days, {{hours}} Hours, {{minutes}} Minutes, {{seconds}} Seconds",
         "Time": "Time since last restart:",
-        "Info": "{{days}} Days, {{hours}} Hours, {{minutes}} Minutes, {{seconds}} Seconds"
+        "Title": "⏰Uptime"
       },
       "userprofile": {
-        "UserProfile": "👤Userprofile",
         "Joined": "Joined:",
-        "NoNitroStatus": "Not currently subscribed"
+        "NoNitroStatus": "Not currently subscribed",
+        "UserProfile": "👤Userprofile"
       },
       "zoom": {}
     }
   },
+  "flag": "🇺🇸",
   "interactions": {
-    "help": "Help",
-    "issue": {
-      "Recieved": "Issue recieved!",
-      "Thanks": "Thank you for submitting your issue!",
-      "Error": "⚠Error",
-      "TryAgain": "An error occured. Please try again later."
+    "help": {
+      "localized_description": "Helps (maybe)",
+      "localized_name": "help",
+      "title": "Help"
     },
-    "ping": {},
+    "issue": {
+      "body_input": "Please elaborate your issue here:",
+      "error": "⚠Error",
+      "localized_description": "If you have any issue, report it here.",
+      "localized_name": "issue",
+      "recieved": "Issue recieved!",
+      "thanks": "Thank you for submitting your issue!",
+      "title_input": "What is your issue?",
+      "tryAgain": "An error occured. Please try again later."
+    },
+    "klausuren": {
+      "Exams": "🗓️ Exams for {{user}}",
+      "localized_description": "Shows your upcoming exams",
+      "localized_name": "exams"
+    },
+    "mensa": {
+      "allAdditivesList": "You can find a list of all additives [here](https://{{link}}).",
+      "cafeteria": "Cafeteria",
+      "closed": "__Sadly this cafeteria is closed today. Reason: {{reason}}__",
+      "foodAdditives": "_Additives: [{{additives}}]_",
+      "lineClosed": "This cafeteria has closed on the requested day.",
+      "localized_description": "What's for dinner today?",
+      "localized_name": "canteen",
+      "noFoodAdditives": "_No additives_",
+      "noInformation": "__Sadly there is no information for this day!__",
+      "refreshJSON": "🍽 refresh JSON..."
+    },
+    "ping": {
+      "localized_name": "ping",
+      "localized_description": "Checks if the bot is up and running."
+    },
+    "quicklink": {
+      "localized_description": "links fast",
+      "localized_name": "quicklink"
+    },
+    "werbung": {
+      "localized_description": "You want to advertise something on this server?",
+      "localized_name": "advertising"
+    },
     "wochenplan": {
+      "invalid_Date": {
+        "name": "⚠️ Note: The date you entered is not a valid Date.",
+        "value": "Please use the `DD.MM.YYY` format to specify a date."
+      },
+      "localized_description": "Shows your current schedule for the week.",
+      "localized_name": "schedule",
       "Schedule": "🗓️ Weekly schedule for {{user}}",
-      "Week": "Week of {{date}}",
       "too_long": {
         "name": "⚠️ Note: You have selected too many courses!",
         "value": "Since you have selected too many courses, your weekplan may look not as intended."
       },
-      "invalid_Date": {
-        "name": "⚠️ Note: The date you entered is not a valid Date.",
-        "value": "Please use the `DD.MM.YYY` format to specify a date."
-      }
-    },
-    "klausuren": {
-      "Exams": "🗓️ Exams for {{user}}"
-    },
-    "language": {
-      "Select": "Select your desired language",
-      "DefaultSelect": "Nothing Selected",
-      "LanguageUpdated": "Language has been successfully updated to {{language}}."
-    },
-    "mensa": {
-      "cafeteria": "Cafeteria",
-      "refreshJSON": "🍽 refresh JSON...",
-      "lineClosed": "This cafeteria has closed on the requested day.",
-      "noInformation": "__Sadly there is no information for this day!__",
-      "closed": "__Sadly this cafeteria is closed today. Reason: {{reason}}__",
-      "foodAdditives": "_Additives: [{{additives}}]_",
-      "noFoodAdditives": "_No additives_",
-      "allAdditivesList": "You can find a list of all additives [here](https://{{link}})."
+      "Week": "Week of {{date}}"
     }
-  }
+  },
+  "language": "English"
 }

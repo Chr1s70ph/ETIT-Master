@@ -2,18 +2,24 @@ import {
   ActionRowBuilder,
   EmbedBuilder,
   ModalActionRowComponentBuilder,
-  SlashCommandBuilder,
   TextChannel,
   TextInputBuilder,
   TextInputStyle,
   ModalBuilder,
 } from 'discord.js'
-import { DiscordClient, DiscordCommandInteraction, DiscordModalSubmitInteraction } from '../types/customTypes'
+import {
+  DiscordClient,
+  DiscordCommandInteraction,
+  DiscordModalSubmitInteraction,
+  DiscordSlashCommandBuilder,
+} from '../types/customTypes'
 
-export const data = new SlashCommandBuilder().setName('werbung').setDescription('Schlage etwas vor!')
+export const data = new DiscordSlashCommandBuilder()
+  .setName('werbung')
+  .setDescription('Du willst Werbung bei uns auf dem Server machen?')
+  .setLocalizations('werbung')
 
 //  TODO:
-//  - Translate inputfields, cuz yeah
 //  - make embed sent to admin channel nice
 //  - link to user in embed
 //  - basic information about user in embed

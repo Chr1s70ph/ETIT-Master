@@ -12,7 +12,7 @@ const backend = new Backend({
 
 i18next.use(backend).init({
   lng: 'en-US',
-  fallbackLng: 'en-US',
+  fallbackLng: ['en-US', 'de'],
   preload: ['en-US', 'de'],
   load: 'currentOnly',
   ns: ['translation'],
@@ -86,7 +86,7 @@ fs.readdir('./events/', (err, files) => {
      */
     const eventName = file.split('.')[0]
 
-    console.log(`Successfully loaded event ${file}`)
+    console.log(`Successfully loaded event ${eventName}`)
 
     /**
      * Run events when triggered.

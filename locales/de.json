@@ -1,10 +1,8 @@
 {
-  "language": "Deutsch",
-  "flag": "🇩🇪",
   "commands": {
     "admin": {
-      "missingPermission": "Du bist nicht berechtigt, diesen Befehl auszuführen.",
       "devtest": {},
+      "missingPermission": "Du bist nicht berechtigt, diesen Befehl auszuführen.",
       "restart": "🤖Starte neu...",
       "say": {},
       "status": "👥Präsenz wurde geändert!"
@@ -29,11 +27,11 @@
         "ErrorNotAvailable": "Kanalinformationen sind in diesem Kanal nicht verfügbar. Versuche es mit einem anderen Kanal."
       },
       "command": {
-        "ErrorNoCommandName": "Bitte gebe einen Befehlsnamen an.",
+        "Aliases": "Aliase",
         "CommandHelp": "Befehlshilfe",
         "Description": "Beschreibung",
-        "Usage": "Benutzung",
-        "Aliases": "Aliase"
+        "ErrorNoCommandName": "Bitte gebe einen Befehlsnamen an.",
+        "Usage": "Benutzung"
       },
       "countdown": {
         "Countdown": "Fahrstuhl aus in:",
@@ -41,71 +39,96 @@
         "Liftoff": "🚀Abgehoben🚀"
       },
       "git": {
-        "Title": "[🌐] GIT Wiki",
+        "Github": "Github [Repository]({{- github}}) von <@{{userID}}>",
         "Gitlab": "[Link]({{- gitlab}}) zur Gitlab Startseite",
-        "Github": "Github [Repository]({{- github}}) von <@{{userID}}>"
+        "Title": "[🌐] GIT Wiki"
       },
       "onlinecount": {
-        "OnlineCounter": "[🌐] Online Zähler",
-        "Online": "🟢Online",
+        "DND": "🔴Nicht stören",
         "Idle": "🟡Abwesend",
-        "DND": "🔴Nicht stören"
+        "Online": "🟢Online",
+        "OnlineCounter": "[🌐] Online Zähler"
       },
       "ping": "🏓Die Latenz beträgt {{latency}}ms. API - Latenz ist {{api_latency}}",
       "start": {
-        "ErrorNoVoice": "⚠️ Du bist nicht in einem Sprach-Kanal.\nBitte trete einenm Sprach-Kanal bei, um diesen Befehl nutzen zu können.",
         "ErrorInvalidOption": "⚠️ Nicht zulässige Option!",
+        "ErrorNoVoice": "⚠️ Du bist nicht in einem Sprach-Kanal.\nBitte trete einenm Sprach-Kanal bei, um diesen Befehl nutzen zu können.",
         "Info": "❔ Wenn du der Aktivität nicht beitreten kannst, **erstelle ** sie, indem du oben auf den **[Link]({{- invite}})** klickst."
       },
       "test": "🌐Dieser Bot funktioniert einwandfrei!",
       "uptime": {
-        "Title": "⏰Betriebszeit",
+        "Info": "{{days}} Tage, {{hours}} Stunden, {{minutes}} Minuten, {{seconds}} Sekunden",
         "Time": "Zeit seit dem letzten neustart:",
-        "Info": "{{days}} Tage, {{hours}} Stunden, {{minutes}} Minuten, {{seconds}} Sekunden"
+        "Title": "⏰Betriebszeit"
       },
       "userprofile": {
-        "UserProfile": "👤Benutzerprofil",
         "Joined": "Beigetreten",
-        "NoNitroStatus": "Zurzeit nicht abboniert"
+        "NoNitroStatus": "Zurzeit nicht abboniert",
+        "UserProfile": "👤Benutzerprofil"
       },
       "zoom": {}
     }
   },
+  "flag": "🇩🇪",
   "interactions": {
-    "help": "Hilfe",
-    "issue": {
-      "Recieved": "Vorschlag angekommen!",
-      "Thanks": "Vielen Dank für deinen Vorschlag!",
-      "Error": "⚠Fehler",
-      "TryAgain": "Es ist ein Fehler aufgetreten. Bitte versuche es später erneut."
+    "help": {
+      "localized_description": "Hilft (vielleicht)",
+      "localized_name": "hilfe",
+      "title": "Hilfe"
     },
-    "ping": {},
+    "issue": {
+      "body_input": "Bitter erzähle hier mehr über deinen Vorschlag:",
+      "error": "⚠Fehler",
+      "localized_description": "Wenn es einen Vorschlag gibt, kannst du ihn hier vorschlagen.",
+      "localized_name": "vorschlag",
+      "recieved": "Vorschlag angekommen!",
+      "thanks": "Vielen Dank für deinen Vorschlag!",
+      "title_input": "Was ist dein Vorschlag?",
+      "tryAgain": "Es ist ein Fehler aufgetreten. Bitte versuche es später erneut."
+    },
+    "klausuren": {
+      "Exams": "🗓️ Exams for {{user}}",
+      "localized_description": "Zeigt deine anstehenden Klausuren an.",
+      "localized_name": "klausuren"
+    },
+    "mensa": {
+      "allAdditivesList": "Eine Liste aller Zusätze findest du [hier](https://{{link}}).",
+      "cafeteria": "Mensa",
+      "closed": "__Leider ist hier heute geschlossen. Grund: {{reason}}__",
+      "foodAdditives": "_Zusatz: [{{additives}}]_",
+      "lineClosed": "Diese Mensa hat am angeforderten Tag leider geschlossen.",
+      "localized_description": "Was es wohl heute zu Essen gibt?",
+      "localized_name": "mensa",
+      "noFoodAdditives": "_Keine Zusätze_",
+      "noInformation": "__Leider gibt es für diesen Tag hier keine Informationen!__",
+      "refreshJSON": "🍽 Aktualisiere JSON..."
+    },
+    "ping": {
+      "localized_description": "Prüft, ob der Bot ordnungsgemäß antwortet",
+      "localized_name": "ping"
+    },
+    "quicklink": {
+      "localized_description": "Links schnell",
+      "localized_name": "quicklink"
+    },
+    "werbung": {
+      "localized_description": "Du willst Werbung bei uns auf dem Server machen?",
+      "localized_name": "werbung"
+    },
     "wochenplan": {
+      "invalid_Date": {
+        "name": "⚠️ Bemerkung: Das angegebene Datum existiert nicht.",
+        "value": "Bitte benutze das Format `DD.MM.YYYY` wenn du ein datum spezifizieren willst."
+      },
+      "localized_description": "Zeigt dir deinen aktuellen Wochenplan.",
+      "localized_name": "wochenplan",
       "Schedule": "🗓️ Wochenplan für {{user}}",
-      "Week": "Woche vom {{date}}",
       "too_long": {
         "name": "⚠️ Bemerkung: Du hast zu viele Fächer ausgewählt!",
         "value": "Weil du zu viele Fächer ausgewählt hast, kann es sein, dass dein Wochenplan nicht wie gewollt aussieht."
       },
-      "invalid_Date": {
-        "name": "⚠️ Bemerkung: Das angegebene Datum existiert nicht.",
-        "value": "Bitte benutze das Format `DD.MM.YYYY` wenn du ein datum spezifizieren willst."
-      }
-    },
-    "language": {
-      "Select": "Wähle deine bevorzugte Sprache",
-      "DefaultSelect": "Nichts ausgewählt",
-      "LanguageUpdated": "Sprache wurde erfolgreich zu {{language}} geändert."
-    },
-    "mensa": {
-      "cafeteria": "Mensa",
-      "refreshJSON": "🍽 Aktualisiere JSON...",
-      "lineClosed": "Diese Mensa hat am angeforderten Tag leider geschlossen.",
-      "noInformation": "__Leider gibt es für diesen Tag hier keine Informationen!__",
-      "closed": "__Leider ist hier heute geschlossen. Grund: {{reason}}__",
-      "foodAdditives": "_Zusatz: [{{additives}}]_",
-      "noFoodAdditives": "_Keine Zusätze_",
-      "allAdditivesList": "Eine Liste aller Zusätze findest du [hier](https://{{link}})."
+      "Week": "Woche vom {{date}}"
     }
-  }
+  },
+  "language": "Deutsch"
 }
