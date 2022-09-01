@@ -73,10 +73,12 @@
   "interactions": {
     "help": "Help",
     "issue": {
-      "Error": "⚠Error",
-      "Recieved": "Issue recieved!",
-      "Thanks": "Thank you for submitting your issue!",
-      "TryAgain": "An error occured. Please try again later."
+      "title_input": "What is your issue?",
+      "body_input": "Please elaborate your issue here:",
+      "error": "⚠Error",
+      "recieved": "Issue recieved!",
+      "thanks": "Thank you for submitting your issue!",
+      "tryAgain": "An error occured. Please try again later."
     },
     "klausuren": {
       "Exams": "🗓️ Exams for {{user}}"

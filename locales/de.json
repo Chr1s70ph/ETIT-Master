@@ -73,10 +73,12 @@
   "interactions": {
     "help": "Hilfe",
     "issue": {
-      "Error": "⚠Fehler",
-      "Recieved": "Vorschlag angekommen!",
-      "Thanks": "Vielen Dank für deinen Vorschlag!",
-      "TryAgain": "Es ist ein Fehler aufgetreten. Bitte versuche es später erneut."
+      "title_input": "Was ist dein Vorschlag?",
+      "body_input": "Bitter erzähle hier mehr über deinen Vorschlag:",
+      "error": "⚠Fehler",
+      "recieved": "Vorschlag angekommen!",
+      "thanks": "Vielen Dank für deinen Vorschlag!",
+      "tryAgain": "Es ist ein Fehler aufgetreten. Bitte versuche es später erneut."
     },
     "language": {
       "DefaultSelect": "Nichts ausgewählt",

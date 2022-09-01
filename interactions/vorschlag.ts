@@ -14,13 +14,12 @@ const REPOSITORY = 'Chr1s70ph/ETIT-Master'
 export const data = new SlashCommandBuilder().setName('vorschlag').setDescription('Schlage etwas vor!')
 
 exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
-  // TODO: Translate inputfields, cuz yeah
   /**
    * Input field for the tile
    */
   const titleInput = new TextInputBuilder()
     .setCustomId('titleInput')
-    .setLabel('Watt schlägste vor Minium?')
+    .setLabel(client.translate({ key: 'interactions.issue.title_input', lng: interaction.user.language }))
     .setStyle(TextInputStyle.Short)
     .setRequired(true)
   const firstActionRow = new ActionRowBuilder<ModalActionRowComponentBuilder>().setComponents(titleInput)
@@ -30,7 +29,7 @@ exports.Command = async (client: DiscordClient, interaction: DiscordCommandInter
    */
   const bodyInput = new TextInputBuilder()
     .setCustomId('bodyInput')
-    .setLabel('Erzähl doch noch n bissl')
+    .setLabel(client.translate({ key: 'interactions.issue.body_input', lng: interaction.user.language }))
     .setStyle(TextInputStyle.Paragraph)
     .setRequired(true)
   const secondActionRow = new ActionRowBuilder<ModalActionRowComponentBuilder>().setComponents(bodyInput)
@@ -69,8 +68,8 @@ exports.Modal = async (client: DiscordClient, interaction: DiscordModalSubmitInt
     await interaction.reply({
       embeds: [
         new EmbedBuilder()
-          .setTitle(client.translate({ key: 'interactions.issue.Recieved', lng: interaction.user.language }))
-          .setDescription(client.translate({ key: 'interactions.issue.Thanks', lng: interaction.user.language })),
+          .setTitle(client.translate({ key: 'interactions.issue.recieved', lng: interaction.user.language }))
+          .setDescription(client.translate({ key: 'interactions.issue.thanks', lng: interaction.user.language })),
       ],
       ephemeral: true,
     })
@@ -81,8 +80,8 @@ exports.Modal = async (client: DiscordClient, interaction: DiscordModalSubmitInt
     await interaction.reply({
       embeds: [
         new EmbedBuilder()
-          .setTitle(client.translate({ key: 'interactions.issue.Error', lng: interaction.user.language }))
-          .setDescription(client.translate({ key: 'interactions.issue.TryAgain', lng: interaction.user.language })),
+          .setTitle(client.translate({ key: 'interactions.issue.error', lng: interaction.user.language }))
+          .setDescription(client.translate({ key: 'interactions.issue.tryAgain', lng: interaction.user.language })),
       ],
     })
     throw new Error(error)
