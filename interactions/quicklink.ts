@@ -83,7 +83,7 @@ export const data = new DiscordSlashCommandBuilder()
       .setRequired(true),
   )
   .addUserOption(option => option.setName('userping').setDescription('Who do you want to annoy?'))
-  .setLocalizations('interactions', 'quicklink')
+  .setLocalizations('quicklink')
 
 /**
  * Reply to interactiopn

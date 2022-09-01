@@ -182,11 +182,10 @@ export class DiscordClient extends Client {
 /**
  * Slashcommand Localization need a name and a description.
  * This function returns an {@link Array} of all localized names and descriptions
- * @param {string} type  command or interaction
  * @param {string} name  name of command or interaction
  * @returns {Array<LocalizationTranslations>} Array with translations for all localizations
  */
-export function getLocalizations(type: TranslationTypes, name: string): Array<LocalizationTranslations> {
+export function getLocalizations(name: string): Array<LocalizationTranslations> {
   /**
    * Array to hold all translations
    */
@@ -200,8 +199,8 @@ export function getLocalizations(type: TranslationTypes, name: string): Array<Lo
      */
     returnValue[language] = {
       localized_language: language,
-      localized_name: i18next.t(`${type}.${name}.localized_name`, { defaultValue: null, lng: language }),
-      localized_description: i18next.t(`${type}.${name}.localized_description`, {
+      localized_name: i18next.t(`interactions.${name}.localized_name`, { defaultValue: null, lng: language }),
+      localized_description: i18next.t(`itneractions.${name}.localized_description`, {
         lng: language,
         defaultValue: null,
       }),
@@ -213,15 +212,14 @@ export function getLocalizations(type: TranslationTypes, name: string): Array<Lo
 export class DiscordSlashCommandBuilder extends SlashCommandBuilder {
   /**
    * Adds all available localizations of name and description
-   * @param {string} type {@link TranslationTypes}
    * @param {string} name name of command
    * @returns {SlashCommandBuilder}
    */
-  public setLocalizations(type: TranslationTypes, name: string): SlashCommandBuilder {
+  public setLocalizations(name: string): SlashCommandBuilder {
     /**
      * Array of all available localizations
      */
-    const localizations: any = getLocalizations(type, name)
+    const localizations: any = getLocalizations(name)
     // If (localizations === []) return this
     for (const entry in localizations) {
       /**
@@ -249,8 +247,6 @@ declare interface LocalizationTypes {
   localized_name: string
   localized_description: string
 }
-
-declare type TranslationTypes = 'interactions' | 'commands'
 
 /**
  * Extended Message to hold {@link DiscordUser}.

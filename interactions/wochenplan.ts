@@ -15,7 +15,7 @@ export const data = new DiscordSlashCommandBuilder()
   .addStringOption(option =>
     option.setName('datum').setDescription('Das Datum, das angezeigt werden soll. Format: DD.MM.YYYY'),
   )
-  .setLocalizations('interactions', 'wochenplan')
+  .setLocalizations('wochenplan')
 
 async function wochenplan(client: DiscordClient, interaction: DiscordCommandInteraction, date) {
   let returnData = {}
