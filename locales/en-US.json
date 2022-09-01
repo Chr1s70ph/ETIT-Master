@@ -71,22 +71,25 @@
   },
   "flag": "🇺🇸",
   "interactions": {
-    "help": "Help",
+    "help": {
+      "localized_description": "Helps (maybe)",
+      "localized_name": "help",
+      "title": "Help"
+    },
     "issue": {
-      "title_input": "What is your issue?",
       "body_input": "Please elaborate your issue here:",
       "error": "⚠Error",
+      "localized_description": "If you have any issue, report it here.",
+      "localized_name": "issue",
       "recieved": "Issue recieved!",
       "thanks": "Thank you for submitting your issue!",
+      "title_input": "What is your issue?",
       "tryAgain": "An error occured. Please try again later."
     },
     "klausuren": {
-      "Exams": "🗓️ Exams for {{user}}"
-    },
-    "language": {
-      "DefaultSelect": "Nothing Selected",
-      "LanguageUpdated": "Language has been successfully updated to {{language}}.",
-      "Select": "Select your desired language"
+      "Exams": "🗓️ Exams for {{user}}",
+      "localized_description": "Shows your upcoming exams",
+      "localized_name": "exams"
     },
     "mensa": {
       "allAdditivesList": "You can find a list of all additives [here](https://{{link}}).",
@@ -94,11 +97,24 @@
       "closed": "__Sadly this cafeteria is closed today. Reason: {{reason}}__",
       "foodAdditives": "_Additives: [{{additives}}]_",
       "lineClosed": "This cafeteria has closed on the requested day.",
+      "localized_description": "What's for dinner today?",
+      "localized_name": "canteen",
       "noFoodAdditives": "_No additives_",
       "noInformation": "__Sadly there is no information for this day!__",
       "refreshJSON": "🍽 refresh JSON..."
     },
-    "ping": {},
+    "ping": {
+      "localized_name": "ping",
+      "localized_description": "Checks if the bot is up and running."
+    },
+    "quicklink": {
+      "localized_description": "links fast",
+      "localized_name": "quicklink"
+    },
+    "werbung": {
+      "localized_description": "You want to advertise something on this server?",
+      "localized_name": "advertising"
+    },
     "wochenplan": {
       "invalid_Date": {
         "name": "⚠️ Note: The date you entered is not a valid Date.",

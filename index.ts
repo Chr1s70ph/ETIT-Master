@@ -86,7 +86,7 @@ fs.readdir('./events/', (err, files) => {
      */
     const eventName = file.split('.')[0]
 
-    console.log(`Successfully loaded event ${file}`)
+    console.log(`Successfully loaded event ${eventName}`)
 
     /**
      * Run events when triggered.

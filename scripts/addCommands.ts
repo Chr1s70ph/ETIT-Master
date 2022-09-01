@@ -82,7 +82,7 @@ function setCommands(path: string, file: string, client: DiscordClient): void {
    */
   client.commands.set(commandName, props)
 
-  console.log(`Successfully loaded command ${file}`)
+  console.log(`Successfully loaded command ${commandName}`)
 }
 
 /**
@@ -119,7 +119,7 @@ export async function loadSlashCommands(client: DiscordClient) {
     const commandName = file.split('.')[0]
 
     client.interactions.set(commandName, slashCommand)
-    console.log(`Successfully posted slashCommand ${file}`)
+    console.log(`Successfully posted slashCommand ${commandName}`)
   })
   postSlashCommands(client, slashCommandData)
 }

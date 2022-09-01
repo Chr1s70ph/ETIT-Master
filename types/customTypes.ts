@@ -200,7 +200,7 @@ export function getLocalizations(name: string): Array<LocalizationTranslations> 
     returnValue[language] = {
       localized_language: language,
       localized_name: i18next.t(`interactions.${name}.localized_name`, { defaultValue: null, lng: language }),
-      localized_description: i18next.t(`itneractions.${name}.localized_description`, {
+      localized_description: i18next.t(`interactions.${name}.localized_description`, {
         lng: language,
         defaultValue: null,
       }),

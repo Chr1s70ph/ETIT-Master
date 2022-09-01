@@ -5,13 +5,20 @@ import {
   ModalBuilder,
   ModalActionRowComponentBuilder,
   ActionRowBuilder,
-  SlashCommandBuilder,
 } from 'discord.js'
-import { DiscordClient, DiscordCommandInteraction, DiscordModalSubmitInteraction } from '../types/customTypes'
+import {
+  DiscordClient,
+  DiscordCommandInteraction,
+  DiscordModalSubmitInteraction,
+  DiscordSlashCommandBuilder,
+} from '../types/customTypes'
 const createIssue = require('github-create-issue')
 const REPOSITORY = 'Chr1s70ph/ETIT-Master'
 
-export const data = new SlashCommandBuilder().setName('vorschlag').setDescription('Schlage etwas vor!')
+export const data = new DiscordSlashCommandBuilder()
+  .setName('vorschlag')
+  .setDescription('Schlag was vor')
+  .setLocalizations('issue')
 
 exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
   /**

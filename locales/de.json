@@ -71,19 +71,25 @@
   },
   "flag": "🇩🇪",
   "interactions": {
-    "help": "Hilfe",
+    "help": {
+      "localized_description": "Hilft (vielleicht)",
+      "localized_name": "hilfe",
+      "title": "Hilfe"
+    },
     "issue": {
-      "title_input": "Was ist dein Vorschlag?",
       "body_input": "Bitter erzähle hier mehr über deinen Vorschlag:",
       "error": "⚠Fehler",
+      "localized_description": "Wenn es einen Vorschlag gibt, kannst du ihn hier vorschlagen.",
+      "localized_name": "vorschlag",
       "recieved": "Vorschlag angekommen!",
       "thanks": "Vielen Dank für deinen Vorschlag!",
+      "title_input": "Was ist dein Vorschlag?",
       "tryAgain": "Es ist ein Fehler aufgetreten. Bitte versuche es später erneut."
     },
-    "language": {
-      "DefaultSelect": "Nichts ausgewählt",
-      "LanguageUpdated": "Sprache wurde erfolgreich zu {{language}} geändert.",
-      "Select": "Wähle deine bevorzugte Sprache"
+    "klausuren": {
+      "Exams": "🗓️ Exams for {{user}}",
+      "localized_description": "Zeigt deine anstehenden Klausuren an.",
+      "localized_name": "klausuren"
     },
     "mensa": {
       "allAdditivesList": "Eine Liste aller Zusätze findest du [hier](https://{{link}}).",
@@ -91,11 +97,24 @@
       "closed": "__Leider ist hier heute geschlossen. Grund: {{reason}}__",
       "foodAdditives": "_Zusatz: [{{additives}}]_",
       "lineClosed": "Diese Mensa hat am angeforderten Tag leider geschlossen.",
+      "localized_description": "Was es wohl heute zu Essen gibt?",
+      "localized_name": "mensa",
       "noFoodAdditives": "_Keine Zusätze_",
       "noInformation": "__Leider gibt es für diesen Tag hier keine Informationen!__",
       "refreshJSON": "🍽 Aktualisiere JSON..."
     },
-    "ping": {},
+    "ping": {
+      "localized_description": "Prüft, ob der Bot ordnungsgemäß antwortet",
+      "localized_name": "ping"
+    },
+    "quicklink": {
+      "localized_description": "Links schnell",
+      "localized_name": "quicklink"
+    },
+    "werbung": {
+      "localized_description": "Du willst Werbung bei uns auf dem Server machen?",
+      "localized_name": "werbung"
+    },
     "wochenplan": {
       "invalid_Date": {
         "name": "⚠️ Bemerkung: Das angegebene Datum existiert nicht.",
