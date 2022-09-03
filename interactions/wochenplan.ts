@@ -1,13 +1,20 @@
-import { EmbedBuilder } from 'discord.js'
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, InteractionResponse } from 'discord.js'
 import moment from 'moment-timezone'
 import { async } from 'node-ical'
-import { DiscordClient, DiscordCommandInteraction, DiscordSlashCommandBuilder } from '../types/customTypes'
+import {
+  DiscordClient,
+  DiscordCommandInteraction,
+  DiscordSlashCommandBuilder,
+  DiscordButtonInteraction,
+} from '../types/customTypes'
 
 exports.name = 'wochenplan'
 
 exports.description = '️Zeigt den Wochenplan an.'
 
 exports.usage = `wochenplan {TAG}`
+
+let startOfWeek = new Date()
 
 export const data = new DiscordSlashCommandBuilder()
   .setName('wochenplan')
@@ -17,7 +24,11 @@ export const data = new DiscordSlashCommandBuilder()
   )
   .setLocalizations('wochenplan')
 
-async function wochenplan(client: DiscordClient, interaction: DiscordCommandInteraction, date) {
+async function wochenplan(
+  client: DiscordClient,
+  interaction: DiscordCommandInteraction | DiscordButtonInteraction,
+  date,
+) {
   let returnData = {}
   for (const entry in client.config.calendars) {
     // eslint-disable-next-line no-await-in-loop
@@ -26,7 +37,7 @@ async function wochenplan(client: DiscordClient, interaction: DiscordCommandInte
 
   const relevantEvents = []
   const curWeekday = date.getDay() === 0 ? 6 : date.getDay() - 1
-  const startOfWeek = new Date(date.setDate(date.getDate() - curWeekday))
+  startOfWeek = new Date(date.setDate(date.getDate() - curWeekday))
   startOfWeek.setHours(0, 0, 0)
 
   const rangeStart = moment(startOfWeek)
@@ -46,7 +57,7 @@ async function wochenplan(client: DiscordClient, interaction: DiscordCommandInte
     })
     .setDescription(
       client.translate({
-        key: 'interactions.wochenplan.Week',
+        key: 'interactions.wochenplan.week',
         options: { date: moment(startOfWeek).format('DD.MM.yyyy'), lng: interaction.user.language },
       }),
     )
@@ -291,15 +302,37 @@ function doubleEntry(array: any[], new_element: any, start_date: Date, end_date:
 }
 
 exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
+  /**
+   * Defer interaction reply, since it can take some time to come through all calendars
+   */
   await interaction.deferReply({ ephemeral: true })
+
+  /**
+   * Get options from interaction
+   */
   const options: string = interaction.options.get('datum')?.value as string
   const option: string[] = options?.split('.')
+
+  /**
+   * Cast options to date
+   */
   const option_date = option ? new Date(`${option[2]}-${option[1]}-${option[0]}T00:00:00`) : new Date()
   const valid_date = option_date.toString() !== 'Invalid Date'
   const date = JSON.stringify(option_date) === 'null' ? new Date() : option_date
 
+  /**
+   * Create embed for current week
+   */
   const embed = await wochenplan(client, interaction, date)
 
+  /**
+   * Create buttons for current week
+   */
+  const buttonRow = createWeekButtons(startOfWeek, client, interaction)
+
+  /**
+   * Tell user, that the entered date is invalid
+   */
   if (!valid_date) {
     embed.addFields({
       name: `${client.translate({ key: 'interactions.wochenplan.invalid_Date.name', lng: interaction.locale })}`,
@@ -307,9 +340,103 @@ exports.Command = async (client: DiscordClient, interaction: DiscordCommandInter
       inline: false,
     })
   }
+
+  /**
+   * Send current weeks schedule
+   */
   await interaction.editReply({
     embeds: [embed],
+    components: [buttonRow],
   })
+}
+
+exports.Button = async (client: DiscordClient, interaction: DiscordButtonInteraction): Promise<void> => {
+  /**
+   * Get current week from customID of the button triggered
+   */
+  const curWeek = interaction.customId.split('.')[2]
+
+  /**
+   * Create new embed
+   */
+  const embed = await wochenplan(client, interaction, new Date(curWeek))
+
+  /**
+   * Create new buttons
+   */
+  const buttons = createWeekButtons(new Date(curWeek), client, interaction)
+
+  /**
+   * Update the interaction with the new embed and buttons
+   */
+  interaction.update({ embeds: [embed], components: [buttons] })
+}
+
+/**
+ * Helper function to create a ActionRow containing buttons for previous/next week
+ * @param {Date} weekStartDay week start of which to get prev/next week buttons for
+ * @param {DiscordClient} client Bot-Client
+ * @param {DiscordCommandInteraction | DiscordButtonInteraction} interaction interaction to reply to
+ * @returns {ActionRowBuilder<ButtonBuilder>} Actionrow
+ */
+function createWeekButtons(
+  weekStartDay: Date,
+  client: DiscordClient,
+  interaction: DiscordCommandInteraction | DiscordButtonInteraction,
+): ActionRowBuilder<ButtonBuilder> {
+  /**
+   * Calculate previous and next week
+   */
+  const prevWeek = moment(new Date(weekStartDay.getTime() - 7 * 24 * 60 * 60 * 1000))
+  const nextWeek = moment(new Date(weekStartDay.getTime() + 7 * 24 * 60 * 60 * 1000))
+
+  /**
+   * Action row to return
+   */
+  return new ActionRowBuilder<ButtonBuilder>().addComponents(
+    /**
+     * Button for previous week
+     */
+    new ButtonBuilder()
+      .setCustomId(`wochenplan.prev_week.${prevWeek.format('YYYY-MM-DD')}`)
+      .setLabel(
+        `${client.translate({
+          key: 'interactions.wochenplan.prev_week',
+          options: {
+            interpolation: { escapeValue: false },
+            week_start_date: prevWeek.format('DD.MM'),
+            lng: interaction.locale,
+          },
+        })}`,
+      )
+      .setStyle(ButtonStyle.Primary),
+
+    /**
+     * Blank button for seperation
+     */
+    new ButtonBuilder()
+      .setCustomId('wochenplan.blank')
+      .setLabel('   ')
+      .setStyle(ButtonStyle.Secondary)
+      .setDisabled(true),
+
+    /**
+     * Button for next week
+     */
+    new ButtonBuilder()
+      .setCustomId(`wochenplan.mext_week.${nextWeek.format('YYYY-MM-DD')}`)
+      .setLabel(
+        `${client.translate({
+          key: 'interactions.wochenplan.next_week',
+          options: {
+            interpolation: { escapeValue: false },
+            week_start_date: nextWeek.format('DD.MM'),
+            lng: interaction.locale,
+          },
+        })}`,
+      )
+      .setStyle(ButtonStyle.Primary),
+  )
 }
 
 /**
