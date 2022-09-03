@@ -127,7 +127,9 @@
         "name": "⚠️ Note: You have selected too many courses!",
         "value": "Since you have selected too many courses, your weekplan may look not as intended."
       },
-      "Week": "Week of {{date}}"
+      "week": "Week of {{date}}",
+      "next_week": "Next Week ({{week_start_date}})",
+      "prev_week": "Previous Week ({{week_start_date}})"
     }
   },
   "language": "English"

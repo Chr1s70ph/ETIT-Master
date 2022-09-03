@@ -127,7 +127,9 @@
         "name": "⚠️ Bemerkung: Du hast zu viele Fächer ausgewählt!",
         "value": "Weil du zu viele Fächer ausgewählt hast, kann es sein, dass dein Wochenplan nicht wie gewollt aussieht."
       },
-      "Week": "Woche vom {{date}}"
+      "week": "Woche vom {{date}}",
+      "next_week": "Nächste Woche ({{week_start_date}})",
+      "prev_week": "Letzte Woche ({{week_start_date}})"
     }
   },
   "language": "Deutsch"
