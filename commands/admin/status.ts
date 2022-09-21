@@ -30,7 +30,7 @@ exports.run = (client: DiscordClient, message: DiscordMessage) => {
    */
   if (!Object.values(client.config.ids.acceptedAdmins).includes(message.author.id)) {
     return client.reply(message, {
-      content: client.translate({ key: 'commands.admin.missingPermission', lng: message.author.language }),
+      content: client.translate({ key: 'missingPermission', lng: message.author.language }),
     })
   }
 
