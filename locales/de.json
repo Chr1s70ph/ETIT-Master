@@ -130,6 +130,10 @@
       "week": "Woche vom {{date}}",
       "next_week": "Nächste Woche ({{week_start_date}})",
       "prev_week": "Letzte Woche ({{week_start_date}})"
+    },
+    "table_of_contents": {
+      "localized_description": "Erstellt ein Inhaltsverzeichnis.",
+      "localized_name": "inhaltsverzeichnis"
     }
   },
   "language": "Deutsch"

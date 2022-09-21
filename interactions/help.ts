@@ -1,5 +1,5 @@
 import { EmbedBuilder } from 'discord.js'
-import { DiscordClient, DiscordCommandInteraction, DiscordSlashCommandBuilder } from '../types/customTypes'
+import { DiscordClient, DiscordChatInputCommandInteraction, DiscordSlashCommandBuilder } from '../types/customTypes'
 const fs = require('fs')
 
 export const data = new DiscordSlashCommandBuilder()
@@ -7,12 +7,12 @@ export const data = new DiscordSlashCommandBuilder()
   .setDescription('hilfe ist hier')
   .setLocalizations('help')
 
-exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
+exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCommandInteraction): Promise<void> => {
   const embed = await getCommands(client, interaction)
   await interaction.reply({ embeds: [embed.setTimestamp()], ephemeral: true })
 }
 
-async function getCommands(client: DiscordClient, interaction: DiscordCommandInteraction): Promise<any> {
+async function getCommands(client: DiscordClient, interaction: DiscordChatInputCommandInteraction): Promise<any> {
   const commandsEmbed = new EmbedBuilder()
     .setColor('#ffa500')
     .setAuthor({

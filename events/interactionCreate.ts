@@ -4,7 +4,7 @@ import {
   DiscordAutocompleteInteraction,
   DiscordButtonInteraction,
   DiscordClient,
-  DiscordCommandInteraction,
+  DiscordChatInputCommandInteraction,
   DiscordMessageContextMenuCommandInteraction,
   DiscordModalSubmitInteraction,
   DiscordSelectMenuInteraction,
@@ -53,7 +53,7 @@ exports.run = (client: DiscordClient, interaction: any) => {
     const DiscordInteraction = interaction as DiscordButtonInteraction
     commandfile.Button(client, DiscordInteraction)
   } else if (interaction.type === InteractionType.ApplicationCommand) {
-    const DiscordInteraction = interaction as DiscordCommandInteraction
+    const DiscordInteraction = interaction as DiscordChatInputCommandInteraction
     commandfile.Command(client, DiscordInteraction)
   } else if (interaction.isContextMenuCommand() && interaction.commandType === ApplicationCommandType.Message) {
     const DiscordInteraction = interaction as DiscordMessageContextMenuCommandInteraction

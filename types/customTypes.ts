@@ -21,6 +21,7 @@ import {
   UserContextMenuCommandInteraction,
   SlashCommandBuilder,
   LocaleString,
+  ChatInputCommandInteraction,
 } from 'discord.js'
 import i18next from 'i18next'
 
@@ -270,9 +271,9 @@ export interface DiscordButtonInteraction extends ButtonInteraction {
 }
 
 /**
- * Extended {@link CommandInteraction} to hold {@link DiscordUser}
+ * Extended {@link ChatInputCommandInteraction} to hold {@link DiscordUser}
  */
-export interface DiscordCommandInteraction extends CommandInteraction {
+export interface DiscordChatInputCommandInteraction extends ChatInputCommandInteraction {
   user: DiscordUser
 }
 
