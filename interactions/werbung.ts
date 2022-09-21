@@ -9,7 +9,7 @@ import {
 } from 'discord.js'
 import {
   DiscordClient,
-  DiscordCommandInteraction,
+  DiscordChatInputCommandInteraction,
   DiscordModalSubmitInteraction,
   DiscordSlashCommandBuilder,
 } from '../types/customTypes'
@@ -24,7 +24,7 @@ export const data = new DiscordSlashCommandBuilder()
 //  - link to user in embed
 //  - basic information about user in embed
 
-exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
+exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCommandInteraction): Promise<void> => {
   /**
    * Input field for the tile
    */

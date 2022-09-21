@@ -1,5 +1,5 @@
 import { EmbedBuilder } from 'discord.js'
-import { DiscordClient, DiscordCommandInteraction, DiscordSlashCommandBuilder } from '../types/customTypes'
+import { DiscordClient, DiscordChatInputCommandInteraction, DiscordSlashCommandBuilder } from '../types/customTypes'
 
 /**
  * Available Quicklinks
@@ -88,9 +88,9 @@ export const data = new DiscordSlashCommandBuilder()
 /**
  * Reply to interactiopn
  * @param {DiscordClient} client Bot-Client
- * @param {DiscordCommandInteraction} interaction Interaction triggered
+ * @param {DiscordChatInputCommandInteraction} interaction Interaction triggered
  */
-exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
+exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCommandInteraction): Promise<void> => {
   const choice: string = interaction.options.get('quicklinks').value as string
   const ping = interaction.options.getUser('userping') ?? null
   await interaction.reply({
