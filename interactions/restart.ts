@@ -1,5 +1,5 @@
 import { PermissionsBitField } from 'discord.js'
-import { DiscordClient, DiscordCommandInteraction, DiscordSlashCommandBuilder } from '../types/customTypes'
+import { DiscordChatInputCommandInteraction, DiscordClient, DiscordSlashCommandBuilder } from '../types/customTypes'
 /**
  * Const required, otherwise pm2 throws an error.
  */
@@ -11,7 +11,7 @@ export const data = new DiscordSlashCommandBuilder()
   .setLocalizations('restart')
   .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
 
-exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
+exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCommandInteraction): Promise<void> => {
   interaction.deferReply()
   if (!Object.values(client.config.ids.acceptedAdmins).includes(interaction.user.id)) {
     interaction.reply({
