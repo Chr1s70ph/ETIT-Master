@@ -59,11 +59,6 @@
         "Time": "Time since last restart:",
         "Title": "⏰Uptime"
       },
-      "userprofile": {
-        "Joined": "Joined:",
-        "NoNitroStatus": "Not currently subscribed",
-        "UserProfile": "👤Userprofile"
-      },
       "zoom": {}
     }
   },
@@ -117,6 +112,20 @@
     "table_of_contents": {
       "localized_description": "Tables the content.",
       "localized_name": "table_of_contents"
+    },
+    "userinfo": {
+      "account_created": "Account created",
+      "bot_user": "Bot Nutzer",
+      "highest_role": "Highest Role",
+      "joined": "Joined",
+      "localized_description": "Learn more about a user!",
+      "localized_name": "userinfo",
+      "name": "Name",
+      "nickname": "Nickname",
+      "nitro": "Nitro",
+      "no_nitro": "Not currently subscribed",
+      "tag": "Tag",
+      "userinfo": "👤Userprofile"
     },
     "werbung": {
       "localized_description": "You want to advertise something on this server?",

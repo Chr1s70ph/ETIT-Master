@@ -59,11 +59,6 @@
         "Time": "Zeit seit dem letzten neustart:",
         "Title": "⏰Betriebszeit"
       },
-      "userprofile": {
-        "Joined": "Beigetreten",
-        "NoNitroStatus": "Zurzeit nicht abboniert",
-        "UserProfile": "👤Benutzerprofil"
-      },
       "zoom": {}
     }
   },
@@ -117,6 +112,20 @@
     "table_of_contents": {
       "localized_description": "Erstellt ein Inhaltsverzeichnis.",
       "localized_name": "inhaltsverzeichnis"
+    },
+    "userinfo": {
+      "account_created": "Account erstellt am",
+      "bot_user": "Bot Nutzer",
+      "highest_role": "Höchste Rolle",
+      "joined": "Beigetreten",
+      "localized_description": "Erfahre mehr über einen Nutzer!",
+      "localized_name": "nutzerinformationen",
+      "name": "Name",
+      "nickname": "Spitzname",
+      "nitro": "Nitro",
+      "no_nitro": "Zurzeit nicht abboniert",
+      "tag": "Diskriminator",
+      "userinfo": "👤Benutzerprofil"
     },
     "werbung": {
       "localized_description": "Du willst Werbung bei uns auf dem Server machen?",
