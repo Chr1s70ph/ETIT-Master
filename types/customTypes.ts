@@ -5,13 +5,12 @@ import {
   ButtonInteraction,
   Client,
   Collection,
-  CommandInteraction,
   ContextMenuCommandInteraction,
   Interaction,
   Message,
   MessageComponentInteraction,
   MessageContextMenuCommandInteraction,
-  MessageOptions,
+  MessageCreateOptions,
   MessageType,
   ModalSubmitInteraction,
   SelectMenuInteraction,
@@ -72,10 +71,10 @@ export class DiscordClient extends Client {
   /**
    * Uses {@link TextChannel.send()} to reply to the issued command.
    * @param {Message} message message to answer to
-   * @param {MessageOptions} returnData data to be sent back as answer
+   * @param {MessageCreateOptions} returnData data to be sent back as answer
    * @returns {Message} original command message
    */
-  public send(message: Message, returnData: MessageOptions): Promise<Message<boolean>> {
+  public send(message: Message, returnData: MessageCreateOptions): Promise<Message<boolean>> {
     return new Promise<Message>((resolve, reject) => {
       message.channel.send(returnData).then(
         () => {
@@ -91,11 +90,11 @@ export class DiscordClient extends Client {
   /**
    * Uses {@link Message.reply()} to reply to the issued command.
    * @param {Message} message message to ryply to
-   * @param {MessageOptions} returnData data to be sent back as answer
+   * @param {MessageCreateOptions} returnData data to be sent back as answer
    * @param {Message} [optionalReplyMessage] to reply to, instead of command message
    * @returns {Message} original command message
    */
-  public reply(message: Message, returnData: MessageOptions): Promise<Message<boolean>> {
+  public reply(message: Message, returnData: MessageCreateOptions): Promise<Message<boolean>> {
     return new Promise<Message>((resolve, reject) => {
       if (message.type === MessageType.Reply) {
         return message.channel.messages

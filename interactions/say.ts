@@ -1,17 +1,17 @@
 import {
+  ActionRowBuilder,
   EmbedBuilder,
   MessageType,
-  TextInputBuilder,
-  TextInputStyle,
-  ActionRowBuilder,
   ModalActionRowComponentBuilder,
   ModalBuilder,
+  TextInputBuilder,
+  TextInputStyle,
 } from 'discord.js'
 import {
-  DiscordModalSubmitInteraction,
-  DiscordMessage,
+  DiscordChatInputCommandInteraction,
   DiscordClient,
-  DiscordCommandInteraction,
+  DiscordMessage,
+  DiscordModalSubmitInteraction,
   DiscordSlashCommandBuilder,
 } from '../types/customTypes'
 
@@ -23,14 +23,14 @@ export const data = new DiscordSlashCommandBuilder()
   .setLocalizations('say')
   .addAttachmentOption(option => option.setName('attachment').setDescription('nice picture ;)'))
 
-exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
+exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCommandInteraction): Promise<void> => {
   if (!Object.values(client.config.ids.acceptedAdmins).includes(interaction.user.id)) {
     interaction.reply({
       content: client.translate({ key: 'missingPermission', lng: interaction.user.language }),
     })
   }
 
-  attachment = interaction.options.get('attachment')
+  attachment = interaction.options.getAttachment(attachment)
 
   console.log(attachment)
 
@@ -55,7 +55,7 @@ exports.Modal = async (client: DiscordClient, interaction: DiscordModalSubmitInt
   const embed = new EmbedBuilder().setDescription(content).setColor('Random')
 
   interaction.reply({ embeds: [embed] })
-  interaction.followUp({ attachments: [attachment] })
+  interaction.followUp({ files: [attachment] })
 }
 
 exports.run = (client: DiscordClient, message: DiscordMessage) => {
