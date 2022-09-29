@@ -50,7 +50,7 @@ exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCom
   await interaction.showModal(new ModalBuilder().setTitle('Say').setCustomId('say').addComponents(actionRow))
 }
 
-exports.Modal = async (client: DiscordClient, interaction: DiscordModalSubmitInteraction) => {
+exports.Modal = (client: DiscordClient, interaction: DiscordModalSubmitInteraction) => {
   const content = interaction.fields.getTextInputValue('modal_content')
   const embed = new EmbedBuilder().setDescription(content).setColor('Random')
 
