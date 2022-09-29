@@ -109,6 +109,10 @@
       "localized_description": "Restart the bot instance.",
       "localized_name": "restart"
     },
+    "say": {
+      "localized_description": "Speak, as if you were a bot.",
+      "localized_name": "say"
+    },
     "table_of_contents": {
       "localized_description": "Tables the content.",
       "localized_name": "table_of_contents"

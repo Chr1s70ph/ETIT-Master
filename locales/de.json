@@ -109,6 +109,10 @@
       "localized_description": "Starte die bot-Instanz neu.",
       "localized_name": "neustart"
     },
+    "say": {
+      "localized_description": "Sprich, als seißt du ein Bot.",
+      "localized_name": "sagen"
+    },
     "table_of_contents": {
       "localized_description": "Erstellt ein Inhaltsverzeichnis.",
       "localized_name": "inhaltsverzeichnis"
