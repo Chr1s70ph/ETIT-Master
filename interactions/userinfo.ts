@@ -1,4 +1,5 @@
-import { EmbedBuilder } from 'discord.js'
+import { EmbedBuilder, User } from 'discord.js'
+import { GuildMember } from 'discord.js/typings/index.js'
 import { DiscordChatInputCommandInteraction, DiscordClient, DiscordSlashCommandBuilder } from '../types/customTypes'
 
 export const data = new DiscordSlashCommandBuilder()
@@ -13,18 +14,38 @@ export const data = new DiscordSlashCommandBuilder()
   )
 
 exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCommandInteraction): Promise<void> => {
+  /**
+   * Defer interaction, so that no timeout error occurs
+   */
   await interaction.deferReply()
 
-  const target_user = interaction.options.getUser('user')
-  const target_guildMember = interaction.guild.members.cache.find(foundUser => foundUser.id === target_user.id)
+  /**
+   * Target {@link User} to get information about
+   */
+  const target_user: User = interaction.options.getUser('user')
+
+  /**
+   * Target user as {@link GuildMember} object
+   */
+  const target_guildMember: GuildMember = interaction.guild.members.cache.find(
+    foundUser => foundUser.id === target_user.id,
+  )
+
   /**
    * A forced fetch is required, otherwise the banner will not be accessible
    */
-  const target_forceFetchedUser = await client.users.fetch(target_user, { force: true })
-  const userPremiumSinceTimestamp = target_guildMember.premiumSinceTimestamp
+  const target_forceFetchedUser: User = await client.users.fetch(target_user, { force: true })
+
+  /**
+   * Timestamp since when {@link target_user} is a premium user
+   */
+  const userPremiumSinceTimestamp: string = target_guildMember.premiumSinceTimestamp
     ?.toString()
     .substring(0, target_guildMember.premiumSinceTimestamp?.toString().length - 3)
 
+  /**
+   * Embed with information about {@link target_user}
+   */
   const embed = new EmbedBuilder()
     .setTitle(`${client.translate({ key: 'interactions.userinfo.userinfo', lng: interaction.user.language })}:`)
     .addFields([
@@ -77,10 +98,8 @@ exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCom
     .setImage(target_forceFetchedUser.bannerURL({ size: 4096 }))
     .setColor(target_guildMember.displayHexColor)
 
+  /**
+   * Edit reply of interaction with {@link embed}
+   */
   await interaction.editReply({ embeds: [embed] })
 }
-
-// .setAuthor({
-//   name: client.translate({ key: 'interactions.help.title', lng: interaction.user.language }),
-//   iconURL: 'https://bit.ly/3CJU0lf',
-// })
