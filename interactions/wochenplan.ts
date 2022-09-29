@@ -3,7 +3,7 @@ import moment from 'moment-timezone'
 import { async } from 'node-ical'
 import {
   DiscordClient,
-  DiscordCommandInteraction,
+  DiscordChatInputCommandInteraction,
   DiscordSlashCommandBuilder,
   DiscordButtonInteraction,
 } from '../types/customTypes'
@@ -26,7 +26,7 @@ export const data = new DiscordSlashCommandBuilder()
 
 async function wochenplan(
   client: DiscordClient,
-  interaction: DiscordCommandInteraction | DiscordButtonInteraction,
+  interaction: DiscordChatInputCommandInteraction | DiscordButtonInteraction,
   date,
 ) {
   let returnData = {}
@@ -301,7 +301,7 @@ function doubleEntry(array: any[], new_element: any, start_date: Date, end_date:
   return false
 }
 
-exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
+exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCommandInteraction): Promise<void> => {
   /**
    * Defer interaction reply, since it can take some time to come through all calendars
    */
@@ -376,13 +376,13 @@ exports.Button = async (client: DiscordClient, interaction: DiscordButtonInterac
  * Helper function to create a ActionRow containing buttons for previous/next week
  * @param {Date} weekStartDay week start of which to get prev/next week buttons for
  * @param {DiscordClient} client Bot-Client
- * @param {DiscordCommandInteraction | DiscordButtonInteraction} interaction interaction to reply to
+ * @param {DiscordChatInputCommandInteraction | DiscordButtonInteraction} interaction interaction to reply to
  * @returns {ActionRowBuilder<ButtonBuilder>} Actionrow
  */
 function createWeekButtons(
   weekStartDay: Date,
   client: DiscordClient,
-  interaction: DiscordCommandInteraction | DiscordButtonInteraction,
+  interaction: DiscordChatInputCommandInteraction | DiscordButtonInteraction,
 ): ActionRowBuilder<ButtonBuilder> {
   /**
    * Calculate previous and next week

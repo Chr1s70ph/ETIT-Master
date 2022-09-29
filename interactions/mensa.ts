@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import * as https from 'https'
 import { EmbedBuilder } from 'discord.js'
-import { DiscordClient, DiscordCommandInteraction, DiscordSlashCommandBuilder } from '../types/customTypes'
+import { DiscordClient, DiscordChatInputCommandInteraction, DiscordSlashCommandBuilder } from '../types/customTypes'
 const { DateTime } = require('luxon')
 
 export const data = new DiscordSlashCommandBuilder()
@@ -33,7 +33,7 @@ export const data = new DiscordSlashCommandBuilder()
   )
   .setLocalizations('mensa')
 
-exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
+exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCommandInteraction): Promise<void> => {
   const today = new Date()
   const weekday = interaction.options.get('wochentag')?.value
     ? interaction.options.get('wochentag')?.value
@@ -98,10 +98,10 @@ const mensaOptions = {
       new FoodLine('l3', 'Linie 3'),
       new FoodLine('l45', 'Linie 4'),
       new FoodLine('l5', 'Linie 5'),
+      new FoodLine('update', 'Linie 6'),
       new FoodLine('schnitzelbar', 'Schnitzelbar'),
       new FoodLine('aktion', '[Kœri]werk 11-14 Uhr'),
       new FoodLine('pizza', '[pizza]werk'),
-      new FoodLine('update', '[Gnocchi]werk'),
     ],
   },
   erzberger: {
@@ -202,7 +202,7 @@ export async function mensa(
   client: DiscordClient,
   req_weekday: string,
   req_mensa: string,
-  interaction: DiscordCommandInteraction | null,
+  interaction: DiscordChatInputCommandInteraction | null,
 ): Promise<EmbedBuilder> {
   /**
    * Mensa embed

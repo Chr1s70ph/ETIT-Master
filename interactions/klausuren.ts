@@ -1,7 +1,7 @@
 import { EmbedBuilder } from 'discord.js'
 import moment from 'moment-timezone'
 import { async } from 'node-ical'
-import { DiscordClient, DiscordCommandInteraction, DiscordSlashCommandBuilder } from '../types/customTypes'
+import { DiscordClient, DiscordChatInputCommandInteraction, DiscordSlashCommandBuilder } from '../types/customTypes'
 
 exports.name = 'klausuren'
 
@@ -14,7 +14,12 @@ export const data = new DiscordSlashCommandBuilder()
   .setDescription('Zeigt deine anstehenden Klausuren an.')
   .setLocalizations('klausuren')
 
-async function klausuren(client: DiscordClient, interaction: DiscordCommandInteraction, pNow, pCourseAndSemester) {
+async function klausuren(
+  client: DiscordClient,
+  interaction: DiscordChatInputCommandInteraction,
+  pNow,
+  pCourseAndSemester,
+) {
   let returnData = {}
   for (const entry in client.config.calendars) {
     // eslint-disable-next-line no-await-in-loop
@@ -178,7 +183,7 @@ function pushToWeeksEvents(interaction, event, relevantEvents) {
   }
 }
 
-exports.Command = async (client: DiscordClient, interaction: DiscordCommandInteraction): Promise<void> => {
+exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCommandInteraction): Promise<void> => {
   await interaction.deferReply({ ephemeral: true })
   const now = new Date()
   const embed = await klausuren(client, interaction, now, 'all')
