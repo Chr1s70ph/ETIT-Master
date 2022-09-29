@@ -114,6 +114,10 @@
       "localized_description": "Starte die bot-Instanz neu.",
       "localized_name": "neustart"
     },
+    "table_of_contents": {
+      "localized_description": "Erstellt ein Inhaltsverzeichnis.",
+      "localized_name": "inhaltsverzeichnis"
+    },
     "werbung": {
       "localized_description": "Du willst Werbung bei uns auf dem Server machen?",
       "localized_name": "werbung"
@@ -132,13 +136,7 @@
         "name": "⚠️ Bemerkung: Du hast zu viele Fächer ausgewählt!",
         "value": "Weil du zu viele Fächer ausgewählt hast, kann es sein, dass dein Wochenplan nicht wie gewollt aussieht."
       },
-      "week": "Woche vom {{date}}",
-      "next_week": "Nächste Woche ({{week_start_date}})",
-      "prev_week": "Letzte Woche ({{week_start_date}})"
-    },
-    "table_of_contents": {
-      "localized_description": "Erstellt ein Inhaltsverzeichnis.",
-      "localized_name": "inhaltsverzeichnis"
+      "week": "Woche vom {{date}}"
     }
   },
   "language": "Deutsch",
