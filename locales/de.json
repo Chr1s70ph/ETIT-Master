@@ -64,6 +64,17 @@
   },
   "flag": "🇩🇪",
   "interactions": {
+    "channelinfo": {
+      "channelinfo": "Kanalinformationen",
+      "created_at": "Erstellt am",
+      "guild_id": "Server ID",
+      "id": "ID",
+      "localized_description": "Erfahre etwas neues über einen kanal.",
+      "localized_name": "kanalinformationen",
+      "name": "Name",
+      "parent": "Oberkategorie",
+      "type": "Typ"
+    },
     "help": {
       "localized_description": "Hilft (vielleicht)",
       "localized_name": "hilfe",

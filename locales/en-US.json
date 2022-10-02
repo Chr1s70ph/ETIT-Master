@@ -64,6 +64,17 @@
   },
   "flag": "🇺🇸",
   "interactions": {
+    "channelinfo": {
+      "channelinfo": "Channelinfo",
+      "created_at": "Channel created at",
+      "guild_id": "Guild ID",
+      "id": "ID",
+      "localized_description": "Learn something new about a given channel.",
+      "localized_name": "channelinfo",
+      "name": "Name",
+      "parent": "Parent",
+      "type": "Type"
+    },
     "help": {
       "localized_description": "Helps (maybe)",
       "localized_name": "help",
