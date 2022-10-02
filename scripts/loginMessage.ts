@@ -50,8 +50,7 @@ exports.run = async (client: DiscordClient) => {
 function createEmbed(client: DiscordClient, commands: any[], slashCount: string[]): EmbedBuilder {
   return new EmbedBuilder()
     .setColor('#ffa500')
-    .setAuthor({ name: client.user.tag, iconURL: 'https://www.iconsdb.com/icons/preview/orange/code-xxl.png' })
-    .setThumbnail(client.user.avatarURL())
+    .setAuthor({ name: client.user.tag, iconURL: client.user.avatarURL() })
     .setTitle('[🌐] Bot erfolgreich gestartet')
     .addFields(
       {
@@ -90,7 +89,7 @@ function createEmbed(client: DiscordClient, commands: any[], slashCount: string[
     .setTimestamp()
     .setFooter({
       text: `[ID] ${client.config.ids.userID.botUserID} \nstarted`,
-      iconURL: 'https://image.flaticon.com/icons/png/512/888/888879.png',
+      iconURL: client.guilds.cache.find(guild => guild.id === client.config.ids.serverID).iconURL(),
     })
 }
 /**
