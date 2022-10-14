@@ -7,7 +7,7 @@ import config from './private/config.json'
 import { DiscordClient } from './types/customTypes'
 
 const backend = new Backend({
-  loadPath: '/locales/{{lng}}/{{ns}}.json',
+  loadPath: 'locales/{{lng}}/{{ns}}.json',
 })
 
 i18next.use(backend).init({
