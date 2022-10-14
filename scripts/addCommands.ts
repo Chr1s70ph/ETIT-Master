@@ -9,87 +9,20 @@ import { DiscordClient } from '../types/customTypes'
 const { Routes } = require('discord-api-types/v10')
 
 /**
- * Folder that contains all commands.
- */
-const commandsFolder = './commands/'
-
-/**
  * Folder that contains all slashCommands.
  */
-const slashCommandsFolder = './interactions/'
+const interactionsFolder = './interactions/'
 
 exports.run = (client: DiscordClient) => {
-  Commands(client)
-  loadSlashCommands(client)
+  postInteractions(client)
   mensa_automation(client)
-}
-
-function Commands(client) {
-  readdir(commandsFolder, (err, elements) => {
-    if (err) return console.log(err)
-    return elements.forEach(file => {
-      /**
-       * Loop through all elements in folder "commands".
-       */
-      const element_in_folder = statSync(`./commands/${file}`)
-      if (element_in_folder.isDirectory() === true) {
-        /**
-         * Check if element in folder is a subfolder.
-         */
-        const sub_directory = `./commands/${file}/`
-        readdir(sub_directory, (_err, files) => {
-          if (_err) return console.log(_err)
-          return files.forEach(_file => {
-            /**
-             * Adds commands from subfolder to collection.
-             */
-            setCommands(sub_directory, _file, client)
-          })
-        })
-        return
-      }
-
-      /**
-       * Adds commands from parentfolder to collection.
-       */
-      setCommands(commandsFolder, file, client)
-    })
-  })
-}
-
-/**
- * Add commands to {@link DiscordClient.commands}.
- * @param {string} path Path of commands folder
- * @param {string} file Files to check.
- * @param {DiscordClient} client Bot-Client
- * @returns {void}
- */
-function setCommands(path: string, file: string, client: DiscordClient): void {
-  if (!(file.endsWith('.js') || file.endsWith('.ts'))) return
-
-  /**
-   * Path of command file.
-   */
-  const props = require(`../${path}${file}`)
-
-  /**
-   * Name of command.
-   */
-  const commandName = file.split('.')[0]
-
-  /**
-   * Add command to {@link DiscordClient.commands}.
-   */
-  client.commands.set(commandName, props)
-
-  console.log(`Successfully loaded command ${commandName}`)
 }
 
 /**
  * Load and post all slashComamnds.
  * @param  {DiscordClient} client Bot-Client
  */
-export async function loadSlashCommands(client: DiscordClient) {
+export async function postInteractions(client: DiscordClient) {
   /**
    * Object with all files of scripts directory.
    */
@@ -101,7 +34,7 @@ export async function loadSlashCommands(client: DiscordClient) {
     /**
      * Read directory.
      */
-    files = await promiseReaddir(slashCommandsFolder)
+    files = await promiseReaddir(interactionsFolder)
   } catch (e) {
     /**
      * Error handling.
@@ -112,7 +45,7 @@ export async function loadSlashCommands(client: DiscordClient) {
     /**
      * Path of slashCommand.
      */
-    const slashCommand = require(`../${slashCommandsFolder}${file}`)
+    const slashCommand = require(`../${interactionsFolder}${file}`)
 
     slashCommandData.push(slashCommand.data.toJSON())
 

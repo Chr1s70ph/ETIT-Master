@@ -1,4 +1,3 @@
-import { statSync, readdir } from 'fs'
 import { readdir as readdir_promise } from 'fs/promises'
 import { EmbedBuilder, TextChannel } from 'discord.js'
 import project from '../package.json'
@@ -9,16 +8,6 @@ const latest_commit = require(newLocal).execSync('git rev-parse HEAD').toString(
 
 exports.run = async (client: DiscordClient) => {
   /**
-   * Array of commands.
-   */
-  const commands = []
-
-  /**
-   * Count commands.
-   */
-  await commandCounter(commands)
-
-  /**
    * List of slashCommands.
    */
   const interactionCount = await readdir_promise('./interactions/')
@@ -26,7 +15,7 @@ exports.run = async (client: DiscordClient) => {
   /**
    * Login message {@link EmbedBuilder}.
    */
-  const loginMessage = createEmbed(client, commands, interactionCount)
+  const loginMessage = createEmbed(client, interactionCount)
 
   /**
    * Channel to send {@link loginMessage} to.
@@ -43,11 +32,10 @@ exports.run = async (client: DiscordClient) => {
 /**
  * Create loginmessage.
  * @param {DiscordClient} client Bot-Client
- * @param {any[]} commands All commands
  * @param {string[]} slashCount All slashCommands
  * @returns {EmbedBuilder}
  */
-function createEmbed(client: DiscordClient, commands: any[], slashCount: string[]): EmbedBuilder {
+function createEmbed(client: DiscordClient, slashCount: string[]): EmbedBuilder {
   return new EmbedBuilder()
     .setColor('#ffa500')
     .setAuthor({ name: client.user.tag, iconURL: client.user.avatarURL() })
@@ -71,11 +59,6 @@ function createEmbed(client: DiscordClient, commands: any[], slashCount: string[
     )
     .addFields(
       {
-        name: 'Befehle geladen:',
-        value: commands.length.toString(),
-        inline: true,
-      },
-      {
         name: 'Interactions geladen:',
         value: slashCount.length.toString(),
         inline: true,
@@ -91,56 +74,4 @@ function createEmbed(client: DiscordClient, commands: any[], slashCount: string[
       text: `[ID] ${client.config.ids.userID.botUserID} \nstarted`,
       iconURL: client.guilds.cache.find(guild => guild.id === client.config.ids.serverID).iconURL(),
     })
-}
-/**
- * Count commands.
- * @param {any[]} commands Array of commands
- * @returns {Promise}
- */
-async function commandCounter(commands: any[]): Promise<void> {
-  /**
-   * Directory to count commands.
-   */
-  const directory = await readdir_promise('./commands')
-
-  /**
-   * Loop through all folders in {@link directory}.
-   */
-  directory.forEach(file => {
-    /**
-     * Check if elements in {@link directory} are folders.
-     */
-    if (statSync(`./commands/${file}`).isDirectory() === true) {
-      /**
-       * Sub directory to look for commands inside.
-       */
-      const sub_directory = `./commands/${file}/`
-
-      /**
-       * Read directory.
-       */
-      readdir(sub_directory, (err, elements) => {
-        /**
-         * Error handling.
-         */
-        if (err) return console.log(err)
-
-        /**
-         * Loop through all files in {@link sub_directory}.
-         */
-        elements.forEach(element => {
-          /**
-           * Add command to commands array
-           */
-          commands[commands.length] = element
-        })
-        return 0
-      })
-    } else {
-      /**
-       * Add command to commands array
-       */
-      commands[commands.length] = file
-    }
-  })
 }
