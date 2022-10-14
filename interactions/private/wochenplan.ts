@@ -6,7 +6,7 @@ import {
   DiscordChatInputCommandInteraction,
   DiscordSlashCommandBuilder,
   DiscordButtonInteraction,
-} from '../types/customTypes'
+} from '../../types/customTypes'
 
 exports.name = 'wochenplan'
 

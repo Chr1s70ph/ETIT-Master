@@ -8,7 +8,6 @@
 package-lock.json
 private/*
 */secret/*
-facts.txt
 mensa.json
 devtest.*
 built/

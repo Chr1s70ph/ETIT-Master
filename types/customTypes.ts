@@ -3,25 +3,25 @@ import {
   ApplicationCommand,
   AutocompleteInteraction,
   ButtonInteraction,
+  ChatInputCommandInteraction,
   Client,
   Collection,
-  CommandInteraction,
   ContextMenuCommandInteraction,
   Interaction,
+  LocaleString,
   Message,
   MessageComponentInteraction,
   MessageContextMenuCommandInteraction,
-  MessageOptions,
+  MessageCreateOptions,
   MessageType,
   ModalSubmitInteraction,
+  PresenceData,
   SelectMenuInteraction,
+  SlashCommandBuilder,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   TextChannel,
   User,
   UserContextMenuCommandInteraction,
-  SlashCommandBuilder,
-  LocaleString,
-  ChatInputCommandInteraction,
 } from 'discord.js'
 import i18next from 'i18next'
 
@@ -35,6 +35,11 @@ export class DiscordClient extends Client {
    * @type {Collection<string, Command>}
    */
   public commands: Collection<string, Command>
+
+  /**
+   * Global {@link customPresence} of client
+   */
+  public customPresence: PresenceData | null
 
   /**
    * Collection of all interactions to use
@@ -72,10 +77,10 @@ export class DiscordClient extends Client {
   /**
    * Uses {@link TextChannel.send()} to reply to the issued command.
    * @param {Message} message message to answer to
-   * @param {MessageOptions} returnData data to be sent back as answer
+   * @param {MessageCreateOptions} returnData data to be sent back as answer
    * @returns {Message} original command message
    */
-  public send(message: Message, returnData: MessageOptions): Promise<Message<boolean>> {
+  public send(message: Message, returnData: MessageCreateOptions): Promise<Message<boolean>> {
     return new Promise<Message>((resolve, reject) => {
       message.channel.send(returnData).then(
         () => {
@@ -91,11 +96,11 @@ export class DiscordClient extends Client {
   /**
    * Uses {@link Message.reply()} to reply to the issued command.
    * @param {Message} message message to ryply to
-   * @param {MessageOptions} returnData data to be sent back as answer
+   * @param {MessageCreateOptions} returnData data to be sent back as answer
    * @param {Message} [optionalReplyMessage] to reply to, instead of command message
    * @returns {Message} original command message
    */
-  public reply(message: Message, returnData: MessageOptions): Promise<Message<boolean>> {
+  public reply(message: Message, returnData: MessageCreateOptions): Promise<Message<boolean>> {
     return new Promise<Message>((resolve, reject) => {
       if (message.type === MessageType.Reply) {
         return message.channel.messages

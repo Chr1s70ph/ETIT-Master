@@ -12,7 +12,7 @@ import {
   DiscordChatInputCommandInteraction,
   DiscordModalSubmitInteraction,
   DiscordSlashCommandBuilder,
-} from '../types/customTypes'
+} from '../../types/customTypes'
 
 export const data = new DiscordSlashCommandBuilder()
   .setName('werbung')

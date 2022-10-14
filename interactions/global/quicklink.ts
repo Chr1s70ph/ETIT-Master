@@ -1,5 +1,5 @@
 import { EmbedBuilder } from 'discord.js'
-import { DiscordClient, DiscordChatInputCommandInteraction, DiscordSlashCommandBuilder } from '../types/customTypes'
+import { DiscordClient, DiscordChatInputCommandInteraction, DiscordSlashCommandBuilder } from '../../types/customTypes'
 
 /**
  * Available Quicklinks
@@ -40,6 +40,12 @@ const links = {
     icon: 'https://www.redditinc.com/assets/images/site/reddit-logo.png',
     color: 0xff5700,
   },
+  git: {
+    link: 'https://git-scm.com/book/en/v2',
+    title: 'git',
+    icon: 'https://git-scm.com/images/logos/downloads/Git-Icon-1788C.png',
+    color: 0xf1502f,
+  },
 }
 
 /**
@@ -79,6 +85,7 @@ export const data = new DiscordSlashCommandBuilder()
         { name: 'duden', value: 'duden' },
         { name: 'stackoverflow', value: 'stackoverflow' },
         { name: 'reddit', value: 'reddit' },
+        { name: 'git', value: 'git' },
       )
       .setRequired(true),
   )

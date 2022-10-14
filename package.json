@@ -11,31 +11,31 @@
   "homepage": "https://github.com/Chr1s70ph/ETIT-Master-JS#readme",
   "author": "Christoph Bluem",
   "dependencies": {
-    "@discordjs/rest": "^1.1.0",
-    "discord-api-types": "^0.37.5",
-    "discord.js": "^14.3.0",
+    "@discordjs/rest": "^1.3.0",
+    "discord-api-types": "^0.37.12",
+    "discord.js": "^14.6.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.2.1",
     "fs": "^0.0.1-security",
     "github-create-issue": "^1.0.1",
     "https": "^1.0.0",
-    "i18next": "^21.9.1",
+    "i18next": "^21.10.0",
     "i18next-fs-backend": "^1.1.5",
-    "luxon": "^3.0.3",
+    "luxon": "^3.0.4",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.37",
-    "node-ical": "^0.15.1",
+    "node-ical": "^0.15.2",
     "node-schedule": "^2.1.0",
     "os": "^0.1.2",
-    "pm2": "^5.2.0",
+    "pm2": "^5.2.2",
     "tenorjs": "^1.0.10",
     "tx2": "^1.0.5",
     "valid-url": "^1.0.9"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.36.1",
-    "@typescript-eslint/parser": "^5.36.1",
-    "eslint": "^8.23.0"
+    "@typescript-eslint/eslint-plugin": "^5.40.0",
+    "@typescript-eslint/parser": "^5.40.0",
+    "eslint": "^8.25.0"
   }
 }

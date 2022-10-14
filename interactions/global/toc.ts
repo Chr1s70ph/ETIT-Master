@@ -1,5 +1,5 @@
 import { PermissionsBitField, TextChannel, Snowflake, EmbedBuilder } from 'discord.js'
-import { DiscordClient, DiscordChatInputCommandInteraction, DiscordSlashCommandBuilder } from '../types/customTypes'
+import { DiscordClient, DiscordChatInputCommandInteraction, DiscordSlashCommandBuilder } from '../../types/customTypes'
 const MAX_EMBED_LENGTH = 4096
 
 export const data = new DiscordSlashCommandBuilder()
@@ -58,6 +58,7 @@ exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCom
       /**
        * Build hyperlink for message to link to
        */
+      // eslint-disable-next-line max-len
       const hyperlink = `\n- [${title}](https://discord.com/channels/${message.guildId}/${message.channelId}/${message.id})`
 
       /**

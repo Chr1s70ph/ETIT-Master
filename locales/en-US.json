@@ -2,18 +2,11 @@
   "commands": {
     "admin": {
       "devtest": {},
-      "missingPermission": "You do not have permission to perform that command.",
-      "restart": "🤖Restarting...",
       "say": {},
       "status": "👥Presence has been updated!"
     },
     "fun": {
-      "fact": "🧠Fact",
-      "komedi": {},
-      "tenor": {
-        "ErrorMissingSearchQuery": "Please enter a search query!",
-        "ErrorNoGifsFound": "<@{{userID}}> No Gifs have been found for : '{{searchQuery}}'"
-      }
+      "komedi": {}
     },
     "tests": {
       "hello": {
@@ -56,21 +49,32 @@
         "Info": "❔ If you can't join the activity **create it** by clicking the **[Link]({{- invite}})** above."
       },
       "test": "🌐 This Bot is working as intended!",
-      "uptime": {
-        "Info": "{{days}} Days, {{hours}} Hours, {{minutes}} Minutes, {{seconds}} Seconds",
-        "Time": "Time since last restart:",
-        "Title": "⏰Uptime"
-      },
-      "userprofile": {
-        "Joined": "Joined:",
-        "NoNitroStatus": "Not currently subscribed",
-        "UserProfile": "👤Userprofile"
-      },
       "zoom": {}
     }
   },
   "flag": "🇺🇸",
   "interactions": {
+    "channelinfo": {
+      "channelinfo": "Channelinfo",
+      "created_at": "Channel created at",
+      "guild_id": "Guild ID",
+      "id": "ID",
+      "localized_description": "Learn something new about a given channel.",
+      "localized_name": "channelinfo",
+      "name": "Name",
+      "parent": "Parent",
+      "type": "Type"
+    },
+    "fact": {
+      "fact": "🧠Fact",
+      "localized_description": "Spits out a random fact.",
+      "localized_name": "fact"
+    },
+    "gif": {
+      "ErrorNoGifsFound": "<@{{userID}}> No Gifs have been found for : '{{searchQuery}}'",
+      "localized_description": "It's random gif time",
+      "localized_name": "gif"
+    },
     "help": {
       "localized_description": "Helps (maybe)",
       "localized_name": "help",
@@ -111,9 +115,39 @@
       "localized_description": "links fast",
       "localized_name": "quicklink"
     },
+    "restart": {
+      "answer": "🤖Restarting...",
+      "localized_description": "Restart the bot instance.",
+      "localized_name": "restart"
+    },
+    "say": {
+      "localized_description": "Speak, as if you were a bot.",
+      "localized_name": "say"
+    },
     "table_of_contents": {
       "localized_description": "Tables the content.",
       "localized_name": "table_of_contents"
+    },
+    "uptime": {
+      "Info": "{{days}} Days, {{hours}} Hours, {{minutes}} Minutes, {{seconds}} Seconds",
+      "localized_description": "How long is this bot already running...?",
+      "localized_name": "uptime",
+      "Time": "Time since last restart:",
+      "Title": "⏰Uptime"
+    },
+    "userinfo": {
+      "account_created": "Account created",
+      "bot_user": "Bot Nutzer",
+      "highest_role": "Highest Role",
+      "joined": "Joined",
+      "localized_description": "Learn more about a user!",
+      "localized_name": "userinfo",
+      "name": "Name",
+      "nickname": "Nickname",
+      "nitro": "Nitro",
+      "no_nitro": "Not currently subscribed",
+      "tag": "Tag",
+      "userinfo": "👤Userprofile"
     },
     "werbung": {
       "localized_description": "You want to advertise something on this server?",
@@ -136,5 +170,6 @@
       "week": "Week of {{date}}"
     }
   },
-  "language": "English"
+  "language": "English",
+  "missingPermission": "You do not have permission to perform that command."
 }

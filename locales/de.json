@@ -2,18 +2,11 @@
   "commands": {
     "admin": {
       "devtest": {},
-      "missingPermission": "Du bist nicht berechtigt, diesen Befehl auszuführen.",
-      "restart": "🤖Starte neu...",
       "say": {},
       "status": "👥Präsenz wurde geändert!"
     },
     "fun": {
-      "fact": "🧠Fakt",
-      "komedi": {},
-      "tenor": {
-        "ErrorMissingSearchQuery": "Bitte gebe ein suchwort an!",
-        "ErrorNoGifsFound": "<@{{userID}}> Es konnten keine Gifs gefunden werden für : '{{searchQuery}}'"
-      }
+      "komedi": {}
     },
     "tests": {
       "hello": {
@@ -56,21 +49,32 @@
         "Info": "❔ Wenn du der Aktivität nicht beitreten kannst, **erstelle ** sie, indem du oben auf den **[Link]({{- invite}})** klickst."
       },
       "test": "🌐Dieser Bot funktioniert einwandfrei!",
-      "uptime": {
-        "Info": "{{days}} Tage, {{hours}} Stunden, {{minutes}} Minuten, {{seconds}} Sekunden",
-        "Time": "Zeit seit dem letzten neustart:",
-        "Title": "⏰Betriebszeit"
-      },
-      "userprofile": {
-        "Joined": "Beigetreten",
-        "NoNitroStatus": "Zurzeit nicht abboniert",
-        "UserProfile": "👤Benutzerprofil"
-      },
       "zoom": {}
     }
   },
   "flag": "🇩🇪",
   "interactions": {
+    "channelinfo": {
+      "channelinfo": "Kanalinformationen",
+      "created_at": "Erstellt am",
+      "guild_id": "Server ID",
+      "id": "ID",
+      "localized_description": "Erfahre etwas neues über einen kanal.",
+      "localized_name": "kanalinformationen",
+      "name": "Name",
+      "parent": "Oberkategorie",
+      "type": "Typ"
+    },
+    "fact": {
+      "fact": "🧠Fakt",
+      "localized_description": "Spuckt einen zufälligen Fakt aus.",
+      "localized_name": "fakt"
+    },
+    "gif": {
+      "ErrorNoGifsFound": "<@{{userID}}> Es konnten keine Gifs gefunden werden für : '{{searchQuery}}'",
+      "localized_description": "Zeit für ein zufälliges gif",
+      "localized_name": "gif"
+    },
     "help": {
       "localized_description": "Hilft (vielleicht)",
       "localized_name": "hilfe",
@@ -111,9 +115,39 @@
       "localized_description": "Links schnell",
       "localized_name": "quicklink"
     },
+    "restart": {
+      "answer": "🤖Starte neu...",
+      "localized_description": "Starte die bot-Instanz neu.",
+      "localized_name": "neustart"
+    },
+    "say": {
+      "localized_description": "Sprich, als seißt du ein Bot.",
+      "localized_name": "sagen"
+    },
     "table_of_contents": {
       "localized_description": "Erstellt ein Inhaltsverzeichnis.",
       "localized_name": "inhaltsverzeichnis"
+    },
+    "uptime": {
+      "Info": "{{days}} Tage, {{hours}} Stunden, {{minutes}} Minuten, {{seconds}} Sekunden",
+      "localized_description": "Wie lange der Bot wohl schon",
+      "localized_name": "betriebszeit",
+      "Time": "Zeit seit dem letzten neustart:",
+      "Title": "⏰Betriebszeit"
+    },
+    "userinfo": {
+      "account_created": "Account erstellt am",
+      "bot_user": "Bot Nutzer",
+      "highest_role": "Höchste Rolle",
+      "joined": "Beigetreten",
+      "localized_description": "Erfahre mehr über einen Nutzer!",
+      "localized_name": "nutzerinformationen",
+      "name": "Name",
+      "nickname": "Spitzname",
+      "nitro": "Nitro",
+      "no_nitro": "Zurzeit nicht abboniert",
+      "tag": "Diskriminator",
+      "userinfo": "👤Benutzerprofil"
     },
     "werbung": {
       "localized_description": "Du willst Werbung bei uns auf dem Server machen?",
@@ -136,5 +170,6 @@
       "week": "Woche vom {{date}}"
     }
   },
-  "language": "Deutsch"
+  "language": "Deutsch",
+  "missingPermission": "Du bist nicht berechtigt, diesen Befehl auszuführen."
 }

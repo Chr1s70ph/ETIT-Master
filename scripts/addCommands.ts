@@ -1,95 +1,29 @@
-import { readdir, statSync } from 'fs'
 import { readdir as promiseReaddir } from 'fs/promises'
 import { REST } from '@discordjs/rest'
 import { TextChannel } from 'discord.js'
 import { scheduleJob } from 'node-schedule'
-import { mensa, getWeekday, _updateJson } from '../interactions/mensa'
+import { mensa, getWeekday, _updateJson } from '../interactions/global/mensa'
 import { DiscordClient } from '../types/customTypes'
 
 const { Routes } = require('discord-api-types/v10')
 
 /**
- * Folder that contains all commands.
- */
-const commandsFolder = './commands/'
-
-/**
  * Folder that contains all slashCommands.
  */
-const slashCommandsFolder = './interactions/'
+const PRIVATE_INTERACTIONS_FOLDER = './interactions/private/'
+const GLOBAL_INTERACTIONS_FOLDER = './interactions/global/'
 
 exports.run = (client: DiscordClient) => {
-  Commands(client)
-  loadSlashCommands(client)
+  postPrivateInteractions(client)
+  postGlobalInteractions(client)
   mensa_automation(client)
-}
-
-function Commands(client) {
-  readdir(commandsFolder, (err, elements) => {
-    if (err) return console.log(err)
-    return elements.forEach(file => {
-      /**
-       * Loop through all elements in folder "commands".
-       */
-      const element_in_folder = statSync(`./commands/${file}`)
-      if (element_in_folder.isDirectory() === true) {
-        /**
-         * Check if element in folder is a subfolder.
-         */
-        const sub_directory = `./commands/${file}/`
-        readdir(sub_directory, (_err, files) => {
-          if (_err) return console.log(_err)
-          return files.forEach(_file => {
-            /**
-             * Adds commands from subfolder to collection.
-             */
-            setCommands(sub_directory, _file, client)
-          })
-        })
-        return
-      }
-
-      /**
-       * Adds commands from parentfolder to collection.
-       */
-      setCommands(commandsFolder, file, client)
-    })
-  })
-}
-
-/**
- * Add commands to {@link DiscordClient.commands}.
- * @param {string} path Path of commands folder
- * @param {string} file Files to check.
- * @param {DiscordClient} client Bot-Client
- * @returns {void}
- */
-function setCommands(path: string, file: string, client: DiscordClient): void {
-  if (!(file.endsWith('.js') || file.endsWith('.ts'))) return
-
-  /**
-   * Path of command file.
-   */
-  const props = require(`../${path}${file}`)
-
-  /**
-   * Name of command.
-   */
-  const commandName = file.split('.')[0]
-
-  /**
-   * Add command to {@link DiscordClient.commands}.
-   */
-  client.commands.set(commandName, props)
-
-  console.log(`Successfully loaded command ${commandName}`)
 }
 
 /**
  * Load and post all slashComamnds.
  * @param  {DiscordClient} client Bot-Client
  */
-export async function loadSlashCommands(client: DiscordClient) {
+export async function postPrivateInteractions(client: DiscordClient) {
   /**
    * Object with all files of scripts directory.
    */
@@ -101,7 +35,7 @@ export async function loadSlashCommands(client: DiscordClient) {
     /**
      * Read directory.
      */
-    files = await promiseReaddir(slashCommandsFolder)
+    files = await promiseReaddir(PRIVATE_INTERACTIONS_FOLDER)
   } catch (e) {
     /**
      * Error handling.
@@ -112,28 +46,79 @@ export async function loadSlashCommands(client: DiscordClient) {
     /**
      * Path of slashCommand.
      */
-    const slashCommand = require(`../${slashCommandsFolder}${file}`)
+    const private_interaction = require(`../${PRIVATE_INTERACTIONS_FOLDER}/${file}`)
 
-    slashCommandData.push(slashCommand.data.toJSON())
+    slashCommandData.push(private_interaction.data.toJSON())
 
     const commandName = file.split('.')[0]
 
-    client.interactions.set(commandName, slashCommand)
-    console.log(`Successfully posted slashCommand ${commandName}`)
+    client.interactions.set(commandName, private_interaction)
+    console.log(`Successfully posted private interaction ${commandName}`)
   })
-  postSlashCommands(client, slashCommandData)
+  postPrivateSlashCommands(client, slashCommandData)
 }
 
-async function postSlashCommands(client, slashCommandData) {
+async function postPrivateSlashCommands(client, slashCommandData) {
   const rest = new REST({ version: '10' }).setToken(client.config.botToken)
   try {
-    console.log('Started refreshing application (/) commands.')
+    console.log('Started refreshing private Interactions.')
 
     await rest.put(Routes.applicationGuildCommands(client.config.ids.userID.botUserID, '757981349402378331'), {
       body: slashCommandData,
     })
 
-    console.log('Successfully reloaded application (/) commands.')
+    console.log('Successfully reloaded private Interactions.')
+  } catch (error) {
+    console.error(error)
+  }
+}
+/**
+ * Load and post all slashComamnds.
+ * @param  {DiscordClient} client Bot-Client
+ */
+export async function postGlobalInteractions(client: DiscordClient) {
+  /**
+   * Object with all files of scripts directory.
+   */
+  let files
+
+  const slashCommandData = []
+
+  try {
+    /**
+     * Read directory.
+     */
+    files = await promiseReaddir(GLOBAL_INTERACTIONS_FOLDER)
+  } catch (e) {
+    /**
+     * Error handling.
+     */
+    throw new Error(e)
+  }
+  files.forEach(file => {
+    /**
+     * Path of slashCommand.
+     */
+    const private_interaction = require(`../${GLOBAL_INTERACTIONS_FOLDER}/${file}`)
+
+    slashCommandData.push(private_interaction.data.toJSON())
+
+    const commandName = file.split('.')[0]
+
+    client.interactions.set(commandName, private_interaction)
+    console.log(`Successfully posted global interaction ${commandName}`)
+  })
+  postGlobalSlashCommands(client, slashCommandData)
+}
+
+async function postGlobalSlashCommands(client, slashCommandData) {
+  const rest = new REST({ version: '10' }).setToken(client.config.botToken)
+  try {
+    console.log('Started refreshing global Interactions.')
+
+    await rest.put(Routes.applicationCommands(client.config.ids.userID.botUserID), { body: slashCommandData })
+
+    console.log('Successfully reloaded global Interactions.')
   } catch (error) {
     console.error(error)
   }
