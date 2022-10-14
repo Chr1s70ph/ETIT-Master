@@ -6,11 +6,7 @@
       "status": "👥Presence has been updated!"
     },
     "fun": {
-      "komedi": {},
-      "tenor": {
-        "ErrorMissingSearchQuery": "Please enter a search query!",
-        "ErrorNoGifsFound": "<@{{userID}}> No Gifs have been found for : '{{searchQuery}}'"
-      }
+      "komedi": {}
     },
     "tests": {
       "hello": {
@@ -58,11 +54,16 @@
   },
   "flag": "🇺🇸",
   "interactions": {
+    "gif": {
+      "localized_description": "It's random gif time",
+      "localized_name": "gif",
+      "ErrorNoGifsFound": "<@{{userID}}> No Gifs have been found for : '{{searchQuery}}'"
+    },
     "uptime": {
       "Info": "{{days}} Days, {{hours}} Hours, {{minutes}} Minutes, {{seconds}} Seconds",
       "Time": "Time since last restart:",
       "Title": "⏰Uptime",
-      "localized_name":"uptime",
+      "localized_name": "uptime",
       "localized_description": "How long is this bot already running...?"
     },
     "channelinfo": {

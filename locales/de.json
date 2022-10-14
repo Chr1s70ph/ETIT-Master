@@ -6,11 +6,7 @@
       "status": "👥Präsenz wurde geändert!"
     },
     "fun": {
-      "komedi": {},
-      "tenor": {
-        "ErrorMissingSearchQuery": "Bitte gebe ein suchwort an!",
-        "ErrorNoGifsFound": "<@{{userID}}> Es konnten keine Gifs gefunden werden für : '{{searchQuery}}'"
-      }
+      "komedi": {}
     },
     "tests": {
       "hello": {
@@ -59,12 +55,17 @@
   },
   "flag": "🇩🇪",
   "interactions": {
+    "gif": {
+      "localized_description": "Zeit für ein zufälliges gif",
+      "localized_name": "gif",
+      "ErrorNoGifsFound": "<@{{userID}}> Es konnten keine Gifs gefunden werden für : '{{searchQuery}}'"
+    },
     "uptime": {
       "Info": "{{days}} Tage, {{hours}} Stunden, {{minutes}} Minuten, {{seconds}} Sekunden",
       "Time": "Zeit seit dem letzten neustart:",
       "Title": "⏰Betriebszeit",
       "localized_name": "betriebszeit",
-      "localized_description": "Wie lange der Bot wohl schon läuft...?"
+      "localized_description": "Wie lange der Bot wohl schon"
     },
     "channelinfo": {
       "channelinfo": "Kanalinformationen",
