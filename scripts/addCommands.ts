@@ -1,4 +1,3 @@
-import { readdir, statSync } from 'fs'
 import { readdir as promiseReaddir } from 'fs/promises'
 import { REST } from '@discordjs/rest'
 import { TextChannel } from 'discord.js'
