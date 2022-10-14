@@ -1,7 +1,7 @@
+import { PresenceData } from 'discord.js'
 import { scheduleJob } from 'node-schedule'
 import { DiscordClient } from '../types/customTypes'
 const presence_refresh_timer = '15 * * * * *'
-const custom_presence = require('../commands/admin/status.ts')
 
 exports.run = async (client: DiscordClient) => {
   /**
@@ -42,12 +42,12 @@ async function updatePresence(
     /**
      * Custom presence defined by the status command.
      */
-    const customPresence = custom_presence.presence
+    const customPresence: PresenceData = client.customPresence
 
     /**
      * Prioritize {@link customPresence} and always set, if defined.
      */
-    if (customPresence.activities[0].name !== '') {
+    if (customPresence) {
       /**
        * Set presence.
        */
@@ -58,10 +58,11 @@ async function updatePresence(
        */
       const randomIndex = Math.floor(Math.random() * (maxNumberOfPresence - minNumberOfPresence) + minNumberOfPresence)
 
+      const presence: PresenceData = presenceVariants[randomIndex]
       /**
        * Set presence.
        */
-      client.user.setPresence(presenceVariants[randomIndex])
+      client.user.setPresence(presence)
     }
   })
 }
