@@ -58,6 +58,7 @@ exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCom
       /**
        * Build hyperlink for message to link to
        */
+      // eslint-disable-next-line max-len
       const hyperlink = `\n- [${title}](https://discord.com/channels/${message.guildId}/${message.channelId}/${message.id})`
 
       /**
