@@ -3,24 +3,25 @@ import {
   ApplicationCommand,
   AutocompleteInteraction,
   ButtonInteraction,
+  ChatInputCommandInteraction,
   Client,
   Collection,
   ContextMenuCommandInteraction,
   Interaction,
+  LocaleString,
   Message,
   MessageComponentInteraction,
   MessageContextMenuCommandInteraction,
   MessageCreateOptions,
   MessageType,
   ModalSubmitInteraction,
+  PresenceData,
   SelectMenuInteraction,
+  SlashCommandBuilder,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   TextChannel,
   User,
   UserContextMenuCommandInteraction,
-  SlashCommandBuilder,
-  LocaleString,
-  ChatInputCommandInteraction,
 } from 'discord.js'
 import i18next from 'i18next'
 
@@ -34,6 +35,11 @@ export class DiscordClient extends Client {
    * @type {Collection<string, Command>}
    */
   public commands: Collection<string, Command>
+
+  /**
+   * Global {@link customPresence} of client
+   */
+  public customPresence: PresenceData | null
 
   /**
    * Collection of all interactions to use
