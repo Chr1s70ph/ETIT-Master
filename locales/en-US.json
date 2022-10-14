@@ -53,16 +53,18 @@
         "Info": "❔ If you can't join the activity **create it** by clicking the **[Link]({{- invite}})** above."
       },
       "test": "🌐 This Bot is working as intended!",
-      "uptime": {
-        "Info": "{{days}} Days, {{hours}} Hours, {{minutes}} Minutes, {{seconds}} Seconds",
-        "Time": "Time since last restart:",
-        "Title": "⏰Uptime"
-      },
       "zoom": {}
     }
   },
   "flag": "🇺🇸",
   "interactions": {
+    "uptime": {
+      "Info": "{{days}} Days, {{hours}} Hours, {{minutes}} Minutes, {{seconds}} Seconds",
+      "Time": "Time since last restart:",
+      "Title": "⏰Uptime",
+      "localized_name":"uptime",
+      "localized_description": "How long is this bot already running...?"
+    },
     "channelinfo": {
       "channelinfo": "Channelinfo",
       "created_at": "Channel created at",

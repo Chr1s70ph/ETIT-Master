@@ -53,16 +53,19 @@
         "Info": "❔ Wenn du der Aktivität nicht beitreten kannst, **erstelle ** sie, indem du oben auf den **[Link]({{- invite}})** klickst."
       },
       "test": "🌐Dieser Bot funktioniert einwandfrei!",
-      "uptime": {
-        "Info": "{{days}} Tage, {{hours}} Stunden, {{minutes}} Minuten, {{seconds}} Sekunden",
-        "Time": "Zeit seit dem letzten neustart:",
-        "Title": "⏰Betriebszeit"
-      },
+
       "zoom": {}
     }
   },
   "flag": "🇩🇪",
   "interactions": {
+    "uptime": {
+      "Info": "{{days}} Tage, {{hours}} Stunden, {{minutes}} Minuten, {{seconds}} Sekunden",
+      "Time": "Zeit seit dem letzten neustart:",
+      "Title": "⏰Betriebszeit",
+      "localized_name": "betriebszeit",
+      "localized_description": "Wie lange der Bot wohl schon läuft...?"
+    },
     "channelinfo": {
       "channelinfo": "Kanalinformationen",
       "created_at": "Erstellt am",
