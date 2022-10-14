@@ -6,7 +6,6 @@
       "status": "👥Präsenz wurde geändert!"
     },
     "fun": {
-      "fact": "🧠Fakt",
       "komedi": {},
       "tenor": {
         "ErrorMissingSearchQuery": "Bitte gebe ein suchwort an!",
@@ -74,6 +73,11 @@
       "name": "Name",
       "parent": "Oberkategorie",
       "type": "Typ"
+    },
+    "fact": {
+      "fact": "🧠Fakt",
+      "localized_description": "Spuckt einen zufälligen Fakt aus.",
+      "localized_name": "fakt"
     },
     "help": {
       "localized_description": "Hilft (vielleicht)",

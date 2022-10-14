@@ -6,7 +6,6 @@
       "status": "👥Presence has been updated!"
     },
     "fun": {
-      "fact": "🧠Fact",
       "komedi": {},
       "tenor": {
         "ErrorMissingSearchQuery": "Please enter a search query!",
@@ -74,6 +73,11 @@
       "name": "Name",
       "parent": "Parent",
       "type": "Type"
+    },
+    "fact": {
+      "fact": "🧠Fact",
+      "localized_description": "Spits out a random fact.",
+      "localized_name": "fact"
     },
     "help": {
       "localized_description": "Helps (maybe)",
