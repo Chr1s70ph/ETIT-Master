@@ -1,57 +1,4 @@
 {
-  "commands": {
-    "admin": {
-      "devtest": {},
-      "say": {},
-      "status": "👥Präsenz wurde geändert!"
-    },
-    "fun": {
-      "komedi": {}
-    },
-    "tests": {
-      "hello": {
-        "welcome": "hallo welt"
-      }
-    },
-    "utility": {
-      "antwortaufalles": "Die Antwort auf die Frage nach dem Leben, dem Universum und dem ganzen Rest ist :four::two:",
-      "channelinfo": {
-        "Answer": "Anzahl an Kanalmitgliedern in: {{memberNumber}}\nin {{channelName}}.",
-        "ErrorNotAvailable": "Kanalinformationen sind in diesem Kanal nicht verfügbar. Versuche es mit einem anderen Kanal."
-      },
-      "command": {
-        "Aliases": "Aliase",
-        "CommandHelp": "Befehlshilfe",
-        "Description": "Beschreibung",
-        "ErrorNoCommandName": "Bitte gebe einen Befehlsnamen an.",
-        "Usage": "Benutzung"
-      },
-      "countdown": {
-        "Countdown": "Fahrstuhl aus in:",
-        "Departure": "Abfluuuug",
-        "Liftoff": "🚀Abgehoben🚀"
-      },
-      "git": {
-        "Github": "Github [Repository]({{- github}}) von <@{{userID}}>",
-        "Gitlab": "[Link]({{- gitlab}}) zur Gitlab Startseite",
-        "Title": "[🌐] GIT Wiki"
-      },
-      "onlinecount": {
-        "DND": "🔴Nicht stören",
-        "Idle": "🟡Abwesend",
-        "Online": "🟢Online",
-        "OnlineCounter": "[🌐] Online Zähler"
-      },
-      "ping": "🏓Die Latenz beträgt {{latency}}ms. API - Latenz ist {{api_latency}}",
-      "start": {
-        "ErrorInvalidOption": "⚠️ Nicht zulässige Option!",
-        "ErrorNoVoice": "⚠️ Du bist nicht in einem Sprach-Kanal.\nBitte trete einenm Sprach-Kanal bei, um diesen Befehl nutzen zu können.",
-        "Info": "❔ Wenn du der Aktivität nicht beitreten kannst, **erstelle ** sie, indem du oben auf den **[Link]({{- invite}})** klickst."
-      },
-      "test": "🌐Dieser Bot funktioniert einwandfrei!",
-      "zoom": {}
-    }
-  },
   "flag": "🇩🇪",
   "interactions": {
     "channelinfo": {
@@ -110,6 +57,10 @@
     "ping": {
       "localized_description": "Prüft, ob der Bot ordnungsgemäß antwortet",
       "localized_name": "ping"
+    },
+    "presence": {
+      "localized_description": "Change the presence",
+      "localized_name": "presence"
     },
     "quicklink": {
       "localized_description": "Links schnell",

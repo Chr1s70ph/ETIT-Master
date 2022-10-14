@@ -1,57 +1,4 @@
 {
-  "commands": {
-    "admin": {
-      "devtest": {},
-      "say": {},
-      "status": "👥Presence has been updated!"
-    },
-    "fun": {
-      "komedi": {}
-    },
-    "tests": {
-      "hello": {
-        "welcome": "hello world"
-      }
-    },
-    "utility": {
-      "antwortaufalles": "The answer to the question about life, the universe, and all the rest is :four: :two:",
-      "channelinfo": {
-        "Answer": "Number of channel members: {{memberNumber}}\nin {{channelName}}.",
-        "ErrorNotAvailable": "Channel info is not available in this channel. Try a different channel."
-      },
-      "command": {
-        "Aliases": "Aliases",
-        "CommandHelp": "Command assistance",
-        "Description": "Description",
-        "ErrorNoCommandName": "Please provide a command name.",
-        "Usage": "Usage"
-      },
-      "countdown": {
-        "Countdown": "Liftoff in:",
-        "Departure": "Departuuuure",
-        "Liftoff": "🚀Departed🚀"
-      },
-      "git": {
-        "Github": "Github [Repository]({{- github}}) of <@{{userID}}>",
-        "Gitlab": "[Link]({{- gitlab}}) to Gitlab Homepage",
-        "Title": "[🌐] GIT Wiki"
-      },
-      "onlinecount": {
-        "DND": "🔴DND",
-        "Idle": "🟡Idle",
-        "Online": "🟢Online",
-        "OnlineCounter": "[🌐] Online Counter"
-      },
-      "ping": "🏓Latency is {{latency}}ms. API Latency is {{api_latency}}ms",
-      "start": {
-        "ErrorInvalidOption": "⚠️ Invalid option!",
-        "ErrorNoVoice": "⚠️ You are not in a Voice-Channel.\nPlease join a Voice-Channel to use this command.",
-        "Info": "❔ If you can't join the activity **create it** by clicking the **[Link]({{- invite}})** above."
-      },
-      "test": "🌐 This Bot is working as intended!",
-      "zoom": {}
-    }
-  },
   "flag": "🇺🇸",
   "interactions": {
     "channelinfo": {
@@ -110,6 +57,10 @@
     "ping": {
       "localized_description": "Checks if the bot is up and running.",
       "localized_name": "ping"
+    },
+    "presence": {
+      "localized_description": "Ändere die Anwesenheit",
+      "localized_name": "anwesenheit"
     },
     "quicklink": {
       "localized_description": "links fast",
