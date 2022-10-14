@@ -11,7 +11,7 @@ import {
   DiscordChatInputCommandInteraction,
   DiscordModalSubmitInteraction,
   DiscordSlashCommandBuilder,
-} from '../types/customTypes'
+} from '../../types/customTypes'
 const createIssue = require('github-create-issue')
 const REPOSITORY = 'Chr1s70ph/ETIT-Master'
 

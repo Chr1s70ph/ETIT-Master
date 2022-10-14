@@ -1,6 +1,6 @@
 import { EmbedBuilder, User } from 'discord.js'
 import { GuildMember } from 'discord.js/typings/index.js'
-import { DiscordChatInputCommandInteraction, DiscordClient, DiscordSlashCommandBuilder } from '../types/customTypes'
+import { DiscordChatInputCommandInteraction, DiscordClient, DiscordSlashCommandBuilder } from '../../types/customTypes'
 
 export const data = new DiscordSlashCommandBuilder()
   .setName('userinfo')

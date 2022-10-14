@@ -1,5 +1,5 @@
 import { EmbedBuilder } from 'discord.js'
-import { DiscordChatInputCommandInteraction, DiscordClient, DiscordSlashCommandBuilder } from '../types/customTypes'
+import { DiscordChatInputCommandInteraction, DiscordClient, DiscordSlashCommandBuilder } from '../../types/customTypes'
 
 export const data = new DiscordSlashCommandBuilder()
   .setName('uptime')

@@ -1,5 +1,5 @@
 import { EmbedBuilder } from '@discordjs/builders'
-import { DiscordClient, DiscordChatInputCommandInteraction, DiscordSlashCommandBuilder } from '../types/customTypes'
+import { DiscordClient, DiscordChatInputCommandInteraction, DiscordSlashCommandBuilder } from '../../types/customTypes'
 
 export const data = new DiscordSlashCommandBuilder()
   .setName('gif')

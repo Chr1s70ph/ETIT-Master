@@ -1,7 +1,7 @@
 import { EmbedBuilder } from '@discordjs/builders'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { PresenceStatusData, PermissionsBitField, ActivitiesOptions } from 'discord.js'
-import { DiscordChatInputCommandInteraction, DiscordClient, DiscordSlashCommandBuilder } from '../types/customTypes'
+import { DiscordChatInputCommandInteraction, DiscordClient, DiscordSlashCommandBuilder } from '../../types/customTypes'
 
 export const data = new DiscordSlashCommandBuilder()
   .setName('presence')

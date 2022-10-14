@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs'
 import { EmbedBuilder } from 'discord.js'
-import { DiscordChatInputCommandInteraction, DiscordClient, DiscordSlashCommandBuilder } from '../types/customTypes'
+import { DiscordChatInputCommandInteraction, DiscordClient, DiscordSlashCommandBuilder } from '../../types/customTypes'
 const FACTS_FILE = './data/facts.txt'
 const DATA = readFileSync(FACTS_FILE, 'utf-8').split('\n')
 

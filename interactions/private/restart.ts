@@ -1,5 +1,5 @@
 import { PermissionsBitField } from 'discord.js'
-import { DiscordChatInputCommandInteraction, DiscordClient, DiscordSlashCommandBuilder } from '../types/customTypes'
+import { DiscordChatInputCommandInteraction, DiscordClient, DiscordSlashCommandBuilder } from '../../types/customTypes'
 /**
  * Const required, otherwise pm2 throws an error.
  */

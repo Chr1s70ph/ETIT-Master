@@ -1,5 +1,5 @@
 import { EmbedBuilder } from 'discord.js'
-import { DiscordClient, DiscordChatInputCommandInteraction, DiscordSlashCommandBuilder } from '../types/customTypes'
+import { DiscordClient, DiscordChatInputCommandInteraction, DiscordSlashCommandBuilder } from '../../types/customTypes'
 
 /**
  * Available Quicklinks

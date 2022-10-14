@@ -1,7 +1,7 @@
 import { EmbedBuilder } from 'discord.js'
 import moment from 'moment-timezone'
 import { async } from 'node-ical'
-import { DiscordClient, DiscordChatInputCommandInteraction, DiscordSlashCommandBuilder } from '../types/customTypes'
+import { DiscordClient, DiscordChatInputCommandInteraction, DiscordSlashCommandBuilder } from '../../types/customTypes'
 
 exports.name = 'klausuren'
 

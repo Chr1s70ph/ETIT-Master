@@ -1,5 +1,5 @@
 import { PermissionsBitField, TextChannel, Snowflake, EmbedBuilder } from 'discord.js'
-import { DiscordClient, DiscordChatInputCommandInteraction, DiscordSlashCommandBuilder } from '../types/customTypes'
+import { DiscordClient, DiscordChatInputCommandInteraction, DiscordSlashCommandBuilder } from '../../types/customTypes'
 const MAX_EMBED_LENGTH = 4096
 
 export const data = new DiscordSlashCommandBuilder()

@@ -13,7 +13,7 @@ import {
   DiscordMessage,
   DiscordModalSubmitInteraction,
   DiscordSlashCommandBuilder,
-} from '../types/customTypes'
+} from '../../types/customTypes'
 
 let attachment
 

@@ -3,7 +3,7 @@ import { readdir as promiseReaddir } from 'fs/promises'
 import { REST } from '@discordjs/rest'
 import { TextChannel } from 'discord.js'
 import { scheduleJob } from 'node-schedule'
-import { mensa, getWeekday, _updateJson } from '../interactions/mensa'
+import { mensa, getWeekday, _updateJson } from '../interactions/global/mensa'
 import { DiscordClient } from '../types/customTypes'
 
 const { Routes } = require('discord-api-types/v10')
