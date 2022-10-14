@@ -19,7 +19,7 @@ i18next.use(backend).init({
   defaultNS: 'translation',
   debug: true,
   backend: {
-    loadPath: './locales/{{lng}}.json',
+    loadPath: 'locales/{{lng}}.json',
   },
   initImmediate: false,
 })
@@ -70,12 +70,12 @@ fs.readdir('./events/', (err, files) => {
   /**
    * Log errors.
    */
-  if (err) console.log(err)
+  if (err) return console.log(err)
 
   /**
    * Loop through all event files.
    */
-  files.forEach(file => {
+  return files.forEach(file => {
     /**
      * Path of event file.
      */
