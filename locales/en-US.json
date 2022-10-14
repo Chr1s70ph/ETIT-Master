@@ -54,18 +54,6 @@
   },
   "flag": "🇺🇸",
   "interactions": {
-    "gif": {
-      "localized_description": "It's random gif time",
-      "localized_name": "gif",
-      "ErrorNoGifsFound": "<@{{userID}}> No Gifs have been found for : '{{searchQuery}}'"
-    },
-    "uptime": {
-      "Info": "{{days}} Days, {{hours}} Hours, {{minutes}} Minutes, {{seconds}} Seconds",
-      "Time": "Time since last restart:",
-      "Title": "⏰Uptime",
-      "localized_name": "uptime",
-      "localized_description": "How long is this bot already running...?"
-    },
     "channelinfo": {
       "channelinfo": "Channelinfo",
       "created_at": "Channel created at",
@@ -81,6 +69,11 @@
       "fact": "🧠Fact",
       "localized_description": "Spits out a random fact.",
       "localized_name": "fact"
+    },
+    "gif": {
+      "ErrorNoGifsFound": "<@{{userID}}> No Gifs have been found for : '{{searchQuery}}'",
+      "localized_description": "It's random gif time",
+      "localized_name": "gif"
     },
     "help": {
       "localized_description": "Helps (maybe)",
@@ -134,6 +127,13 @@
     "table_of_contents": {
       "localized_description": "Tables the content.",
       "localized_name": "table_of_contents"
+    },
+    "uptime": {
+      "Info": "{{days}} Days, {{hours}} Hours, {{minutes}} Minutes, {{seconds}} Seconds",
+      "localized_description": "How long is this bot already running...?",
+      "localized_name": "uptime",
+      "Time": "Time since last restart:",
+      "Title": "⏰Uptime"
     },
     "userinfo": {
       "account_created": "Account created",

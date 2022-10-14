@@ -49,24 +49,11 @@
         "Info": "❔ Wenn du der Aktivität nicht beitreten kannst, **erstelle ** sie, indem du oben auf den **[Link]({{- invite}})** klickst."
       },
       "test": "🌐Dieser Bot funktioniert einwandfrei!",
-
       "zoom": {}
     }
   },
   "flag": "🇩🇪",
   "interactions": {
-    "gif": {
-      "localized_description": "Zeit für ein zufälliges gif",
-      "localized_name": "gif",
-      "ErrorNoGifsFound": "<@{{userID}}> Es konnten keine Gifs gefunden werden für : '{{searchQuery}}'"
-    },
-    "uptime": {
-      "Info": "{{days}} Tage, {{hours}} Stunden, {{minutes}} Minuten, {{seconds}} Sekunden",
-      "Time": "Zeit seit dem letzten neustart:",
-      "Title": "⏰Betriebszeit",
-      "localized_name": "betriebszeit",
-      "localized_description": "Wie lange der Bot wohl schon"
-    },
     "channelinfo": {
       "channelinfo": "Kanalinformationen",
       "created_at": "Erstellt am",
@@ -82,6 +69,11 @@
       "fact": "🧠Fakt",
       "localized_description": "Spuckt einen zufälligen Fakt aus.",
       "localized_name": "fakt"
+    },
+    "gif": {
+      "ErrorNoGifsFound": "<@{{userID}}> Es konnten keine Gifs gefunden werden für : '{{searchQuery}}'",
+      "localized_description": "Zeit für ein zufälliges gif",
+      "localized_name": "gif"
     },
     "help": {
       "localized_description": "Hilft (vielleicht)",
@@ -135,6 +127,13 @@
     "table_of_contents": {
       "localized_description": "Erstellt ein Inhaltsverzeichnis.",
       "localized_name": "inhaltsverzeichnis"
+    },
+    "uptime": {
+      "Info": "{{days}} Tage, {{hours}} Stunden, {{minutes}} Minuten, {{seconds}} Sekunden",
+      "localized_description": "Wie lange der Bot wohl schon",
+      "localized_name": "betriebszeit",
+      "Time": "Zeit seit dem letzten neustart:",
+      "Title": "⏰Betriebszeit"
     },
     "userinfo": {
       "account_created": "Account erstellt am",
