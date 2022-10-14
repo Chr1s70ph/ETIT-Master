@@ -11,10 +11,12 @@ const { Routes } = require('discord-api-types/v10')
 /**
  * Folder that contains all slashCommands.
  */
-const interactionsFolder = './interactions/'
+const PRIVATE_INTERACTIONS_FOLDER = './interactions/private/'
+const GLOBAL_INTERACTIONS_FOLDER = './interactions/global/'
 
 exports.run = (client: DiscordClient) => {
-  postInteractions(client)
+  postPrivateInteractions(client)
+  postGlobalInteractions(client)
   mensa_automation(client)
 }
 
@@ -22,7 +24,7 @@ exports.run = (client: DiscordClient) => {
  * Load and post all slashComamnds.
  * @param  {DiscordClient} client Bot-Client
  */
-export async function postInteractions(client: DiscordClient) {
+export async function postPrivateInteractions(client: DiscordClient) {
   /**
    * Object with all files of scripts directory.
    */
@@ -34,7 +36,7 @@ export async function postInteractions(client: DiscordClient) {
     /**
      * Read directory.
      */
-    files = await promiseReaddir(interactionsFolder)
+    files = await promiseReaddir(PRIVATE_INTERACTIONS_FOLDER)
   } catch (e) {
     /**
      * Error handling.
@@ -45,28 +47,79 @@ export async function postInteractions(client: DiscordClient) {
     /**
      * Path of slashCommand.
      */
-    const slashCommand = require(`../${interactionsFolder}${file}`)
+    const private_interaction = require(`../${PRIVATE_INTERACTIONS_FOLDER}/${file}`)
 
-    slashCommandData.push(slashCommand.data.toJSON())
+    slashCommandData.push(private_interaction.data.toJSON())
 
     const commandName = file.split('.')[0]
 
-    client.interactions.set(commandName, slashCommand)
-    console.log(`Successfully posted slashCommand ${commandName}`)
+    client.interactions.set(commandName, private_interaction)
+    console.log(`Successfully posted private interaction ${commandName}`)
   })
-  postSlashCommands(client, slashCommandData)
+  postPrivateSlashCommands(client, slashCommandData)
 }
 
-async function postSlashCommands(client, slashCommandData) {
+async function postPrivateSlashCommands(client, slashCommandData) {
   const rest = new REST({ version: '10' }).setToken(client.config.botToken)
   try {
-    console.log('Started refreshing application (/) commands.')
+    console.log('Started refreshing private Interactions.')
 
     await rest.put(Routes.applicationGuildCommands(client.config.ids.userID.botUserID, '757981349402378331'), {
       body: slashCommandData,
     })
 
-    console.log('Successfully reloaded application (/) commands.')
+    console.log('Successfully reloaded private Interactions.')
+  } catch (error) {
+    console.error(error)
+  }
+}
+/**
+ * Load and post all slashComamnds.
+ * @param  {DiscordClient} client Bot-Client
+ */
+export async function postGlobalInteractions(client: DiscordClient) {
+  /**
+   * Object with all files of scripts directory.
+   */
+  let files
+
+  const slashCommandData = []
+
+  try {
+    /**
+     * Read directory.
+     */
+    files = await promiseReaddir(GLOBAL_INTERACTIONS_FOLDER)
+  } catch (e) {
+    /**
+     * Error handling.
+     */
+    throw new Error(e)
+  }
+  files.forEach(file => {
+    /**
+     * Path of slashCommand.
+     */
+    const private_interaction = require(`../${GLOBAL_INTERACTIONS_FOLDER}/${file}`)
+
+    slashCommandData.push(private_interaction.data.toJSON())
+
+    const commandName = file.split('.')[0]
+
+    client.interactions.set(commandName, private_interaction)
+    console.log(`Successfully posted global interaction ${commandName}`)
+  })
+  postGlobalSlashCommands(client, slashCommandData)
+}
+
+async function postGlobalSlashCommands(client, slashCommandData) {
+  const rest = new REST({ version: '10' }).setToken(client.config.botToken)
+  try {
+    console.log('Started refreshing global Interactions.')
+
+    await rest.put(Routes.applicationCommands(client.config.ids.userID.botUserID), { body: slashCommandData })
+
+    console.log('Successfully reloaded global Interactions.')
   } catch (error) {
     console.error(error)
   }
