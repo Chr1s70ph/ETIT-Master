@@ -104,12 +104,16 @@
       "refreshJSON": "🍽 refresh JSON..."
     },
     "ping": {
-      "localized_name": "ping",
-      "localized_description": "Checks if the bot is up and running."
+      "localized_description": "Checks if the bot is up and running.",
+      "localized_name": "ping"
     },
     "quicklink": {
       "localized_description": "links fast",
       "localized_name": "quicklink"
+    },
+    "table_of_contents": {
+      "localized_description": "Tables the content.",
+      "localized_name": "table_of_contents"
     },
     "werbung": {
       "localized_description": "You want to advertise something on this server?",
@@ -122,18 +126,14 @@
       },
       "localized_description": "Shows your current schedule for the week.",
       "localized_name": "schedule",
+      "next_week": "Next Week ({{week_start_date}})",
+      "prev_week": "Previous Week ({{week_start_date}})",
       "Schedule": "🗓️ Weekly schedule for {{user}}",
       "too_long": {
         "name": "⚠️ Note: You have selected too many courses!",
         "value": "Since you have selected too many courses, your weekplan may look not as intended."
       },
-      "week": "Week of {{date}}",
-      "next_week": "Next Week ({{week_start_date}})",
-      "prev_week": "Previous Week ({{week_start_date}})"
-    },
-    "table_of_contents": {
-      "localized_description": "Tables the content.",
-      "localized_name": "table_of_contents"
+      "week": "Week of {{date}}"
     }
   },
   "language": "English"
