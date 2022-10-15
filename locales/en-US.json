@@ -59,8 +59,8 @@
       "localized_name": "ping"
     },
     "presence": {
-      "localized_description": "Ändere die Anwesenheit",
-      "localized_name": "anwesenheit"
+      "localized_description": "Change the presence",
+      "localized_name": "presence"
     },
     "quicklink": {
       "localized_description": "links fast",
