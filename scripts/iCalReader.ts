@@ -1,8 +1,8 @@
 /* eslint-disable no-await-in-loop */
 import { ColorResolvable, Guild, EmbedBuilder, Snowflake, TextChannel } from 'discord.js'
 import moment from 'moment'
-import { async } from 'node-ical'
 import { RecurrenceRule, scheduleJob } from 'node-schedule'
+import { fetchAndCacheCalendars } from '../types/calendar_helper_functions'
 
 import { DiscordClient } from '../types/customTypes'
 
@@ -34,29 +34,29 @@ async function fetchAndSend(client: DiscordClient): Promise<void> {
    */
   const today: Date = localDate('Berlin/Europe')
 
-  /**
-   * Loop through all calendars.
-   */
-  for (const entry in client.config.calendars) {
-    /**
-     * Link to ics file.
-     */
-    const icalLink = client.config.calendars[entry]
+  await fetchAndCacheCalendars(client)
 
+  /**
+   * All calendars.
+   */
+  const calendars = [...client.calendars.values()]
+
+  /**
+   * Names of all calendars
+   * Helpfull for debugging and logs
+   */
+  const calendar_names = [...client.calendars.keys()]
+
+  for (const calendar in calendars) {
     /**
      * Object with todays events.
      */
     const events = {}
 
     /**
-     * All events fetched from {@link icalLink}.
-     */
-    const webEvents = await async.fromURL(icalLink)
-
-    /**
      * All events from the current day.
      */
-    const eventsFromIcal = await getEvents(webEvents, today, events, entry)
+    const eventsFromIcal = await getEvents(calendars, today, events, calendar_names[calendar])
 
     /**
      * Schedule the notifications.
