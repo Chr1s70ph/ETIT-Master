@@ -24,6 +24,7 @@ import {
   UserContextMenuCommandInteraction,
 } from 'discord.js'
 import i18next from 'i18next'
+import { CalendarResponse } from 'node-ical'
 
 /**
  * Extended version of the default {@link Client} with addidtional functions and properties.
@@ -52,6 +53,12 @@ export class DiscordClient extends Client {
   }
 
   /**
+   * Global cache for calendars
+   * @type {Collection<string, CalendarResponse>}
+   */
+  public calendars: Collection<string, CalendarResponse>
+
+  /**
    * Collection of all commands to use
    * @type {Collection<string, Command>}
    */
@@ -59,12 +66,13 @@ export class DiscordClient extends Client {
 
   /**
    * Config file imported into the DiscordClient for global access
-   * @type { [key: string]: any }
+   * @type {[key: string]: any}
    */
   public config: { [key: string]: any }
 
   /**
    * Global {@link customPresence} of client
+   * @type {PresenceData | null}
    */
   public customPresence: PresenceData | null
 
