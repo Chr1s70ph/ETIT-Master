@@ -31,29 +31,6 @@ import i18next from 'i18next'
  */
 export class DiscordClient extends Client {
   /**
-   * Collection of all commands to use
-   * @type {Collection<string, Command>}
-   */
-  public commands: Collection<string, Command>
-
-  /**
-   * Global {@link customPresence} of client
-   */
-  public customPresence: PresenceData | null
-
-  /**
-   * Collection of all interactions to use
-   * @type {Collection<string, InteractionCommands>}
-   */
-  public interactions: Collection<string, InteractionCommands>
-
-  /**
-   * Config file imported into the DiscordClient for global access
-   * @type { [key: string]: any }
-   */
-  public config: { [key: string]: any }
-
-  /**
    * Object with ids of discord-games
    */
   public applications: {
@@ -75,59 +52,21 @@ export class DiscordClient extends Client {
   }
 
   /**
-   * Uses {@link TextChannel.send()} to reply to the issued command.
-   * @param {Message} message message to answer to
-   * @param {MessageCreateOptions} returnData data to be sent back as answer
-   * @returns {Message} original command message
+   * Collection of all commands to use
+   * @type {Collection<string, Command>}
    */
-  public send(message: Message, returnData: MessageCreateOptions): Promise<Message<boolean>> {
-    return new Promise<Message>((resolve, reject) => {
-      message.channel.send(returnData).then(
-        () => {
-          resolve(message)
-        },
-        error => {
-          reject(error)
-        },
-      )
-    })
-  }
+  public commands: Collection<string, Command>
 
   /**
-   * Uses {@link Message.reply()} to reply to the issued command.
-   * @param {Message} message message to ryply to
-   * @param {MessageCreateOptions} returnData data to be sent back as answer
-   * @param {Message} [optionalReplyMessage] to reply to, instead of command message
-   * @returns {Message} original command message
+   * Config file imported into the DiscordClient for global access
+   * @type { [key: string]: any }
    */
-  public reply(message: Message, returnData: MessageCreateOptions): Promise<Message<boolean>> {
-    return new Promise<Message>((resolve, reject) => {
-      if (message.type === MessageType.Reply) {
-        return message.channel.messages
-          .fetch(message.reference.messageId)
-          .then(_message => {
-            _message.reply(returnData)
-            return message
-          })
-          .then(
-            () => {
-              resolve(message)
-            },
-            error => {
-              reject(error)
-            },
-          )
-      }
-      return message.reply(returnData).then(
-        () => {
-          resolve(message)
-        },
-        error => {
-          reject(error)
-        },
-      )
-    })
-  }
+  public config: { [key: string]: any }
+
+  /**
+   * Global {@link customPresence} of client
+   */
+  public customPresence: PresenceData | null
 
   /**
    * Get user language.
@@ -166,11 +105,71 @@ export class DiscordClient extends Client {
         if (interaction.locale === language) return (user.language = language)
       }
     }
-
     /**
      * Return default language if no language match is found.
      */
     return (user.language = 'en-US')
+  }
+
+  /**
+   * Collection of all interactions to use
+   * @type {Collection<string, InteractionCommands>}
+   */
+  public interactions: Collection<string, InteractionCommands>
+
+  /**
+   * Uses {@link Message.reply()} to reply to the issued command.
+   * @param {Message} message message to ryply to
+   * @param {MessageCreateOptions} returnData data to be sent back as answer
+   * @param {Message} [optionalReplyMessage] to reply to, instead of command message
+   * @returns {Message} original command message
+   */
+  public reply(message: Message, returnData: MessageCreateOptions): Promise<Message<boolean>> {
+    return new Promise<Message>((resolve, reject) => {
+      if (message.type === MessageType.Reply) {
+        return message.channel.messages
+          .fetch(message.reference.messageId)
+          .then(_message => {
+            _message.reply(returnData)
+            return message
+          })
+          .then(
+            () => {
+              resolve(message)
+            },
+            error => {
+              reject(error)
+            },
+          )
+      }
+      return message.reply(returnData).then(
+        () => {
+          resolve(message)
+        },
+        error => {
+          reject(error)
+        },
+      )
+    })
+  }
+
+  /**
+   * Uses {@link TextChannel.send()} to reply to the issued command.
+   * @param {Message} message message to answer to
+   * @param {MessageCreateOptions} returnData data to be sent back as answer
+   * @returns {Message} original command message
+   */
+  public send(message: Message, returnData: MessageCreateOptions): Promise<Message<boolean>> {
+    return new Promise<Message>((resolve, reject) => {
+      message.channel.send(returnData).then(
+        () => {
+          resolve(message)
+        },
+        error => {
+          reject(error)
+        },
+      )
+    })
   }
 
   /**
