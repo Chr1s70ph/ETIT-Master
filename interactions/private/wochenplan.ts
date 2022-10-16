@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js'
 import moment from 'moment-timezone'
-import { async } from 'node-ical'
+import { async, CalendarResponse } from 'node-ical'
 import {
   DiscordClient,
   DiscordChatInputCommandInteraction,
@@ -24,15 +24,15 @@ export const data = new DiscordSlashCommandBuilder()
   )
   .setLocalizations('wochenplan')
 
-async function wochenplan(
+function wochenplan(
   client: DiscordClient,
   interaction: DiscordChatInputCommandInteraction | DiscordButtonInteraction,
   date,
 ) {
-  let returnData = {}
-  for (const entry in client.config.calendars) {
-    // eslint-disable-next-line no-await-in-loop
-    returnData = { ...returnData, ...(await async.fromURL(client.config.calendars[entry])) }
+  let calendars_object = {}
+  const calendars = client.calendars.values()
+  for (const entry of calendars) {
+    calendars_object = { ...calendars_object, ...entry }
   }
 
   const relevantEvents = []
@@ -43,7 +43,7 @@ async function wochenplan(
   const rangeStart = moment(startOfWeek)
   const rangeEnd = rangeStart.clone().add(7, 'days')
 
-  filterEvents(returnData, rangeStart, rangeEnd, interaction, relevantEvents)
+  filterEvents(calendars_object, rangeStart, rangeEnd, interaction, relevantEvents)
 
   const embed = new EmbedBuilder()
     .setAuthor({
@@ -147,15 +147,15 @@ async function wochenplan(
 }
 
 function filterEvents(
-  returnData: any,
+  calendars_object: any,
   rangeStart: moment.Moment,
   rangeEnd: moment.Moment,
   pMessageOrInteraction: any,
   relevantEvents: any[],
 ) {
-  for (const i in returnData) {
-    const event = returnData[i]
-    if (returnData[i].type === 'VEVENT') {
+  for (const i in calendars_object) {
+    const event = calendars_object[i]
+    if (calendars_object[i].type === 'VEVENT') {
       const startDate = moment(event.start)
       const endDate = moment(event.end)
       const duration = Number.parseInt(endDate.format('x'), 10) - Number.parseInt(startDate.format('x'), 10)
