@@ -2,7 +2,7 @@
 import { ColorResolvable, Guild, EmbedBuilder, Snowflake, TextChannel } from 'discord.js'
 import moment from 'moment'
 import { RecurrenceRule, scheduleJob } from 'node-schedule'
-import { fetchAndCacheCalendars } from '../types/calendar_helper_functions'
+import { extractZoomLinks, fetchAndCacheCalendars } from '../types/calendar_helper_functions'
 
 import { DiscordClient } from '../types/customTypes'
 
@@ -545,33 +545,6 @@ function scheduleNotifications(client: DiscordClient, today: Date, events: objec
       createCron(recurrenceRule, channel, role, embed, client)
     }
   }
-}
-
-/**
- * Extracts the zoom Links from HTML tag
- * if the HTML tag contains "#success" it cuts the string before that string, to make the link automatically open zoom
- * @param {string} eventLinkString string to extract link from
- * @returns {string} well formed url
- */
-function extractZoomLinks(eventLinkString: string): string {
-  if (eventLinkString.length === 0) return undefined
-
-  /**
-   * Extract link from href tag.
-   */
-  eventLinkString = eventLinkString.includes('<a href=')
-    ? eventLinkString.split('<a href=')[1].split('>')[0]
-    : eventLinkString
-
-  /**
-   * Strip all html tags and encode as URI.
-   */
-  const link = eventLinkString.replace(/(<.*?>)/g, '')
-
-  /**
-   * Remove "#success" string, to automatically open zoom.
-   */
-  return link.includes('#success') ? link.split('#success')[0] : link.includes('id=') ? link.split('id=')[0] : link
 }
 
 /**
