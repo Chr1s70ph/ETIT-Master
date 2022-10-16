@@ -14,16 +14,11 @@ export const data = new DiscordSlashCommandBuilder()
   .setDescription('Zeigt deine anstehenden Klausuren an.')
   .setLocalizations('klausuren')
 
-async function klausuren(
-  client: DiscordClient,
-  interaction: DiscordChatInputCommandInteraction,
-  pNow,
-  pCourseAndSemester,
-) {
-  let returnData = {}
-  for (const entry in client.config.calendars) {
-    // eslint-disable-next-line no-await-in-loop
-    returnData = { ...returnData, ...(await async.fromURL(client.config.calendars[entry])) }
+function klausuren(client: DiscordClient, interaction: DiscordChatInputCommandInteraction, pNow, pCourseAndSemester) {
+  let calendars_object = {}
+  const calendars = client.calendars.values()
+  for (const entry of calendars) {
+    calendars_object = { ...calendars_object, ...entry }
   }
 
   const relevantEvents = []
@@ -34,7 +29,7 @@ async function klausuren(
   const rangeStart = moment(startOfWeek)
   const rangeEnd = rangeStart.clone().add(7, 'months')
 
-  filterEvents(returnData, rangeStart, rangeEnd, pCourseAndSemester, interaction, relevantEvents)
+  filterEvents(calendars_object, rangeStart, rangeEnd, pCourseAndSemester, interaction, relevantEvents)
 
   const embed = new EmbedBuilder().setAuthor({
     name: client.translate({
