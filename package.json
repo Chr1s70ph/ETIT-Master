@@ -20,7 +20,7 @@
     "fs": "^0.0.1-security",
     "github-create-issue": "^1.0.1",
     "https": "^1.0.0",
-    "i18next": "^21.10.0",
+    "i18next": "^22.0.2",
     "i18next-fs-backend": "^1.1.5",
     "luxon": "^3.0.4",
     "moment": "^2.29.4",
