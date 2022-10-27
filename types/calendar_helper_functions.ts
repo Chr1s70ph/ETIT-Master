@@ -9,10 +9,12 @@ import { DiscordClient } from './customTypes'
  * @param {DiscordClient} client Client Object
  */
 export async function fetchAndCacheCalendars(client: DiscordClient): Promise<void> {
+  if (client.calendars !== undefined) client.calendars = undefined
   client.calendars = new Collection()
   for (const calendar in client.config.calendars) {
     /* eslint-disable no-await-in-loop */
     client.calendars.set(calendar, await async.fromURL(client.config.calendars[calendar]))
+    console.log(`'${calendar}' calendar fetched & cached`)
   }
 }
 
