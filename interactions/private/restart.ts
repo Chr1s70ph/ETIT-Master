@@ -11,7 +11,7 @@ export const data = new DiscordSlashCommandBuilder()
   .setLocalizations('restart')
   .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
 
-exports.Command = (client: DiscordClient, interaction: DiscordChatInputCommandInteraction): Promise<void> => {
+exports.Command = (client: DiscordClient, interaction: DiscordChatInputCommandInteraction): void => {
   interaction.deferReply()
   if (!Object.values(client.config.ids.acceptedAdmins).includes(interaction.user.id)) {
     interaction.reply({
