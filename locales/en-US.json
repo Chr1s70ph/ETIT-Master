@@ -66,6 +66,11 @@
       "localized_description": "links fast",
       "localized_name": "quicklink"
     },
+    "refreshcalendars": {
+      "localized_description": "Fetch and cache new calendar events.",
+      "localized_name": "fetch_calendars",
+      "successfull": "Calendars have been fetched."
+    },
     "restart": {
       "answer": "🤖Restarting...",
       "localized_description": "Restart the bot instance.",

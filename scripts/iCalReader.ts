@@ -1,9 +1,8 @@
 /* eslint-disable no-await-in-loop */
 import { ColorResolvable, Guild, EmbedBuilder, Snowflake, TextChannel } from 'discord.js'
 import moment from 'moment'
-import { async } from 'node-ical'
 import { RecurrenceRule, scheduleJob } from 'node-schedule'
-
+import { extractZoomLinks, fetchAndCacheCalendars, filterEvents } from '../types/calendar_helper_functions'
 import { DiscordClient } from '../types/customTypes'
 
 const { DateTime } = require('luxon')
@@ -35,34 +34,44 @@ async function fetchAndSend(client: DiscordClient): Promise<void> {
   const today: Date = localDate('Berlin/Europe')
 
   /**
-   * Loop through all calendars.
+   * Start of todays day. (i.e 00:00:00).
    */
-  for (const entry in client.config.calendars) {
-    /**
-     * Link to ics file.
-     */
-    const icalLink = client.config.calendars[entry]
+  const todayStart = today
 
-    /**
-     * Object with todays events.
-     */
-    const events = {}
+  /**
+   * Set hours, minutes, seconds and miliseconds to 0.
+   */
+  todayStart.setUTCHours(0, 0, 0, 0)
 
-    /**
-     * All events fetched from {@link icalLink}.
-     */
-    const webEvents = await async.fromURL(icalLink)
+  /**
+   * End of todays day. (i.e 23:59:59).
+   */
+  const todayEnd = localDate('Berlin/Europe')
 
-    /**
-     * All events from the current day.
-     */
-    const eventsFromIcal = await getEvents(webEvents, today, events, entry)
+  await fetchAndCacheCalendars(client)
 
-    /**
-     * Schedule the notifications.
-     */
-    await scheduleNotifications(client, today, eventsFromIcal)
+  /**
+   * All calendars.
+   */
+  let calendars_object = {}
+  const calendars = client.calendars.values()
+  for (const entry of calendars) {
+    calendars_object = { ...calendars_object, ...entry }
   }
+
+  /**
+   * All events from the current day.
+   */
+  const relevantEvents = []
+
+  filterEvents(calendars_object, moment(todayStart), moment(todayEnd), undefined, relevantEvents, false)
+
+  console.log(relevantEvents)
+
+  /**
+   * Schedule the notifications.
+   */
+  await scheduleNotifications(client, today, relevantEvents)
 }
 
 /**
@@ -141,329 +150,6 @@ function updatedCalendarsNotifications(client: DiscordClient): void {
 }
 
 /**
- * Returns true, if dates are on the same day.
- * @param {Date} first First date to compare
- * @param {Date} second Second date to compare
- * @returns {boolean}
- */
-const datesAreOnSameDay = (first: Date, second: Date): boolean =>
-  first.getFullYear() === second.getFullYear() &&
-  first.getMonth() === second.getMonth() &&
-  first.getDate() === second.getDate()
-
-/**
- * Get events from the current day.
- * @param {Object} data Ical data
- * @param {Date} today Date object of todays date
- * @param {Object} events Object with todays events
- * @param {string} icalName Name of the calendar
- * @returns {Object}
- */
-function getEvents(data: object, today: Date, events: object, icalName: string): object {
-  /**
-   * Start of todays day. (i.e 00:00:00).
-   */
-  const todayStart = today
-
-  /**
-   * Set hours, minutes, seconds and miliseconds to 0.
-   */
-  todayStart.setUTCHours(0, 0, 0, 0)
-
-  /**
-   * End of todays day. (i.e 23:59:59).
-   */
-  const todayEnd = localDate('Berlin/Europe')
-
-  /**
-   * Set hours to last hour of the day.
-   */
-  todayEnd.setHours(23)
-
-  /**
-   * Set minutes to the last minute.
-   */
-  todayEnd.setMinutes(59)
-
-  /**
-   * Set seconds to the last second.
-   */
-  todayEnd.setSeconds(59)
-
-  /**
-   * When dealing with calendar recurrences, you need a range of dates to query against,
-   * because otherwise you can get an infinite number of calendar events.
-   */
-
-  /**
-   * Start of timeframe to filter events.
-   */
-  const rangeStart = moment(todayStart).utc()
-
-  /**
-   * End of timeframe to filter events.
-   */
-  const rangeEnd = moment(todayEnd)
-
-  /**
-   * Loop through all entries in the calendar.
-   */
-  for (const k in data) {
-    if (Object.prototype.hasOwnProperty.call(data, k)) {
-      /**
-       * Filter events, and add them to {@link events} if they occur on the current day.
-       */
-      if (data[k].type === 'VEVENT') eventFilter(data[k], today, events, rangeStart, rangeEnd)
-    }
-  }
-
-  /**
-   * Log events for overfiew of todays events.
-   */
-  console.log(icalName, events)
-
-  return events
-}
-
-/**
- * Add {@link event} to {@link events} if it occurs today.
- * @param {any} event Event to filter
- * @param {Date} today Date object of todays date
- * @param {Object} events Object with todays events
- * @param {moment.Moment} rangeStart Start of current day
- * @param {moment.Moment} rangeEnd End of current day
- * @returns {void}
- */
-function eventFilter(
-  event: any,
-  today: Date,
-  events: object,
-  rangeStart: moment.Moment,
-  rangeEnd: moment.Moment,
-): void {
-  /**
-   * Title of {@link event}.
-   */
-  const title = event.summary
-
-  /**
-   * Description of {@link event}.
-   */
-  const description = event.description
-
-  /**
-   * Start of {@link event}.
-   */
-  const startDate = moment(event.start)
-
-  /**
-   * End of {@link event}.
-   */
-  const endDate = moment(event.end)
-
-  /**
-   * Calculate the duration of the event for use with recurring events.
-   */
-  const duration = Number.parseInt(endDate.format('x'), 10) - Number.parseInt(startDate.format('x'), 10)
-
-  /**
-   * Simple case - no recurrences, just print out the calendar event.
-   */
-  if (typeof event.rrule === 'undefined' && datesAreOnSameDay(event.start, today)) {
-    /**
-     * Add event to todays {@link events}.
-     */
-    addEntryToTodaysEvents(events, today.getDay().toString(), event.start, title, description, event.location)
-  } else if (typeof event.rrule !== 'undefined') {
-    /**
-     * Complicated case - if an RRULE exists, handle multiple recurrences of the event.
-     *  For recurring events, get the set of event start dates that fall within the range
-     *  of dates we're looking for.
-     */
-    const dates = event.rrule.between(rangeStart.toDate(), rangeEnd.toDate(), true, () => true)
-
-    /**
-     * The "dates" array contains the set of dates within our desired date range range that are valid
-     * for the recurrence rule.  *However*, it's possible for us to have a specific recurrence that
-     * had its date changed from outside the range to inside the range.  One way to handle this is
-     * to add *all* recurrence override entries into the set of dates that we check, and then later
-     * filter out any recurrences that don't actually belong within our range.
-     */
-    if (event.recurrences !== undefined) {
-      for (const r in event.recurrences) {
-        /**
-         * Only add dates that weren't already in the range we added from the rrule so that
-         * we don't double-add those events.
-         */
-        if (moment(new Date(r)).isBetween(rangeStart, rangeEnd) !== true) {
-          dates.push(new Date(r))
-        }
-      }
-    }
-
-    /**
-     * Loop through the set of date entries to see which recurrences should be printed.
-     */
-    rruleFilter(dates, event, duration, startDate, endDate, rangeStart, rangeEnd, today, events)
-  }
-}
-
-/**
- * Loop through the set of date entries to see which recurrences should be printed.
- * @param {any} dates Dates of event
- * @param {any} event Event to filter
- * @param {number} duration Dudation of event
- * @param {moment.Moment} startDate Start of event
- * @param {moment.Moment} endDate End of event
- * @param {moment.Moment} rangeStart Start of current day
- * @param {moment.Moment} rangeEnd End of current day
- * @param {Date} today Date object of todays date
- * @param {Object} events Object with todays events
- * @returns {moment}
- */
-function rruleFilter(
-  dates: any,
-  event: any,
-  duration: number,
-  startDate: moment.Moment,
-  endDate: moment.Moment,
-  rangeStart: moment.Moment,
-  rangeEnd: moment.Moment,
-  today: Date,
-  events: object,
-): { startDate: moment.Moment; endDate: moment.Moment } {
-  for (const i in dates) {
-    /**
-     * Reccurence date.
-     */
-    const date = dates[i]
-
-    /**
-     * Current event in for-loop.
-     */
-    let curEvent = event
-
-    /**
-     * Boolean if event is today.
-     */
-    let showRecurrence = true
-
-    /**
-     * Duration of {@link curEvent}.
-     */
-    let curDuration = duration
-
-    /**
-     * Start of {@link curEvent} {@link curDuration}.
-     */
-    startDate = moment(date)
-
-    /**
-     * Use just the date of the recurrence to look up overrides and exceptions (i.e. chop off time information)
-     */
-    const dateLookupKey = date.toISOString().slice(0, 10)
-
-    /**
-     * For each date that we're checking, it's possible that there is a recurrence override for that one day.
-     */
-    if (curEvent.recurrences !== undefined && curEvent.recurrences[dateLookupKey] !== undefined) {
-      /**
-       * We found an override, so for this recurrence
-       * use a potentially different title, start date, and duration.
-       */
-      curEvent = curEvent.recurrences[dateLookupKey]
-      startDate = moment(curEvent.start)
-      curDuration = Number.parseInt(moment(curEvent.end).format('x'), 10) - Number.parseInt(startDate.format('x'), 10)
-    } else if (curEvent.exdate !== undefined && curEvent.exdate[dateLookupKey] !== undefined) {
-      /**
-       * If there's no recurrence override, check for an exception date.
-       * Exception dates represent exceptions to the rule.
-       * This date is an exception date, which means we should skip it in the recurrence pattern.
-       */
-      showRecurrence = false
-    }
-
-    /**
-     * Set the the title and the end date from either the regular event or the recurrence override.
-     */
-    const recurrenceTitle = curEvent.summary
-    endDate = moment(Number.parseInt(startDate.format('x'), 10) + curDuration, 'x')
-
-    /**
-     * If this recurrence ends before the start of the date range, or starts after the end of the date range,
-     * don't process it.
-     */
-    if (endDate.isBefore(rangeStart) || startDate.isAfter(rangeEnd)) {
-      showRecurrence = false
-    }
-
-    if (showRecurrence === true) {
-      /**
-       * Add event to todays {@link events}.
-       */
-      addEntryToTodaysEvents(
-        events,
-        today.getDay().toString(),
-        curEvent.start,
-        recurrenceTitle,
-        curEvent.description,
-        curEvent.location,
-      )
-    }
-  }
-
-  return { startDate, endDate }
-}
-
-/**
- * Add entries to {@link events}.
- * @param {Object} events Object with todays events
- * @param {string} day Current weekday
- * @param {Date} start Start of event
- * @param {string} summary Summary of event
- * @param {string} description Description of event
- * @param {string} location Location of event
- * @returns {Object}
- */
-function addEntryToTodaysEvents(
-  events: object,
-  day: string,
-  start: Date,
-  summary: string,
-  description: string,
-  location: string,
-): object {
-  /**
-   * Protection against double events.
-   * Only add event if it is one of a kind.
-   */
-  for (const elemtent in events) {
-    if (
-      events[elemtent].start === start &&
-      events[elemtent].summary === summary &&
-      events[elemtent].description === description &&
-      events[elemtent].location === location
-    ) {
-      return events
-    }
-  }
-
-  /**
-   * Add entry with new key.
-   * Key increments by one (determined by length).
-   */
-  events[Object.keys(events).length] = {
-    day: day,
-    start: start,
-    summary: summary,
-    description: description,
-    location: location,
-  }
-
-  return events
-}
-
-/**
  * Create notifications for {@link events} and schedule them.
  * @param {DiscordClient} client Bot-Client
  * @param {Date} today Date object of todays date
@@ -472,106 +158,77 @@ function addEntryToTodaysEvents(
  */
 function scheduleNotifications(client: DiscordClient, today: Date, events: object): void {
   for (const entry in events) {
-    if (events[entry].day === today.getDay().toString()) {
-      /**
-       * Current event in loop.
-       */
-      const event = events[entry]
+    /**
+     * Current event in loop.
+     */
+    const event = events[entry]
 
-      /**
-       * Summary of current event.
-       */
-      const summary = event.summary
+    /**
+     * Summary of current event.
+     */
+    const summary = event.summary
 
-      /**
-       * Extract the subject after the first "-" in the string.
-       */
-      const subject = summary.split(/-(.+)/)[1]
+    /**
+     * Extract the subject after the first "-" in the string.
+     */
+    const subject = summary.split(/-(.+)/)[1]
 
-      /**
-       * Extract the professors Name before the "-" in the string.
-       */
-      const professor = summary.split(/-(.+)/)[0]
+    /**
+     * Extract the professors Name before the "-" in the string.
+     */
+    const professor = summary.split(/-(.+)/)[0]
 
-      /**
-       * Link of current event.
-       */
-      const link = extractZoomLinks(event.description)
+    /**
+     * Link of current event.
+     */
+    const link = extractZoomLinks(event.description)
 
-      /**
-       * Timestamp to send notificaction.
-       */
-      const earlyEventStart = new Date(event.start - SEND_NOTIFICATION_OFFSET * MS_PER_MINUTE)
+    /**
+     * Timestamp to send notificaction.
+     */
+    const earlyEventStart = new Date(event.start - SEND_NOTIFICATION_OFFSET * MS_PER_MINUTE)
 
-      /**
-       * Recurrencerule to send notification.
-       */
-      const recurrenceRule = dateToRecurrenceRule(earlyEventStart, today)
+    /**
+     * Recurrencerule to send notification.
+     */
+    const recurrenceRule = dateToRecurrenceRule(earlyEventStart, today)
 
-      /**
-       * Role to ping.
-       */
-      let role = findRole(subject, client)
+    /**
+     * Role to ping.
+     */
+    let role = findRole(subject, client)
 
-      /**
-       * Notification Embed to send.
-       */
-      const embed = dynamicEmbed(client, role, subject, professor, SEND_NOTIFICATION_OFFSET, link, event.location)
+    /**
+     * Notification Embed to send.
+     */
+    const embed = dynamicEmbed(client, role, subject, professor, SEND_NOTIFICATION_OFFSET, link, event.location)
 
-      /**
-       * Channel to send notification to.
-       */
-      let channel = findChannel(subject, client)
+    /**
+     * Channel to send notification to.
+     */
+    let channel = findChannel(subject, client)
 
-      /**
-       * Send notification to botTestLobby in case channel is not found.
-       */
-      if (channel === undefined) {
-        channel = client.config.ids.channelIDs.dev.botTestLobby
-      }
-
-      /**
-       * Check if all necessary variables are defined.
-       */
-      if (noVariableUndefined(recurrenceRule, channel, role, embed, client)) {
-        role = `<@&${role}>`
-      } else if (role === undefined) {
-        role = ''
-      }
-
-      /**
-       * Schedule notifications.
-       */
-      createCron(recurrenceRule, channel, role, embed, client)
+    /**
+     * Send notification to botTestLobby in case channel is not found.
+     */
+    if (channel === undefined) {
+      channel = client.config.ids.channelIDs.dev.botTestLobby
     }
+
+    /**
+     * Check if all necessary variables are defined.
+     */
+    if (noVariableUndefined(recurrenceRule, channel, role, embed, client)) {
+      role = `<@&${role}>`
+    } else if (role === undefined) {
+      role = ''
+    }
+
+    /**
+     * Schedule notifications.
+     */
+    createCron(recurrenceRule, channel, role, embed, client)
   }
-}
-
-/**
- * Extracts the zoom Links from HTML tag
- * if the HTML tag contains "#success" it cuts the string before that string, to make the link automatically open zoom
- * @param {string} eventLinkString string to extract link from
- * @returns {string} well formed url
- */
-function extractZoomLinks(eventLinkString: string): string {
-  if (eventLinkString.length === 0) return undefined
-
-  /**
-   * Extract link from href tag.
-   */
-  eventLinkString = eventLinkString.includes('<a href=')
-    ? eventLinkString.split('<a href=')[1].split('>')[0]
-    : eventLinkString
-
-  /**
-   * Strip all html tags and encode as URI.
-   */
-  const link = eventLinkString.replace(/(<.*?>)/g, '')
-
-  /**
-   * Remove "#success" string, to automatically open zoom.
-   */
-  return link.includes('#success') ? link.split('#success')[0] : link.includes('id=') ? link.split('id=')[0] : link
 }
 
 /**

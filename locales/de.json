@@ -66,6 +66,11 @@
       "localized_description": "Links schnell",
       "localized_name": "quicklink"
     },
+    "refreshcalendars": {
+      "localized_description": "Kalender aktualisieren und zwischenspeichern.",
+      "localized_name": "kalender_aktualisieren",
+      "successfull": "Kalender wurden aktualisiert."
+    },
     "restart": {
       "answer": "🤖Starte neu...",
       "localized_description": "Starte die bot-Instanz neu.",
