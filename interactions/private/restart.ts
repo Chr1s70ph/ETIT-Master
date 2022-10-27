@@ -20,7 +20,7 @@ exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCom
   }
 
   interaction.reply({
-    content: client.translate({ key: 'interactons.restart.answer', lng: interaction.user.language }),
+    content: client.translate({ key: 'interactions.restart.answer', lng: interaction.user.language }),
   })
 
   pm2.connect(err => {
