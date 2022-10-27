@@ -19,6 +19,10 @@ exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCom
     })
   }
 
+  interaction.reply({
+    content: client.translate({ key: 'interactons.restart.answer', lng: interaction.user.language }),
+  })
+
   pm2.connect(err => {
     if (err) {
       throw new Error(err)
@@ -28,9 +32,5 @@ exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCom
     } catch (error) {
       throw new Error(error)
     }
-  })
-
-  interaction.reply({
-    content: client.translate({ key: 'interactons.restart.answer', lng: interaction.user.language }),
   })
 }
