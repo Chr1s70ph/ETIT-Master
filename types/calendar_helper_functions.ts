@@ -56,7 +56,7 @@ export function filterEvents(
     if (calendars_object[i].type === 'VEVENT') {
       const startDate = moment(event.start)
       const endDate = moment(event.end)
-      secondFIlter(
+      rruleFilter(
         event,
         startDate,
         rangeStart,
@@ -70,7 +70,7 @@ export function filterEvents(
   }
 }
 
-function secondFIlter(
+function rruleFilter(
   event: any,
   startDate: any,
   rangeStart: moment.Moment,
@@ -150,29 +150,47 @@ function secondFIlter(
   }
 }
 
-export function pushToWeeksEvents(interaction, event, event_start, event_end, relevantEvents) {
+function pushToWeeksEvents(interaction, event, event_start, event_end, relevantEvents) {
   if (doubleEntry(relevantEvents, event, event_start, event_end)) {
     return
   }
-  const roles = interaction.member.roles.cache.map(role => role)
-  for (const role in roles) {
-    let searchQuery = ''
-    if (event.summary.indexOf('-') !== -1) {
-      searchQuery = event.summary.split('-')[1].split('(')[0].toLowerCase()
-    } else {
-      searchQuery = event.summary.toString()
+
+  /**
+   * Only the case, if function is being called from iCalReader
+   */
+  if (interaction === undefined) {
+    /**
+     * Add entry with new key.
+     * Key increments by one (determined by length).
+     */
+    relevantEvents[Object.keys(relevantEvents).length] = {
+      start: event_start,
+      end: event_end,
+      summary: event.summary,
+      description: event.description,
+      location: event.location,
     }
-    if (roles[role].name.toLowerCase().trim() === searchQuery.toLowerCase().trim()) {
-      /**
-       * Add entry with new key.
-       * Key increments by one (determined by length).
-       */
-      relevantEvents[Object.keys(relevantEvents).length] = {
-        start: event_start,
-        end: event_end,
-        summary: event.summary,
-        description: event.description,
-        location: event.location,
+  } else {
+    const roles = interaction.member.roles.cache.map(role => role)
+    for (const role in roles) {
+      let searchQuery = ''
+      if (event.summary.indexOf('-') !== -1) {
+        searchQuery = event.summary.split('-')[1].split('(')[0].toLowerCase()
+      } else {
+        searchQuery = event.summary.toString()
+      }
+      if (roles[role].name.toLowerCase().trim() === searchQuery.toLowerCase().trim()) {
+        /**
+         * Add entry with new key.
+         * Key increments by one (determined by length).
+         */
+        relevantEvents[Object.keys(relevantEvents).length] = {
+          start: event_start,
+          end: event_end,
+          summary: event.summary,
+          description: event.description,
+          location: event.location,
+        }
       }
     }
   }
