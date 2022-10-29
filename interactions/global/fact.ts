@@ -12,7 +12,7 @@ export const data = new DiscordSlashCommandBuilder()
 exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCommandInteraction): Promise<void> => {
   const fact = DATA[Math.floor(Math.random() * DATA.length)]
   const fact_embed = new EmbedBuilder()
-    .setTitle(client.translate({ key: 'interactions.fact.fact', lng: interaction.user.language }))
+    .setTitle(client.translate({ key: 'interactions.fact.fact', options: { lng: interaction.user.language } }))
     .setDescription(fact)
     .setFooter({
       text: interaction.user.tag,

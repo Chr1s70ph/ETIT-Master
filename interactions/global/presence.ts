@@ -50,7 +50,7 @@ exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCom
    */
   if (!Object.values(client.config.ids.acceptedAdmins).includes(interaction.user.id)) {
     interaction.reply({
-      content: client.translate({ key: 'missingPermission', lng: interaction.user.language }),
+      content: client.translate({ key: 'missingPermission', options: { lng: interaction.user.language } }),
     })
   }
 

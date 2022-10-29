@@ -47,49 +47,72 @@ exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCom
    * Embed with information about {@link target_user}
    */
   const embed = new EmbedBuilder()
-    .setTitle(`${client.translate({ key: 'interactions.userinfo.userinfo', lng: interaction.user.language })}:`)
+    .setTitle(
+      `${client.translate({ key: 'interactions.userinfo.userinfo', options: { lng: interaction.user.language } })}:`,
+    )
     .addFields([
       {
-        name: `${client.translate({ key: 'interactions.userinfo.name', lng: interaction.user.language })}:`,
+        name: `${client.translate({
+          key: 'interactions.userinfo.name',
+          options: { lng: interaction.user.language },
+        })}:`,
         value: target_user.username,
         inline: true,
       },
       {
-        name: `${client.translate({ key: 'interactions.userinfo.tag', lng: interaction.user.language })}:`,
+        name: `${client.translate({ key: 'interactions.userinfo.tag', options: { lng: interaction.user.language } })}:`,
         value: `#${target_user.tag.split('#')[1]}`,
         inline: true,
       },
       {
-        name: `${client.translate({ key: 'interactions.userinfo.nickname', lng: interaction.user.language })}:`,
+        name: `${client.translate({
+          key: 'interactions.userinfo.nickname',
+          options: { lng: interaction.user.language },
+        })}:`,
         value: target_guildMember.displayName,
         inline: true,
       },
       {
-        name: `${client.translate({ key: 'interactions.userinfo.bot_user', lng: interaction.user.language })}:`,
+        name: `${client.translate({
+          key: 'interactions.userinfo.bot_user',
+          options: { lng: interaction.user.language },
+        })}:`,
         value: `${target_user.bot}`,
         inline: true,
       },
       {
-        name: `${client.translate({ key: 'interactions.userinfo.highest_role', lng: interaction.user.language })}:`,
+        name: `${client.translate({
+          key: 'interactions.userinfo.highest_role',
+          options: { lng: interaction.user.language },
+        })}:`,
         value: `<@&${target_guildMember.roles.highest.id}>`,
         inline: true,
       },
       {
-        name: `${client.translate({ key: 'interactions.userinfo.joined', lng: interaction.user.language })}:`,
+        name: `${client.translate({
+          key: 'interactions.userinfo.joined',
+          options: { lng: interaction.user.language },
+        })}:`,
         value: `<t:${Math.round(target_guildMember.joinedTimestamp / 1000)}:D>`,
         inline: true,
       },
       {
-        name: `${client.translate({ key: 'interactions.userinfo.account_created', lng: interaction.user.language })}:`,
+        name: `${client.translate({
+          key: 'interactions.userinfo.account_created',
+          options: { lng: interaction.user.language },
+        })}:`,
         value: `<t:${Math.round(target_user.createdTimestamp / 1000)}:D>`,
         inline: true,
       },
       {
-        name: `${client.translate({ key: 'interactions.userinfo.nitro', lng: interaction.user.language })}:`,
+        name: `${client.translate({
+          key: 'interactions.userinfo.nitro',
+          options: { lng: interaction.user.language },
+        })}:`,
         value: `${
           userPremiumSinceTimestamp
             ? `<t:${userPremiumSinceTimestamp}:D>`
-            : client.translate({ key: 'interactions.userinfo.no_nitro', lng: interaction.user.language })
+            : client.translate({ key: 'interactions.userinfo.no_nitro', options: { lng: interaction.user.language } })
         }`,
         inline: true,
       },

@@ -15,12 +15,12 @@ exports.Command = (client: DiscordClient, interaction: DiscordChatInputCommandIn
   interaction.deferReply()
   if (!Object.values(client.config.ids.acceptedAdmins).includes(interaction.user.id)) {
     interaction.reply({
-      content: client.translate({ key: 'missingPermission', lng: interaction.user.language }),
+      content: client.translate({ key: 'missingPermission', options: { lng: interaction.user.language } }),
     })
   }
 
   interaction.reply({
-    content: client.translate({ key: 'interactions.restart.answer', lng: interaction.user.language }),
+    content: client.translate({ key: 'interactions.restart.answer', options: { lng: interaction.user.language } }),
   })
 
   pm2.connect(err => {

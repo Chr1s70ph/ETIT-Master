@@ -13,10 +13,10 @@ exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCom
    * Build Embed to send back.
    */
   const uptime_embed = new EmbedBuilder()
-    .setTitle(client.translate({ key: 'interactions.uptime.Title', lng: interaction.user.language }))
+    .setTitle(client.translate({ key: 'interactions.uptime.Title', options: { lng: interaction.user.language } }))
     .addFields([
       {
-        name: client.translate({ key: 'interactions.uptime.Time', lng: interaction.user.language }),
+        name: client.translate({ key: 'interactions.uptime.Time', options: { lng: interaction.user.language } }),
         value: client.translate({
           key: 'interactions.uptime.Info',
           options: {
