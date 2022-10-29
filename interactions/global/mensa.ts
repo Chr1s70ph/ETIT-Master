@@ -254,7 +254,7 @@ export async function mensa(
     embed.setDescription(
       client.translate({
         key: 'interactions.mensa.refreshJSON',
-        lng: embed_language,
+        options: { lng: embed_language },
       }),
     )
 
@@ -267,11 +267,11 @@ export async function mensa(
   if (Object.keys(mensa_json).indexOf(req_mensa) === -1) {
     embed
       .setTitle(
-        `${client.translate({ key: 'interactions.mensa.cafeteria', lng: embed_language })} ${
+        `${client.translate({ key: 'interactions.mensa.cafeteria', options: { lng: embed_language } })} ${
           mensaOptions[req_mensa].name
         }`,
       )
-      .setDescription(client.translate({ key: 'interactions.mensa.lineClosed', lng: embed_language }))
+      .setDescription(client.translate({ key: 'interactions.mensa.lineClosed', options: { lng: embed_language } }))
 
     return embed
   }
@@ -293,7 +293,7 @@ export async function mensa(
 
       embed
         .setTitle(
-          `${client.translate({ key: 'interactions.mensa.cafeteria', lng: embed_language })} ${
+          `${client.translate({ key: 'interactions.mensa.cafeteria', options: { lng: embed_language } })} ${
             mensaOptions[req_mensa].name
           }`,
         )
@@ -315,7 +315,7 @@ export async function mensa(
 
           // eslint-disable-next-line max-depth
           if (foodLineData.nodata) {
-            mealValues = client.translate({ key: 'interactions.mensa.noInformation', lng: embed_language })
+            mealValues = client.translate({ key: 'interactions.mensa.noInformation', options: { lng: embed_language } })
             break
           }
 
@@ -342,7 +342,7 @@ export async function mensa(
                   key: 'interactions.mensa.foodAdditives',
                   options: { additives: allAdditives, lng: embed_language },
                 })
-              : client.translate({ key: 'interactions.mensa.noFoodAdditives', lng: embed_language })
+              : client.translate({ key: 'interactions.mensa.noFoodAdditives', options: { lng: embed_language } })
 
           const foodContainsStringToEmoji = {
             bio: ':earth_africa:',

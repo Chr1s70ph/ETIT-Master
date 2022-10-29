@@ -137,8 +137,14 @@ function wochenplan(
 
   if (embed_too_long) {
     embed.addFields({
-      name: `${client.translate({ key: 'interactions.wochenplan.too_long.name', lng: interaction.locale })}`,
-      value: `${client.translate({ key: 'interactions.wochenplan.too_long.value', lng: interaction.locale })}`,
+      name: `${client.translate({
+        key: 'interactions.wochenplan.too_long.name',
+        options: { lng: interaction.user.language },
+      })}`,
+      value: `${client.translate({
+        key: 'interactions.wochenplan.too_long.value',
+        options: { lng: interaction.user.language },
+      })}`,
       inline: false,
     })
   }
@@ -180,8 +186,14 @@ exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCom
    */
   if (!valid_date) {
     embed.addFields({
-      name: `${client.translate({ key: 'interactions.wochenplan.invalid_Date.name', lng: interaction.locale })}`,
-      value: `${client.translate({ key: 'interactions.wochenplan.invalid_Date.value', lng: interaction.locale })}`,
+      name: `${client.translate({
+        key: 'interactions.wochenplan.invalid_Date.name',
+        options: { lng: interaction.user.language },
+      })}`,
+      value: `${client.translate({
+        key: 'interactions.wochenplan.invalid_Date.value',
+        options: { lng: interaction.user.language },
+      })}`,
       inline: false,
     })
   }

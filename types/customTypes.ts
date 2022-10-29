@@ -23,7 +23,7 @@ import {
   User,
   UserContextMenuCommandInteraction,
 } from 'discord.js'
-import i18next from 'i18next'
+import i18next, { TFunctionDetailedResult, TOptions } from 'i18next'
 import { CalendarResponse } from 'node-ical'
 
 /**
@@ -187,8 +187,8 @@ export class DiscordClient extends Client {
    * @returns {string}
    */
   public translate(args: translation_options): string {
-    const options = args.options ?? { lng: args.lng ?? 'en-US' }
-    return i18next.t(args.key, options)
+    // Const options = args.options ?? { lng: args.lng ?? 'en-US' }
+    return i18next.t(args.key, args.options)
   }
 }
 
@@ -350,8 +350,7 @@ export interface DiscordUser extends User {
  */
 interface translation_options {
   key: string | string[]
-  lng?: string
-  options?: object | string
+  options: TOptions
 }
 
 /**
