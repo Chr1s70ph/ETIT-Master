@@ -23,7 +23,7 @@ import {
   User,
   UserContextMenuCommandInteraction,
 } from 'discord.js'
-import i18next, { TFunctionDetailedResult, TOptions } from 'i18next'
+import i18next, { TOptions } from 'i18next'
 import { CalendarResponse } from 'node-ical'
 
 /**
@@ -345,17 +345,6 @@ export interface DiscordUser extends User {
 interface translation_options {
   key: string | string[]
   options: TOptions
-}
-
-/**
- * Interface of Command structure
- */
-interface Command extends Object {
-  name: string
-  description: string
-  usage: string
-  example: string
-  aliases: string[]
 }
 
 interface InteractionCommands extends Object {
