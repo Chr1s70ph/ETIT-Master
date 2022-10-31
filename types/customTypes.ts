@@ -59,12 +59,6 @@ export class DiscordClient extends Client {
   public calendars: Collection<string, CalendarResponse>
 
   /**
-   * Collection of all commands to use
-   * @type {Collection<string, Command>}
-   */
-  public commands: Collection<string, Command>
-
-  /**
    * Config file imported into the DiscordClient for global access
    * @type {[key: string]: any}
    */

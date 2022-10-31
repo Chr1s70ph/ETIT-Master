@@ -44,11 +44,6 @@ const client: DiscordClient = new DiscordClient({
 })
 
 /**
- * Set {@link DiscordClient} commands to new {@link Collection}
- */
-client.commands = new Collection()
-
-/**
  * Set {@link DiscordClient} interactions to new {@link Collection}
  */
 client.interactions = new Collection()
