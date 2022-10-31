@@ -2,6 +2,7 @@
 import { ColorResolvable, Guild, EmbedBuilder, Snowflake, TextChannel } from 'discord.js'
 import moment from 'moment'
 import { RecurrenceRule, scheduleJob } from 'node-schedule'
+import tx2 from 'tx2'
 import { extractZoomLinks, fetchAndCacheCalendars, filterEvents } from '../types/calendar_helper_functions'
 import { DiscordClient } from '../types/customTypes'
 
@@ -13,6 +14,18 @@ const MS_PER_MINUTE = 60000
  */
 const SEND_NOTIFICATION_OFFSET = 20
 const DELETE_NOTIFICATIONS_OFFSET = 115
+
+/**
+ * Custom PM2 metric.
+ */
+const scheduledNotifications = tx2.metric({
+  name: 'Number of scheduled notifications today',
+})
+
+/**
+ * Variable for counting scheduled notifications
+ */
+let created_notifications = 0
 
 exports.run = async (client: DiscordClient) => {
   await fetchAndSend(client)
@@ -28,6 +41,11 @@ exports.run = async (client: DiscordClient) => {
  * @returns {Promise<void>}
  */
 async function fetchAndSend(client: DiscordClient): Promise<void> {
+  /**
+   * Reset variable for counting scheduled notifications
+   */
+  created_notifications = 0
+
   /**
    * Date of current day.
    */
@@ -229,7 +247,9 @@ function scheduleNotifications(client: DiscordClient, today: Date, events: objec
      * Schedule notifications.
      */
     createCron(recurrenceRule, channel, role, embed, client)
+    created_notifications += 1
   }
+  scheduledNotifications.set(created_notifications)
 }
 
 /**

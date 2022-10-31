@@ -1,4 +1,5 @@
 import { GuildMember, MessageReaction, TextChannel } from 'discord.js'
+import tx2 from 'tx2'
 import { colors } from '../types/colors'
 import { DiscordClient } from '../types/customTypes'
 
@@ -18,6 +19,13 @@ const ROLE_REACTION_CHANNELS = [
  * Channel to send message to, if course module role does not yet exist
  */
 const SDADISDIGEN = '827171746364784671'
+
+/**
+ * Custom PM2 metric.
+ */
+const rolesAddedCounter = tx2.counter({
+  name: 'Rolles added to users',
+})
 
 exports.run = async (client: DiscordClient, reaction: MessageReaction, user: GuildMember) => {
   const USER = await reaction.message.guild.members.fetch(user.id)
@@ -49,6 +57,7 @@ exports.run = async (client: DiscordClient, reaction: MessageReaction, user: Gui
           // eslint-disable-next-line max-len
           `User update: ${colors.fg.Green}Added${colors.special.Reset} role ${colors.special.Bright}${role.name}${colors.special.Reset} to ${USER.displayName}.`,
         )
+        rolesAddedCounter.inc()
       }
     } catch (error) {
       /**
