@@ -24,7 +24,7 @@ const SDADISDIGEN = '827171746364784671'
  * Custom PM2 metric.
  */
 const rolesRemovedCounter = tx2.counter({
-  name: 'Rolles added to users',
+  name: 'Rolles removed from users',
 })
 
 exports.run = async (client: DiscordClient, reaction: MessageReaction, user: GuildMember) => {
