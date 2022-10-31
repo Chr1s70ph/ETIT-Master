@@ -47,6 +47,7 @@ async function fetchAndSend(client: DiscordClient): Promise<void> {
    * End of todays day. (i.e 23:59:59).
    */
   const todayEnd = localDate('Berlin/Europe')
+  todayEnd.setUTCHours(23, 59, 59, 0)
 
   await fetchAndCacheCalendars(client)
 
