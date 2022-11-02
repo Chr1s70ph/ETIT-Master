@@ -25,7 +25,7 @@ export async function fetchAndCacheCalendars(client: DiscordClient): Promise<voi
  * @returns {string} well formed url
  */
 export function extractZoomLinks(eventLinkString: string): string {
-  if (eventLinkString.length === 0) return undefined
+  if (eventLinkString === undefined || eventLinkString.length === 0) return undefined
 
   /**
    * Extract link from href tag.

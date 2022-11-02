@@ -117,7 +117,10 @@ function wochenplan(
         )})__`
       }
 
-      if (weekdayEvent.description?.indexOf('https://kit-lecture.zoom.us') !== -1) {
+      if (
+        weekdayEvent.desccription !== undefined &&
+        weekdayEvent.description.indexOf('https://kit-lecture.zoom.us') !== -1
+      ) {
         /**
          * Add zoom hyperlink if available
          */
