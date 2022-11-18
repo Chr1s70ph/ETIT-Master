@@ -52,6 +52,7 @@ exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCom
     interaction.reply({
       content: client.translate({ key: 'missingPermission', options: { lng: interaction.user.language } }),
     })
+    return
   }
 
   /**
