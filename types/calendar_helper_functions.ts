@@ -25,7 +25,7 @@ export async function fetchAndCacheCalendars(client: DiscordClient): Promise<voi
  * @returns {string} well formed url
  */
 export function extractZoomLinks(eventLinkString: string): string {
-  if (eventLinkString === undefined || eventLinkString.length === 0) return undefined
+  if (eventLinkString === undefined || eventLinkString.length === 0 || !validURL(eventLinkString)) return undefined
 
   /**
    * Extract link from href tag.
@@ -43,6 +43,30 @@ export function extractZoomLinks(eventLinkString: string): string {
    * Remove "#success" string, to automatically open zoom.
    */
   return link.includes('#success') ? link.split('#success')[0] : link.includes('id=') ? link.split('id=')[0] : link
+}
+
+/**
+ * Test if input string is valid URL
+ * @param {string} str Input string to test
+ * @returns {boolean}
+ */
+function validURL(str: string): boolean {
+  const pattern = new RegExp(
+    // Protocol
+    '^(https?:\\/\\/)?' +
+      // Domain name
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' +
+      // OR ip (v4) address
+      '((\\d{1,3}\\.){3}\\d{1,3}))' +
+      // Port and path
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' +
+      // Query string
+      '(\\?[;&a-z\\d%_.~+=-]*)?' +
+      // Fragment locator
+      '(\\#[-a-z\\d_]*)?$',
+    'i',
+  )
+  return !!pattern.test(str)
 }
 
 export function filterEvents(
