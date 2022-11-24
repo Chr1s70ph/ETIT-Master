@@ -51,6 +51,9 @@ export function extractZoomLinks(eventLinkString: string): string {
  * @returns {boolean}
  */
 function validURL(str: string): boolean {
+  /**
+   * Stolen from StackOverflow: https://stackoverflow.com/a/5717133/10926046
+   */
   const pattern = new RegExp(
     // Protocol
     '^(https?:\\/\\/)?' +
