@@ -101,7 +101,7 @@ export function filterEvents(
 
 function rruleFilter(
   event: any,
-  startDate: any,
+  startDate: moment.Moment,
   rangeStart: moment.Moment,
   rangeEnd: moment.Moment,
   pMessageOrInteraction: any,
@@ -180,8 +180,22 @@ function rruleFilter(
 }
 
 function pushToWeeksEvents(interaction, event, event_start, event_end, relevantEvents) {
-  if (doubleEntry(relevantEvents, event, event_start, event_end)) {
+  if (doubleEntry(relevantEvents, event)) {
     return
+  }
+  /**
+   * Account the fact, that an event may have been created back in DST
+   * or vice verca and adjust the event start times accordingly
+   * (Why is this not done by node-ical natively urgh)
+   */
+  if (moment(event.created).isDST() !== event_start.isDST()) {
+    if (moment(event.created).isDST()) {
+      event_start.subtract(1, 'hour')
+      event_end.subtract(1, 'hour')
+    } else {
+      event_start.add(1, 'hour')
+      event_end.add(1, 'hour')
+    }
   }
 
   /**
@@ -193,8 +207,8 @@ function pushToWeeksEvents(interaction, event, event_start, event_end, relevantE
      * Key increments by one (determined by length).
      */
     relevantEvents[Object.keys(relevantEvents).length] = {
-      start: event_start,
-      end: event_end,
+      start: new Date(`${event_start.toString().toLocaleString('en-US', { timezone: 'UTC' }).slice(0, -10)}z`),
+      end: new Date(`${event_end.toString().toLocaleString('en-US', { timezone: 'UTC' }).slice(0, -10)}z`),
       summary: event.summary,
       description: event.description,
       location: event.location,
@@ -229,11 +243,9 @@ function pushToWeeksEvents(interaction, event, event_start, event_end, relevantE
  * Check if the new element added to @link{array} creates a duplicate
  * @param {any[]} array array to check
  * @param  {any} new_element new element on which to check if duplicate
- * @param {Date} start_date end date of event
- * @param {Date} end_date start date of event
  * @returns {boolean}
  */
-function doubleEntry(array: any[], new_element: any, start_date: Date, end_date: Date): boolean {
+function doubleEntry(array: any[], new_element: any): boolean {
   /**
    * Always return false, if array has no entry
    * There are no possible duplicates if there is nothing in the array
@@ -246,12 +258,7 @@ function doubleEntry(array: any[], new_element: any, start_date: Date, end_date:
    * Check if any of the already added elements is the same as @link{new_element}
    */
   for (const entry in array) {
-    if (
-      array[entry].start === new_element.start &&
-      array[entry].summary === new_element.summary &&
-      array[entry].start.getDay() === start_date &&
-      array[entry].end.getDay() === end_date
-    ) {
+    if (array[entry].summary === new_element.summary && array[entry].description === new_element.description) {
       return true
     }
   }

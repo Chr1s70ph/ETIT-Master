@@ -215,7 +215,7 @@ function scheduleNotifications(client: DiscordClient, today: Date, events: objec
     /**
      * Role to ping.
      */
-    let role = findRole(subject, client)
+    const role = findRole(subject, client)
 
     /**
      * Notification Embed to send.
@@ -232,15 +232,6 @@ function scheduleNotifications(client: DiscordClient, today: Date, events: objec
      */
     if (channel === undefined) {
       channel = client.config.ids.channelIDs.dev.botTestLobby
-    }
-
-    /**
-     * Check if all necessary variables are defined.
-     */
-    if (noVariableUndefined(recurrenceRule, channel, role, embed, client)) {
-      role = `<@&${role}>`
-    } else if (role === undefined) {
-      role = ''
     }
 
     /**
@@ -467,29 +458,19 @@ function findRole(subject: string, client: DiscordClient): Snowflake {
   const guild = client.guilds.cache.get(client.config.ids.serverID)
 
   /**
+   * RoleID from {@link guild}.
+   */
+  const roleID = guild.roles.cache.find(_role => subject.toLowerCase() === _role.name.toLowerCase())?.id ?? null
+
+  /**
    * Role from {@link guild}.
    */
-  const role = guild.roles.cache.find(_role => subject.toLowerCase() === _role.name.toLowerCase())?.id ?? null
+  const role = roleID !== null ? `<@&${roleID}>` : ''
 
   /**
    * Return {@link role}.
    */
   return role
-}
-
-/**
- * Check if any provided arguments are undefined.
- * @param {any} args Arguments to check for undefined
- * @returns {boolean}
- */
-function noVariableUndefined(...args: any): boolean {
-  for (const arg in args) {
-    if (args[arg] === undefined) {
-      return false
-    }
-  }
-
-  return true
 }
 
 /**
