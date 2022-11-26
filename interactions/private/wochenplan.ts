@@ -80,14 +80,11 @@ function wochenplan(
 
     const courseDate = moment(
       new Date(
-        `${startOfWeek.getFullYear()}-${(startOfWeek.getMonth() + 1).toString().padStart(2, '0')}-${(
-          startOfWeek.getDate() +
-          parseInt(weekdayKey) -
-          1
-        )
+        `${startOfWeek.getFullYear()}-${(startOfWeek.getMonth() + 1).toString().padStart(2, '0')}-${startOfWeek
+          .getDate()
           .toString()
           .padStart(2, '0')}T00:00:00`,
-      ),
+      ).setDate(startOfWeek.getDate() + parseInt(weekdayKey) - 1),
     ).format('DD.MM.yyyy (dddd)')
     let body = ''
 
