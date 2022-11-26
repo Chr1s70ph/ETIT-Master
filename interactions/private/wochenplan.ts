@@ -65,12 +65,6 @@ function wochenplan(
   const weekdayItems = {}
 
   for (const relevantEvent of relevantEvents) {
-    if (typeof relevantEvent.start.tz === 'undefined') {
-      const tzOffset = moment().tz('Europe/Berlin').utcOffset()
-      relevantEvent.start.setMinutes(relevantEvent.start.getMinutes() + tzOffset)
-      relevantEvent.end.setMinutes(relevantEvent.end.getMinutes() + tzOffset)
-    }
-
     if (!weekdayItems[moment(relevantEvent.start).days()]) {
       weekdayItems[moment(relevantEvent.start).days()] = []
     }

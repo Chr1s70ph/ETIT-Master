@@ -1,7 +1,7 @@
 import { Collection } from 'discord.js'
 import moment from 'moment'
 import { async } from 'node-ical'
-import { DiscordClient } from './customTypes'
+import { DiscordChatInputCommandInteraction, DiscordClient, DiscordButtonInteraction } from './customTypes'
 
 /**
  * Fetches and saves all calendars defined in the config.
@@ -76,7 +76,7 @@ export function filterEvents(
   calendars_object: any,
   rangeStart: moment.Moment,
   rangeEnd: moment.Moment,
-  pMessageOrInteraction: any,
+  pMessageOrInteraction: DiscordChatInputCommandInteraction | DiscordButtonInteraction,
   relevantEvents: any[],
   is_exams_command: boolean,
 ) {
@@ -104,18 +104,18 @@ function rruleFilter(
   startDate: moment.Moment,
   rangeStart: moment.Moment,
   rangeEnd: moment.Moment,
-  pMessageOrInteraction: any,
+  pMessageOrInteraction: DiscordChatInputCommandInteraction | DiscordButtonInteraction,
   relevantEvents: any[],
-  endDate: any,
+  endDate: moment.Moment,
   is_exams_command: boolean,
 ) {
   if (typeof event.rrule === 'undefined') {
     if (is_exams_command === true) {
       if (startDate.isBetween(rangeStart, rangeEnd) && event.summary.toLowerCase().includes('klausur')) {
-        pushToWeeksEvents(pMessageOrInteraction, event, relevantEvents, event.start, event.end)
+        pushToWeeksEvents(pMessageOrInteraction, event, startDate, endDate, relevantEvents)
       }
     } else if (startDate.isBetween(rangeStart, rangeEnd)) {
-      pushToWeeksEvents(pMessageOrInteraction, event, relevantEvents, event.start, event.end)
+      pushToWeeksEvents(pMessageOrInteraction, event, startDate, endDate, relevantEvents)
     }
   } else {
     /**
@@ -179,7 +179,13 @@ function rruleFilter(
   }
 }
 
-function pushToWeeksEvents(interaction, event, event_start, event_end, relevantEvents) {
+function pushToWeeksEvents(
+  interaction: any,
+  event: any,
+  event_start: moment.Moment,
+  event_end: moment.Moment,
+  relevantEvents: any[],
+) {
   if (doubleEntry(relevantEvents, event)) {
     return
   }
@@ -188,7 +194,7 @@ function pushToWeeksEvents(interaction, event, event_start, event_end, relevantE
    * or vice verca and adjust the event start times accordingly
    * (Why is this not done by node-ical natively urgh)
    */
-  if (moment(event.created).isDST() !== event_start.isDST()) {
+  if (moment(event.created).isDST() !== event_start.isDST() && moment(event.start).isDST() !== true) {
     if (moment(event.created).isDST()) {
       event_start.subtract(1, 'hour')
       event_end.subtract(1, 'hour')
@@ -196,6 +202,9 @@ function pushToWeeksEvents(interaction, event, event_start, event_end, relevantE
       event_start.add(1, 'hour')
       event_end.add(1, 'hour')
     }
+  } else if (moment(event.created).isDST() === false && moment(event.start).isDST() === false) {
+    event_start.subtract(1, 'hour')
+    event_end.subtract(1, 'hour')
   }
 
   /**
@@ -207,8 +216,8 @@ function pushToWeeksEvents(interaction, event, event_start, event_end, relevantE
      * Key increments by one (determined by length).
      */
     relevantEvents[Object.keys(relevantEvents).length] = {
-      start: new Date(`${event_start.toString().toLocaleString('en-US', { timezone: 'UTC' }).slice(0, -10)}z`),
-      end: new Date(`${event_end.toString().toLocaleString('en-US', { timezone: 'UTC' }).slice(0, -10)}z`),
+      start: new Date(`${event_start.toString().slice(0, -12)}z`),
+      end: new Date(`${event_end.toString().slice(0, -12)}z`),
       summary: event.summary,
       description: event.description,
       location: event.location,
@@ -228,8 +237,8 @@ function pushToWeeksEvents(interaction, event, event_start, event_end, relevantE
          * Key increments by one (determined by length).
          */
         relevantEvents[Object.keys(relevantEvents).length] = {
-          start: event_start,
-          end: event_end,
+          start: new Date(`${event_start.toString().slice(0, -12)}z`),
+          end: new Date(`${event_end.toString().slice(0, -12)}z`),
           summary: event.summary,
           description: event.description,
           location: event.location,
