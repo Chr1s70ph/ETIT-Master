@@ -186,7 +186,7 @@ function pushToWeeksEvents(
   event_end: moment.Moment,
   relevantEvents: any[],
 ) {
-  if (doubleEntry(relevantEvents, event)) {
+  if (doubleEntry(relevantEvents, event, event_start)) {
     return
   }
   /**
@@ -252,9 +252,10 @@ function pushToWeeksEvents(
  * Check if the new element added to @link{array} creates a duplicate
  * @param {any[]} array array to check
  * @param  {any} new_element new element on which to check if duplicate
+ * @param  {moment.Moment} event_start new element startDate
  * @returns {boolean}
  */
-function doubleEntry(array: any[], new_element: any): boolean {
+function doubleEntry(array: any[], new_element: any, event_start: moment.Moment): boolean {
   /**
    * Always return false, if array has no entry
    * There are no possible duplicates if there is nothing in the array
@@ -267,7 +268,11 @@ function doubleEntry(array: any[], new_element: any): boolean {
    * Check if any of the already added elements is the same as @link{new_element}
    */
   for (const entry in array) {
-    if (array[entry].summary === new_element.summary && array[entry].description === new_element.description) {
+    if (
+      array[entry].summary === new_element.summary &&
+      array[entry].description === new_element.description &&
+      array[entry].start.toString() === event_start.toString()
+    ) {
       return true
     }
   }
