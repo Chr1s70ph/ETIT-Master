@@ -301,10 +301,15 @@ function dynamicEmbed(
   location: string,
 ): EmbedBuilder {
   /**
+   * Temporary string of roleid
+   */
+  const temp_role = role.replace(/[^0-9]/g, '')
+
+  /**
    * Color of {@link role}.
    */
   const roleColor: ColorResolvable =
-    client.guilds.resolve(client.config.ids.serverID).roles.cache.get(role)?.color ?? 'Default'
+    client.guilds.resolve(client.config.ids.serverID).roles.cache.get(temp_role)?.color ?? 'Aqua'
 
   /**
    * Type of course.
