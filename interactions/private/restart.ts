@@ -11,16 +11,16 @@ export const data = new DiscordSlashCommandBuilder()
   .setLocalizations('restart')
   .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
 
-exports.Command = (client: DiscordClient, interaction: DiscordChatInputCommandInteraction): void => {
+exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCommandInteraction): Promise<void> => {
   interaction.deferReply()
   if (!Object.values(client.config.ids.acceptedAdmins).includes(interaction.user.id)) {
-    interaction.reply({
+    await interaction.reply({
       content: client.translate({ key: 'missingPermission', options: { lng: interaction.user.language } }),
     })
     return
   }
 
-  interaction.reply({
+  await interaction.reply({
     content: client.translate({ key: 'interactions.restart.answer', options: { lng: interaction.user.language } }),
   })
 

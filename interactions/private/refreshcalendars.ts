@@ -9,7 +9,7 @@ export const data = new DiscordSlashCommandBuilder()
 exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCommandInteraction): Promise<void> => {
   interaction.deferReply()
   if (!Object.values(client.config.ids.acceptedAdmins).includes(interaction.user.id)) {
-    interaction.reply({
+    await interaction.reply({
       content: client.translate({ key: 'missingPermission', options: { lng: interaction.user.language } }),
     })
     return

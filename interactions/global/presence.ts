@@ -49,7 +49,7 @@ exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCom
    * Check if user has the needed rights to use the command
    */
   if (!Object.values(client.config.ids.acceptedAdmins).includes(interaction.user.id)) {
-    interaction.reply({
+    await interaction.reply({
       content: client.translate({ key: 'missingPermission', options: { lng: interaction.user.language } }),
     })
     return
