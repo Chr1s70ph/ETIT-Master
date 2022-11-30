@@ -14,13 +14,13 @@ export const data = new DiscordSlashCommandBuilder()
 exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCommandInteraction): Promise<void> => {
   interaction.deferReply()
   if (!Object.values(client.config.ids.acceptedAdmins).includes(interaction.user.id)) {
-    await interaction.reply({
+    await interaction.editReply({
       content: client.translate({ key: 'missingPermission', options: { lng: interaction.user.language } }),
     })
     return
   }
 
-  await interaction.reply({
+  await interaction.editReply({
     content: client.translate({ key: 'interactions.restart.answer', options: { lng: interaction.user.language } }),
   })
 
