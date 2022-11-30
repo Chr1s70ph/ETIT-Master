@@ -61,6 +61,7 @@ function wochenplan(
         options: { date: moment(startOfWeek).format('DD.MM.yyyy'), lng: interaction.user.language },
       }),
     )
+    .setColor('Aqua')
 
   const weekdayItems = {}
 
