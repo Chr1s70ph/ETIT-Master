@@ -31,15 +31,17 @@ function klausuren(client: DiscordClient, interaction: DiscordChatInputCommandIn
 
   filterEvents(calendars_object, rangeStart, rangeEnd, interaction, relevantEvents, true)
 
-  const embed = new EmbedBuilder().setAuthor({
-    name: client.translate({
-      key: 'interactions.klausuren.Exams',
-      options: {
-        user: interaction.user.username,
-        lng: interaction.user.language,
-      },
-    }),
-  })
+  const embed = new EmbedBuilder()
+    .setAuthor({
+      name: client.translate({
+        key: 'interactions.klausuren.Exams',
+        options: {
+          user: interaction.user.username,
+          lng: interaction.user.language,
+        },
+      }),
+    })
+    .setColor('Aqua')
 
   const exams = {}
 
