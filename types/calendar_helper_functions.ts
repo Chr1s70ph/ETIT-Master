@@ -271,7 +271,7 @@ function doubleEntry(array: any[], new_element: any, event_start: moment.Moment)
     if (
       array[entry].summary === new_element.summary &&
       array[entry].description === new_element.description &&
-      array[entry].start.getHours() === new Date(`${event_start.toString().slice(0, -12)}z`).getHours()
+      array[entry].start.getTime() === new Date(`${event_start.toString().slice(0, -12)}z`).getTime()
     ) {
       return true
     }
