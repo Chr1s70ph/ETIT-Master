@@ -186,9 +186,6 @@ function pushToWeeksEvents(
   event_end: moment.Moment,
   relevantEvents: any[],
 ) {
-  if (doubleEntry(relevantEvents, event, event_start)) {
-    return
-  }
   /**
    * Account the fact, that an event may have been created back in DST
    * or vice verca and adjust the event start times accordingly
@@ -207,6 +204,9 @@ function pushToWeeksEvents(
     event_end.subtract(1, 'hour')
   }
 
+  if (doubleEntry(relevantEvents, event, event_start)) {
+    return
+  }
   /**
    * Only the case, if function is being called from iCalReader
    */
@@ -271,7 +271,7 @@ function doubleEntry(array: any[], new_element: any, event_start: moment.Moment)
     if (
       array[entry].summary === new_element.summary &&
       array[entry].description === new_element.description &&
-      array[entry].start.toString() === event_start.toString()
+      array[entry].start.getHours() === new Date(`${event_start.toString().slice(0, -12)}z`).getHours()
     ) {
       return true
     }
