@@ -240,7 +240,7 @@ function createWeekButtons(
    * Calculate previous and next week
    */
   const prevWeek = moment(new Date(weekStartDay.getTime() - 7 * 24 * 60 * 60 * 1000))
-  const currWeek = moment(new Date(startOfWeek.getTime() - 7 * 24 * 60 * 60 * 1000))
+  const currWeek = moment(weekStartDay)
   const nextWeek = moment(new Date(weekStartDay.getTime() + 7 * 24 * 60 * 60 * 1000))
 
   /**
@@ -265,7 +265,7 @@ function createWeekButtons(
       .setStyle(ButtonStyle.Primary),
   )
 
-  if (!currWeek.isBetween(prevWeek, nextWeek)) {
+  if (currWeek === moment(weekStartDay)) {
     /**
      * Button for previous week
      */

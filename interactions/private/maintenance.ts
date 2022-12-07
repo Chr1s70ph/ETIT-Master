@@ -4,6 +4,13 @@ export const data = new DiscordSlashCommandBuilder()
   .setName('maintenance')
   .setDescription('Stecking the bot in the mainenance mode')
   .setLocalizations('maintenance')
+  .addStringOption(option =>
+    option
+      .setName('toggle')
+      .setDescription('Turn on or off')
+      .setChoices({ name: 'true', value: 'true' }, { name: 'false', value: 'false' })
+      .setRequired(true),
+  )
 
 exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCommandInteraction): Promise<void> => {
   await interaction.deferReply()
@@ -14,5 +21,7 @@ exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCom
     return
   }
 
-  console.log('hello')
+  client.maintenanceMode = interaction.options.getString('toogle') === 'true'
+
+  await interaction.editReply('Toggled maintenance mode')
 }
