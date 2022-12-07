@@ -110,6 +110,7 @@
       "localized_name": "advertising"
     },
     "wochenplan": {
+      "curr_week": "Current Week ({{week_start_date}})",
       "invalid_Date": {
         "name": "⚠️ Note: The date you entered is not a valid Date.",
         "value": "Please use the `DD.MM.YYY` format to specify a date."

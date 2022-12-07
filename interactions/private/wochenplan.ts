@@ -240,12 +240,13 @@ function createWeekButtons(
    * Calculate previous and next week
    */
   const prevWeek = moment(new Date(weekStartDay.getTime() - 7 * 24 * 60 * 60 * 1000))
+  const currWeek = moment(new Date(startOfWeek.getTime() - 7 * 24 * 60 * 60 * 1000))
   const nextWeek = moment(new Date(weekStartDay.getTime() + 7 * 24 * 60 * 60 * 1000))
 
   /**
    * Action row to return
    */
-  return new ActionRowBuilder<ButtonBuilder>().addComponents(
+  const buttonRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
     /**
      * Button for previous week
      */
@@ -262,19 +263,44 @@ function createWeekButtons(
         })}`,
       )
       .setStyle(ButtonStyle.Primary),
+  )
 
+  if (!currWeek.isBetween(prevWeek, nextWeek)) {
+    /**
+     * Button for previous week
+     */
+    buttonRow.addComponents(
+      new ButtonBuilder()
+        .setCustomId(`wochenplan.curr_week.${currWeek.format('YYYY-MM-DD')}`)
+        .setLabel(
+          `${client.translate({
+            key: 'interactions.wochenplan.curr_week',
+            options: {
+              interpolation: { escapeValue: false },
+              week_start_date: currWeek.format('DD.MM'),
+              lng: interaction.locale,
+            },
+          })}`,
+        )
+        .setStyle(ButtonStyle.Primary),
+    )
+  } else {
     /**
      * Blank button for seperation
      */
-    new ButtonBuilder()
-      .setCustomId('wochenplan.blank')
-      .setLabel('   ')
-      .setStyle(ButtonStyle.Secondary)
-      .setDisabled(true),
+    buttonRow.addComponents(
+      new ButtonBuilder()
+        .setCustomId('wochenplan.blank')
+        .setLabel('   ')
+        .setStyle(ButtonStyle.Secondary)
+        .setDisabled(true),
+    )
+  }
 
-    /**
-     * Button for next week
-     */
+  /**
+   * Button for next week
+   */
+  buttonRow.addComponents(
     new ButtonBuilder()
       .setCustomId(`wochenplan.mext_week.${nextWeek.format('YYYY-MM-DD')}`)
       .setLabel(
@@ -289,4 +315,6 @@ function createWeekButtons(
       )
       .setStyle(ButtonStyle.Primary),
   )
+
+  return buttonRow
 }

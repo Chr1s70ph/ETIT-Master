@@ -110,6 +110,7 @@
       "localized_name": "werbung"
     },
     "wochenplan": {
+      "curr_week": "Aktuelle Woche ({{week_start_date}})",
       "invalid_Date": {
         "name": "⚠️ Bemerkung: Das angegebene Datum existiert nicht.",
         "value": "Bitte benutze das Format `DD.MM.YYYY` wenn du ein datum spezifizieren willst."
