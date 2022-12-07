@@ -42,6 +42,10 @@
       "localized_description": "Zeigt deine anstehenden Klausuren an.",
       "localized_name": "klausuren"
     },
+    "maintenance": {
+      "localized_description": "wartungsarbeiten",
+      "localized_name": "Versetzt den Bot in den Wartungsarbeiten-Modus"
+    },
     "mensa": {
       "allAdditivesList": "Eine Liste aller Zusätze findest du [hier](https://{{link}}).",
       "cafeteria": "Mensa",

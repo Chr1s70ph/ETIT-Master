@@ -42,6 +42,10 @@
       "localized_description": "Shows your upcoming exams",
       "localized_name": "exams"
     },
+    "maintenance": {
+      "localized_description": "maintenance",
+      "localized_name": "Sets the bot in maintenance mode."
+    },
     "mensa": {
       "allAdditivesList": "You can find a list of all additives [here](https://{{link}}).",
       "cafeteria": "Cafeteria",
