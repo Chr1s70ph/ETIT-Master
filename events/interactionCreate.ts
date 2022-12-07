@@ -27,7 +27,11 @@ exports.run = (client: DiscordClient, interaction: any) => {
   /**
    * Check if maintenance mode is activated
    */
-  if (client.maintenanceMode && interaction.user.id === client.config.ids.acceptedAdmins.Christoph) {
+  if (
+    client.maintenanceMode &&
+    commandName !== 'maintenance' &&
+    interaction.user.id === client.config.ids.acceptedAdmins.Christoph
+  ) {
     console.log(`Ignoring  ${commandName} due to mainenance mode.`)
     return
   }
