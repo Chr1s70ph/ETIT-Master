@@ -1,3 +1,4 @@
+import { PermissionsBitField } from 'discord.js'
 import { DiscordClient, DiscordChatInputCommandInteraction, DiscordSlashCommandBuilder } from '../../types/customTypes'
 
 export const data = new DiscordSlashCommandBuilder()
@@ -11,6 +12,7 @@ export const data = new DiscordSlashCommandBuilder()
       .setChoices({ name: 'on', value: 'true' }, { name: 'off', value: 'false' })
       .setRequired(true),
   )
+  .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
 
 exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCommandInteraction): Promise<void> => {
   await interaction.deferReply()
