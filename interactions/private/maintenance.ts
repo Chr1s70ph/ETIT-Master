@@ -25,22 +25,27 @@ exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCom
 
   client.maintenanceMode = interaction.options.getString('toggle', true) === 'true'
 
-  /**
-   * Set customPresence on client
-   */
   if (interaction.options.getString('toggle', true) === 'true') {
+    /**
+     * Set customPresence on client
+     */
     client.customPresence = {
       status: 'idle',
       activities: [{ name: 'Maintenance Mode', type: 0 }],
     }
+
+    /**
+     * Update client presence
+     */
+    client.user.setPresence(client.customPresence)
   } else {
     client.customPresence = null
-  }
 
-  /**
-   * Update client presence
-   */
-  client.user.setPresence(client.customPresence)
+    /**
+     * Set Presence to first presence defined in the config
+     */
+    client.user.setPresence(client.config.presence[0])
+  }
 
   await interaction.editReply('Toggled maintenance mode')
 }
