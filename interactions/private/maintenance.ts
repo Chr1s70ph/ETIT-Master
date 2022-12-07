@@ -8,7 +8,7 @@ export const data = new DiscordSlashCommandBuilder()
     option
       .setName('toggle')
       .setDescription('Turn on or off')
-      .setChoices({ name: 'true', value: 'true' }, { name: 'false', value: 'false' })
+      .setChoices({ name: 'on', value: 'true' }, { name: 'off', value: 'false' })
       .setRequired(true),
   )
 
@@ -21,7 +21,24 @@ exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCom
     return
   }
 
-  client.maintenanceMode = interaction.options.getString('toogle') === 'true'
+  client.maintenanceMode = interaction.options.getString('toggle', true) === 'true'
+
+  /**
+   * Set customPresence on client
+   */
+  if (interaction.options.getString('toggle', true) === 'true') {
+    client.customPresence = {
+      status: 'idle',
+      activities: [{ name: 'Maintenance Mode', type: 0 }],
+    }
+  } else {
+    client.customPresence = null
+  }
+
+  /**
+   * Update client presence
+   */
+  client.user.setPresence(client.customPresence)
 
   await interaction.editReply('Toggled maintenance mode')
 }
