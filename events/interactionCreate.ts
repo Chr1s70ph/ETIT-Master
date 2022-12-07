@@ -25,6 +25,14 @@ exports.run = (client: DiscordClient, interaction: any) => {
   const commandName = interaction.customId?.split('.')[0] ?? interaction.commandName
 
   /**
+   * Check if maintenance mode is activated
+   */
+  if (client.maintenanceMode && interaction.user.id === client.config.ids.acceptedAdmins.Christoph) {
+    console.log(`Ignoring  ${commandName} due to mainenance mode.`)
+    return
+  }
+
+  /**
    * File to the corrospinging interaction.
    */
   const commandfile = client.interactions.get(commandName)

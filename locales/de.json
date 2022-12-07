@@ -42,6 +42,10 @@
       "localized_description": "Zeigt deine anstehenden Klausuren an.",
       "localized_name": "klausuren"
     },
+    "maintenance": {
+      "localized_description": "wartungsarbeiten",
+      "localized_name": "Versetzt den Bot in den Wartungsarbeiten-Modus"
+    },
     "mensa": {
       "allAdditivesList": "Eine Liste aller Zusätze findest du [hier](https://{{link}}).",
       "cafeteria": "Mensa",
@@ -110,6 +114,7 @@
       "localized_name": "werbung"
     },
     "wochenplan": {
+      "curr_week": "Aktuelle Woche ({{week_start_date}})",
       "invalid_Date": {
         "name": "⚠️ Bemerkung: Das angegebene Datum existiert nicht.",
         "value": "Bitte benutze das Format `DD.MM.YYYY` wenn du ein datum spezifizieren willst."

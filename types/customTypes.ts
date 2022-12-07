@@ -70,6 +70,8 @@ export class DiscordClient extends Client {
    */
   public customPresence: PresenceData | null
 
+  public maintenanceMode: boolean
+
   /**
    * Get user language.
    * @param  {Message} message Message sent by user

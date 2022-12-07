@@ -42,6 +42,10 @@
       "localized_description": "Shows your upcoming exams",
       "localized_name": "exams"
     },
+    "maintenance": {
+      "localized_description": "maintenance",
+      "localized_name": "Sets the bot in maintenance mode."
+    },
     "mensa": {
       "allAdditivesList": "You can find a list of all additives [here](https://{{link}}).",
       "cafeteria": "Cafeteria",
@@ -110,6 +114,7 @@
       "localized_name": "advertising"
     },
     "wochenplan": {
+      "curr_week": "Current Week ({{week_start_date}})",
       "invalid_Date": {
         "name": "⚠️ Note: The date you entered is not a valid Date.",
         "value": "Please use the `DD.MM.YYY` format to specify a date."
