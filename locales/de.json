@@ -43,8 +43,8 @@
       "localized_name": "klausuren"
     },
     "maintenance": {
-      "localized_description": "wartungsarbeiten",
-      "localized_name": "Versetzt den Bot in den Wartungsarbeiten-Modus"
+      "localized_description": "Wartungsarbeiten-Modus aktivieren.",
+      "localized_name": "wartungsarbeiten"
     },
     "mensa": {
       "allAdditivesList": "Eine Liste aller Zusätze findest du [hier](https://{{link}}).",

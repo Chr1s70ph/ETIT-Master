@@ -43,8 +43,8 @@
       "localized_name": "exams"
     },
     "maintenance": {
-      "localized_description": "maintenance",
-      "localized_name": "Sets the bot in maintenance mode."
+      "localized_description": "Activates maintenance mode.",
+      "localized_name": "maintenance"
     },
     "mensa": {
       "allAdditivesList": "You can find a list of all additives [here](https://{{link}}).",
