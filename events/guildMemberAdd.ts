@@ -3,8 +3,8 @@ import { EmbedBuilder, TextChannel } from 'discord.js'
 import { GuildMember } from 'discord.js/typings/index.js'
 import { DiscordClient } from '../types/customTypes'
 
-exports.run = (client: DiscordClient, member: GuildMember) => {
-  serverWelcomeMessage(client, member)
+exports.run = async (client: DiscordClient, member: GuildMember) => {
+  await serverWelcomeMessage(client, member)
 
   /**
    * Guild to update update membercounter.
@@ -30,7 +30,7 @@ exports.run = (client: DiscordClient, member: GuildMember) => {
   /**
    * Send welcome message to new user.
    */
-  sendWelcomeMessage(member, client)
+  await sendWelcomeMessage(member, client)
 }
 
 async function serverWelcomeMessage(client: DiscordClient, member: GuildMember) {
@@ -47,11 +47,11 @@ async function serverWelcomeMessage(client: DiscordClient, member: GuildMember) 
     .setAuthor({ name: '💎 Mitglieder-Beitritt' })
     .setThumbnail(member.user.avatarURL())
 
-  const channel = (await client.channels.cache.find(
+  const channel = client.channels.cache.find(
     _channel => _channel.id === client.config.ids.channelIDs.NUTZER_UPDATES,
-  )) as TextChannel
+  ) as TextChannel
 
-  channel.send({
+  await channel.send({
     embeds: [embed],
   })
 }
@@ -61,7 +61,7 @@ async function serverWelcomeMessage(client: DiscordClient, member: GuildMember) 
  * @param {GuildMember} member Member to send the welcome message to
  * @param {DiscordClient} client Bot-Client
  */
-function sendWelcomeMessage(member: GuildMember, client: DiscordClient): void {
+async function sendWelcomeMessage(member: GuildMember, client: DiscordClient): Promise<void> {
   /**
    * Create a welcome message.
    */
@@ -80,7 +80,7 @@ function sendWelcomeMessage(member: GuildMember, client: DiscordClient): void {
     /**
      * Send personalized embed to member.
      */
-    member.send({ embeds: [welcomeMessage] })
+    await member.send({ embeds: [welcomeMessage] })
     console.log(`Sent welcome message to ${member.user.username}`)
   } catch (error) {
     /**

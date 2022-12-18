@@ -1,8 +1,8 @@
 import { GuildMember, EmbedBuilder, TextChannel } from 'discord.js'
 import { DiscordClient } from '../types/customTypes'
 
-exports.run = (client: DiscordClient, member: GuildMember) => {
-  serverGoodByeMessage(client, member)
+exports.run = async (client: DiscordClient, member: GuildMember) => {
+  await serverGoodByeMessage(client, member)
   /**
    * Guild to update update membercounter.
    */
@@ -39,11 +39,11 @@ async function serverGoodByeMessage(client: DiscordClient, member: GuildMember) 
     .setAuthor({ name: '😭 Mitglieder-Austritt' })
     .setThumbnail(member.user.avatarURL())
 
-  const channel = (await client.channels.cache.find(
+  const channel = client.channels.cache.find(
     _channel => _channel.id === client.config.ids.channelIDs.NUTZER_UPDATES,
-  )) as TextChannel
+  ) as TextChannel
 
-  channel.send({
+  await channel.send({
     embeds: [embed],
   })
 }
