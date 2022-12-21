@@ -13,10 +13,10 @@ const { Routes } = require('discord-api-types/v10')
 const PRIVATE_INTERACTIONS_FOLDER = './interactions/private/'
 const GLOBAL_INTERACTIONS_FOLDER = './interactions/global/'
 
-exports.run = (client: DiscordClient) => {
-  postPrivateInteractions(client)
-  postGlobalInteractions(client)
-  mensa_automation(client)
+exports.run = async (client: DiscordClient) => {
+  await postPrivateInteractions(client)
+  await postGlobalInteractions(client)
+  await mensa_automation(client)
 }
 
 /**
@@ -142,7 +142,9 @@ async function mensa_automation(client: DiscordClient) {
       _channel => _channel.id === client.config.ids.channelIDs.mensa,
     ) as TextChannel
 
-    const message = await channel.send({ embeds: [await mensa(client, weekday, 'adenauerring', null)] })
+    const embed = await mensa(client, weekday, 'adenauerring', null)
+
+    const message = await channel.send({ embeds: [embed] })
 
     message.crosspost()
   })
