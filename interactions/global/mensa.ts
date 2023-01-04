@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import * as https from 'https'
-import { EmbedBuilder } from 'discord.js'
+import { EmbedBuilder, TextChannel } from 'discord.js'
 import { DiscordClient, DiscordChatInputCommandInteraction, DiscordSlashCommandBuilder } from '../../types/customTypes'
 const { DateTime } = require('luxon')
 
@@ -392,6 +392,18 @@ export async function mensa(
     }),
     inline: false,
   })
+
+  /**
+   * Channel to send {@link loginMessage} to.
+   */
+  const channel = client.channels.cache.find(
+    _channel => _channel.id === client.config.ids.channelIDs.dev.botTestLobby,
+  ) as TextChannel
+
+  /**
+   * Send {@link loginMessage}.
+   */
+  channel.send(`date: ${mensa_json.date}\nimport_date: ${mensa_json.import_date}`)
 
   return embed
 }
