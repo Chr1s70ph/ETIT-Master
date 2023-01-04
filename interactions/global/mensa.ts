@@ -42,7 +42,8 @@ exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCom
     : getWeekday(today.getDay() - 1)
 
   const line = interaction.options.get('ort')?.value ? interaction.options.get('ort')?.value : 'adenauerring'
-  interaction.reply({ embeds: [await mensa(client, <string>weekday, <string>line, interaction)] })
+  const embed = await mensa(client, <string>weekday, <string>line, interaction)
+  await interaction.reply({ embeds: [embed] })
 }
 
 /**
@@ -182,16 +183,16 @@ export function _updateJson(client: DiscordClient): Promise<string> {
         /**
          * Write to file to restrict unnecessary API calls.
          */
-        fs.writeFile(`data/mensa.json`, body, { flag: 'w+' }, err => {
+        fs.writeFile(`data/mensa.json`, body, err => {
           if (err) {
             /**
              * TODO: valid error handling
              */
-            reject(err)
             console.error('there was abn error updating the mensa plan.', err)
+            reject(err)
           }
-          resolve(body)
           console.log('Successfully updated mensa plan.')
+          resolve(body)
         })
       })
     })

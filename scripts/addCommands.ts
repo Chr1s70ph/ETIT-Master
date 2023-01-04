@@ -146,6 +146,6 @@ async function mensa_automation(client: DiscordClient) {
 
     const message = await channel.send({ embeds: [embed] })
 
-    message.crosspost()
+    await message.crosspost()
   })
 }
