@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM node:16.8.0
 
 # Copy files
 COPY ./ /
