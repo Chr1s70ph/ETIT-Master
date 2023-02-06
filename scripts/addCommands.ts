@@ -1,6 +1,6 @@
 import { readdir as promiseReaddir } from 'fs/promises'
 import { REST } from '@discordjs/rest'
-import { TextChannel } from 'discord.js'
+import { Message, TextChannel } from 'discord.js'
 import { scheduleJob } from 'node-schedule'
 import { mensa, getWeekday, _updateJson } from '../interactions/global/mensa'
 import { DiscordClient } from '../types/customTypes'
@@ -144,8 +144,6 @@ async function mensa_automation(client: DiscordClient) {
 
     const embed = await mensa(client, weekday, 'adenauerring', null)
 
-    const message = await channel.send({ embeds: [embed] })
-
-    await message.crosspost()
+    await channel.send({ embeds: [embed] }).then(async message => message.crosspost())
   })
 }
