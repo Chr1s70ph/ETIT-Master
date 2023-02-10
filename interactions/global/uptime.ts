@@ -1,5 +1,9 @@
 import { EmbedBuilder } from 'discord.js'
+import project from '../../package.json'
 import { DiscordChatInputCommandInteraction, DiscordClient, DiscordSlashCommandBuilder } from '../../types/customTypes'
+const os = require('os')
+const newLocal = 'child_process'
+const latest_commit = require(newLocal).execSync('git rev-parse HEAD').toString().substring(0, 7)
 
 export const data = new DiscordSlashCommandBuilder()
   .setName('uptime')
@@ -27,6 +31,34 @@ exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCom
             lng: interaction.user.language,
           },
         }),
+        inline: true,
+      },
+      {
+        name: 'Discord.js:',
+        value: `v${project.dependencies['discord.js'].slice(1)}`,
+        inline: true,
+      },
+      {
+        name: '‎',
+        value: '‎',
+        inline: true,
+      },
+    ])
+    .addFields([
+      {
+        name: 'OS:',
+        value: `${os.type()} ${os.release()}`,
+        inline: true,
+      },
+      {
+        name: 'NodeJs:',
+        value: `${process.version}`,
+        inline: true,
+      },
+      {
+        name: 'Latest git Commit:',
+        value: `[\`${latest_commit}\`](https://github.com/Chr1s70ph/ETIT-Master/commit/${latest_commit})`,
+        inline: true,
       },
     ])
     .setColor('#FF4040')
