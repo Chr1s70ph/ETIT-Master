@@ -266,7 +266,11 @@ function createWeekButtons(
     /**
      * Blank button for seperation
      */
-    new ButtonBuilder().setCustomId('wochenplan.blank').setLabel('‎').setStyle(ButtonStyle.Secondary).setDisabled(true),
+    new ButtonBuilder()
+      .setCustomId('wochenplan.blank')
+      .setLabel('‎‎')
+      .setStyle(ButtonStyle.Secondary)
+      .setDisabled(true),
 
     /**
      * Button for next week
