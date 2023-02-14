@@ -18,7 +18,7 @@
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-prettier": "^4.2.1",
     "fs": "^0.0.1-security",
-    "github-create-issue": "^2.0.0",
+    "github-create-issue": "^1.0.1",
     "https": "^1.0.0",
     "i18next": "^22.4.9",
     "i18next-fs-backend": "^2.1.1",
