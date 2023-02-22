@@ -131,7 +131,8 @@ export class DiscordClient extends Client {
   public reply(message: Message, returnData: MessageCreateOptions): Promise<Message<boolean>> {
     return new Promise<Message>((resolve, reject) => {
       if (message.type === MessageType.Reply) {
-        return message.channel.messages
+        const channel = message.channel as TextChannel
+        return channel.messages
           .fetch(message.reference.messageId)
           .then(_message => {
             _message.reply(returnData)
@@ -165,7 +166,8 @@ export class DiscordClient extends Client {
    */
   public send(message: Message, returnData: MessageCreateOptions): Promise<Message<boolean>> {
     return new Promise<Message>((resolve, reject) => {
-      message.channel.send(returnData).then(
+      const channel = message.channel as TextChannel
+      channel.send(returnData).then(
         () => {
           resolve(message)
         },
