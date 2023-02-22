@@ -31,10 +31,11 @@ exports.run = async (client: DiscordClient, reaction: MessageReaction, user: Gui
   const USER = await reaction.message.guild.members.fetch(user.id)
   if (ROLE_REACTION_CHANNELS.indexOf(reaction.message.channel.id) > -1) {
     try {
+      const channel = reaction.message.channel as TextChannel
       /**
        * Message on wich a reaction was added
        */
-      const REACRT_MESSAGE = await reaction.message.channel.messages.fetch(reaction.message.id)
+      const REACRT_MESSAGE = await channel.messages.fetch(reaction.message.id)
       /**
        * Fetch first role that is mentioned in that message
        */
@@ -44,9 +45,7 @@ exports.run = async (client: DiscordClient, reaction: MessageReaction, user: Gui
        */
       if (role === undefined) {
         const infoChannel = reaction.message.guild.channels.cache.get(SDADISDIGEN) as TextChannel
-        infoChannel.send(
-          `👤❌ <@!${user.id}> hat in <#${reaction.message.channel.id}> **${reaction.message.content}** abgewählt.`,
-        )
+        infoChannel.send(`👤❌ <@!${user.id}> hat in <#${channel.id}> **${reaction.message.content}** abgewählt.`)
       } else if (!USER.roles.cache.has(role.name)) {
         /**
          * If user does have the role selected, remove it
