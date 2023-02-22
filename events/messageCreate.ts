@@ -1,4 +1,4 @@
-import { EmbedBuilder } from 'discord.js'
+import { EmbedBuilder, TextChannel } from 'discord.js'
 import textgears from 'textgears-api'
 import { DiscordClient, DiscordMessage } from '../types/customTypes'
 
@@ -11,7 +11,10 @@ exports.run = (client: DiscordClient, message: DiscordMessage) => {
   /**
    * Annoy people :)
    */
-  if (message.author.id === client.config.ids.userID.david) check_spelling(client, message)
+  const channel = message.channel as TextChannel
+  if (channel.parentId === '773683524833902632' && message.author.id === client.config.ids.userID.david) {
+    check_spelling(client, message)
+  }
 
   /**
    * DM handling and forwarding.
@@ -69,16 +72,50 @@ function check_spelling(client: DiscordClient, message: DiscordMessage) {
   textgearsApi
     .checkGrammar(test_query)
     .then(async return_data => {
-      console.log(return_data.response.errors.length)
       if (return_data.response.errors.length > 0) {
-        await message.reply('FEHLER ENTDECKT!!')
+        /**
+         * Message to do better next time
+         */
+        await message.reply({
+          embeds: [
+            new EmbedBuilder()
+              .setTitle('⚠FEHLER ENTDECKT!!⚠')
+              .setThumbnail('https://www.duden.de/modules/custom/duden_og_image/images/Duden_FB_Profilbild.jpg')
+              .setDescription('Das nächste Mal bitte vorher auf Rechtschreibung überprüfen'),
+          ],
+        })
+        /**
+         * Loop over all suggestions
+         */
         for (const error of return_data.response.errors) {
+          /**
+           * Nicely formatted list of links to duden.de entries
+           */
+          let suggestion_links = `__Verbesserungen__:\n`
+          for (const suggestion of error.better) {
+            suggestion_links += `- **__[${suggestion}](https://duden.de/rechtschreibung/${suggestion})__**\n`
+          }
+          /**
+           * Send embed with all the suggestions for one error
+           */
+          const embed = new EmbedBuilder()
+            .setTitle(`Fehler: ${error.bad}`)
+            .setAuthor({
+              name: '⚠Fehler Verbesserung⚠',
+              iconURL: 'https://www.duden.de/modules/custom/duden_og_image/images/Duden_FB_Profilbild.jpg',
+            })
+            .setThumbnail('https://www.duden.de/modules/custom/duden_og_image/images/Duden_FB_Profilbild.jpg')
+            .setDescription(suggestion_links)
+            .setFooter({
+              text: 'Du hast einen physischen Duden, also nutze ihn ;)',
+            })
+            .setTimestamp()
           // eslint-disable-next-line no-await-in-loop
-          await message.reply(`Error: ${error.bad}. Suggestions: ${error.better.join(', ')}`)
+          await message.reply({ embeds: [embed] })
         }
       }
     })
     .catch(err => {
-      console.log(err)
+      throw new Error(err)
     })
 }
