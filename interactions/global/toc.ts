@@ -102,6 +102,7 @@ exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCom
     /**
      * Send embeds
      */
-    interaction.channel.send({ embeds: [embed] })
+    const interaction_channel = interaction.channel as TextChannel
+    interaction_channel.send({ embeds: [embed] })
   }
 }
