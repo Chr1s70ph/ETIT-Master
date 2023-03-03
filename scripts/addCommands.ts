@@ -58,8 +58,8 @@ export async function postPrivateInteractions(client: DiscordClient) {
   postPrivateSlashCommands(client, slashCommandData)
 }
 
-async function postPrivateSlashCommands(client, slashCommandData) {
-  const rest = new REST({ version: '10' }).setToken(client.config.botToken)
+async function postPrivateSlashCommands(client: DiscordClient, slashCommandData: any[]) {
+  const rest = new REST({ version: '10' }).setToken(client.config.sensitive.botToken)
   try {
     console.log('Started refreshing private Interactions.')
 
@@ -111,8 +111,8 @@ export async function postGlobalInteractions(client: DiscordClient) {
   postGlobalSlashCommands(client, slashCommandData)
 }
 
-async function postGlobalSlashCommands(client, slashCommandData) {
-  const rest = new REST({ version: '10' }).setToken(client.config.botToken)
+async function postGlobalSlashCommands(client: DiscordClient, slashCommandData) {
+  const rest = new REST({ version: '10' }).setToken(client.config.sensitive.botToken)
   try {
     console.log('Started refreshing global Interactions.')
 

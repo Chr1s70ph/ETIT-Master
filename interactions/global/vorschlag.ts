@@ -64,7 +64,7 @@ exports.Modal = async (client: DiscordClient, interaction: DiscordModalSubmitInt
    * Options to send to the Github-API
    */
   const options = {
-    token: client.config.github_token,
+    token: client.config.sensitive.github_token,
     body: issue_body,
   }
   try {

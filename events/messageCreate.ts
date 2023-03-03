@@ -68,7 +68,7 @@ exports.run = (client: DiscordClient, message: DiscordMessage) => {
 function check_spelling(client: DiscordClient, message: DiscordMessage) {
   const test_query = message.toString()
 
-  const textgearsApi = textgears(client.config.textgears_api_key, { language: 'de-DE', ai: false })
+  const textgearsApi = textgears(client.config.sensitive.textgears_api_key, { language: 'de-DE', ai: false })
   textgearsApi
     .checkGrammar(test_query)
     .then(async return_data => {

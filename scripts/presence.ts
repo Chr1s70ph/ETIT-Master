@@ -7,7 +7,7 @@ exports.run = async (client: DiscordClient) => {
   /**
    * All presences in {@link DiscordClient.config}
    */
-  const presenceVariants = client.config.presence
+  const presenceVariants = client.config.settings.presence
 
   /**
    * Last index of presences in {@link DiscordClient.config}

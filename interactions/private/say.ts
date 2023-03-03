@@ -80,10 +80,10 @@ exports.run = (client: DiscordClient, message: DiscordMessage) => {
  * @returns {EmbedBuilder} embed with given message.content
  */
 function createEmbed(message: DiscordMessage, client: DiscordClient): EmbedBuilder {
-  const messageContent = message.content.substring(message.content.indexOf(' ') + client.config.prefix.length)
+  const messageContent = message.content.substring(message.content.indexOf(' ') + client.config.settings.prefix.length)
 
   const embed = new EmbedBuilder()
-    .setDescription(messageContent === `${client.config.prefix}say` ? '᲼' : messageContent)
+    .setDescription(messageContent === `${client.config.settings.prefix}say` ? '᲼' : messageContent)
     .setColor('Random')
 
   const messageAttachment = message.attachments.size > 0 ? message.attachments.first().url : null

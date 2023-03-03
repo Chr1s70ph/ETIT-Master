@@ -17,7 +17,7 @@ exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCom
   /**
    * Create instance of the tenorjs wrapper.
    */
-  const Tenor = require('tenorjs').client(client.config.tenor)
+  const Tenor = require('tenorjs').client(client.config.sensitive.tenor)
 
   /**
    * Query the Tenor-API for one random GIF.
