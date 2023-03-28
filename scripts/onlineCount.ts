@@ -40,7 +40,7 @@ async function setOnlineCount(
      */
     const GUILD_MEMBERS = await client.guilds.cache
       .get(client.config.ids.serverID)
-      .members.fetch({ withPresences: true, force: true })
+      .members.fetch({ withPresences: true })
 
     /**
      * Filter {@link GUILD_MEMBERS} and get online count numbers.
