@@ -2,7 +2,9 @@ import * as fs from 'fs'
 import { Collection, GatewayIntentBits, Partials } from 'discord.js'
 import i18next from 'i18next'
 import Backend from 'i18next-fs-backend'
-import config from './private/config.json'
+import ids from './private/ids.json'
+import sensitive from './private/sensitive.json'
+import settings from './private/settings.json'
 
 import { DiscordClient } from './types/customTypes'
 
@@ -51,12 +53,16 @@ client.interactions = new Collection()
 /**
  * Set config.
  */
-client.config = config
+client.config = {
+  settings: settings,
+  sensitive: sensitive,
+  ids: ids,
+}
 
 /**
  * Login with botToken.
  */
-client.login(client.config.botToken)
+client.login(client.config.sensitive.botToken)
 
 /**
  * Load and run events.

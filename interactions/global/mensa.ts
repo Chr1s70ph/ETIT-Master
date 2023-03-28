@@ -154,13 +154,13 @@ export function _updateJson(client: DiscordClient): Promise<string> {
      * Fancy API stuff and user credential hashing
      */
     const options = {
-      host: client.config.mensa.base_url,
+      host: client.config.sensitive.mensa.base_url,
       port: 443,
-      path: client.config.mensa.api,
+      path: client.config.sensitive.mensa.api,
       headers: {
-        Authorization: `Basic ${Buffer.from(`${client.config.mensa.user}:${client.config.mensa.password}`).toString(
-          'base64',
-        )}`,
+        Authorization: `Basic ${Buffer.from(
+          `${client.config.sensitive.mensa.user}:${client.config.sensitive.mensa.password}`,
+        ).toString('base64')}`,
       },
     }
 
@@ -385,7 +385,7 @@ export async function mensa(
     value: client.translate({
       key: 'interactions.mensa.allAdditivesList',
       options: {
-        link: client.config.mensa.base_url + client.config.mensa.additional_info,
+        link: client.config.sensitive.mensa.base_url + client.config.sensitive.mensa.additional_info,
         lng: embed_language,
         interpolation: { escapeValue: false },
       },

@@ -16,8 +16,9 @@ import {
   MessageType,
   ModalSubmitInteraction,
   PresenceData,
-  SelectMenuInteraction,
+  PresenceStatusData,
   SlashCommandBuilder,
+  StringSelectMenuInteraction,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   TextChannel,
   User,
@@ -62,7 +63,11 @@ export class DiscordClient extends Client {
    * Config file imported into the DiscordClient for global access
    * @type {[key: string]: any}
    */
-  public config: { [key: string]: any }
+  public config: {
+    settings: config_settings_typing
+    sensitive: config_sensitive_typing
+    ids: config_ids_typing
+  }
 
   /**
    * Global {@link customPresence} of client
@@ -323,9 +328,9 @@ export interface DiscordModalSubmitInteraction extends ModalSubmitInteraction {
 }
 
 /**
- * Extended {@link SelectMenuInteraction} to hold {@link DiscordUser}
+ * Extended {@link DiscordStringSelectMenuInteraction} to hold {@link DiscordUser}
  */
-export interface DiscordSelectMenuInteraction extends SelectMenuInteraction {
+export interface DiscordStringSelectMenuInteraction extends StringSelectMenuInteraction {
   user: DiscordUser
 }
 
@@ -370,4 +375,68 @@ interface InteractionCommands extends Object {
  */
 export interface DiscordApplicationCommand extends ApplicationCommand {
   user: DiscordUser
+}
+
+interface config_settings_typing extends Object {
+  prefix: string
+  defaultLanguage: string
+  presence: { [key: string]: { activities: { name: string; type: number }[]; status: PresenceStatusData | string } }
+}
+
+interface config_sensitive_typing extends Object {
+  textgears_api_key: string
+  github_token: string
+  tenor: {
+    Key: string
+    Filter: string
+    Locale: string
+    MediaFilter: string
+    DateFormat: string
+  }
+  mensa: {
+    user: string
+    password: string
+    base_url: string
+    api: string
+    additional_info: string
+  }
+  calendars: { [key: string]: string }
+  botToken: string
+}
+
+interface config_ids_typing extends Object {
+  serverID: string
+  channelIDs: {
+    dev: {
+      onlineCounter: string
+      memberCounter: string
+      botTestLobby: string
+      admin: string
+    }
+    NUTZER_UPDATES: string
+    ETITPersonalization: string
+    MITPersonalization: string
+    mensa: string
+  }
+  acceptedAdmins: {
+    Christoph: string
+    Leonard: string
+  }
+  userID: {
+    botUserID: string
+    etitChef: string
+    leonard: string
+    basti: string
+    david: string
+  }
+  roleIDs: {
+    adminRole: string
+    Ophase: string
+    'ETIT Bachelorstudent': string
+    'MIT Bachelorstudent': string
+  }
+  einteilung: {
+    ETITersti: string
+    MITersti: string
+  }
 }

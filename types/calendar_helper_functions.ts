@@ -11,9 +11,9 @@ import { DiscordChatInputCommandInteraction, DiscordClient, DiscordButtonInterac
 export async function fetchAndCacheCalendars(client: DiscordClient): Promise<void> {
   if (client.calendars !== undefined) client.calendars = undefined
   client.calendars = new Collection()
-  for (const calendar in client.config.calendars) {
+  for (const calendar in client.config.sensitive.calendars) {
     /* eslint-disable no-await-in-loop */
-    client.calendars.set(calendar, await async.fromURL(client.config.calendars[calendar]))
+    client.calendars.set(calendar, await async.fromURL(client.config.sensitive.calendars[calendar]))
     console.log(`'${calendar}' calendar fetched & cached`)
   }
 }

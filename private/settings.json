@@ -1,0 +1,24 @@
+{
+  "prefix": "!",
+  "defaultLanguage": "en",
+  "presence": {
+    "0": {
+      "activities": [
+        {
+          "name": "/help",
+          "type": 0
+        }
+      ],
+      "status": "online"
+    },
+    "1": {
+      "activities": [
+        {
+          "name": "https://git.io/J3Vao",
+          "type": 0
+        }
+      ],
+      "status": "online"
+    }
+  }
+}

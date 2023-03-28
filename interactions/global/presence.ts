@@ -1,6 +1,6 @@
 import { EmbedBuilder } from '@discordjs/builders'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { PresenceStatusData, PermissionsBitField, ActivitiesOptions } from 'discord.js'
+import { PresenceStatusData, PermissionsBitField, ActivitiesOptions, PresenceData } from 'discord.js'
 import { DiscordChatInputCommandInteraction, DiscordClient, DiscordSlashCommandBuilder } from '../../types/customTypes'
 
 export const data = new DiscordSlashCommandBuilder()
@@ -67,7 +67,7 @@ exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCom
     /**
      * Set Presence to first presence defined in the config
      */
-    client.user.setPresence(client.config.presence[0])
+    client.user.setPresence(<PresenceData>client.config.settings.presence[0])
 
     /**
      * Send answer, that presence has been changed

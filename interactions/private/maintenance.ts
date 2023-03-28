@@ -1,4 +1,4 @@
-import { PermissionsBitField } from 'discord.js'
+import { PermissionsBitField, PresenceData } from 'discord.js'
 import { DiscordClient, DiscordChatInputCommandInteraction, DiscordSlashCommandBuilder } from '../../types/customTypes'
 
 export const data = new DiscordSlashCommandBuilder()
@@ -44,7 +44,7 @@ exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCom
     /**
      * Set Presence to first presence defined in the config
      */
-    client.user.setPresence(client.config.presence[0])
+    client.user.setPresence(<PresenceData>client.config.settings.presence[0])
   }
 
   await interaction.editReply('Toggled maintenance mode')

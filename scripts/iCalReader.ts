@@ -144,7 +144,7 @@ function updatedCalendarsNotifications(client: DiscordClient): void {
   /**
    * List of all calendars.
    */
-  const calendarList = Object.keys(client.config.calendars).toString()
+  const calendarList = Object.keys(client.config.sensitive.calendars).toString()
 
   /**
    * Format list to use newline characters.

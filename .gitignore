@@ -4,12 +4,23 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 
-#My Private Data
+# Nobody need this
 package-lock.json
+
+# Sensitive data
 private/*
-*/secret/*
+
+# Exceptions
+!private/ids.json
+!private/settings.json
+
+# Dynamic Data
 mensa.json
+
+# Experimental Files
 devtest.*
+
+# Typescript built files
 built/
 
 # User-specific files

@@ -1,0 +1,36 @@
+{
+  "serverID": "757981349402378331",
+  "channelIDs": {
+    "dev": {
+      "onlineCounter": "859818232709382176",
+      "memberCounter": "838866951358775327",
+      "botTestLobby": "852530207336169523",
+      "admin": "768117219812835378"
+    },
+    "NUTZER_UPDATES": "774044596723777588",
+    "ETITPersonalization": "830884627051839488",
+    "MITPersonalization": "831572233301524501",
+    "mensa": "807209658141114378"
+  },
+  "acceptedAdmins": {
+    "Christoph": "192701441188560900",
+    "Leonard": "211035596116852736"
+  },
+  "userID": {
+    "botUserID": "777313468377858059",
+    "etitChef": "770272473735233587",
+    "leonard": "211035596116852736",
+    "basti": "222730684777758720",
+    "david": "537710047602540597"
+  },
+  "roleIDs": {
+    "adminRole": "757982430182506549",
+    "Ophase": "883083380307152916",
+    "ETIT Bachelorstudent": "770181853558341652",
+    "MIT Bachelorstudent": "770271352480858133"
+  },
+  "einteilung": {
+    "ETITersti": "https://discord.com/channels/757981349402378331/830884627051839488/831065230305394769",
+    "MITersti": "https://discord.com/channels/757981349402378331/831572233301524501/831587285676851270"
+  }
+}
