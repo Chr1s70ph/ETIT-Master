@@ -260,7 +260,7 @@ function dateToRecurrenceRule(eventDate: Date, todaysDate: Date): RecurrenceRule
    */
   rule.second = typeof eventDate === 'undefined' ? 0 : eventDate.getSeconds()
   rule.minute = typeof eventDate === 'undefined' ? 0 : eventDate.getMinutes()
-  rule.hour = typeof eventDate === 'undefined' ? 0 : eventDate.getHours()
+  rule.hour = typeof eventDate === 'undefined' ? 0 : eventDate.getHours() + todaysDate.getTimezoneOffset() / 60
 
   /**
    * Set date to current day to ensure notifications are not scheduled for the wrong day.
