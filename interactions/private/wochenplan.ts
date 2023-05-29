@@ -90,6 +90,8 @@ function wochenplan(
     let body = ''
 
     for (const weekdayEvent of weekdayItem) {
+      weekdayEvent.start.setHours(weekdayEvent.start.getHours() + weekdayEvent.start.getTimezoneOffset() / 60)
+      weekdayEvent.end.setHours(weekdayEvent.end.getHours() + weekdayEvent.end.getTimezoneOffset() / 60)
       /**
        * Add Time and name of Course
        */
