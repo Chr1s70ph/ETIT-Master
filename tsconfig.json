@@ -3,7 +3,6 @@
 		"outDir": "./built",
 		"allowJs": true,
 		"target": "ESNext",
-		"watch": true,
 		"resolveJsonModule": true,
 		"esModuleInterop": true,
 		"moduleResolution": "node",
