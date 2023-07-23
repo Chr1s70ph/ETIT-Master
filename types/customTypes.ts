@@ -19,7 +19,6 @@ import {
   PresenceStatusData,
   SlashCommandBuilder,
   StringSelectMenuInteraction,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   TextChannel,
   User,
   UserContextMenuCommandInteraction,
@@ -111,8 +110,8 @@ export class DiscordClient extends Client {
         if (message.member?.roles?.cache.some(role => role.name === language)) {
           return (user.language = language)
         }
-      } else if (interaction) {
-        if (interaction.locale === language) return (user.language = language)
+      } else if (interaction && interaction.locale === language) {
+        return (user.language = language)
       }
     }
     /**
@@ -257,7 +256,7 @@ export class DiscordSlashCommandBuilder extends SlashCommandBuilder {
 }
 
 export interface LocalizationTranslations {
-  language: { LocalizationTypes }
+  language: { LocalizationTypes: LocalizationTypes }
 }
 
 declare interface LocalizationTypes {
@@ -358,7 +357,7 @@ interface translation_options {
   options: TOptions
 }
 
-interface InteractionCommands extends Object {
+interface InteractionCommands {
   name: string
   description: string
   usage: string
@@ -379,13 +378,13 @@ export interface DiscordApplicationCommand extends ApplicationCommand {
   user: DiscordUser
 }
 
-interface config_settings_typing extends Object {
+interface config_settings_typing {
   prefix: string
   defaultLanguage: string
   presence: { [key: string]: { activities: { name: string; type: number }[]; status: PresenceStatusData | string } }
 }
 
-interface config_sensitive_typing extends Object {
+interface config_sensitive_typing {
   textgears_api_key?: string
   tenor?: {
     Key: string
@@ -406,7 +405,7 @@ interface config_sensitive_typing extends Object {
   openai_token?: string
 }
 
-interface config_ids_typing extends Object {
+interface config_ids_typing {
   serverID: string
   channelIDs: {
     dev: {

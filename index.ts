@@ -55,9 +55,9 @@ client.interactions = new Collection()
  * Set config.
  */
 client.config = {
-  settings: settings,
+  settings,
   sensitive,
-  ids: ids,
+  ids,
 }
 
 /**
