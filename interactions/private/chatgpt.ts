@@ -7,6 +7,10 @@ export const data = new DiscordSlashCommandBuilder()
   .setLocalizations('chatgpt')
 
 exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCommandInteraction): Promise<void> => {
+  if (!client.config.sensitive.openai_token) {
+    console.error('client.config.sensitive.openai_token is undefined')
+    return
+  }
   const channel = interaction.channel
 
   if (channel.isThread()) {

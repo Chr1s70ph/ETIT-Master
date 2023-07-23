@@ -56,7 +56,7 @@ client.interactions = new Collection()
  */
 client.config = {
   settings: settings,
-  sensitive: sensitive,
+  sensitive,
   ids: ids,
 }
 
@@ -65,14 +65,18 @@ client.config = {
  */
 client.login(client.config.sensitive.botToken)
 
-/*
- * Create OpenAIApi instance
- */
-const configuration = new Configuration({
-  apiKey: client.config.sensitive.openai_token,
-})
+if (client.config.sensitive.openai_token) {
+  /*
+   * Create OpenAIApi instance
+   */
+  const configuration = new Configuration({
+    apiKey: client.config.sensitive.openai_token,
+  })
 
-client.openai = new OpenAIApi(configuration)
+  client.openai = new OpenAIApi(configuration)
+} else {
+  console.error('client.config.sensitive.openai_token is undefined')
+}
 
 /**
  * Load and run events.

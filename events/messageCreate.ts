@@ -88,6 +88,10 @@ exports.run = async (client: DiscordClient, message: DiscordMessage) => {
  * @param {DiscordMessage} message Message to scan
  */
 function check_spelling(client: DiscordClient, message: DiscordMessage) {
+  if (!client.config.sensitive.textgears_api_key) {
+    console.error('client.config.sensitive.textgears_api_key is undefined')
+    return
+  }
   const test_query = message.toString()
 
   const textgearsApi = textgears(client.config.sensitive.textgears_api_key, { language: 'de-DE', ai: false })

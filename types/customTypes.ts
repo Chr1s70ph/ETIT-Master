@@ -386,16 +386,15 @@ interface config_settings_typing extends Object {
 }
 
 interface config_sensitive_typing extends Object {
-  textgears_api_key: string
-  github_token: string
-  tenor: {
+  textgears_api_key?: string
+  tenor?: {
     Key: string
     Filter: string
     Locale: string
     MediaFilter: string
     DateFormat: string
   }
-  mensa: {
+  mensa?: {
     user: string
     password: string
     base_url: string
@@ -404,7 +403,7 @@ interface config_sensitive_typing extends Object {
   }
   calendars: { [key: string]: string }
   botToken: string
-  openai_token: string
+  openai_token?: string
 }
 
 interface config_ids_typing extends Object {

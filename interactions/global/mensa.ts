@@ -148,6 +148,10 @@ const weekdayOptions = {
 }
 
 export function _updateJson(client: DiscordClient): Promise<string> {
+  if (!client.config.sensitive.mensa) {
+    console.error('client.config.sensitive.mensa is undefined')
+    return undefined
+  }
   console.log('Updating mensa plan...')
   return new Promise((resolve, reject) => {
     /**

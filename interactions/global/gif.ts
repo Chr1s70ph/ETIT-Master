@@ -9,6 +9,10 @@ export const data = new DiscordSlashCommandBuilder()
   .addUserOption(option => option.setName('ping').setDescription('Nutzerping'))
 
 exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCommandInteraction): Promise<void> => {
+  if (!client.config.sensitive.tenor) {
+    console.error('client.config.sensitive.tenor is undefined')
+    return
+  }
   await interaction.deferReply()
 
   const USER_QUERY = interaction.options.getString('query')
