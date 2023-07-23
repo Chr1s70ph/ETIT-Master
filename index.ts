@@ -2,6 +2,7 @@ import * as fs from 'fs'
 import { Collection, GatewayIntentBits, Partials } from 'discord.js'
 import i18next from 'i18next'
 import Backend from 'i18next-fs-backend'
+import { Configuration, OpenAIApi } from 'openai'
 import ids from './private/ids.json'
 import sensitive from './private/sensitive.json'
 import settings from './private/settings.json'
@@ -63,6 +64,15 @@ client.config = {
  * Login with botToken.
  */
 client.login(client.config.sensitive.botToken)
+
+/*
+ * Create OpenAIApi instance
+ */
+const configuration = new Configuration({
+  apiKey: client.config.sensitive.openai_token,
+})
+
+client.openai = new OpenAIApi(configuration)
 
 /**
  * Load and run events.

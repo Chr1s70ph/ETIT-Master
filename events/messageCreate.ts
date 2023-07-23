@@ -2,11 +2,33 @@ import { EmbedBuilder, TextChannel } from 'discord.js'
 import textgears from 'textgears-api'
 import { DiscordClient, DiscordMessage } from '../types/customTypes'
 
-exports.run = (client: DiscordClient, message: DiscordMessage) => {
+exports.run = async (client: DiscordClient, message: DiscordMessage) => {
   /**
    * Only respond to messages sent by users.
    */
   if (message.author.bot) return
+
+  /**
+   * OpenAI's Chat-GPT
+   */
+  if (message.channel.isThread() && message.channel.name === 'chat-gpt') {
+    message.channel.sendTyping()
+    try {
+      const completion = await client.openai.createChatCompletion({
+        model: 'gpt-3.5-turbo',
+        messages: [{ role: 'user', content: message.content.toString() }],
+      })
+
+      message.channel.send(completion.data.choices[0].message.content.toString())
+    } catch (error) {
+      if (error.response) {
+        console.log(`Error status: ${error.response.status}`)
+        console.log(`Error data: ${error.response.data}`)
+      } else {
+        console.log(`Error message: ${error.message}`)
+      }
+    }
+  }
 
   /**
    * Annoy people :)

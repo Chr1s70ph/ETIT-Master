@@ -12,6 +12,14 @@
       "parent": "Oberkategorie",
       "type": "Typ"
     },
+    "chatgpt": {
+      "already_in_thread": "Ich kann keinen Thread erstellen, da du dich bereits in einem befindest.",
+      "cannot_create_thread": "*Chat-GPT* Thread konnte nicht erstellt werden.",
+      "localized_description": "chats in gpt",
+      "localized_name": "chatgpt",
+      "thread_created": "*Chat-GPT* Thread erstellt!",
+      "thread_message": "Chat-GPT liegt zu deinen Füßen, du kannst mich alles fragen.\nNach 60min wird der Kanal archiviert"
+    },
     "fact": {
       "fact": "🧠Fakt",
       "localized_description": "Spuckt einen zufälligen Fakt aus.",
