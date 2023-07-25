@@ -1,6 +1,12 @@
 import { EmbedBuilder, TextChannel } from 'discord.js'
 import textgears from 'textgears-api'
 import { DiscordClient, DiscordMessage } from '../types/customTypes'
+import tx2 from 'tx2'
+
+/**
+ * Custom PM2 metric.
+ */
+const openai_api_requests = tx2.counter('OpenAI-API Requests')
 
 exports.run = async (client: DiscordClient, message: DiscordMessage) => {
   /**
@@ -18,6 +24,8 @@ exports.run = async (client: DiscordClient, message: DiscordMessage) => {
         model: 'gpt-3.5-turbo',
         messages: [{ role: 'user', content: message.content.toString() }],
       })
+      
+      openai_api_requests.inc(1)
 
       message.channel.send(completion.data.choices[0].message.content.toString())
     } catch (error) {
