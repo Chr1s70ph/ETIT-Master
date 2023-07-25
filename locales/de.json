@@ -15,6 +15,7 @@
     "chatgpt": {
       "already_in_thread": "Ich kann keinen Thread erstellen, da du dich bereits in einem befindest.",
       "cannot_create_thread": "*Chat-GPT* Thread konnte nicht erstellt werden.",
+      "error": "Ein Fehler ist aufgetreten. Bitte versuche es später erneut.\nWenn dieser Fehler weiterhin besteht, kontaktiere bitte den Bot-Entwickler.\n\nFehler Status: {{error}}\nFehler Daten: {{error_data}}",
       "localized_description": "chats in gpt",
       "localized_name": "chatgpt",
       "thread_created": "*Chat-GPT* Thread erstellt!",

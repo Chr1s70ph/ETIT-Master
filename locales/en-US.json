@@ -14,11 +14,12 @@
     },
     "chatgpt": {
       "already_in_thread": "Cannot create thread since you already are in a thread channel.",
+      "cannot_create_thread": "Cannot create *Chat-GPT* thread.",
+      "error": "An error occured. Please try again later.\nIf this error persists, please contact the bot owner.\n\nError Status: {{error}}\nError data: {{error_data}}",
       "localized_description": "chats in gpt",
       "localized_name": "chatgpt",
-      "thread_message": "Chat-GPT at your service, ask me anything.\nAfter 60mins of inactivity this channel will be archived.",
-      "cannot_create_thread": "Cannot create *Chat-GPT* thread.",
-      "thread_created": "*Chat-GPT* thread successfully created!"
+      "thread_created": "*Chat-GPT* thread successfully created!",
+      "thread_message": "Chat-GPT at your service, ask me anything.\nAfter 60mins of inactivity this channel will be archived."
     },
     "fact": {
       "fact": "🧠Fact",
