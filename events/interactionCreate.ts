@@ -14,9 +14,7 @@ import {
 /**
  * Custom PM2 metric.
  */
-const InteractionCounter = tx2.counter({
-  name: 'Interactions issued',
-})
+const InteractionCounter = tx2.counter('Interactions issued')
 
 exports.run = (client: DiscordClient, interaction: any) => {
   /**
@@ -53,7 +51,7 @@ exports.run = (client: DiscordClient, interaction: any) => {
   /**
    * Increment the counter of issued interactions since last restart.
    */
-  InteractionCounter.inc()
+  InteractionCounter.inc(1)
 
   if (interaction.type === InteractionType.ApplicationCommandAutocomplete) {
     const DiscordInteraction = interaction as DiscordAutocompleteInteraction

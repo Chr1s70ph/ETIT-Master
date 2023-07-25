@@ -23,9 +23,7 @@ const SDADISDIGEN = '827171746364784671'
 /**
  * Custom PM2 metric.
  */
-const rolesAddedCounter = tx2.counter({
-  name: 'Rolles added to users',
-})
+const rolesAddedCounter = tx2.counter('Rolles added to users')
 
 exports.run = async (client: DiscordClient, reaction: MessageReaction, user: GuildMember) => {
   const USER = await reaction.message.guild.members.fetch(user.id)
@@ -56,7 +54,7 @@ exports.run = async (client: DiscordClient, reaction: MessageReaction, user: Gui
           // eslint-disable-next-line max-len
           `User update: ${colors.fg.Green}Added${colors.special.Reset} role ${colors.special.Bright}${role.name}${colors.special.Reset} to ${USER.displayName}.`,
         )
-        rolesAddedCounter.inc()
+        rolesAddedCounter.inc(1)
       }
     } catch (error) {
       /**

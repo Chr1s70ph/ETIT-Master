@@ -18,9 +18,7 @@ const DELETE_NOTIFICATIONS_OFFSET = 115
 /**
  * Custom PM2 metric.
  */
-const scheduledNotifications = tx2.metric({
-  name: 'Number of scheduled notifications today',
-})
+const scheduledNotifications = tx2.counter('Number of scheduled notifications today')
 
 /**
  * Variable for counting scheduled notifications
@@ -240,7 +238,7 @@ function scheduleNotifications(client: DiscordClient, today: Date, events: objec
     createCron(recurrenceRule, channel, role, embed, client)
     created_notifications += 1
   }
-  scheduledNotifications.set(created_notifications)
+  scheduledNotifications.inc(created_notifications)
 }
 
 /**
