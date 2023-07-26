@@ -49,18 +49,14 @@ exports.run = (client: DiscordClient, oldMember: GuildMember, newMember: GuildMe
          * Send personalized embed to member.
          */
         console.log(`Sent ${newMember.user.username} personalization message`)
-        return newMember.send({ embeds: [ophaseInfo] })
+        newMember.send({ embeds: [ophaseInfo] })
       } catch (error) {
         /**
          * Handle Errors.
          */
         throw new Error(error)
       }
-    } else {
-      return 0
     }
-  } else {
-    return 0
   }
 }
 

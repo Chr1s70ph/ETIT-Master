@@ -1,4 +1,4 @@
-import { EmbedBuilder, MessageCreateOptions, MessagePayload, TextChannel, Utils } from 'discord.js'
+import { EmbedBuilder, MessageCreateOptions, MessagePayload, TextChannel } from 'discord.js'
 import textgears from 'textgears-api'
 import tx2 from 'tx2'
 import { DiscordClient, DiscordMessage } from '../types/customTypes'
@@ -8,7 +8,7 @@ import { DiscordClient, DiscordMessage } from '../types/customTypes'
  */
 const openai_api_requests = tx2.counter('OpenAI-API Requests')
 
-exports.run = async (client: DiscordClient, message: DiscordMessage) => {
+exports.run = (client: DiscordClient, message: DiscordMessage) => {
   /**
    * Only respond to messages sent by users.
    */
@@ -213,7 +213,6 @@ function check_spelling(client: DiscordClient, message: DiscordMessage) {
  * https://github.com/discordjs/discord.js/issues/7674
  * @param {string} text The string to split into multiple messages, each of
  * which will be no longer than maxLength
- * @param {Object} [options]
  * @param {number} [options.maxLength] The maximum number of characters in each
  * string in the returned array
  * @param {RegExp} [options.regex] A global regex which matches the delimeters on
@@ -226,7 +225,15 @@ function check_spelling(client: DiscordClient, message: DiscordMessage) {
  * using options.regex, combined such that each part is as long as possible
  * while not exceeding options.maxLength.
  */
-function splitMessageRegex(text, { maxLength = 2_000, regex = /\n/g, prepend = '', append = '' } = {}) {
+function splitMessageRegex(
+  text: string,
+  {
+    maxLength = 2_000,
+    regex = /\n/g,
+    prepend = '',
+    append = '',
+  }: { maxLength?: number; regex?: RegExp; prepend?: string; append?: string } = {},
+): any[] {
   if (text.length <= maxLength) return [text]
   const parts = []
   let curPart = prepend
@@ -234,7 +241,7 @@ function splitMessageRegex(text, { maxLength = 2_000, regex = /\n/g, prepend = '
 
   let prevDelim = ''
 
-  function addChunk(chunkEndIndex, nextDelim) {
+  function addChunk(chunkEndIndex: number, nextDelim: string) {
     const nextChunk = text.substring(chunkStartIndex, chunkEndIndex)
     const nextChunkLen = nextChunk.length
 
