@@ -4,6 +4,11 @@ import { DiscordClient } from '../types/customTypes'
 
 exports.run = (client: DiscordClient, oldMember: GuildMember, newMember: GuildMember) => {
   /**
+   * Only react to members joining the ETIT-KIT server.
+   */
+  if (oldMember.guild.id !== client.config.ids.serverID) return
+
+  /**
    * Fetch roleIDs of member.
    */
   const { newRoleIDs, oldRoleIDs } = getRoleIDs(oldMember, newMember)

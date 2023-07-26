@@ -26,6 +26,11 @@ const SDADISDIGEN = '827171746364784671'
 const rolesRemovedCounter = tx2.counter('Rolles removed from users')
 
 exports.run = async (client: DiscordClient, reaction: MessageReaction, user: GuildMember) => {
+  /**
+   * Only react to members joining the ETIT-KIT server.
+   */
+  if (user.guild.id !== client.config.ids.serverID) return
+
   const USER = await reaction.message.guild.members.fetch(user.id)
   if (ROLE_REACTION_CHANNELS.indexOf(reaction.message.channel.id) > -1) {
     try {

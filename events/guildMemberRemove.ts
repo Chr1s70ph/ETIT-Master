@@ -2,6 +2,11 @@ import { GuildMember, EmbedBuilder, TextChannel } from 'discord.js'
 import { DiscordClient } from '../types/customTypes'
 
 exports.run = async (client: DiscordClient, member: GuildMember) => {
+  /**
+   * Only react to members joining the ETIT-KIT server.
+   */
+  if (member.guild.id !== client.config.ids.serverID) return
+
   await serverGoodByeMessage(client, member)
   /**
    * Guild to update update membercounter.

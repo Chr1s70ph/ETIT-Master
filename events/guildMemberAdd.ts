@@ -1,9 +1,13 @@
-/* eslint-disable max-len */
 import { EmbedBuilder, TextChannel } from 'discord.js'
 import { GuildMember } from 'discord.js/typings/index.js'
 import { DiscordClient } from '../types/customTypes'
 
 exports.run = async (client: DiscordClient, member: GuildMember) => {
+  /**
+   * Only react to members joining the ETIT-KIT server.
+   */
+  if (member.guild.id !== client.config.ids.serverID) return
+
   await serverWelcomeMessage(client, member)
 
   /**
@@ -70,11 +74,14 @@ async function sendWelcomeMessage(member: GuildMember, client: DiscordClient): P
     .setColor('#FFDA00')
     .setAuthor({ name: client.user.tag, iconURL: member.guild.iconURL() })
     .setThumbnail(client.user.avatarURL())
-    .setDescription(`Wir hoffen, dass der Server dir gefällt, und dir im Studium weiterhelfen kann.
+    .setDescription(
+      `Wir hoffen, dass der Server dir gefällt, und dir im Studium weiterhelfen kann.
 		In <#830837597587767306> kannst du deinen Studiengang auswählen.
 		In der Kategorie <#830891013266604062> findest du dann weitere Kanäle, in denen du deine Fächer auswählen kannst.
 
-		Falls du noch irgendwelche Fragen hast, wende dich einfach an <@${client.config.ids.userID.basti}> (wir Admins sind auch nur einfache Studenten, genauso wie du).`)
+		Falls du noch irgendwelche Fragen hast, wende dich einfach an <@${client.config.ids.userID.basti}>` +
+        ` (wir Admins sind auch nur einfache Studenten, genauso wie du).`,
+    )
 
   try {
     /**
