@@ -29,7 +29,7 @@ exports.run = async (client: DiscordClient, reaction: MessageReaction, user: Gui
   /**
    * Only react to members joining the ETIT-KIT server.
    */
-  if (user.guild.id !== client.config.ids.serverID) return
+  if (reaction.message.guild.id !== client.config.ids.serverID) return
 
   const USER = await reaction.message.guild.members.fetch(user.id)
 
