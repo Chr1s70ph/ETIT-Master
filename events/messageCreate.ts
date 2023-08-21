@@ -35,8 +35,8 @@ exports.run = (client: DiscordClient, message: DiscordMessage) => {
 
           if (openai_api_request_sent === false) {
             openai_api_request_sent = true
-            client.openai
-              .createChatCompletion({
+            client.openai.chat.completions
+              .create({
                 model: 'gpt-3.5-turbo',
                 messages: [{ role: 'user', content: message.content.toString() }],
               })
@@ -49,7 +49,7 @@ exports.run = (client: DiscordClient, message: DiscordMessage) => {
                 /**
                  * Split the message into multiple messages if it's too long.
                  */
-                splitMessageRegex(request.data.choices[0].message.content.toString(), {
+                splitMessageRegex(request.choices[0].message.content.toString(), {
                   maxLength: 2000,
                   prepend: '',
                   append: '',

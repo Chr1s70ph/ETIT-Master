@@ -25,7 +25,7 @@ import {
 } from 'discord.js'
 import i18next, { TOptions } from 'i18next'
 import { CalendarResponse } from 'node-ical'
-import { OpenAIApi } from 'openai'
+import OpenAI from 'openai'
 
 /**
  * Extended version of the default {@link Client} with addidtional functions and properties.
@@ -126,7 +126,7 @@ export class DiscordClient extends Client {
    */
   public interactions: Collection<string, InteractionCommands>
 
-  public openai: OpenAIApi
+  public openai: OpenAI
   /**
    * Uses {@link Message.reply()} to reply to the issued command.
    * @param {Message} message message to ryply to
