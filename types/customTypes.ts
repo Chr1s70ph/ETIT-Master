@@ -385,7 +385,6 @@ interface config_settings_typing {
 }
 
 interface config_sensitive_typing {
-  textgears_api_key?: string
   tenor?: {
     Key: string
     Filter: string

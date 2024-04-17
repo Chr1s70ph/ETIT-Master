@@ -24,7 +24,6 @@ Clone the repository, `cd` into it and run `npm install`.
 - [x] Random Gifs
 - [x] Role Assignment
 - [x] Table of Contents generation
-- [x] TextGears
 - [x] Timetable
 - [x] Timetable Reminders
 - [x] User info
@@ -40,7 +39,6 @@ The only required value is `botToken`, which you can get from the [Discord Devel
 
 ```json
 {
-  "textgears_api_key": "<your api key>",
   "tenor": {
     "Key": "<your api key>",
     "Filter": "off",
