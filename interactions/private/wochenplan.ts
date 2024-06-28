@@ -17,12 +17,12 @@ exports.usage = `wochenplan {TAG}`
 let startOfWeek = new Date()
 
 export const data = new DiscordSlashCommandBuilder()
-  .setName('wochenplan')
-  .setDescription('Zeigt deinen Wochenplan an.')
+.setName('wochenplan')
+.setDescription('Zeigt deinen Wochenplan an.')
+.setLocalizations('wochenplan')
   .addStringOption(option =>
     option.setName('datum').setDescription('Das Datum, das angezeigt werden soll. Format: DD.MM.YYYY'),
   )
-  .setLocalizations('wochenplan')
 
 function wochenplan(
   client: DiscordClient,

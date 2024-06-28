@@ -17,11 +17,11 @@ import {
   ModalSubmitInteraction,
   PresenceData,
   PresenceStatusData,
-  SlashCommandBuilder,
   StringSelectMenuInteraction,
   TextChannel,
   User,
   UserContextMenuCommandInteraction,
+  SlashCommandBuilder  
 } from 'discord.js'
 import i18next, { TOptions } from 'i18next'
 import { CalendarResponse } from 'node-ical'
@@ -230,28 +230,20 @@ export class DiscordSlashCommandBuilder extends SlashCommandBuilder {
   /**
    * Adds all available localizations of name and description
    * @param {string} name name of command
-   * @returns {SlashCommandBuilder}
+   * @returns {this}
    */
-  public setLocalizations(name: string): SlashCommandBuilder {
-    /**
-     * Array of all available localizations
-     */
-    const localizations: any = getLocalizations(name)
-    // If (localizations === []) return this
+  public setLocalizations(name: string): this {
+    const localizations: any = getLocalizations(name);
     for (const entry in localizations) {
-      /**
-       * Object containing {@link LocaleString}, localized name and description
-       */
-      const item: LocalizationTypes = localizations[entry]
-      /**
-       * Only set localization if a localized name or description can be found
-       */
-      if (item.localized_name !== null) this.setNameLocalization(item.localized_language, item.localized_name)
+      const item: LocalizationTypes = localizations[entry];
+      if (item.localized_name !== null) {
+        this.setNameLocalization(item.localized_language, item.localized_name);
+      }
       if (item.localized_description !== null) {
-        this.setDescriptionLocalization(item.localized_language, item.localized_description)
+        this.setDescriptionLocalization(item.localized_language, item.localized_description);
       }
     }
-    return this
+    return this;
   }
 }
 

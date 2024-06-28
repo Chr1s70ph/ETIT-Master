@@ -73,6 +73,7 @@ choices.shift()
 export const data = new DiscordSlashCommandBuilder()
   .setName('quicklink')
   .setDescription('Links quick')
+  .setLocalizations('quicklink')
   .addStringOption(option =>
     // eslint-disable-next-line newline-per-chained-call
     option
@@ -90,7 +91,6 @@ export const data = new DiscordSlashCommandBuilder()
       .setRequired(true),
   )
   .addUserOption(option => option.setName('userping').setDescription('Who do you want to annoy?'))
-  .setLocalizations('quicklink')
 
 /**
  * Reply to interactiopn

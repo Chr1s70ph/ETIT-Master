@@ -1,12 +1,12 @@
 {
 	"compilerOptions": {
 		"outDir": "./built",
-		"allowJs": true,
+		"allowJs": false,
 		"target": "ESNext",
 		"resolveJsonModule": true,
 		"esModuleInterop": true,
 		"moduleResolution": "node",
 		"skipLibCheck": true
 	},
-	"exclude": ["node_modules", "./built"]
+	"exclude": ["node_modules", "./built"],
 }
