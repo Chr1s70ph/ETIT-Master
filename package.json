@@ -36,7 +36,7 @@
   "devDependencies": {
     "@types/node-schedule": "^2.1.7",
     "@types/tx2": "^1.0.3",
-    "@typescript-eslint/eslint-plugin": "^7.14.1",
+    "@typescript-eslint/eslint-plugin": "^8.8.1",
     "@typescript-eslint/parser": "^7.14.1",
     "eslint": "^9.5.0"
   }
