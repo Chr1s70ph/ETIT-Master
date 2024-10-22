@@ -14,7 +14,6 @@ Clone the repository, `cd` into it and run `npm install`.
 ## ➤ Features
 
 - [x] Calendar
-- [x] ChatGPT
 - [x] Exams
 - [x] Mensa
 - [x] Multi Language Support
@@ -58,6 +57,5 @@ The only required value is `botToken`, which you can get from the [Discord Devel
     "calendar_2": "<your calendar url>",
   },
   "botToken": "<your bot token>",
-  "openai_token": "<your openai token>",
 }
 ```

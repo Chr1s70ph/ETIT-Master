@@ -2,7 +2,6 @@ import * as fs from 'fs'
 import { Collection, GatewayIntentBits, Partials } from 'discord.js'
 import i18next from 'i18next'
 import Backend from 'i18next-fs-backend'
-import OpenAI from 'openai'
 import ids from './private/ids.json'
 import sensitive from './private/sensitive.json'
 import settings from './private/settings.json'
@@ -64,19 +63,6 @@ client.config = {
  * Login with botToken.
  */
 client.login(client.config.sensitive.botToken)
-
-if (client.config.sensitive.openai_token) {
-  /*
-   * Create OpenAIApi instance
-   */
-  
-
-  client.openai = new OpenAI({
-    apiKey: client.config.sensitive.openai_token
-  })
-} else {
-  console.error('client.config.sensitive.openai_token is undefined')
-}
 
 /**
  * Load and run events.

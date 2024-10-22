@@ -25,7 +25,6 @@ import {
 } from 'discord.js'
 import i18next, { TOptions } from 'i18next'
 import { CalendarResponse } from 'node-ical'
-import OpenAI from 'openai'
 
 /**
  * Extended version of the default {@link Client} with addidtional functions and properties.
@@ -126,7 +125,6 @@ export class DiscordClient extends Client {
    */
   public interactions: Collection<string, InteractionCommands>
 
-  public openai: OpenAI
   /**
    * Uses {@link Message.reply()} to reply to the issued command.
    * @param {Message} message message to ryply to
@@ -393,7 +391,6 @@ interface config_sensitive_typing {
   }
   calendars: { [key: string]: string }
   botToken: string
-  openai_token?: string
 }
 
 interface config_ids_typing {
