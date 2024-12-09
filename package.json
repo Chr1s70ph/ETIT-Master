@@ -19,7 +19,7 @@
     "eslint-plugin-prettier": "^5.2.1",
     "fs": "^0.0.1-security",
     "https": "^1.0.0",
-    "i18next": "^23.16.2",
+    "i18next": "^24.0.5",
     "i18next-fs-backend": "^2.3.2",
     "luxon": "^3.5.0",
     "moment": "^2.30.1",
