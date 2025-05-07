@@ -1,4 +1,6 @@
-import { DiscordClient, DiscordChatInputCommandInteraction, DiscordSlashCommandBuilder } from '../../types/customTypes'
+import { MessageFlags } from 'discord.js'
+import { DiscordChatInputCommandInteraction, DiscordClient, DiscordSlashCommandBuilder } from '../../types/customTypes'
+
 
 export const data = new DiscordSlashCommandBuilder()
   .setName('ping')
@@ -6,5 +8,5 @@ export const data = new DiscordSlashCommandBuilder()
   .setLocalizations('ping')
 
 exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCommandInteraction): Promise<void> => {
-  await interaction.reply({ content: 'pong', ephemeral: true })
+  await interaction.reply({ content: 'pong', flags: MessageFlags.Ephemeral })
 }

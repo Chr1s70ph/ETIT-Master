@@ -1,4 +1,4 @@
-import { EmbedBuilder } from 'discord.js'
+import { EmbedBuilder, MessageFlags } from 'discord.js'
 import project from '../../package.json'
 import { DiscordChatInputCommandInteraction, DiscordClient, DiscordSlashCommandBuilder } from '../../types/customTypes'
 const os = require('os')
@@ -63,7 +63,7 @@ exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCom
     ])
     .setColor('#FF4040')
 
-  await interaction.reply({ embeds: [uptime_embed], ephemeral: true })
+  await interaction.reply({ embeds: [uptime_embed], flags: MessageFlags.Ephemeral })
 }
 
 /**

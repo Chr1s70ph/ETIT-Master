@@ -1,5 +1,5 @@
+import { EmbedBuilder, MessageFlags } from 'discord.js'
 import { readFileSync } from 'fs'
-import { EmbedBuilder } from 'discord.js'
 import { DiscordChatInputCommandInteraction, DiscordClient, DiscordSlashCommandBuilder } from '../../types/customTypes'
 const FACTS_FILE = './data/facts.txt'
 const DATA = readFileSync(FACTS_FILE, 'utf-8').split('\n')
@@ -19,5 +19,5 @@ exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCom
       iconURL: interaction.user.avatarURL(),
     })
 
-  await interaction.reply({ embeds: [fact_embed], ephemeral: true })
+  await interaction.reply({ embeds: [fact_embed], flags: MessageFlags.Ephemeral })
 }

@@ -1,7 +1,7 @@
-import { EmbedBuilder } from 'discord.js'
+import { EmbedBuilder, MessageFlags } from 'discord.js'
 import moment from 'moment-timezone'
 import { extractZoomLinks, filterEvents } from '../../types/calendar_helper_functions'
-import { DiscordClient, DiscordChatInputCommandInteraction, DiscordSlashCommandBuilder } from '../../types/customTypes'
+import { DiscordChatInputCommandInteraction, DiscordClient, DiscordSlashCommandBuilder } from '../../types/customTypes'
 
 exports.name = 'klausuren'
 
@@ -83,7 +83,7 @@ function klausuren(client: DiscordClient, interaction: DiscordChatInputCommandIn
 }
 
 exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCommandInteraction): Promise<void> => {
-  await interaction.deferReply({ ephemeral: true })
+  await interaction.deferReply({ flags: MessageFlags.Ephemeral })
   const now = new Date()
   const embed = await klausuren(client, interaction, now)
 

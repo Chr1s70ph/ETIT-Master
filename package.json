@@ -11,12 +11,12 @@
   "homepage": "https://github.com/Chr1s70ph/ETIT-Master-JS#readme",
   "author": "Christoph Bluem",
   "dependencies": {
-    "@discordjs/rest": "^2.4.3",
+    "@discordjs/rest": "^2.5.0",
     "discord-api-types": "^0.37.120",
-    "discord.js": "^14.18.0",
+    "discord.js": "^14.19.3",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.31.0",
-    "eslint-plugin-prettier": "^5.2.6",
+    "eslint-plugin-prettier": "^5.4.0",
     "fs": "^0.0.1-security",
     "https": "^1.0.0",
     "i18next": "^23.16.8",
@@ -35,8 +35,8 @@
   "devDependencies": {
     "@types/node-schedule": "^2.1.7",
     "@types/tx2": "^1.0.3",
-    "@typescript-eslint/eslint-plugin": "^8.31.0",
-    "@typescript-eslint/parser": "^8.31.0",
-    "eslint": "^9.25.1"
+    "@typescript-eslint/eslint-plugin": "^8.32.0",
+    "@typescript-eslint/parser": "^8.32.0",
+    "eslint": "^9.26.0"
   }
 }

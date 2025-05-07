@@ -222,7 +222,12 @@ export async function mensa(
      * Fetch new mensa plan if none found
      */
     const buffer = await _updateJson(client)
-    if (buffer) mensa_json = JSON.parse(buffer)
+    if (buffer)
+      try {
+        mensa_json = JSON.parse(buffer)
+    } catch (e) {
+        console.error('Error parsing mensa JSON', e)
+    }
   } else {
     /**
      * Read mensa plan if found

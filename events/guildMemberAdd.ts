@@ -93,6 +93,6 @@ async function sendWelcomeMessage(member: GuildMember, client: DiscordClient): P
     /**
      * Handle Errors.
      */
-    throw new Error(error)
+    console.error(error)
   }
 }

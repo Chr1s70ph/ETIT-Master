@@ -1,11 +1,11 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js'
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, MessageFlags } from 'discord.js'
 import moment from 'moment-timezone'
 import { extractZoomLinks, filterEvents } from '../../types/calendar_helper_functions'
 import {
-  DiscordClient,
-  DiscordChatInputCommandInteraction,
-  DiscordSlashCommandBuilder,
   DiscordButtonInteraction,
+  DiscordChatInputCommandInteraction,
+  DiscordClient,
+  DiscordSlashCommandBuilder,
 } from '../../types/customTypes'
 
 exports.name = 'wochenplan'
@@ -153,7 +153,7 @@ exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCom
   /**
    * Defer interaction reply, since it can take some time to come through all calendars
    */
-  await interaction.deferReply({ ephemeral: true })
+  await interaction.deferReply({ flags: MessageFlags.Ephemeral })
 
   /**
    * Get options from interaction

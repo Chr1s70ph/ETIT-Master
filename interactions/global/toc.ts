@@ -1,5 +1,5 @@
-import { PermissionsBitField, TextChannel, Snowflake, EmbedBuilder } from 'discord.js'
-import { DiscordClient, DiscordChatInputCommandInteraction, DiscordSlashCommandBuilder } from '../../types/customTypes'
+import { EmbedBuilder, MessageFlags, PermissionsBitField, Snowflake, TextChannel } from 'discord.js'
+import { DiscordChatInputCommandInteraction, DiscordClient, DiscordSlashCommandBuilder } from '../../types/customTypes'
 const MAX_EMBED_LENGTH = 4096
 
 export const data = new DiscordSlashCommandBuilder()
@@ -13,7 +13,7 @@ exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCom
   /**
    * Send reply, that table of conents is being created
    */
-  await interaction.reply({ content: 'your table of contents', ephemeral: true })
+  await interaction.reply({ content: 'your table of contents', MessageFlags })
 
   /**
    * Channel ID of channel to create ToC of
