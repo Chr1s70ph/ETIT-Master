@@ -13,7 +13,7 @@ exports.Command = async (client: DiscordClient, interaction: DiscordChatInputCom
   /**
    * Send reply, that table of conents is being created
    */
-  await interaction.reply({ content: 'your table of contents', MessageFlags })
+  await interaction.reply({ content: 'your table of contents', flags: MessageFlags.Ephemeral })
 
   /**
    * Channel ID of channel to create ToC of
