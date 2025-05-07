@@ -40,7 +40,7 @@ exports.run = async (client: DiscordClient, member: GuildMember) => {
 async function serverWelcomeMessage(client: DiscordClient, member: GuildMember) {
   const embed = new EmbedBuilder()
     .setColor('#00FF00')
-    .setTitle(`${member.user.username}#${member.user.discriminator}`)
+    .setTitle(member.user.username)
     .setDescription(`<@${member.user.id}> ist dem Server beigetreten!`)
     .addFields([
       { name: 'Server beigetreten am', value: `<t:${Math.round(member.joinedTimestamp / 1000)}:D>`, inline: false },

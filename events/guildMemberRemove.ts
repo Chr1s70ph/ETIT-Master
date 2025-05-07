@@ -33,7 +33,7 @@ exports.run = async (client: DiscordClient, member: GuildMember) => {
 async function serverGoodByeMessage(client: DiscordClient, member: GuildMember) {
   const embed = new EmbedBuilder()
     .setColor('#FF0000')
-    .setTitle(`${member.user.username}#${member.user.discriminator}`)
+    .setTitle(member.user.username)
     .setDescription(`<@${member.user.id}> hat den Server verlassen!`)
     .addFields([
       { name: 'Server beigetreten am', value: `<t:${Math.round(member.joinedTimestamp / 1000)}:D>`, inline: false },
