@@ -11,8 +11,6 @@
   "homepage": "https://github.com/Chr1s70ph/ETIT-Master-JS#readme",
   "author": "Christoph Bluem",
   "dependencies": {
-    "@discordjs/rest": "^2.5.0",
-    "discord-api-types": "^0.37.120",
     "discord.js": "^14.19.3",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.31.0",
